@@ -2,6 +2,7 @@ package org.motechproject.tamaregression.serial;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
@@ -19,6 +20,8 @@ import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTr
 import org.motechproject.tamafunctionalframework.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
 
+import java.io.IOException;
+
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
 public class WeeklyToDailyTransitionTest extends BaseIVRTest {
@@ -35,6 +38,12 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
         super.setUp();
         tamaDateTimeService = new TAMADateTimeService(webClient);
         setUpPatientOnDailyPillReminder();
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        tamaDateTimeService.adjustDateTime(DateUtil.now());
+        super.tearDown();
     }
 
     private void setUpPatientOnDailyPillReminder() {
@@ -104,7 +113,7 @@ public class WeeklyToDailyTransitionTest extends BaseIVRTest {
 
     private void assertPatientCanCallTAMAAndReportAdherence(IVRResponse ivrResponse) {
         IVRAssert.asksForCollectDtmfWith(ivrResponse, PILL_REMINDER_RESPONSE_MENU, ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE, FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE);
-        ivrResponse = caller.enter("3");
+        caller.enter("3");
         ivrResponse = caller.enter("2");
         IVRAssert.assertAudioFilesPresent(ivrResponse, YOUR_ADHERENCE_IS_NOW);
         IVRAssert.assertAudioFilesPresent(ivrResponse, "Num_000");

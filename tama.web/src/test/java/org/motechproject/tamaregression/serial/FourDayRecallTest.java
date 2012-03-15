@@ -2,6 +2,7 @@ package org.motechproject.tamaregression.serial;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
@@ -15,6 +16,9 @@ import org.motechproject.tamafunctionalframework.testdata.ivrreponse.IVRResponse
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTreatmentAdvice;
 import org.motechproject.tamafunctionalframework.testdataservice.PatientDataService;
+import org.motechproject.util.DateUtil;
+
+import java.io.IOException;
 
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
@@ -34,6 +38,12 @@ public class FourDayRecallTest extends BaseIVRTest {
         registerPatient();
         createTreatmentAdvice();
         caller = caller(patient);
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        tamaDateTimeService.adjustDateTime(DateUtil.now());
+        super.tearDown();
     }
 
     @Test

@@ -1,6 +1,7 @@
 package org.motechproject.tamaregression.serial;
 
 import org.joda.time.LocalDate;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.dailypillreminder.listener.AdherenceTrendListener;
@@ -41,6 +42,12 @@ public class AdherenceFallingTest extends BaseIVRTest {
         tamaDateTimeService = new TAMADateTimeService(webClient);
         tamaDateTimeService.adjustDateTime(DateUtil.now().minusWeeks(2));
         setupData();
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        tamaDateTimeService.adjustDateTime(DateUtil.now());
+        super.tearDown();
     }
 
     @Test

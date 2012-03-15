@@ -35,19 +35,15 @@ public class ClinicVisitRegressionTest extends BaseTest {
 
     private TestClinician clinician;
     private TAMADateTimeService tamaDateTimeService;
-    private MyWebClient webclient;
     private TestPatient patient;
     private PatientDataService patientDataService;
     private ScheduledTaskManager scheduledTaskManager;
-    private DateTime now;
-
 
     @Before
     public void setUp() {
         super.setUp();
-        now = DateUtil.now();
         clinician = TestClinician.withMandatory();
-        webclient = new MyWebClient();
+        MyWebClient webclient = new MyWebClient();
         tamaDateTimeService = new TAMADateTimeService(webclient);
         scheduledTaskManager = new ScheduledTaskManager(webclient);
         new ClinicianDataService(webDriver).createWithClinic(clinician);
@@ -58,8 +54,8 @@ public class ClinicVisitRegressionTest extends BaseTest {
 
     @After
     public void tearDown() throws IOException {
+        tamaDateTimeService.adjustDateTime(DateUtil.now());
         super.tearDown();
-        tamaDateTimeService.adjustDateTime(now);
     }
 
     @Test

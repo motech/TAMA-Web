@@ -1,12 +1,12 @@
 package org.motechproject.tamaregression.serial;
 
 import org.joda.time.LocalDate;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
-import org.motechproject.tamafunctionalframework.framework.ScheduledTaskManager;
 import org.motechproject.tamafunctionalframework.ivr.BaseIVRTest;
 import org.motechproject.tamafunctionalframework.ivr.IVRAssert;
 import org.motechproject.tamafunctionalframework.page.LoginPage;
@@ -29,17 +29,21 @@ import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 public class BackfillAdherenceTest extends BaseIVRTest {
     private TestPatient patient;
     private TestClinician clinician;
-    private ScheduledTaskManager scheduledTaskManager;
     private TAMADateTimeService tamaDateTimeService;
     private PatientDataService patientDataService;
 
     @Before
     public void setUp() {
         super.setUp();
-        scheduledTaskManager = new ScheduledTaskManager(webClient);
         tamaDateTimeService = new TAMADateTimeService(webClient);
         tamaDateTimeService.adjustDateTime(DateUtil.now().minusWeeks(2));
         setupData();
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        tamaDateTimeService.adjustDateTime(DateUtil.now());
+        super.tearDown();
     }
 
     @Test

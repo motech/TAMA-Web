@@ -1,6 +1,7 @@
 package org.motechproject.tamaregression.serial;
 
 import org.joda.time.LocalDate;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
@@ -17,6 +18,7 @@ import org.motechproject.tamafunctionalframework.testdataservice.PatientDataServ
 import org.motechproject.util.DateUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
@@ -44,6 +46,12 @@ public class HealthTipsTest extends BaseIVRTest {
         patientDataService.registerAndActivate(treatmentAdvice, labResult, patient, clinician);
 
         tamaDateTimeService.adjustDateTime(DateUtil.now());
+    }
+
+    @After
+    public void tearDown() throws IOException {
+        tamaDateTimeService.adjustDateTime(DateUtil.now());
+        super.tearDown();
     }
 
     private TestTreatmentAdvice setUpTreatmentAdviceToStartFrom2WeeksAgo() {

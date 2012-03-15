@@ -29,7 +29,6 @@ public class VariableDosageTest extends BaseIVRTest {
     private TestClinician clinician;
     private TAMADateTimeService tamaDateTimeService;
     private TestDrugDosage drugDosage;
-    private DateTime now;
 
     @Before
     public void setUp() {
@@ -37,12 +36,11 @@ public class VariableDosageTest extends BaseIVRTest {
         tamaDateTimeService = new TAMADateTimeService(webClient);
         setupPatient();
         caller = caller(patient);
-        now = DateUtil.now();
     }
 
     @After
     public void tearDown() throws IOException {
-        tamaDateTimeService.adjustDateTime(now);
+        tamaDateTimeService.adjustDateTime(DateUtil.now());
         super.tearDown();
     }
 
@@ -117,6 +115,6 @@ public class VariableDosageTest extends BaseIVRTest {
         Time time = Time.parseTime(drugDosage.dosageSchedule(), ":");
         if (time.getHour() < 12)
             time.setHour(time.getHour() + 12);
-        return DateUtil.newDateTime(now.toLocalDate(), time);
+        return DateUtil.newDateTime(DateUtil.today(), time);
     }
 }
