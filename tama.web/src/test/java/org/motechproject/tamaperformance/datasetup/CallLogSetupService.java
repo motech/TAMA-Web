@@ -6,7 +6,6 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
 import org.motechproject.tamafunctionalframework.framework.MyWebClient;
 import org.motechproject.tamafunctionalframework.ivr.Caller;
-import org.motechproject.tamafunctionalframework.testdata.PillReminderCallInfo;
 import org.motechproject.tamafunctionalframework.testdata.ivrreponse.IVRResponse;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,8 @@ public class CallLogSetupService {
             for (Patient patient : patients) {
                 patientConfirmsDoseAsTaken(webClient, patient);
             }
-            DateTime today = startDate.plusDays(1);
-            tamaDateTimeService.adjustDateTime(today);
+            startDate = startDate.plusDays(1);
+            tamaDateTimeService.adjustDateTime(startDate);
         }
     }
 

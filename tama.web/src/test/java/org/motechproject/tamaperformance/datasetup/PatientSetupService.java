@@ -102,7 +102,7 @@ class PatientSetupService {
             //Divide the patients among the clinics
             Clinic clinic = clinics.get(patientsCreated % clinics.size());
             login(clinic);
-            Patient patient = createActivePatient(medicalHistory, clinic);
+            Patient patient = createActivePatient(medicalHistory, today);
             recordFirstClinicVisit(patient, today, doseTime, timeOfRegistration);
             log.info("Created patient:" + patient.getPatientId() + ":for clinic:" + clinic.getName() + "with dose time:" + doseTime);
         }
@@ -160,7 +160,7 @@ class PatientSetupService {
         return labResultIds;
     }
 
-    private Patient createActivePatient(MedicalHistory medicalHistory, Clinic clinic) {
+    private Patient createActivePatient(MedicalHistory medicalHistory, LocalDate today) {
         Gender gender = allGenders.getAll().get(0);
         Patient patient = PatientBuilder
                 .startRecording()
@@ -168,6 +168,7 @@ class PatientSetupService {
                 .withMedicalHistory(medicalHistory)
                 .withGender(gender)
                 .withIVRLanguage(allIVRLanguages.getAll().get(0))
+                .withRegistrationDate(today)
                 .build();
         patientController.create(patient, bindingResult, uiModel, request);
         patientController.activate(patient.getId(), uiModel, request);
