@@ -4,6 +4,7 @@ import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
+import org.joda.time.DateTime;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallLogSearch;
@@ -35,6 +36,12 @@ public class AllCallLogs extends AbstractCouchRepository<CallLog> {
         ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getFromDate());
         ComplexKey endKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getToDate());
         ViewQuery q = createQuery("find_by_callType_and_date_range").startKey(startKey).endKey(endKey).includeDocs(true).skip(callLogSearch.getStartIndex()).limit(callLogSearch.getLimit()).reduce(false);
+        return db.queryView(q, CallLog.class);
+    }
+
+    @View(name = "find_by_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { emit(doc.startTime, doc._id); } }")
+    public List<CallLog> findAllCallLogsForDateRange(DateTime startDateTime, DateTime endDateTime) {
+        ViewQuery q = createQuery("find_by_date_range").startKey(startDateTime).endKey(endDateTime).includeDocs(true);
         return db.queryView(q, CallLog.class);
     }
 

@@ -25,7 +25,7 @@ public class AllOutboxMessageSummaries {
 
     public List<OutboxMessageSummary> find(String patientDocId, LocalDate startDate, LocalDate endDate) {
         List<OutboxMessageSummary> outboxMessageSummaries = new ArrayList<OutboxMessageSummary>();
-        final List<OutboxMessageLog> outboxMessageLogs = allOutboxLogs.list(patientDocId, DateUtil.newDateTime(startDate), DateUtil.newDateTime(endDate));
+        List<OutboxMessageLog> outboxMessageLogs = allOutboxLogs.list(patientDocId, DateUtil.newDateTime(startDate), DateUtil.newDateTime(endDate));
         for (OutboxMessageLog outboxMessageLog : outboxMessageLogs) {
             outboxMessageSummaries.addAll(outboxMessageSummaryBuilder.build(outboxMessageLog));
         }

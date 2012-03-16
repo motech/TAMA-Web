@@ -62,6 +62,11 @@ public class PatientBuilder {
         return this;
     }
 
+    public PatientBuilder withTravelTimeToClinicInMinutes(int minutes) {
+        patient.setTravelTimeToClinicInMinutes(minutes);
+        return this;
+    }
+
     public PatientBuilder withHIVTestReason(HIVTestReason hivTestReason) {
         patient.getMedicalHistory().getHivMedicalHistory().setTestReason(hivTestReason);
         return this;
