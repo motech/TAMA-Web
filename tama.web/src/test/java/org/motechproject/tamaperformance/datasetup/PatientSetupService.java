@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.reset;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -87,10 +88,11 @@ class PatientSetupService {
     }
 
     public void createPatients(LocalDate today, int numberOfPatients) {
-        LocalTime doseTime = new LocalTime(10, 0);
-
-        MedicalHistory medicalHistory = MedicalHistoryBuilder.startRecording().withDefaults().build();
         List<Clinic> clinics = allClinics.getAll();
+        assertTrue("At least one clinic should be setup for creating the patient", clinics.size() > 0);
+
+        LocalTime doseTime = new LocalTime(10, 0);
+        MedicalHistory medicalHistory = MedicalHistoryBuilder.startRecording().withDefaults().build();
 
         for (int patientsCreated = 0; patientsCreated < numberOfPatients; patientsCreated++) {
             DateTime timeOfRegistration = DateUtil.newDateTime(today, 10, 0, 0);
@@ -109,7 +111,16 @@ class PatientSetupService {
         TreatmentAdvice treatmentAdvice = createTreatmentAdviceForPatient(patient, doseTime, startDate);
         List<String> labResultIds = createLabResults(patient, startDate);
         VitalStatistics vitalStatistics = createVitalStatistics(patient, startDate);
-        allClinicVisits.updateVisitDetails(baselineClinicVisit.getId(), now, patient.getId(), treatmentAdvice.getId(), labResultIds, vitalStatistics.getId(), null);
+
+        allClinicVisits.updateVisitDetails(
+                baselineClinicVisit.getId(),
+                now,
+                patient.getId(),
+                treatmentAdvice.getId(),
+                labResultIds,
+                vitalStatistics.getId(),
+                null
+        );
     }
 
     private LocalTime getFreeSlotTime(LocalTime doseTime, int patientsCreated) {
@@ -121,7 +132,12 @@ class PatientSetupService {
     }
 
     private VitalStatistics createVitalStatistics(Patient patient, LocalDate startDate) {
-        VitalStatistics vitalStatistics = VitalStatisticsBuilder.startRecording().withDefaults().withPatientId(patient.getId()).withCaptureDate(startDate).build();
+        VitalStatistics vitalStatistics = VitalStatisticsBuilder
+                .startRecording()
+                .withDefaults()
+                .withPatientId(patient.getId())
+                .withCaptureDate(startDate)
+                .build();
         allVitalStatistics.add(vitalStatistics);
         return vitalStatistics;
     }
@@ -129,7 +145,13 @@ class PatientSetupService {
     private List<String> createLabResults(Patient patient, LocalDate startDate) {
         List<String> labResultIds = new ArrayList<String>();
         for (LabTest labTest : allLabTests.getAll()) {
-            LabResult labResult = LabResultBuilder.startRecording().withLabTest(labTest).withPatientId(patient.getId()).withResult("100").withTestDate(startDate).build();
+            LabResult labResult = LabResultBuilder
+                    .startRecording()
+                    .withLabTest(labTest)
+                    .withPatientId(patient.getId())
+                    .withResult("100")
+                    .withTestDate(startDate)
+                    .build();
             allLabResults.add(labResult);
             labResultIds.add(labResult.getId());
         }
