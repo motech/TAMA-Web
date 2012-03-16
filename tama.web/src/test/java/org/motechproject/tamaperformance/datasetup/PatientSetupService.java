@@ -72,6 +72,8 @@ class PatientSetupService {
     AllMealAdviceTypes allMealAdviceTypes;
     @Autowired
     PatientController patientController;
+    @Autowired
+    AllIVRLanguages allIVRLanguages;
 
     public PatientSetupService() {
         initMocks(this);
@@ -160,7 +162,13 @@ class PatientSetupService {
 
     private Patient createActivePatient(MedicalHistory medicalHistory, Clinic clinic) {
         Gender gender = allGenders.getAll().get(0);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withMedicalHistory(medicalHistory).withGender(gender).build();
+        Patient patient = PatientBuilder
+                .startRecording()
+                .withDefaults()
+                .withMedicalHistory(medicalHistory)
+                .withGender(gender)
+                .withIVRLanguage(allIVRLanguages.getAll().get(0))
+                .build();
         patientController.create(patient, bindingResult, uiModel, request);
         patientController.activate(patient.getId(), uiModel, request);
         return patient;

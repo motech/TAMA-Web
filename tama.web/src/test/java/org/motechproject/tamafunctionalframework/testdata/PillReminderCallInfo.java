@@ -12,12 +12,12 @@ public class PillReminderCallInfo implements CallInfo {
     private OutgoingCallInfo outgoingCallInfo;
 
     public PillReminderCallInfo(int callNumber) {
-        HashMap<String, String> dictionary = new HashMap<String, String>();
-        dictionary.put(KookooCallServiceImpl.IS_OUTBOUND_CALL, "true");
-        dictionary.put(PillReminderCall.TIMES_SENT, Integer.valueOf(callNumber).toString());
-        dictionary.put(PillReminderCall.TOTAL_TIMES_TO_SEND, "5");
-        dictionary.put(PillReminderCall.RETRY_INTERVAL, "15");
-        outgoingCallInfo = new OutgoingCallInfo(dictionary);
+        HashMap<String, String> pillReminderCallParameters = new HashMap<String, String>();
+        pillReminderCallParameters.put(KookooCallServiceImpl.IS_OUTBOUND_CALL, "true");
+        pillReminderCallParameters.put(PillReminderCall.TIMES_SENT, Integer.valueOf(callNumber).toString());
+        pillReminderCallParameters.put(PillReminderCall.TOTAL_TIMES_TO_SEND, "5");
+        pillReminderCallParameters.put(PillReminderCall.RETRY_INTERVAL, "15");
+        outgoingCallInfo = new OutgoingCallInfo(pillReminderCallParameters);
     }
 
     @Override
