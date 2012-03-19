@@ -22,11 +22,11 @@ public class CallLogSetupService {
     public void createCallLogs(MyWebClient webClient, TAMADateTimeService tamaDateTimeService, DateTime startDate, int numberOfDays) {
         List<Patient> patients = allPatients.getAll();
         for (int dayNumber = 1; dayNumber <= numberOfDays; dayNumber++) {
+            tamaDateTimeService.adjustDateTime(startDate);
             for (Patient patient : patients) {
                 patientConfirmsDoseAsTaken(webClient, patient);
             }
             startDate = startDate.plusDays(1);
-            tamaDateTimeService.adjustDateTime(startDate);
         }
     }
 
