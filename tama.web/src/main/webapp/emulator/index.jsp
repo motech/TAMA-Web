@@ -216,6 +216,7 @@
                         $('#times_sent').val(data.times_sent);
                         $('#total').val(data.total_times_to_send);
                         $('#call_id').val(data.call_id);
+                        $('#retry_interval').val(data.retry_interval);
                         $('#is_outbound_call').attr('checked', (data.is_outbound_call === "true"));
                         $('#outbox_call').attr('checked', (data.outbox_call === "true"));
                     }
@@ -333,6 +334,7 @@
         var dosageId = $('#dosage_id').val();
         var regimen_id = $('#regimen_id').val();
         var times_sent = $('#times_sent').val();
+        var retry_interval = $('#retry_interval').val();
         var total = $('#total').val();
         var call_id = $('#call_id').val();
         var is_outbound_call = $('#is_outbound_call').is(":checked") ? "true" : "";
@@ -340,7 +342,7 @@
         var symptoms_reporting_option = ($('#symptoms_reporting').is(":checked") ? "&symptoms_reporting=true" : "");
         var dataMap = "";
         if (is_outbound_call == 'true')
-            dataMap = ($('#symptoms_reporting').is(":checked")) ? "" : ('&dataMap={%27dosage_id%27:%27' + dosageId + '%27, %27regimen_id%27:%27' + regimen_id + '%27, %27times_sent%27:%27' + times_sent + '%27, %27total_times_to_send%27:%27' + total + '%27, %27call_id%27:%27' + call_id + '%27, %27outbox_call%27:%27' + outbox_call + '%27, %27is_outbound_call%27:%27' + is_outbound_call + '%27}');
+            dataMap = ($('#symptoms_reporting').is(":checked")) ? "" : ('&dataMap={%27dosage_id%27:%27' + dosageId + '%27, %27regimen_id%27:%27' + regimen_id + '%27, %27times_sent%27:%27' + times_sent + '%27, %27retry_interval%27:%27' + retry_interval + '%27, %27total_times_to_send%27:%27' + total + '%27, %27call_id%27:%27' + call_id + '%27, %27outbox_call%27:%27' + outbox_call + '%27, %27is_outbound_call%27:%27' + is_outbound_call + '%27}');
         call(contextRoot + 'ivr/reply?event=GotDTMF&cid=' + phone + '&data=' + pin + '&sid=' + callId + dataMap + symptoms_reporting_option);
     }
     function send(i) {
@@ -357,6 +359,7 @@
         var dosageId = $('#dosage_id').val();
         var regimen_id = $('#regimen_id').val();
         var times_sent = $('#times_sent').val();
+        var retry_interval = $('#retry_interval').val();
         var total = $('#total').val();
         var symptoms_reporting_option = ($('#symptoms_reporting').is(":checked") ? "&symptoms_reporting=true" : "");
         var is_outbound_call = $('#is_outbound_call').is(":checked") ? "true" : "";
@@ -365,7 +368,7 @@
         var event = "event=GotDTMF&";
         if (collectdtmf) event = "event=GotDTMF&" + '&data=' + dtmf + "&";
         if (is_outbound_call == 'true')
-            dataMap = ($('#symptoms_reporting').is(":checked")) ? "" : ('&dataMap={%27dosage_id%27:%27' + dosageId + '%27, %27regimen_id%27:%27' + regimen_id + '%27, %27times_sent%27:%27' + times_sent + '%27, %27total_times_to_send%27:%27' + total + '%27, %27outbox_call%27:%27' + outbox_call + '%27, %27is_outbound_call%27:%27' + is_outbound_call + '%27}');
+            dataMap = ($('#symptoms_reporting').is(":checked")) ? "" : ('&dataMap={%27dosage_id%27:%27' + dosageId + '%27, %27regimen_id%27:%27' + regimen_id + '%27, %27times_sent%27:%27' + times_sent + '%27, %27retry_interval%27:%27' + retry_interval +'%27, %27total_times_to_send%27:%27' + total + '%27, %27outbox_call%27:%27' + outbox_call + '%27, %27is_outbound_call%27:%27' + is_outbound_call + '%27}');
         call(contextRoot + 'ivr/reply?' + event + 'cid=' + phone + 'sid=' + callId + dataMap + symptoms_reporting_option);
         dtmf = "";
     }
@@ -440,7 +443,7 @@
             </td>
             <td style="width:450px;"></td>
             <td>
-                <form id="timeForm" action="" method="POST">
+                <form id="timeForm" action="index.jsp" method="POST">
                     <table>
                         <tr>
                             <td><input id="fakeTimeOption" type="radio" name="type"
@@ -477,7 +480,7 @@
     <br><br>
 
     <div><input type="checkbox" id="mute"></input> Mute audio <span><input type="checkbox" id="symptoms_reporting"></input> Symptoms Reporting call
-<input type="checkbox" id="poll_call"></input> Accept incoming call
+<input type="checkbox" id="poll_call" checked="true"></input> Accept incoming call
 </span></div>
     <button onclick="$('.optional').toggle(600);">Show / Hide Params</button>
     <table id="params">
@@ -504,6 +507,10 @@
             <td>Number of call retries</td>
             <td><input type="text" id="times_sent" value="1"/></td>
             <td>Incase of retry calls last call message will be different</td>
+        </tr>
+        <tr class="optional">
+            <td>Retry Interval In Minutes</td>
+            <td><input type="text" id="retry_interval" value="15"/></td>
         </tr>
         <tr class="optional">
             <td>Total retries</td>
