@@ -33,7 +33,7 @@ public class CallLogReportBuilder extends ReportBuilder<CallLogSummary> {
         columns.add(new ExcelColumn("End Date and Time", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Language", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Flows Accessed", Cell.CELL_TYPE_STRING, 14000));
-        columns.add(new ExcelColumn("Distance of Patient from Clinic", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Distance of Patient from Clinic", Cell.CELL_TYPE_STRING, 8000));
     }
 
     @Override

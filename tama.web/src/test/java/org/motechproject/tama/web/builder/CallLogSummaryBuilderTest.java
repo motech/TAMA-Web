@@ -79,6 +79,6 @@ public class CallLogSummaryBuilderTest {
         assertEquals("1234567890", callLogSummary.getSourcePhoneNumber());
         assertEquals("English", callLogSummary.getLanguage());
         assertEquals("patientId", callLogSummary.getPatientId());
-        assertEquals("1 Days, 1 Hours, And 1 Minutes.", callLogSummary.getPatientDistanceFromClinic());
+        assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());
     }
 }

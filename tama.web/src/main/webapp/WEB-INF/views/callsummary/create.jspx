@@ -22,7 +22,7 @@
             <c:if test="${sessionScope.loggedInUser.administrator}">
                 <br/>
                 <br/>
-                <a id="downloadLink" href="#">Download All Answered/Missed Call Logs as Excel</a>
+                <a id="downloadLink" href="#">Download All Answered / Missed Call Logs as Excel</a>
             </c:if>
         </form:form>
     </util:panel>

@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.builder;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.TAMAConstants;
@@ -22,6 +23,8 @@ import java.util.List;
 public class CallLogSummaryBuilder {
 
     private static final String CALL_LOG_DATETIME_FORMAT = TAMAConstants.DATETIME_FORMAT + ":ss";
+    public static final String NOT_REGISTERED_USER = "Not Registered User";
+    public static final String TAMA = "TAMA";
 
     private AllPatients allPatients;
     private AllClinics allClinics;
@@ -39,30 +42,37 @@ public class CallLogSummaryBuilder {
     public CallLogSummary build(CallLog callLog) {
         CallDirection callDirection = callLog.getCallDirection();
         boolean isInboundCall = callDirection == CallDirection.Inbound;
-        Patient patient = null;
-        if(!StringUtils.isEmpty(callLog.patientId())) {
-            patient = allPatients.get(callLog.getPatientDocumentId());
-        }
         return new CallLogSummary(getPatientId(callLog),
                 getSourcePhoneNumber(callLog, isInboundCall),
                 getDestinationPhoneNumber(callLog, isInboundCall),
                 callLog.getStartTime().toString(CALL_LOG_DATETIME_FORMAT),
                 callLog.getEndTime().toString(CALL_LOG_DATETIME_FORMAT),
                 getClinicId(callLog),
-                StringUtils.isEmpty(callLog.callLanguage()) ? " - " : allIVRLanguages.findByLanguageCode(callLog.callLanguage()).getName(),
-                patient != null ? getTravelTimeToClinic(patient) : " - ",
+                getCallLanguage(callLog),
+                getTravelTimeToClinic(callLog),
                 getCallLogFlows(callLog)
         );
     }
 
-    private String getClinicId(CallLog callLog) {
-        Patient patient;
-        if(callLog.clinicId() == null) {
-            if (callLog.getLikelyPatientIds() != null){
-                patient = allPatients.get(callLog.getLikelyPatientIds().get(0));
-                return patient.getClinic().getName();
+    private String getPatientId(CallLog callLog) {
+        if (StringUtils.isEmpty(callLog.patientId())) {
+            if (CollectionUtils.isEmpty(callLog.getLikelyPatientIds())) {
+                return NOT_REGISTERED_USER;
             } else {
-                return "Not Registered User";
+                return StringUtils.join(ambiguousPatients(callLog.getLikelyPatientIds()), ", ");
+            }
+        } else {
+            return callLog.patientId();
+        }
+    }
+
+    private String getClinicId(CallLog callLog) {
+        if (StringUtils.isEmpty(callLog.clinicId())) {
+            if (CollectionUtils.isEmpty(callLog.getLikelyPatientIds())) {
+                return NOT_REGISTERED_USER;
+            } else {
+                Patient patient = allPatients.get(callLog.getLikelyPatientIds().get(0));
+                return patient.getClinic().getName();
             }
         } else {
             return allClinics.get(callLog.clinicId()).getName();
@@ -73,7 +83,7 @@ public class CallLogSummaryBuilder {
         if (isInboundCall) {
             return getRegisteredPhoneNumber(callLog);
         } else {
-            return "TAMA";
+            return TAMA;
         }
     }
 
@@ -81,28 +91,23 @@ public class CallLogSummaryBuilder {
         if (!isInboundCall) {
             return getRegisteredPhoneNumber(callLog);
         } else {
-            return "TAMA";
+            return TAMA;
         }
     }
 
-    private String getRegisteredPhoneNumber(CallLog callLog) {
-        if (StringUtils.isEmpty(callLog.getPhoneNumber())) {
-            return "Not Registered User";
-        } else {
-            return callLog.getPhoneNumber();
-        }
+    private String getTravelTimeToClinic(CallLog callLog) {
+        if (StringUtils.isEmpty(callLog.patientId())) return " - ";
+        Patient patient = allPatients.get(callLog.getPatientDocumentId());
+        return patient.getTravelTimeToClinicInDays() + " Days, " + patient.getTravelTimeToClinicInHours() + " Hours, and " + patient.getTravelTimeToClinicInMinutes() + " Minutes";
     }
 
-    private String getPatientId(CallLog callLog) {
-        if (StringUtils.isEmpty(callLog.patientId())) {
-            if (callLog.getLikelyPatientIds() == null) {
-                return "Not Registered User";
-            } else {
-                return StringUtils.join(ambiguousPatients(callLog.getLikelyPatientIds()), ", ");
-            }
-        } else {
-            return callLog.patientId();
-        }
+    private String getCallLanguage(CallLog callLog) {
+        return StringUtils.isEmpty(callLog.callLanguage()) ? " - " : allIVRLanguages.findByLanguageCode(callLog.callLanguage()).getName();
+    }
+
+    private String getCallLogFlows(CallLog callLog) {
+        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(Arrays.asList(callLog));
+        return callLogViews.isEmpty() ? " - " : callLogViews.get(0).getFlows();
     }
 
     private List<String> ambiguousPatients(List<String> likelyPatientIds) {
@@ -113,14 +118,11 @@ public class CallLogSummaryBuilder {
         return patientIds;
     }
 
-    private String getCallLogFlows(CallLog callLog) {
-        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(Arrays.asList(callLog));
-        return callLogViews.get(0).getFlows();
+    private String getRegisteredPhoneNumber(CallLog callLog) {
+        if (StringUtils.isEmpty(callLog.patientId()) && CollectionUtils.isEmpty(callLog.getLikelyPatientIds())) {
+            return NOT_REGISTERED_USER + " : " + callLog.getPhoneNumber();
+        } else {
+            return callLog.getPhoneNumber();
+        }
     }
-
-    private String getTravelTimeToClinic(Patient patient) {
-        return patient.getTravelTimeToClinicInDays() + " Days, " + patient.getTravelTimeToClinicInHours() + " Hours, And " + patient.getTravelTimeToClinicInMinutes() + " Minutes.";
-    }
-
-
 }
