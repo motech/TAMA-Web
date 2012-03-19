@@ -60,7 +60,7 @@ public abstract class ReportBuilder<T> {
         buildTitle(worksheet);
         buildSummary(worksheet);
         buildColumnHeaders(worksheet);
-        worksheet.createFreezePane(lastColumnIndex, currentRowIndex);
+        worksheet.createFreezePane(0, currentRowIndex);
     }
 
     protected void buildSummary(HSSFSheet worksheet) {

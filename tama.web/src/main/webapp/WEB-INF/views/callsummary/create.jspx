@@ -30,26 +30,24 @@
     <script type="text/javascript">
         <![CDATA[
             dojo.addOnLoad(function() {
-                var downloadLink = dojo.byId("downloadLink");
-                if(downloadLink != null) {
-                    dojo.connect(downloadLink, "onclick", function () {
-                        var startDate = dojo.byId('_callLogStartDate_id');
-                        var endDate = dojo.byId('_callLogEndDate_id');
 
+                callLogStartDateObj = dijit.byId("_callLogStartDate_id");
+                callLogEndDateObj = dijit.byId("_callLogEndDate_id");
+                setConstraintOnEndDate(callLogStartDateObj, callLogEndDateObj);
+
+                var downloadLink = dojo.byId("downloadLink");
+                if (downloadLink != null) {
+                    dojo.connect(downloadLink, "onclick", function () {
                         Spring.decorations['_callLogStartDate_id'][0].validate();
                         Spring.decorations['_callLogEndDate_id'][0].validate();
 
                         if (!(callLogStartDateObj.isValid() && callLogEndDateObj.isValid())){
                             event.preventDefault();
                         } else {
-                            document.location = "reports/callLogReport.xls?startDate=" + startDate.value + "&endDate=" + endDate.value;
+                            document.location = "reports/callLogReport.xls?startDate=" + callLogStartDateObj.value + "&endDate=" + callLogEndDateObj.value;
                         }
                     })
                 }
-
-                callLogStartDateObj = dijit.byId("_callLogStartDate_id");
-                callLogEndDateObj = dijit.byId("_callLogEndDate_id");
-                setConstraintOnEndDate(callLogStartDateObj, callLogEndDateObj);
 
                 dojo.connect(dojo.byId("nextToShowLogs"), "onclick", function(event){
                     Spring.decorations['_callLogStartDate_id'][0].validate();
