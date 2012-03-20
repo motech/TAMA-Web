@@ -29,7 +29,7 @@ public class PatientPreferences extends BaseEntity {
 
     private TimeOfDay bestCallTime;
 
-    private boolean receiveOTCAdvice = true;
+    private boolean receiveOTCAdvice = false;
 
     private boolean activateAppointmentReminders = true;
 
