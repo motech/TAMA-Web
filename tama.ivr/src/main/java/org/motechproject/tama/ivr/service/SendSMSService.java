@@ -24,6 +24,7 @@ public class SendSMSService {
     }
 
     public void send(List<String> recipients, String messageBody) {
+        // Cannot use platform's send(List<String>, String) because of the interface kookoo supports
         for (String recipient : recipients) {
             logger.debug("Sending SMS:recipient-" + recipient + ":message-" + messageBody);
             smsService.sendSMS(recipient, messageBody);
