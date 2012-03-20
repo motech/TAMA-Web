@@ -78,7 +78,7 @@ public class DialControllerTest {
 
         String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
-        assertTrue(dialResponse.contains("<dial>0ph1</dial>"));
+        assertTrue(dialResponse.contains("<dial moh=\"ring\">0ph1</dial>"));
         assertTrue(dialResponse.contains("<playaudio>connecting-to-dr</playaudio>"));
         assertEquals(1, symptomReportingContext.numberOfCliniciansCalled());
         verify(symptomRecordingService, times(1)).setAsNotConnectedToDoctor(callId);
@@ -91,7 +91,7 @@ public class DialControllerTest {
 
         String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
-        assertFalse(dialResponse.contains("<dial>0ph2</dial>"));
+        assertFalse(dialResponse.contains("<dial moh=\"ring\">0ph2</dial>"));
         assertTrue(symptomReportingContext.getEndCall());
         verify(patientAlertService).updateDoctorConnectedToDuringSymptomCall("patientId", "name1");
         verify(symptomRecordingService).setAsConnectedToDoctor(callId);
@@ -118,7 +118,7 @@ public class DialControllerTest {
 
         String dialResponse = dialController.dial(kooKooIVRContext).create(ivrMessage);
 
-        assertTrue(dialResponse.contains("<dial>0ph3</dial>"));
+        assertTrue(dialResponse.contains("<dial moh=\"ring\">0ph3</dial>"));
         assertTrue(dialResponse.contains("<playaudio>connecting-to-dr</playaudio>"));
         assertEquals(3, symptomReportingContext.numberOfCliniciansCalled());
     }
