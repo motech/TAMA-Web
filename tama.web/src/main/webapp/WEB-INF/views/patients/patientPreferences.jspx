@@ -56,7 +56,7 @@
                     <springform:radiobutton id="receiveOTCAdviceYes" path="patientPreferences.receiveOTCAdvice" value="true" label="Yes"/>
                 </div>
                 <div class='radio_group'>
-                    <springform:radiobutton id="receiveOTCAdviceNo" path="patientPreferences.receiveOTCAdvice" value="false" checked="true" label="No"/>
+                    <springform:radiobutton id="receiveOTCAdviceNo" path="patientPreferences.receiveOTCAdvice" value="false" label="No"/>
                 </div>
             </div>
         </div>
