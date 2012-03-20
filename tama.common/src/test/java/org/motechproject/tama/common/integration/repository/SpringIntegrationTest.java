@@ -5,13 +5,16 @@ import org.ektorp.CouchDbConnector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.motechproject.tama.common.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:/applicationCommonContext.xml")
@@ -40,6 +43,10 @@ public abstract class SpringIntegrationTest {
     protected void markForDeletion(Object... documents) {
         for (Object document : documents)
             markForDeletion(document);
+    }
+
+    protected void markForDeletion(List documents) {
+        markForDeletion(documents.toArray());
     }
 
     protected void markForDeletion(Object document) {
