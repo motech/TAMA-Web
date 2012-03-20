@@ -3,7 +3,9 @@ package org.motechproject.tama.ivr.domain;
 import lombok.Getter;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
+import org.joda.time.DateTime;
 import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.util.DateUtil;
 
 @TypeDiscriminator("doc.documentType == 'SMSLog'")
 public class SMSLog extends CouchEntity {
@@ -14,6 +16,9 @@ public class SMSLog extends CouchEntity {
     @Getter
     @JsonProperty
     private String message;
+    @Getter
+    @JsonProperty
+    private DateTime sentDateTime;
 
     public SMSLog() {
     }
@@ -21,5 +26,6 @@ public class SMSLog extends CouchEntity {
     public SMSLog(String recipient, String message) {
         this.message = message;
         this.recipient = recipient;
+        this.sentDateTime = DateUtil.now();
     }
 }

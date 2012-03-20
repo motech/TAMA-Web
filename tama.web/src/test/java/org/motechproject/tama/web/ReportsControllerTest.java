@@ -5,8 +5,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
+import org.motechproject.tama.ivr.repository.AllSMSLogs;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxMessageSummaries;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.domain.PatientReport;
@@ -26,8 +28,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -47,13 +48,15 @@ public class ReportsControllerTest {
     private AllOutboxMessageSummaries allOutboxMessageSummaries;
     @Mock
     private AllCallLogSummaries allCallLogSummaries;
+    @Mock
+    private AllSMSLogs allSMSLogs;
 
     private ReportsController reportsController;
 
     @Before
     public void setUp() {
         initMocks(this);
-        reportsController = new ReportsController(patientService, dailyPillReminderReportService, outboxReportService, allOutboxMessageSummaries, allCallLogSummaries);
+        reportsController = new ReportsController(patientService, dailyPillReminderReportService, outboxReportService, allOutboxMessageSummaries, allCallLogSummaries, allSMSLogs);
     }
 
     private void initializePatientService(String patientDocumentId) {
@@ -141,6 +144,16 @@ public class ReportsControllerTest {
         reportsController.buildCallLogExcelReport(startDate, endDate, httpServletResponse);
 
         verify(allCallLogSummaries).getAllCallLogSummariesBetween(startDate, endDate);
+    }
+
+    @Test
+    public void shouldBuildSMSExcelReport() throws IOException {
+        HttpServletResponse httpServletResponse = initializeServletResponse();
+
+        reportsController.buildSMSExcelReport(httpServletResponse);
+
+        verify(allSMSLogs).getAll();
+        verify(httpServletResponse.getOutputStream(), atLeastOnce()).write(Matchers.<byte[]>any());
     }
 
     private HttpServletResponse initializeServletResponse() throws IOException {

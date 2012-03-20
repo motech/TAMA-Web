@@ -13,6 +13,7 @@
         </menu:category>
         <menu:category id="c_summary">
             <menu:item id="i_logs_list" messageCode="global_menu_list" url="/callsummary?form"/>
+            <menu:item id="i_sms_list" messageCode="global_menu_list" url="/reports/smsReport.xls"/>
         </menu:category>
         <!-- Banka/Luka - Upload new wav file needs more work -->
         <!--<menu:category id="c_upload">-->

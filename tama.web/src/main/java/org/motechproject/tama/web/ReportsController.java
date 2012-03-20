@@ -6,16 +6,15 @@ import org.json.JSONException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.domain.DailyPillReminderSummary;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
+import org.motechproject.tama.ivr.domain.SMSLog;
+import org.motechproject.tama.ivr.repository.AllSMSLogs;
 import org.motechproject.tama.outbox.domain.OutboxMessageSummary;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxMessageSummaries;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.service.AllCallLogSummaries;
-import org.motechproject.tama.web.viewbuilder.CallLogReportBuilder;
-import org.motechproject.tama.web.viewbuilder.DailyPillReminderReportBuilder;
-import org.motechproject.tama.web.viewbuilder.OutboxReportBuilder;
-import org.motechproject.tama.web.viewbuilder.ReportBuilder;
+import org.motechproject.tama.web.viewbuilder.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +37,7 @@ public class ReportsController {
     private OutboxMessageReportService outboxMessageReportService;
     private AllOutboxMessageSummaries allOutboxMessageSummaries;
     private AllCallLogSummaries allCallLogSummaries;
+    private AllSMSLogs allSMSLogs;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -47,12 +47,14 @@ public class ReportsController {
                              DailyPillReminderReportService dailyPillReminderReportService,
                              OutboxMessageReportService outboxMessageReportService,
                              AllOutboxMessageSummaries allOutboxMessageSummaries,
-                             AllCallLogSummaries allCallLogSummaries) {
+                             AllCallLogSummaries allCallLogSummaries,
+                             AllSMSLogs allSMSLogs) {
         this.patientService = patientService;
         this.dailyPillReminderReportService = dailyPillReminderReportService;
         this.outboxMessageReportService = outboxMessageReportService;
         this.allOutboxMessageSummaries = allOutboxMessageSummaries;
         this.allCallLogSummaries = allCallLogSummaries;
+        this.allSMSLogs = allSMSLogs;
     }
 
     @RequestMapping(value = "/patients/{patientDocId}/reports", method = RequestMethod.GET)
@@ -115,6 +117,12 @@ public class ReportsController {
         List<CallLogSummary> callLogSummaryList = allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate);
         CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(callLogSummaryList);
         writeExcelToResponse(response, createExcelReport(callLogReportBuilder), "AllCallLogsReport.xls");
+    }
+
+    @RequestMapping(value = "/reports/smsReport.xls", method = RequestMethod.GET)
+    public void buildSMSExcelReport(HttpServletResponse response) {
+        SMSReportBuilder smsReportBuilder = new SMSReportBuilder(allSMSLogs.getAll());
+        writeExcelToResponse(response, createExcelReport(smsReportBuilder), "AllSMSReports.xls");
     }
 
     private HSSFWorkbook createExcelReport(ReportBuilder reportBuilder) {
