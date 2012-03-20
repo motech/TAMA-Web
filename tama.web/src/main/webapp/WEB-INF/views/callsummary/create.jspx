@@ -44,7 +44,7 @@
                         if (!(callLogStartDateObj.isValid() && callLogEndDateObj.isValid())){
                             event.preventDefault();
                         } else {
-                            document.location = "reports/callLogReport.xls?startDate=" + callLogStartDateObj.value + "&endDate=" + callLogEndDateObj.value;
+                            document.location = "reports/callLogReport.xls?startDate=" + dojo.byId('_callLogStartDate_id').value + "&endDate=" + dojo.byId('_callLogEndDate_id').value;
                         }
                     })
                 }
