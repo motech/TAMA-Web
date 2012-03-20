@@ -4,10 +4,13 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.facility.domain.Clinics;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Patients;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.refdata.domain.IVRLanguages;
 import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.model.CallLogSummary;
@@ -30,13 +33,22 @@ public class CallLogSummaryBuilder {
     private AllClinics allClinics;
     private AllIVRLanguages allIVRLanguages;
     private CallLogViewMapper callLogViewMapper;
+    private Patients allLoadedPatients = new Patients();
+    private Clinics allLoadedClinics = new Clinics();
+    private IVRLanguages allLoadedIVRLanguages = new IVRLanguages();
 
     @Autowired
-    public CallLogSummaryBuilder(AllPatients allPatients, CallLogViewMapper callLogViewMapper, AllClinics allClinics, AllIVRLanguages allIVRLanguages) {
+    public CallLogSummaryBuilder(AllPatients allPatients, AllClinics allClinics, AllIVRLanguages allIVRLanguages, CallLogViewMapper callLogViewMapper) {
         this.allPatients = allPatients;
-        this.callLogViewMapper = callLogViewMapper;
         this.allClinics = allClinics;
         this.allIVRLanguages = allIVRLanguages;
+        this.callLogViewMapper = callLogViewMapper;
+    }
+
+    public void initialize() {
+        this.allLoadedPatients = new Patients(allPatients.getAll());
+        this.allLoadedClinics = new Clinics(allClinics.getAll());
+        this.allLoadedIVRLanguages = new IVRLanguages(allIVRLanguages.getAll());
     }
 
     public CallLogSummary build(CallLog callLog) {
@@ -71,11 +83,11 @@ public class CallLogSummaryBuilder {
             if (CollectionUtils.isEmpty(callLog.getLikelyPatientIds())) {
                 return NOT_REGISTERED_USER;
             } else {
-                Patient patient = allPatients.get(callLog.getLikelyPatientIds().get(0));
+                Patient patient = allLoadedPatients.getBy(callLog.getLikelyPatientIds().get(0));
                 return patient.getClinic().getName();
             }
         } else {
-            return allClinics.get(callLog.clinicId()).getName();
+            return allLoadedClinics.getBy(callLog.clinicId()).getName();
         }
     }
 
@@ -97,23 +109,23 @@ public class CallLogSummaryBuilder {
 
     private String getTravelTimeToClinic(CallLog callLog) {
         if (StringUtils.isEmpty(callLog.patientId())) return " - ";
-        Patient patient = allPatients.get(callLog.getPatientDocumentId());
+        Patient patient = allLoadedPatients.getBy(callLog.getPatientDocumentId());
         return patient.getTravelTimeToClinicInDays() + " Days, " + patient.getTravelTimeToClinicInHours() + " Hours, and " + patient.getTravelTimeToClinicInMinutes() + " Minutes";
     }
 
     private String getCallLanguage(CallLog callLog) {
-        return StringUtils.isEmpty(callLog.callLanguage()) ? " - " : allIVRLanguages.findByLanguageCode(callLog.callLanguage()).getName();
+        return StringUtils.isEmpty(callLog.callLanguage()) ? " - " : allLoadedIVRLanguages.getBy(callLog.callLanguage()).getName();
     }
 
     private String getCallLogFlows(CallLog callLog) {
-        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(Arrays.asList(callLog));
+        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(Arrays.asList(callLog), allLoadedPatients);
         return callLogViews.isEmpty() ? " - " : callLogViews.get(0).getFlows();
     }
 
     private List<String> ambiguousPatients(List<String> likelyPatientIds) {
         List<String> patientIds = new ArrayList<String>();
         for (String likelyPatientId : likelyPatientIds) {
-            patientIds.add(allPatients.get(likelyPatientId).getPatientId());
+            patientIds.add(allLoadedPatients.getBy(likelyPatientId).getPatientId());
         }
         return patientIds;
     }

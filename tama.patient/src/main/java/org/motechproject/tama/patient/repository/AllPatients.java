@@ -142,6 +142,15 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
         return patient;
     }
 
+    @Override
+    public List<Patient> getAll() {
+        List<Patient> patients = super.getAll();
+        for (Patient patient : patients) {
+            loadPatientDependencies(patient);
+        }
+        return patients;
+    }
+
     @View(name = "find_by_mobile_number_and_passcode", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber && doc.patientPreferences.passcode) {emit([doc.mobilePhoneNumber, doc.patientPreferences.passcode], doc._id);}}")
     private List<Patient> findAllByMobileNumberAndPasscode(String phoneNumber, String passcode) {
         ComplexKey key = ComplexKey.of(phoneNumber, passcode);

@@ -27,6 +27,7 @@ public class AllCallLogSummaries {
     public List<CallLogSummary> getAllCallLogSummariesBetween(LocalDate startDate, LocalDate endDate) {
         List<CallLogSummary> callLogSummaries = new ArrayList<CallLogSummary>();
         List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59));
+        callLogSummaryBuilder.initialize();
         for (CallLog callLog : allCallLogsForDateRange) {
             callLogSummaries.add(callLogSummaryBuilder.build(callLog));
         }

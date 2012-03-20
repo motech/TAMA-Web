@@ -9,6 +9,8 @@ import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Patients;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
 import org.motechproject.tama.refdata.repository.AllIVRLanguages;
@@ -44,7 +46,7 @@ public class CallLogSummaryBuilderTest {
     @Before
     public void setUp() {
         initMocks(this);
-        callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients, callLogViewMapper, allClinics, allIVRLanguages);
+        callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients, allClinics, allIVRLanguages, callLogViewMapper);
         Properties properties = new Properties();
         ivrMessage = new TamaIVRMessage(properties);
     }
@@ -62,15 +64,17 @@ public class CallLogSummaryBuilderTest {
         callLog.setPhoneNumber("1234567890");
         callLog.callLanguage("en");
 
+        Patient patient = PatientBuilder.startRecording().withId(patientDocId).withPatientId("patientId").withTravelTimeToClinicInDays(1).withTravelTimeToClinicInHours(1).withTravelTimeToClinicInMinutes(1).build();
         Clinic clinic = new Clinic(clinicId);
         CallLogView callLogView = mock(CallLogView.class);
         clinic.setName("clinicName");
 
-        when(allIVRLanguages.findByLanguageCode("en")).thenReturn(IVRLanguage.newIVRLanguage("English", "en"));
-        when(allClinics.get(clinicId)).thenReturn(clinic);
-        when(allPatients.get(patientDocId)).thenReturn(PatientBuilder.startRecording().withId(patientDocId).withPatientId("patientId").withTravelTimeToClinicInDays(1).withTravelTimeToClinicInHours(1).withTravelTimeToClinicInMinutes(1).build());
-        when(callLogViewMapper.toCallLogView(Arrays.asList(callLog))).thenReturn(Arrays.asList(callLogView));
+        when(allIVRLanguages.getAll()).thenReturn(Arrays.asList(IVRLanguage.newIVRLanguage("English", "en")));
+        when(allClinics.getAll()).thenReturn(Arrays.asList(clinic));
+        when(allPatients.getAll()).thenReturn(Arrays.asList(patient));
+        when(callLogViewMapper.toCallLogView(Arrays.asList(callLog), new Patients(Arrays.asList(patient)))).thenReturn(Arrays.asList(callLogView));
 
+        callLogSummaryBuilder.initialize();
         CallLogSummary callLogSummary = callLogSummaryBuilder.build(callLog);
 
         assertNotNull(callLogSummary);
