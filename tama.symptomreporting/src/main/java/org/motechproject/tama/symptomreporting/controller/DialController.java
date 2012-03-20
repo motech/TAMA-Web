@@ -60,7 +60,7 @@ public class DialController extends SafeIVRController {
         KookooIVRResponseBuilder kookooIVRResponseBuilder = new KookooIVRResponseBuilder().language(symptomsReportingContext.preferredLanguage());
         if (symptomsReportingContext.isAnswered()) {
             symptomRecordingService.setAsConnectedToDoctor(symptomsReportingContext.callId());
-            updateAlertAndEndCurrentCall(symptomsReportingContext, symptomsReportingContext, clinicianContacts);
+            updateAlertAndEndCurrentCall(symptomsReportingContext, clinicianContacts);
         } else {
             symptomRecordingService.setAsNotConnectedToDoctor(symptomsReportingContext.callId());
             tryAndDialTheNextClinician(symptomsReportingContext, clinicianContacts, kookooIVRResponseBuilder);
@@ -68,10 +68,10 @@ public class DialController extends SafeIVRController {
         return kookooIVRResponseBuilder;
     }
 
-    private void updateAlertAndEndCurrentCall(SymptomsReportingContext context, SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts) {
-        String clinicianName = clinicianContacts.get(symptomsReportingContext.numberOfCliniciansCalled() - 1).getName();
+    private void updateAlertAndEndCurrentCall(SymptomsReportingContext context, List<Clinic.ClinicianContact> clinicianContacts) {
+        String clinicianName = clinicianContacts.get(context.numberOfCliniciansCalled() - 1).getName();
         patientAlertService.updateDoctorConnectedToDuringSymptomCall(context.patientDocumentId(), clinicianName);
-        symptomsReportingContext.endCall();
+        context.endCall();
     }
 
     private void tryAndDialTheNextClinician(SymptomsReportingContext symptomsReportingContext, List<Clinic.ClinicianContact> clinicianContacts, KookooIVRResponseBuilder kookooIVRResponseBuilder) {
