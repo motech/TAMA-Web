@@ -15,6 +15,7 @@ import org.motechproject.tama.web.service.AllCallLogSummaries;
 import org.motechproject.tama.web.viewbuilder.CallLogReportBuilder;
 import org.motechproject.tama.web.viewbuilder.DailyPillReminderReportBuilder;
 import org.motechproject.tama.web.viewbuilder.OutboxReportBuilder;
+import org.motechproject.tama.web.viewbuilder.ReportBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -38,6 +40,7 @@ public class ReportsController {
     private AllCallLogSummaries allCallLogSummaries;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @Autowired
     public ReportsController(PatientService patientService,
@@ -85,61 +88,58 @@ public class ReportsController {
                                                   @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
                                                   @RequestParam LocalDate endDate,
                                                   HttpServletResponse response) {
-
-        response.setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
-        response.setContentType("application/vnd.ms-excel");
-        try {
-            ServletOutputStream outputStream = response.getOutputStream();
-            List<DailyPillReminderSummary> summaryList = dailyPillReminderReportService.create(patientDocId, startDate, endDate);
-
-            DailyPillReminderReportBuilder dailyPillReminderReportBuilder = new DailyPillReminderReportBuilder(summaryList, patientService.getPatientReport(patientDocId), startDate, endDate);
-            HSSFWorkbook excelWorkbook = dailyPillReminderReportBuilder.getExcelWorkbook();
-            excelWorkbook.write(outputStream);
-            outputStream.flush();
-
-        } catch (Exception e) {
-            logger.error("Error while generating excel report: " + e.getMessage());
-        }
+        List<DailyPillReminderSummary> summaryList = dailyPillReminderReportService.create(patientDocId, startDate, endDate);
+        DailyPillReminderReportBuilder dailyPillReminderReportBuilder = new DailyPillReminderReportBuilder(summaryList, patientService.getPatientReport(patientDocId), startDate, endDate);
+        writeExcelToResponse(response, createExcelReport(dailyPillReminderReportBuilder), "DailyPillReminderReport.xls");
     }
 
     @RequestMapping(value = "/patients/{patientDocId}/reports/outboxMessageReport.xls", method = RequestMethod.GET)
     public void buildOutboxMessageExcelReport(@PathVariable String patientDocId,
-                                      @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                      @RequestParam LocalDate startDate,
-                                      @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                      @RequestParam LocalDate endDate,
-                                      HttpServletResponse response) {
-        response.setHeader("Content-Disposition", "inline; filename=OutboxReport.xls");
-        response.setContentType("application/vnd.ms-excel");
-        try {
-            ServletOutputStream outputStream = response.getOutputStream();
-            List<OutboxMessageSummary> messageSummaryList = allOutboxMessageSummaries.find(patientDocId, startDate, endDate);
-            OutboxReportBuilder outboxReportBuilder = new OutboxReportBuilder(messageSummaryList, patientService.getPatientReport(patientDocId), startDate, endDate);
-            HSSFWorkbook excelWorkbook = outboxReportBuilder.getExcelWorkbook();
-            excelWorkbook.write(outputStream);
-            outputStream.flush();
-        } catch (Exception e) {
-            logger.error("Error while generating excel report: " + e.getMessage());
-        }
+                                              @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                              @RequestParam LocalDate startDate,
+                                              @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                              @RequestParam LocalDate endDate,
+                                              HttpServletResponse response) {
+        List<OutboxMessageSummary> messageSummaryList = allOutboxMessageSummaries.find(patientDocId, startDate, endDate);
+        OutboxReportBuilder outboxReportBuilder = new OutboxReportBuilder(messageSummaryList, patientService.getPatientReport(patientDocId), startDate, endDate);
+        writeExcelToResponse(response, createExcelReport(outboxReportBuilder), "OutboxReport.xls");
     }
 
     @RequestMapping(value = "/reports/callLogReport.xls", method = RequestMethod.GET)
     public void buildCallLogExcelReport(@DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                      @RequestParam LocalDate startDate,
-                                      @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                      @RequestParam LocalDate endDate,
-                                      HttpServletResponse response) {
-        response.setHeader("Content-Disposition", "inline; filename=AllCallLogsReport.xls");
-        response.setContentType("application/vnd.ms-excel");
-        try{
-            ServletOutputStream outputStream = response.getOutputStream();
-            List<CallLogSummary> callLogSummaryList = allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate);
-            CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(callLogSummaryList);
-            HSSFWorkbook excelWorkbook = callLogReportBuilder.getExcelWorkbook();
-            excelWorkbook.write(outputStream);
-            outputStream.flush();
-        } catch (Exception e){
+                                        @RequestParam LocalDate startDate,
+                                        @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                        @RequestParam LocalDate endDate,
+                                        HttpServletResponse response) {
+
+        List<CallLogSummary> callLogSummaryList = allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate);
+        CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(callLogSummaryList);
+        writeExcelToResponse(response, createExcelReport(callLogReportBuilder), "AllCallLogsReport.xls");
+    }
+
+    private HSSFWorkbook createExcelReport(ReportBuilder reportBuilder) {
+        try {
+            return reportBuilder.getExcelWorkbook();
+        } catch (Exception e) {
             logger.error("Error while generating excel report: " + e.getMessage());
         }
+        return null;
+    }
+
+    private void writeExcelToResponse(HttpServletResponse response, HSSFWorkbook excelWorkbook, String fileName) {
+        try {
+            initializeExcelResponse(response, fileName);
+            ServletOutputStream outputStream = response.getOutputStream();
+            if (null != excelWorkbook)
+                excelWorkbook.write(outputStream);
+            outputStream.flush();
+        } catch (IOException e) {
+            logger.error("Error while writing excel report to response: " + e.getMessage());
+        }
+    }
+
+    private void initializeExcelResponse(HttpServletResponse response, String fileName) {
+        response.setHeader("Content-Disposition", "inline; filename=" + fileName);
+        response.setContentType("application/vnd.ms-excel");
     }
 }

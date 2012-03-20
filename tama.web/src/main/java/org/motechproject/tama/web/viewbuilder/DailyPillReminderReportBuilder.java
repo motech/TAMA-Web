@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DailyPillReminderReportBuilder extends ReportBuilder<DailyPillReminderSummary> {
 
-    private PatientReport patientSummary;
+    private PatientReport patientReport;
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -22,9 +22,9 @@ public class DailyPillReminderReportBuilder extends ReportBuilder<DailyPillRemin
         super(objects);
     }
 
-    public DailyPillReminderReportBuilder(List<DailyPillReminderSummary> objects, PatientReport patientSummary, LocalDate startDate, LocalDate endDate) {
+    public DailyPillReminderReportBuilder(List<DailyPillReminderSummary> objects, PatientReport patientReport, LocalDate startDate, LocalDate endDate) {
         super(objects);
-        this.patientSummary = patientSummary;
+        this.patientReport = patientReport;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -64,11 +64,11 @@ public class DailyPillReminderReportBuilder extends ReportBuilder<DailyPillRemin
     @Override
     protected void buildSummary(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
-        buildSummaryRow(worksheet, cellStyles, "Patient Id", patientSummary.getPatientId());
-        buildSummaryRow(worksheet, cellStyles, "Clinic Name", patientSummary.getClinicName());
-        buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(patientSummary.getARTStartedOn()).toString("MMM dd, yyyy"));
-        buildSummaryRow(worksheet, cellStyles, "Current Regimen", patientSummary.getCurrentRegimenName());
-        buildSummaryRow(worksheet, cellStyles, "Start Date of Current Regimen", DateUtil.newDate(patientSummary.getCurrentRegimenStartDate()).toString("MMM dd, yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Patient Id", patientReport.getPatientId());
+        buildSummaryRow(worksheet, cellStyles, "Clinic Name", patientReport.getClinicName());
+        buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(patientReport.getARTStartedOn()).toString("MMM dd, yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Current Regimen", patientReport.getCurrentRegimenName());
+        buildSummaryRow(worksheet, cellStyles, "Start Date of Current Regimen", DateUtil.newDate(patientReport.getCurrentRegimenStartDate()).toString("MMM dd, yyyy"));
         buildSummaryRow(worksheet, cellStyles, "Report Start Date", startDate.toString(TAMAConstants.DATE_FORMAT));
         buildSummaryRow(worksheet, cellStyles, "Report End Date", endDate.toString(TAMAConstants.DATE_FORMAT));
     }

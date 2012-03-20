@@ -15,13 +15,14 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.service.AllCallLogSummaries;
+import org.motechproject.util.DateUtil;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -55,17 +56,24 @@ public class ReportsControllerTest {
         reportsController = new ReportsController(patientService, dailyPillReminderReportService, outboxReportService, allOutboxMessageSummaries, allCallLogSummaries);
     }
 
+    private void initializePatientService(String patientDocumentId) {
+        PatientReport patientReport = mock(PatientReport.class);
+        when(patientService.getPatientReport(patientDocumentId)).thenReturn(patientReport);
+        when(patientReport.getARTStartedOn()).thenReturn(DateUtil.today().toDate());
+        when(patientReport.getPatientId()).thenReturn("patientId");
+        when(patientReport.getClinicName()).thenReturn("clinicName");
+        when(patientReport.getCurrentRegimenName()).thenReturn("currentRegimen");
+        when(patientReport.getCurrentRegimenStartDate()).thenReturn(DateUtil.today().toDate());
+    }
+
     @Test
     public void shouldReturnIndexPage() throws IOException {
         String patientDocumentId = "patientDocumentId";
-        PatientReport patientReport = mock(PatientReport.class);
-        when(patientService.getPatientReport(patientDocumentId)).thenReturn(patientReport);
-
+        initializePatientService(patientDocumentId);
         ModelAndView modelAndView = reportsController.index(patientDocumentId);
 
         assertEquals("reports/index", modelAndView.getViewName());
-        Map<String, Object> model = modelAndView.getModel();
-        assertNotNull(model.get("report"));
+        assertNotNull(modelAndView.getModel().get("report"));
         verify(patientService).getPatientReport(patientDocumentId);
     }
 
@@ -73,9 +81,9 @@ public class ReportsControllerTest {
     public void shouldReturnDailyPillReminderJsonReport() throws JSONException {
         LocalDate day1 = new LocalDate(2011, 1, 1);
         LocalDate day2 = new LocalDate(2011, 1, 3);
-
         JSONObject jsonReport = new JSONObject();
         jsonReport.put("someKey", "someValue");
+
         when(dailyPillReminderReportService.JSONReport("patientId", day1, day2)).thenReturn(jsonReport);
 
         assertEquals(jsonReport.toString(), reportsController.dailyPillReminderReport("patientId", day1, day2));
@@ -85,24 +93,22 @@ public class ReportsControllerTest {
     public void shouldServeOutboxMessageJsonReport() throws JSONException {
         LocalDate day1 = new LocalDate(2011, 1, 1);
         LocalDate day2 = new LocalDate(2011, 1, 3);
-
         JSONObject jsonReport = new JSONObject();
         jsonReport.put("someKey", "someValue");
+
         when(outboxReportService.JSONReport("patientId", day1, day2)).thenReturn(jsonReport);
 
         assertEquals(jsonReport.toString(), reportsController.outboxMessageReport("patientId", day1, day2));
     }
 
     @Test
-    public void shouldReturnDailyPillReminderExcelReport() throws JSONException {
+    public void shouldReturnDailyPillReminderExcelReport() throws JSONException, IOException {
         String patientDocumentId = "patientId";
         LocalDate day1 = new LocalDate(2011, 1, 1);
         LocalDate day2 = new LocalDate(2011, 1, 3);
+        initializePatientService(patientDocumentId);
+        HttpServletResponse httpServletResponse = initializeServletResponse();
 
-        PatientReport patientReport = mock(PatientReport.class);
-        when(patientService.getPatientReport(patientDocumentId)).thenReturn(patientReport);
-
-        HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         reportsController.buildDailyPillReminderExcelReport(patientDocumentId, day1, day2, httpServletResponse);
 
         verify(dailyPillReminderReportService).create(patientDocumentId, day1, day2);
@@ -110,15 +116,13 @@ public class ReportsControllerTest {
     }
 
     @Test
-    public void shouldBuildOutboxMessageExcelReport() {
+    public void shouldBuildOutboxMessageExcelReport() throws IOException {
         String patientDocumentId = "patientId";
         LocalDate day1 = new LocalDate(2011, 1, 1);
         LocalDate day2 = new LocalDate(2011, 1, 3);
-        PatientReport patientReport = mock(PatientReport.class);
+        HttpServletResponse httpServletResponse = initializeServletResponse();
+        initializePatientService(patientDocumentId);
 
-        when(patientService.getPatientReport(patientDocumentId)).thenReturn(patientReport);
-
-        HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         reportsController.buildOutboxMessageExcelReport(patientDocumentId, day1, day2, httpServletResponse);
 
         verify(allOutboxMessageSummaries).find(patientDocumentId, day1, day2);
@@ -126,18 +130,24 @@ public class ReportsControllerTest {
     }
 
     @Test
-    public void shouldBuildCallLogsExcelReport() {
+    public void shouldBuildCallLogsExcelReport() throws IOException {
         LocalDate startDate = new LocalDate(2011, 1, 1);
         LocalDate endDate = new LocalDate(2011, 1, 3);
-
-        HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         List<CallLogSummary> callLogSummaries = new ArrayList<CallLogSummary>();
+        HttpServletResponse httpServletResponse = initializeServletResponse();
 
         when(allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate)).thenReturn(callLogSummaries);
 
         reportsController.buildCallLogExcelReport(startDate, endDate, httpServletResponse);
 
         verify(allCallLogSummaries).getAllCallLogSummariesBetween(startDate, endDate);
+    }
+
+    private HttpServletResponse initializeServletResponse() throws IOException {
+        HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
+        ServletOutputStream outputStream = mock(ServletOutputStream.class);
+        when(httpServletResponse.getOutputStream()).thenReturn(outputStream);
+        return httpServletResponse;
     }
 
 }
