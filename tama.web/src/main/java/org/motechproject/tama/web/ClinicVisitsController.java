@@ -20,7 +20,7 @@ import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.model.IncompletePatientDataWarning;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
-import org.motechproject.tama.web.viewbuilder.AppointmentCalendarBuilder;
+import org.motechproject.tama.web.resportbuilder.AppointmentCalendarBuilder;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

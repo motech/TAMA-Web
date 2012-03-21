@@ -1,16 +1,18 @@
-package org.motechproject.tama.web.viewbuilder;
+package org.motechproject.tama.web.resportbuilder;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
+import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
+import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppointmentCalendarBuilder extends ReportBuilder<ClinicVisitUIModel> {
+public class AppointmentCalendarBuilder extends InMemoryReportBuilder<ClinicVisitUIModel> {
 
     private PatientReport patientReport;
 

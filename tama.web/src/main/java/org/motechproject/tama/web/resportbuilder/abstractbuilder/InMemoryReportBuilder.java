@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.viewbuilder;
+package org.motechproject.tama.web.resportbuilder.abstractbuilder;
 
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -6,12 +6,13 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class ReportBuilder<T> {
+public abstract class InMemoryReportBuilder<T> extends ReportBuilder<T> {
 
     public static final int TITLE_ROW_HEIGHT = 500;
     public static final int TITLE_FONT_HEIGHT = 280;
@@ -24,7 +25,8 @@ public abstract class ReportBuilder<T> {
     private int firstColumnIndex = 0;
     private int lastColumnIndex;
 
-    public ReportBuilder(List<T> objects) {
+    public InMemoryReportBuilder(List<T> objects) {
+        super();
         this.objects = objects;
         initializeColumns();
         lastColumnIndex = columns.size();
@@ -128,8 +130,8 @@ public abstract class ReportBuilder<T> {
         return headerCellStyle;
     }
 
-
-    private void fillReport(HSSFSheet worksheet) {
+    @Override
+    protected void fillReport(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForColumns(worksheet);
         for (T object : objects) {
             HSSFRow row = worksheet.createRow((short) currentRowIndex);

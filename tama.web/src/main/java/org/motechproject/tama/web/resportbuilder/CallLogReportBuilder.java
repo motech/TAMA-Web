@@ -1,12 +1,14 @@
-package org.motechproject.tama.web.viewbuilder;
+package org.motechproject.tama.web.resportbuilder;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.motechproject.tama.web.model.CallLogSummary;
+import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
+import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CallLogReportBuilder extends ReportBuilder<CallLogSummary> {
+public class CallLogReportBuilder extends InMemoryReportBuilder<CallLogSummary> {
 
     public CallLogReportBuilder(List<CallLogSummary> objects) {
         super(objects);

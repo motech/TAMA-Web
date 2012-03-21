@@ -1,14 +1,15 @@
-package org.motechproject.tama.web.viewbuilder;
+package org.motechproject.tama.web.resportbuilder;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.domain.SMSLog;
-import org.motechproject.tama.web.model.CallLogSummary;
+import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
+import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SMSReportBuilder extends ReportBuilder<SMSLog> {
+public class SMSReportBuilder extends InMemoryReportBuilder<SMSLog> {
 
     public SMSReportBuilder(List<SMSLog> objects) {
         super(objects);
