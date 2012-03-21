@@ -4,17 +4,24 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
-import org.motechproject.tama.web.builder.CallLogSummaryBuilder;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.refdata.domain.IVRLanguage;
+import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AllCallLogSummariesTest {
@@ -24,14 +31,21 @@ public class AllCallLogSummariesTest {
     @Mock
     private AllCallLogs allCallLogs;
     @Mock
-    private CallLogSummaryBuilder callLogSummaryBuilder;
+    private AllPatients allPatients;
+    @Mock
+    private AllClinics allClinics;
+    @Mock
+    private AllIVRLanguages allIVRLanguages;
 
     private AllCallLogSummaries allCallLogSummaries;
 
     @Before
     public void setup() {
         initMocks(this);
-        allCallLogSummaries = new AllCallLogSummaries(allCallLogs, callLogSummaryBuilder);
+        when(allPatients.getAll()).thenReturn(new ArrayList<Patient>());
+        when(allClinics.getAll()).thenReturn(new ArrayList<Clinic>());
+        when(allIVRLanguages.getAll()).thenReturn(new ArrayList<IVRLanguage>());
+        allCallLogSummaries = new AllCallLogSummaries(allCallLogs, allPatients, allClinics, allIVRLanguages);
     }
 
     @Test
@@ -42,12 +56,14 @@ public class AllCallLogSummariesTest {
         CallLog callLog1 = mock(CallLog.class);
         CallLog callLog2 = mock(CallLog.class);
 
+        when(callLog1.getStartTime()).thenReturn(DateUtil.now());
+        when(callLog1.getEndTime()).thenReturn(DateUtil.now());
+        when(callLog2.getStartTime()).thenReturn(DateUtil.now());
+        when(callLog2.getEndTime()).thenReturn(DateUtil.now());
         when(allCallLogs.findAllCallLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59))).thenReturn(Arrays.asList(callLog1, callLog2));
 
         List<CallLogSummary> allCallLogSummariesBetween = allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate);
         
         assertNotNull(allCallLogSummariesBetween);
-        verify(callLogSummaryBuilder).build(callLog1);
-        verify(callLogSummaryBuilder).build(callLog2);
     }
 }

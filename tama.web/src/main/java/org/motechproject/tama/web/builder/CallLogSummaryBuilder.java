@@ -15,14 +15,11 @@ import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.view.CallLogView;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Component
 public class CallLogSummaryBuilder {
 
     private static final String CALL_LOG_DATETIME_FORMAT = TAMAConstants.DATETIME_FORMAT + ":ss";
@@ -30,22 +27,12 @@ public class CallLogSummaryBuilder {
     public static final String TAMA = "TAMA";
 
     private AllPatients allPatients;
-    private AllClinics allClinics;
-    private AllIVRLanguages allIVRLanguages;
-    private CallLogViewMapper callLogViewMapper;
     private Patients allLoadedPatients = new Patients();
     private Clinics allLoadedClinics = new Clinics();
     private IVRLanguages allLoadedIVRLanguages = new IVRLanguages();
 
-    @Autowired
-    public CallLogSummaryBuilder(AllPatients allPatients, AllClinics allClinics, AllIVRLanguages allIVRLanguages, CallLogViewMapper callLogViewMapper) {
+    public CallLogSummaryBuilder(AllPatients allPatients, AllClinics allClinics, AllIVRLanguages allIVRLanguages) {
         this.allPatients = allPatients;
-        this.allClinics = allClinics;
-        this.allIVRLanguages = allIVRLanguages;
-        this.callLogViewMapper = callLogViewMapper;
-    }
-
-    public void initialize() {
         this.allLoadedPatients = new Patients(allPatients.getAll());
         this.allLoadedClinics = new Clinics(allClinics.getAll());
         this.allLoadedIVRLanguages = new IVRLanguages(allIVRLanguages.getAll());
@@ -118,7 +105,8 @@ public class CallLogSummaryBuilder {
     }
 
     private String getCallLogFlows(CallLog callLog) {
-        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(Arrays.asList(callLog), allLoadedPatients);
+        CallLogViewMapper callLogViewMapper = new CallLogViewMapper(allPatients, allLoadedPatients);
+        List<CallLogView> callLogViews = callLogViewMapper.toCallLogView(Arrays.asList(callLog));
         return callLogViews.isEmpty() ? " - " : callLogViews.get(0).getFlows();
     }
 

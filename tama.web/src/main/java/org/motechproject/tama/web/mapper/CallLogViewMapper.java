@@ -20,12 +20,12 @@ public class CallLogViewMapper {
 
     @Autowired
     public CallLogViewMapper(AllPatients allPatients) {
-        this.allPatients = allPatients;
+        this(allPatients, new Patients());
     }
 
-    public List<CallLogView> toCallLogView(List<CallLog> callLogs, Patients allLoadedPatients) {
+    public CallLogViewMapper(AllPatients allPatients, Patients allLoadedPatients) {
+        this.allPatients = allPatients;
         this.allLoadedPatients = allLoadedPatients;
-        return toCallLogView(callLogs);
     }
 
     public List<CallLogView> toCallLogView(List<CallLog> callLogs) {
