@@ -3,7 +3,10 @@ package org.motechproject.tama.ivr.decisiontree;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.decisiontree.model.*;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.ITreeCommand;
+import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.domain.CallState;
@@ -27,8 +30,8 @@ public class MenuTreeTest {
     private HttpServletRequest httpRequest;
     @Mock
     private HttpSession httpSession;
-
     public Map<String,Transition> transitions;
+
 
     @Before
     public void setUp() {
@@ -40,22 +43,21 @@ public class MenuTreeTest {
     private void setUpContext() {
         when(kookooIVRContext.httpRequest()).thenReturn(httpRequest);
         when(httpRequest.getSession()).thenReturn(httpSession);
-        Node rootNode = menuTree.createRootNode();
-        transitions = rootNode.getTransitions();
+        transitions = menuTree.createRootNode().getTransitions();
     }
 
     @Test
     public void shouldTransitionToOutboxTreeWhenDTMFInputIs3() {
-        assertCallStateTransitionForKeyPress("3", CallState.OUTBOX);
-    }
-    
-    @Test
-    public void shouldTransitionToSymptomsTreeWhenDTMFInputIs2(){
-        assertCallStateTransitionForKeyPress("2", CallState.SYMPTOM_REPORTING);
-        assertAudioFilePresent("2", TamaIVRMessage.START_SYMPTOM_FLOW);
+        assertCallStateTransitionForKeyPress("3", transitions, CallState.OUTBOX);
     }
 
-    private void assertCallStateTransitionForKeyPress(String keyPressed, CallState callState){
+    @Test
+    public void shouldTransitionToSymptomsTreeWhenDTMFInputIs2(){
+        assertCallStateTransitionForKeyPress("2", transitions, CallState.SYMPTOM_REPORTING);
+        assertAudioFilePresent("2", transitions, TamaIVRMessage.START_SYMPTOM_FLOW);
+    }
+
+    private void assertCallStateTransitionForKeyPress(String keyPressed, Map<String, Transition> transitions, CallState callState){
         List<ITreeCommand> treeCommands = transitions.get(keyPressed).getDestinationNode().getTreeCommands();
         for (ITreeCommand treeCommand : treeCommands) {
             treeCommand.execute(kookooIVRContext);
@@ -64,7 +66,7 @@ public class MenuTreeTest {
         verify(httpSession, atLeastOnce()).setAttribute(anyString(), eq(callState.toString()));
     }
 
-    private void assertAudioFilePresent(String keyPressed, String audioFilename){
+    private void assertAudioFilePresent(String keyPressed, Map<String, Transition> transitionsssed, String audioFilename){
         List<Prompt> prompts = transitions.get(keyPressed).getDestinationNode().getPrompts();
         List<String> promptNames = new ArrayList<String>();
         for (Prompt prompt : prompts) {

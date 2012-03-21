@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration(locations = "classpath*:applicationIVRContext.xml", inheritLocations = false)
 public class MenuTreeTest {
     @Autowired
-    private TestTree menuTree;
+    private MenuTestTree menuTree;
     private TAMAIVRContextForTest context;
 
     @Before
@@ -53,9 +53,9 @@ public class MenuTreeTest {
 }
 
 @Component
-class TestTree extends MenuTree {
+class MenuTestTree extends MenuTree {
     @Autowired
-    public TestTree(TAMATreeRegistry tamaTreeRegistry) {
+    public MenuTestTree(TAMATreeRegistry tamaTreeRegistry) {
         super(tamaTreeRegistry);
     }
 
