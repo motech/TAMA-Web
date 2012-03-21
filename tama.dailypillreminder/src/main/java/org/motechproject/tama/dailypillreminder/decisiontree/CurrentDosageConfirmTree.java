@@ -6,6 +6,7 @@ import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.dailypillreminder.command.*;
 import org.motechproject.tama.ivr.TamaIVRMessage;
+import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
 import org.motechproject.tama.ivr.decisiontree.TAMATransitionFactory;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;

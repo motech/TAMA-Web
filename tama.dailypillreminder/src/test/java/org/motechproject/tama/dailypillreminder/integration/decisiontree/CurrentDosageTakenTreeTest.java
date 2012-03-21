@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
-import org.motechproject.tama.dailypillreminder.command.IncomingWelcomeMessage;
+import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
 import org.motechproject.tama.dailypillreminder.command.NextCallDetails;
 import org.motechproject.tama.dailypillreminder.decisiontree.CurrentDosageTakenTree;
 import org.motechproject.tama.ivr.TamaIVRMessage;

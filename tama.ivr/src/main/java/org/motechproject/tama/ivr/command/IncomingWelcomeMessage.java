@@ -1,10 +1,8 @@
-package org.motechproject.tama.dailypillreminder.command;
+package org.motechproject.tama.ivr.command;
 
-import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
-import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
-import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,22 +11,21 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 
 @Component
-public class IncomingWelcomeMessage extends DailyPillReminderTreeCommand {
+public class IncomingWelcomeMessage extends BaseTreeCommand {
 
     private AllPatients allPatients;
     private AllClinics allClinics;
     private ClinicNameMessageBuilder clinicNameMessageBuilder;
 
     @Autowired
-    public IncomingWelcomeMessage(AllPatients allPatients, AllClinics allClinics, ClinicNameMessageBuilder clinicNameMessageBuilder, DailyPillReminderService dailyPillReminderService) {
-        super(dailyPillReminderService);
+    public IncomingWelcomeMessage(AllPatients allPatients, AllClinics allClinics, ClinicNameMessageBuilder clinicNameMessageBuilder) {
         this.allPatients = allPatients;
         this.allClinics = allClinics;
         this.clinicNameMessageBuilder = clinicNameMessageBuilder;
     }
 
     @Override
-    public String[] executeCommand(DailyPillReminderContext context) {
+    public String[] executeCommand(TAMAIVRContext context) {
         if (context.hasTraversedAnyTree()) {
             return new String[0];
         }

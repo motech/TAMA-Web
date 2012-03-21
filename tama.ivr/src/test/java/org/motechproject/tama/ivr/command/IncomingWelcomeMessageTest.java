@@ -1,15 +1,12 @@
-package org.motechproject.tama.dailypillreminder.command;
+package org.motechproject.tama.ivr.command;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
-import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
-import org.motechproject.tama.ivr.command.ClinicNameMessageBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -27,21 +24,19 @@ public class IncomingWelcomeMessageTest {
     @Mock
     private ClinicNameMessageBuilder clinicMessageBuilder;
     @Mock
-    private DailyPillReminderService dailyPillReminderService;
-    @Mock
     private AllPatients allPatients;
     @Mock
     private AllClinics allClinics;
 
     private IncomingWelcomeMessage incomingWelcomeMessage;
 
-    private DailyPillReminderContextForTest ivrContext;
+    private TAMAIVRContextForTest ivrContext;
 
     @Before
     public void setUp() {
         initMocks(this);
 
-        ivrContext = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).patientDocumentId("patientDocId");
+        ivrContext = new TAMAIVRContextForTest().patientDocumentId("patientDocId");
 
         Patient patient = PatientBuilder.startRecording().withDefaults().withId(ivrContext.patientDocumentId()).build();
 
@@ -49,7 +44,7 @@ public class IncomingWelcomeMessageTest {
         when(clinicMessageBuilder.getInboundMessage(any(Clinic.class),
                 any(IVRLanguage.class))).thenReturn(EXPECTED_WELCOME_MESSAGE);
 
-        incomingWelcomeMessage = new IncomingWelcomeMessage(allPatients, allClinics, clinicMessageBuilder, dailyPillReminderService);
+        incomingWelcomeMessage = new IncomingWelcomeMessage(allPatients, allClinics, clinicMessageBuilder);
     }
 
     @Test

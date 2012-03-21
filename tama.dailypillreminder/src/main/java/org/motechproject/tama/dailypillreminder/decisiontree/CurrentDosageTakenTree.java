@@ -3,7 +3,7 @@ package org.motechproject.tama.dailypillreminder.decisiontree;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
-import org.motechproject.tama.dailypillreminder.command.IncomingWelcomeMessage;
+import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
 import org.motechproject.tama.dailypillreminder.command.NextCallDetails;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
