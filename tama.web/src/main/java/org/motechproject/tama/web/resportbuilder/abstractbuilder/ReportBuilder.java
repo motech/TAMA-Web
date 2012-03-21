@@ -129,7 +129,7 @@ public abstract class ReportBuilder<T> {
 
     protected abstract void fillReport(HSSFSheet worksheet);
 
-    private List<HSSFCellStyle> buildCellStylesForColumns(HSSFSheet worksheet) {
+    protected List<HSSFCellStyle> buildCellStylesForColumns(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = new ArrayList<HSSFCellStyle>();
         for (ExcelColumn column : columns) {
             HSSFCellStyle cellStyle = worksheet.getWorkbook().createCellStyle();
