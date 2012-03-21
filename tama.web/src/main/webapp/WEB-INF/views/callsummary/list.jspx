@@ -9,7 +9,7 @@
         <jsp:include page="callSummaryPageNavigation.jspx" />
 
         <c:forEach items="${callSummary}" var="calllog" varStatus="logIndex">
-            <util:panel id="title[${logIndex.index}]" title="${calllog.title} || Type : ${calllog.flows} || Date :${calllog.callDateFromCallLogDateTime} || Started At :${calllog.callStartTimeFromCallLogStartDateTime} || Ended At :${calllog.callEndTimeFromCallLogEndDateTime}" openPane="false">
+            <util:panel id="title[${logIndex.index}]" title="${calllog.title} || Type : ${calllog.flows} || Date :${calllog.callDate} || Started At :${calllog.callStartTime} || Ended At :${calllog.callEndTime}" openPane="false">
             <c:forEach items="${calllog.callFlowGroupViews}" var="callEventGroup" varStatus="groupIndex">
                 <c:if test="${not empty callEventGroup.allResponses}">
                     <util:panel id="Flow[${logIndex.index}${groupIndex.index}]" title="${callEventGroup.flow}" openPane="false">

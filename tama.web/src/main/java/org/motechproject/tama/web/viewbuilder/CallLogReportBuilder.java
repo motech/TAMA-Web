@@ -29,8 +29,9 @@ public class CallLogReportBuilder extends ReportBuilder<CallLogSummary> {
         columns.add(new ExcelColumn("Source Phone Number", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Destination Phone Number", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Clinic Name", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Start Date and Time", Cell.CELL_TYPE_STRING, 10000));
-        columns.add(new ExcelColumn("End Date and Time", Cell.CELL_TYPE_STRING, 10000));
+        columns.add(new ExcelColumn("TAMA Initiated Call At", Cell.CELL_TYPE_STRING, 10000));
+        columns.add(new ExcelColumn("Call Started At", Cell.CELL_TYPE_STRING, 10000));
+        columns.add(new ExcelColumn("Call Ended At", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Language", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Flows Accessed", Cell.CELL_TYPE_STRING, 14000));
         columns.add(new ExcelColumn("Distance of Patient from Clinic", Cell.CELL_TYPE_STRING, 8000));
@@ -44,6 +45,7 @@ public class CallLogReportBuilder extends ReportBuilder<CallLogSummary> {
         row.add(callLogSummary.getSourcePhoneNumber());
         row.add(callLogSummary.getDestinationPhoneNumber());
         row.add(callLogSummary.getClinicName());
+        row.add(callLogSummary.getInitiatedDateTime());
         row.add(callLogSummary.getStartDateTime());
         row.add(callLogSummary.getEndDateTime());
         row.add(callLogSummary.getLanguage());

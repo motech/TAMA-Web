@@ -23,9 +23,9 @@ public class CallLogView {
     private CallLog callLog;
     private String clinicName;
     private List<String> likelyPatientIds;
-    private String callDateFromCallLogDateTime;
-    private LocalTime callStartTimeFromCallLogStartDateTime;
-    private LocalTime callEndTimeFromCallLogEndDateTime;
+    private String callDate;
+    private LocalTime callStartTime;
+    private LocalTime callEndTime;
     private List<CallFlowGroupView> callFlowGroupViews;
     private String flows;
     private boolean authenticated;
@@ -37,35 +37,35 @@ public class CallLogView {
         this.clinicName = clinicName;
         this.likelyPatientIds = likelyPatientIds;
         callFlowGroupViews = new ArrayList<CallFlowGroupView>();
-        setCallDateFromCallLogDateTime();
-        setCallStartTimeFromCallLogDateTime();
-        setCallEndTimeFromCallLogDateTime();
+        setCallDate();
+        setCallStartTime();
+        setCallEndTime();
         setCallFlowGroupViews();
     }
 
-    public LocalTime getCallStartTimeFromCallLogStartDateTime() {
-        return callStartTimeFromCallLogStartDateTime;
+    public LocalTime getCallStartTime() {
+        return callStartTime;
     }
 
-    public void setCallStartTimeFromCallLogDateTime() {
-        callStartTimeFromCallLogStartDateTime = callLog.getStartTime().toLocalTime();
+    public void setCallStartTime() {
+        callStartTime = callLog.getCallEvents().isEmpty() ? callLog.getStartTime().toLocalTime() : callLog.getCallEvents().get(0).getTimeStamp().toLocalTime();
     }
 
-    public LocalTime getCallEndTimeFromCallLogEndDateTime() {
-        return callEndTimeFromCallLogEndDateTime;
+    public LocalTime getCallEndTime() {
+        return callEndTime;
     }
 
-    public void setCallEndTimeFromCallLogDateTime() {
-        callEndTimeFromCallLogEndDateTime = callLog.getEndTime().toLocalTime();
+    public void setCallEndTime() {
+        callEndTime = callLog.getEndTime().toLocalTime();
     }
 
-    public String getCallDateFromCallLogDateTime() {
-        return callDateFromCallLogDateTime;
+    public String getCallDate() {
+        return callDate;
     }
 
-    public void setCallDateFromCallLogDateTime() {
+    public void setCallDate() {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("EEE MMM dd YYYY");
-        callDateFromCallLogDateTime = formatter.print(callLog.getStartTime());
+        callDate = callLog.getCallEvents().isEmpty() ? formatter.print(callLog.getStartTime()) : formatter.print(callLog.getCallEvents().get(0).getTimeStamp());
     }
 
     public String getPatientId() {
@@ -174,5 +174,6 @@ public class CallLogView {
     private CallFlowGroupView getLastCallFlowGroupView() {
         return callFlowGroupViews.get(callFlowGroupViews.size() - 1);
     }
+
 }
 

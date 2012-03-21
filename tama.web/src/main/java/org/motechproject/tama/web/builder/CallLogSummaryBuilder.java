@@ -2,6 +2,7 @@ package org.motechproject.tama.web.builder;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.facility.domain.Clinics;
@@ -44,13 +45,22 @@ public class CallLogSummaryBuilder {
         return new CallLogSummary(getPatientId(callLog),
                 getSourcePhoneNumber(callLog, isInboundCall),
                 getDestinationPhoneNumber(callLog, isInboundCall),
-                callLog.getStartTime().toString(CALL_LOG_DATETIME_FORMAT),
+                getInitiatedTime(callLog, isInboundCall),
+                getTimeStampOfFirstEvent(callLog).toString(CALL_LOG_DATETIME_FORMAT),
                 callLog.getEndTime().toString(CALL_LOG_DATETIME_FORMAT),
                 getClinicId(callLog),
                 getCallLanguage(callLog),
                 getTravelTimeToClinic(callLog),
                 getCallLogFlows(callLog)
         );
+    }
+
+    private String getInitiatedTime(CallLog callLog, boolean inboundCall) {
+        return inboundCall ? "NA" : callLog.getStartTime().toString(CALL_LOG_DATETIME_FORMAT);
+    }
+
+    private DateTime getTimeStampOfFirstEvent(CallLog callLog) {
+        return callLog.getCallEvents().isEmpty() ? callLog.getStartTime() : callLog.getCallEvents().get(0).getTimeStamp();
     }
 
     private String getPatientId(CallLog callLog) {

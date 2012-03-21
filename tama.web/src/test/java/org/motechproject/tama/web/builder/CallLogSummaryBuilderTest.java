@@ -1,8 +1,11 @@
 package org.motechproject.tama.web.builder;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.ivr.event.CallEvent;
+import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
@@ -17,6 +20,7 @@ import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.view.CallLogView;
 import org.motechproject.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
@@ -39,22 +43,34 @@ public class CallLogSummaryBuilderTest {
     AllIVRLanguages allIVRLanguages;
 
     private CallLog callLog;
+    private DateTime startTime;
+    private DateTime initiatedTime;
 
     @Before
     public void setUp() {
         initMocks(this);
+    }
 
+    private void setUpCallLog(CallDirection callDirection) {
         String patientDocId = "patientDocId";
         String clinicId = "clinicId";
         callLog = new CallLog(patientDocId);
         callLog.patientId("patientId");
-        callLog.setStartTime(DateUtil.now().minusMinutes(20));
+        initiatedTime= DateUtil.newDateTime(2011, 10, 10, 10, 9, 10);
+        startTime = DateUtil.newDateTime(2011, 10, 10, 10, 10, 10);
+        callLog.setStartTime(initiatedTime);
         callLog.setEndTime(DateUtil.now());
-        callLog.setCallDirection(CallDirection.Inbound);
+        callLog.setCallDirection(callDirection);
         callLog.clinicId(clinicId);
         callLog.setPhoneNumber("1234567890");
         callLog.callLanguage("en");
 
+        final CallEvent callEvent = mock(CallEvent.class);
+        when(callEvent.getTimeStamp()).thenReturn(startTime);
+        when(callEvent.getData()).thenReturn(new CallEventCustomData());
+        callLog.setCallEvents(new ArrayList<CallEvent>(){{
+            add(callEvent);
+        }});
         Clinic clinic = new Clinic(clinicId);
         Patient patient = PatientBuilder.startRecording().withId(patientDocId).withPatientId("patientId").withClinic(clinic).withTravelTimeToClinicInDays(1).withTravelTimeToClinicInHours(1).withTravelTimeToClinicInMinutes(1).build();
         CallLogView callLogView = mock(CallLogView.class);
@@ -69,13 +85,32 @@ public class CallLogSummaryBuilderTest {
     }
 
     @Test
-    public void shouldBuildCallSummaryForGivenCallLog(){
+    public void shouldBuildCallSummaryForOutboundGivenCallLog(){
+        setUpCallLog(CallDirection.Outbound);
         CallLogSummary callLogSummary = callLogSummaryBuilder.build(callLog);
 
         assertNotNull(callLogSummary);
         assertEquals("clinicName", callLogSummary.getClinicName());
-        assertEquals("TAMA", callLogSummary.getDestinationPhoneNumber());
+        assertEquals("TAMA", callLogSummary.getSourcePhoneNumber());
+        assertEquals("1234567890", callLogSummary.getDestinationPhoneNumber());
+        assertEquals("10/10/2011 10:09:10", callLogSummary.getInitiatedDateTime());
+        assertEquals("10/10/2011 10:10:10", callLogSummary.getStartDateTime());
+        assertEquals("English", callLogSummary.getLanguage());
+        assertEquals("patientId", callLogSummary.getPatientId());
+        assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());
+    }
+
+    @Test
+    public void shouldBuildCallSummaryForGivenInboundCallLog(){
+        setUpCallLog(CallDirection.Inbound);
+        CallLogSummary callLogSummary = callLogSummaryBuilder.build(callLog);
+
+        assertNotNull(callLogSummary);
+        assertEquals("clinicName", callLogSummary.getClinicName());
         assertEquals("1234567890", callLogSummary.getSourcePhoneNumber());
+        assertEquals("TAMA", callLogSummary.getDestinationPhoneNumber());
+        assertEquals("NA", callLogSummary.getInitiatedDateTime());
+        assertEquals("10/10/2011 10:10:10", callLogSummary.getStartDateTime());
         assertEquals("English", callLogSummary.getLanguage());
         assertEquals("patientId", callLogSummary.getPatientId());
         assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());

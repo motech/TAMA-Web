@@ -1,6 +1,7 @@
 package org.motechproject.tama.web.view;
 
 import org.joda.time.DateTime;
+import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
@@ -10,14 +11,23 @@ import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallState;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class CallLogViewTest {
 
     private CallLogView callLogView;
+    private DateTime startTime;
+
+    @Before
+    public void setUp() throws Exception {
+        startTime = new DateTime(2011, 10, 7, 0, 0, 0);
+    }
 
     @Test
     public void titleShouldBeTamaCalledPatientId_WhenCallDirectionIsOutbound_AndPatientIsAuthenticated() {
@@ -70,7 +80,26 @@ public class CallLogViewTest {
 
         callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
 
-        assertEquals("Fri Oct 07 2011", callLogView.getCallDateFromCallLogDateTime());
+        assertEquals("Fri Oct 07 2011", callLogView.getCallDate());
+    }
+
+    @Test
+    public void shouldSetCallDate_FromFirstCallEventTimestamp_IfCallEventExists() {
+
+        CallLog callLog = setUpCallLogs();
+        callLog.setCallDirection(CallDirection.Outbound);
+        final CallEvent newCallEvent = mock(CallEvent.class);
+        callLog.setCallEvents(new ArrayList<CallEvent>() {{
+            add(newCallEvent);
+        }});
+
+        DateTime eventTimeStamp = DateUtil.newDateTime(2011, 10, 10, 10, 10, 10);
+        when(newCallEvent.getTimeStamp()).thenReturn(eventTimeStamp);
+        when(newCallEvent.getData()).thenReturn(new CallEventCustomData());
+
+        callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
+
+        assertEquals("Mon Oct 10 2011", callLogView.getCallDate());
     }
 
     @Test
@@ -145,6 +174,34 @@ public class CallLogViewTest {
         assertEquals("Menu, Symptoms, Pill Reminder", callLogView.getFlows());
     }
 
+    @Test
+    public void shouldSetStartTime_FromFirstCallEvent_IfCallEventExists() {
+        CallLog callLog = setUpCallLogs();
+        callLog.setCallDirection(CallDirection.Outbound);
+        final CallEvent newCallEvent = mock(CallEvent.class);
+        callLog.setCallEvents(new ArrayList<CallEvent>() {{
+            add(newCallEvent);
+        }});
+
+        DateTime eventTimeStamp = DateUtil.newDateTime(2010, 10, 10, 10, 10, 10);
+        when(newCallEvent.getTimeStamp()).thenReturn(eventTimeStamp);
+        when(newCallEvent.getData()).thenReturn(new CallEventCustomData());
+
+        callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
+
+        assertEquals(eventTimeStamp.toLocalTime(), callLogView.getCallStartTime());
+    }
+
+    @Test
+    public void shouldSetStartTime_FromCallLogStartTime_IfNoCallEventExists() {
+        CallLog callLog = setUpCallLogs();
+        callLog.setCallDirection(CallDirection.Outbound);
+
+        callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
+
+        assertEquals(startTime.toLocalTime(), callLogView.getCallStartTime());
+    }
+
     private CallEvent createCallEvent(String name, String callState, String treeName, String responseXML, String callType) {
         CallEventCustomData callEventCustomData = new CallEventCustomData();
         callEventCustomData.add(CallEventConstants.CALL_STATE, callState);
@@ -158,7 +215,7 @@ public class CallLogViewTest {
 
     private CallLog setUpCallLogs() {
         CallLog callLog = new CallLog();
-        callLog.setStartTime(new DateTime(2011, 10, 7, 0, 0, 0));
+        callLog.setStartTime(startTime);
         callLog.setEndTime(new DateTime(2011, 10, 7, 0, 0, 0).plusMinutes(2));
         return callLog;
     }

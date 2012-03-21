@@ -5,6 +5,7 @@ public class CallLogSummary {
     private String patientId;
     private String sourcePhoneNumber;
     private String destinationPhoneNumber;
+    private String initiatedDateTime;
     private String startDateTime;
     private String endDateTime;
     private String clinicName;
@@ -15,10 +16,12 @@ public class CallLogSummary {
     public CallLogSummary() {
     }
 
-    public CallLogSummary(String patientId, String sourcePhoneNumber, String destinationPhoneNumber, String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic, String flows) {
+    public CallLogSummary(String patientId, String sourcePhoneNumber, String destinationPhoneNumber, String initiatedDateTime,
+                          String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic, String flows) {
         this.patientId = patientId;
         this.sourcePhoneNumber = sourcePhoneNumber;
         this.destinationPhoneNumber = destinationPhoneNumber;
+        this.initiatedDateTime = initiatedDateTime;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
         this.clinicName = clinicName;
@@ -66,5 +69,9 @@ public class CallLogSummary {
 
     public String getFlows() {
         return flows;
+    }
+
+    public String getInitiatedDateTime() {
+        return initiatedDateTime;
     }
 }
