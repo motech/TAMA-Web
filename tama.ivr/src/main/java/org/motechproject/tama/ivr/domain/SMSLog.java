@@ -16,7 +16,6 @@ public class SMSLog extends CouchEntity {
     @Getter
     @JsonProperty
     private String message;
-
     private DateTime sentDateTime;
 
     public SMSLog() {
