@@ -16,8 +16,7 @@ public class SMSLog extends CouchEntity {
     @Getter
     @JsonProperty
     private String message;
-    @Getter
-    @JsonProperty
+
     private DateTime sentDateTime;
 
     public SMSLog() {
@@ -27,5 +26,13 @@ public class SMSLog extends CouchEntity {
         this.message = message;
         this.recipient = recipient;
         this.sentDateTime = DateUtil.now();
+    }
+
+    public DateTime getSentDateTime() {
+        return sentDateTime;
+    }
+
+    public void setSentDateTime(DateTime sentDateTime) {
+        this.sentDateTime = DateUtil.setTimeZone(sentDateTime);
     }
 }
