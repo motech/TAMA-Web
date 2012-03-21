@@ -66,7 +66,8 @@
     <target name="install.kookoo.jar">
         <exec executable="bash">
             <arg value="-c"/>
-            <arg value="mvn install:install-file -Dfile=${basedir}/lib/kookoo.jar -DgroupId=com.ozonetel.kookoo -DartifactId=kookoo -Dversion=1.0 -Dpackaging=jar"/>
+            <arg value="mvn install:install-file -Dfile=./lib/kookoo.jar -DgroupId=com.ozonetel.kookoo -DartifactId=kookoo -Dversion=1.1 -Dpackaging=jar"/>
         </exec>
     </target>
 </project>
+
