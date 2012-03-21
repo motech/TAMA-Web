@@ -26,4 +26,9 @@ public abstract class BaseController {
         AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
         return user.getClinicId();
     }
+
+    protected String loggedInUserId(HttpServletRequest request) {
+        AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
+        return user.getUsername();
+    }
 }

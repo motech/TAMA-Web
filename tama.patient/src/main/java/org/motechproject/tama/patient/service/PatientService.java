@@ -48,42 +48,42 @@ public class PatientService {
         this.outbox = outbox;
     }
 
-    public void create(Patient patient, String clinicId) {
-        allPatients.addToClinic(patient, clinicId);
+    public void create(Patient patient, String clinicId, String userName) {
+        allPatients.addToClinic(patient, clinicId, userName);
         outbox.enroll(patient);
     }
 
-    public void update(Patient patient) {
+    public void update(Patient patient, String userName) {
         Patient dbPatient = allPatients.get(patient.getId());
         patient.setRevision(dbPatient.getRevision());
         patient.setRegistrationDate(dbPatient.getRegistrationDate());
         patient.setActivationDate(dbPatient.getActivationDate());
         patient.setLastDeactivationDate(dbPatient.getLastDeactivationDate());
         patient.setLastSuspendedDate(dbPatient.getLastSuspendedDate());
-        allPatients.update(patient);
+        allPatients.update(patient, userName);
         updateOnPatientPreferencesChanged(dbPatient, patient);
     }
 
-    public void activate(String id) {
+    public void activate(String id, String userName) {
         Patient patient = allPatients.get(id);
         patient.activate();
-        allPatients.update(patient);
+        allPatients.update(patient, userName);
         allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Activation, DateUtil.now()));
     }
 
-    public void deactivate(String id, Status deactivationStatus) {
+    public void deactivate(String id, Status deactivationStatus, String userName) {
         Patient patient = allPatients.get(id);
         patient.deactivate(deactivationStatus);
-        allPatients.update(patient);
+        allPatients.update(patient, userName);
         if(deactivationStatus.isTemporarilyDeactivated()) {
             allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Temporary_Deactivation, DateUtil.now()));
         }
     }
 
-    public void suspend(String patientId) {
+    public void suspend(String patientId, String userName) {
         Patient patient = allPatients.get(patientId);
         patient.suspend();
-        allPatients.update(patient);
+        allPatients.update(patient, userName);
         allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension, DateUtil.now()));
     }
 

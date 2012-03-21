@@ -49,6 +49,7 @@ public class PatientServiceTest extends BaseUnitTest {
     @Mock
     private CallPlan weeklyCallPlan;
     private PatientService patientService;
+    final private String USER_NAME = "userName";
 
     @Before
     public void setUp() {
@@ -70,9 +71,9 @@ public class PatientServiceTest extends BaseUnitTest {
     public void shouldCreatePatient() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
 
-        patientService.create(patient, "clinicId");
+        patientService.create(patient, "clinicId", USER_NAME);
 
-        verify(allPatients).addToClinic(patient, "clinicId");
+        verify(allPatients).addToClinic(patient, "clinicId", USER_NAME);
         verify(outbox).enroll(patient);
     }
 
@@ -84,9 +85,9 @@ public class PatientServiceTest extends BaseUnitTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("Id").build();
         when(allPatients.get(patient.getId())).thenReturn(patient);
 
-        patientService.activate(patient.getId());
+        patientService.activate(patient.getId(), USER_NAME);
 
-        verify(allPatients).update(patient);
+        verify(allPatients).update(patient, USER_NAME);
         assertEquals(now, patient.getActivationDate());
 
         ArgumentCaptor<PatientEventLog> eventLogArgumentCaptor = ArgumentCaptor.forClass(PatientEventLog.class);
@@ -104,9 +105,9 @@ public class PatientServiceTest extends BaseUnitTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withId("Id").build();
         when(allPatients.get(patient.getId())).thenReturn(patient);
 
-        patientService.deactivate(patient.getId(), Status.Temporary_Deactivation);
+        patientService.deactivate(patient.getId(), Status.Temporary_Deactivation, USER_NAME);
 
-        verify(allPatients).update(patient);
+        verify(allPatients).update(patient, USER_NAME);
         assertEquals(Status.Temporary_Deactivation, patient.getStatus());
         assertEquals(now, patient.getLastDeactivationDate());
 
@@ -126,10 +127,10 @@ public class PatientServiceTest extends BaseUnitTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         when(allPatients.get(patient.getId())).thenReturn(patient);
 
-        patientService.suspend(patient.getId());
+        patientService.suspend(patient.getId(), USER_NAME);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
-        verify(allPatients).update(patientArgumentCaptor.capture());
+        verify(allPatients).update(patientArgumentCaptor.capture(), eq(USER_NAME));
         assertEquals(Status.Suspended, patientArgumentCaptor.getValue().getStatus());
         assertEquals(DateUtil.today(), patientArgumentCaptor.getValue().getLastSuspendedDate().toLocalDate());
 
@@ -149,13 +150,13 @@ public class PatientServiceTest extends BaseUnitTest {
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
 
-        patientService.update(patient);
+        patientService.update(patient, USER_NAME);
 
         assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
         verify(outbox, never()).reEnroll(dbPatient, patient);
         verify(dailyCallPlan, never()).disEnroll(dbPatient, currentTreatmentAdvice);
         verify(weeklyCallPlan, never()).enroll(patient, currentTreatmentAdvice);
-        verify(allPatients).update(patient);
+        verify(allPatients).update(patient, USER_NAME);
     }
 
     @Test
@@ -170,7 +171,7 @@ public class PatientServiceTest extends BaseUnitTest {
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
 
-        patientService.update(patient);
+        patientService.update(patient, USER_NAME);
 
         assertEquals(dbPatient.getActivationDate(), patient.getActivationDate());
         assertEquals(dbPatient.getLastDeactivationDate(), patient.getLastDeactivationDate());
@@ -188,13 +189,13 @@ public class PatientServiceTest extends BaseUnitTest {
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
 
-        patientService.update(patient);
+        patientService.update(patient, USER_NAME);
 
         assertNotNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
         verify(outbox).reEnroll(dbPatient, patient);
         verify(dailyCallPlan).disEnroll(dbPatient, currentTreatmentAdvice);
         verify(weeklyCallPlan).enroll(patient, currentTreatmentAdvice);
-        verify(allPatients).update(patient);
+        verify(allPatients).update(patient, USER_NAME);
     }
 
     @Test
@@ -206,13 +207,13 @@ public class PatientServiceTest extends BaseUnitTest {
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
 
-        patientService.update(patient);
+        patientService.update(patient, USER_NAME);
 
         assertNotNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
         verify(outbox).reEnroll(dbPatient, patient);
         verify(weeklyCallPlan).disEnroll(dbPatient, currentTreatmentAdvice);
         verify(dailyCallPlan).enroll(patient, currentTreatmentAdvice);
-        verify(allPatients).update(patient);
+        verify(allPatients).update(patient, USER_NAME);
     }
 
     @Test
@@ -224,12 +225,12 @@ public class PatientServiceTest extends BaseUnitTest {
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
 
-        patientService.update(patient);
+        patientService.update(patient, USER_NAME);
 
         assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
         verify(outbox, never()).reEnroll(dbPatient, patient);
         verify(weeklyCallPlan).reEnroll(dbPatient, currentTreatmentAdvice);
-        verify(allPatients).update(patient);
+        verify(allPatients).update(patient, USER_NAME);
     }
 
     @Test
@@ -241,11 +242,11 @@ public class PatientServiceTest extends BaseUnitTest {
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
 
-        patientService.update(patient);
+        patientService.update(patient, USER_NAME);
 
         assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
         verify(outbox).reEnroll(dbPatient, patient);
-        verify(allPatients).update(patient);
+        verify(allPatients).update(patient, USER_NAME);
     }
 
     @Test
@@ -257,12 +258,12 @@ public class PatientServiceTest extends BaseUnitTest {
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
 
-        patientService.update(patient);
+        patientService.update(patient, USER_NAME);
 
         assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
         verify(outbox).reEnroll(dbPatient, patient);
         verify(weeklyCallPlan).reEnroll(dbPatient, currentTreatmentAdvice);
-        verify(allPatients).update(patient);
+        verify(allPatients).update(patient, USER_NAME);
     }
 
     @Test

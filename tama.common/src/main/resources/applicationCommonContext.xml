@@ -31,4 +31,10 @@
         <constructor-arg value="tama-web"/>
         <constructor-arg ref="tamaCouchDbInstance"/>
     </bean>
+
+    <bean id="auditDbConnector" class="org.ektorp.impl.StdCouchDbConnector">
+        <constructor-arg value="tama-audit"/>
+        <constructor-arg ref="tamaCouchDbInstance"/>
+    </bean>
+
 </beans>

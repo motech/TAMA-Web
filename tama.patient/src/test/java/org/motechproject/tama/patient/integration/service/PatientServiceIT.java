@@ -24,6 +24,7 @@ import static junit.framework.Assert.assertEquals;
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml", inheritLocations = false)
 public class PatientServiceIT extends SpringIntegrationTest {
 
+    public static final String USER_NAME = "userName";
     @Autowired
     private PatientService patientService;
 
@@ -42,10 +43,10 @@ public class PatientServiceIT extends SpringIntegrationTest {
     @Test
     public void shouldSuspendPatient() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
         markForDeletion(patient);
 
-        patientService.suspend(patient.getId());
+        patientService.suspend(patient.getId(), USER_NAME);
 
         Patient reloadedPatient = allPatients.get(patient.getId());
         assertEquals(Status.Suspended, reloadedPatient.getStatus());
@@ -60,10 +61,10 @@ public class PatientServiceIT extends SpringIntegrationTest {
     @Test
     public void shouldActivatePatient() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
         markForDeletion(patient);
 
-        patientService.activate(patient.getId());
+        patientService.activate(patient.getId(), USER_NAME);
 
         Patient reloadedPatient = allPatients.get(patient.getId());
         assertEquals(Status.Active, reloadedPatient.getStatus());
@@ -78,10 +79,10 @@ public class PatientServiceIT extends SpringIntegrationTest {
     @Test
     public void shouldDeactivatePatient() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).build();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
         markForDeletion(patient);
 
-        patientService.deactivate(patient.getId(), Status.Loss_To_Follow_Up);
+        patientService.deactivate(patient.getId(), Status.Loss_To_Follow_Up, USER_NAME);
 
         Patient reloadedPatient = allPatients.get(patient.getId());
         Assert.assertEquals(Status.Loss_To_Follow_Up, reloadedPatient.getStatus());
@@ -94,10 +95,10 @@ public class PatientServiceIT extends SpringIntegrationTest {
     @Test
     public void shouldDeactivatePatient_AndCreatePatientEventLogWhenTemporaryDeactivation() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).build();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
         markForDeletion(patient);
 
-        patientService.deactivate(patient.getId(), Status.Temporary_Deactivation);
+        patientService.deactivate(patient.getId(), Status.Temporary_Deactivation, USER_NAME);
 
         Patient reloadedPatient = allPatients.get(patient.getId());
         Assert.assertEquals(Status.Temporary_Deactivation, reloadedPatient.getStatus());
@@ -115,7 +116,7 @@ public class PatientServiceIT extends SpringIntegrationTest {
         allRegimens.add(regimen);
 
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
 
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults()
                 .withPatientId(patient.getId()).withRegimenId(regimen.getId()).build();

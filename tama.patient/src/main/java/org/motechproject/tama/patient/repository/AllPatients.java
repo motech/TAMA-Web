@@ -8,7 +8,6 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.GenerateView;
 import org.ektorp.support.View;
-import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.common.util.UUIDUtil;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.patient.domain.HIVMedicalHistory;
@@ -26,7 +25,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class AllPatients extends AbstractCouchRepository<Patient> {
+public class AllPatients extends AuditableCouchRepository<Patient> {
+
     private AllClinics allClinics;
     private AllGenders allGenders;
     private AllIVRLanguages allIVRLanguages;
@@ -35,8 +35,11 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
     private AllModesOfTransmission allModesOfTransmission;
 
     @Autowired
-    public AllPatients(@Qualifier("tamaDbConnector") CouchDbConnector db, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllUniquePatientFields allUniquePatientFields, AllHIVTestReasons allHIVTestReasons, AllModesOfTransmission allModesOfTransmission) {
-        super(Patient.class, db);
+    public AllPatients(@Qualifier("tamaDbConnector") CouchDbConnector db, AllClinics allClinics, AllGenders allGenders,
+                       AllIVRLanguages allIVRLanguages, AllUniquePatientFields allUniquePatientFields,
+                       AllHIVTestReasons allHIVTestReasons, AllModesOfTransmission allModesOfTransmission,
+                       AllAuditRecords allAuditRecords) {
+        super(Patient.class, db, allAuditRecords);
         this.allClinics = allClinics;
         this.allGenders = allGenders;
         this.allIVRLanguages = allIVRLanguages;
@@ -111,22 +114,21 @@ public class AllPatients extends AbstractCouchRepository<Patient> {
         return get(patient.getId()).getClinic_id();
     }
 
-    public void addToClinic(Patient patient, String clinicId) {
+    public void addToClinic(Patient patient, String clinicId, String userName) {
         patient.setClinic_id(clinicId);
-        add(patient);
+        add(patient, userName);
     }
 
     @Override
-    public void add(Patient entity) {
+    public void add(Patient entity, String userName) {
         entity.setId(UUIDUtil.newUUID());
         allUniquePatientFields.add(entity);
-        super.add(entity);
+        super.add(entity, userName);
     }
 
-    @Override
-    public void update(Patient entity) {
+    public void update(Patient entity, String userName) {
         allUniquePatientFields.update(entity);
-        super.update(entity);
+        super.update(entity, userName);
     }
 
     @Override

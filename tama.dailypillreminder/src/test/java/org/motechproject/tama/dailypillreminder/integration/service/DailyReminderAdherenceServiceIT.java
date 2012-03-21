@@ -72,6 +72,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
     public PowerMockRule rule = new PowerMockRule();
 
     private Patient patient;
+    private static final String USER_NAME = "userName";
 
     @Before
     public void setUp() {
@@ -104,7 +105,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         patient.setPatientId("patientId1");
         patient.getPatientPreferences().setPasscode("1234");
 
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
         markForDeletion(allPatients.getAll().toArray());
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
         markForDeletion(allUniquePatientFields.getAll().toArray());
@@ -129,7 +130,7 @@ public class DailyReminderAdherenceServiceIT extends SpringIntegrationTest {
         patient.getPatientPreferences().setCallPreferenceTransitionDate(DateUtil.now().minusDays(5));
         patient.getPatientPreferences().setPasscode("4444");
 
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
         markForDeletion(allPatients.getAll().toArray());
         markForDeletion(allDosageAdherenceLogs.getAll().toArray());
         markForDeletion(allUniquePatientFields.getAll().toArray());

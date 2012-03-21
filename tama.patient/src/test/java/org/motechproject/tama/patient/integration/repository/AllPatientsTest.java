@@ -14,6 +14,7 @@ import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.MedicalHistory;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.UniquePatientField;
+import org.motechproject.tama.patient.repository.AllAuditRecords;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 import org.motechproject.tama.refdata.domain.Gender;
@@ -58,13 +59,18 @@ public class AllPatientsTest extends SpringIntegrationTest {
     @Autowired
     private AllIVRLanguages allIVRLanguages;
 
+    @Autowired
+    private AllAuditRecords allAuditRecords;
+
     private Gender gender;
     private IVRLanguage ivrLanguage;
+    private static final String USER_NAME = "USER_NAME";
+    
 
     @Before
     public void before() {
         super.before();
-        allPatients = new AllPatients(tamaDbConnector, allClinics, allGenders, allIVRLanguages, allUniquePatientFields, allHIVTestReasons, allModesOfTransmission);
+        allPatients = new AllPatients(tamaDbConnector, allClinics, allGenders, allIVRLanguages, allUniquePatientFields, allHIVTestReasons, allModesOfTransmission, allAuditRecords);
         markForDeletion(allUniquePatientFields.getAll().toArray());
         markForDeletion(allPatients.getAll().toArray());
         deleteAll();
@@ -86,7 +92,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
     @Test
     public void shouldLoadPatientByPatientId() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withGender(gender).withIVRLanguage(ivrLanguage).withPatientId("12345678").build();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
 
         assertNull(allPatients.findByPatientId("9999"));
 
@@ -108,7 +114,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
                 withMobileNumber("1111111111").
                 withPasscode("2222").
                 withClinic(clinic).build();
-        allPatients.addToClinic(patient_1, clinic.getId());
+        allPatients.addToClinic(patient_1, clinic.getId(), USER_NAME);
 
         Patient patient_2 = PatientBuilder.startRecording().withDefaults().
                 withGender(gender).
@@ -117,7 +123,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
                 withMobileNumber("3333333333").
                 withPasscode("2222").
                 withClinic(clinic).build();
-        allPatients.addToClinic(patient_2, clinic.getId());
+        allPatients.addToClinic(patient_2, clinic.getId(), USER_NAME);
 
         assertEquals(2, allPatients.getAll().size());
         assertNotNull(allPatients.get(patient_1.getId()));
@@ -137,8 +143,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
                 withMobileNumber("1111111111").
                 withPasscode("2222").
                 withClinic(clinic).build();
-        allPatients.addToClinic(patient, clinic.getId());
-        List<Patient> patients = allPatients.getAll();
+        allPatients.addToClinic(patient, clinic.getId(), USER_NAME);
 
         Patient updatedPatient = PatientBuilder.startRecording().withDefaults().
                 withGender(gender).
@@ -147,7 +152,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
                 withMobileNumber("1111111111").
                 withPasscode("2222").
                 withClinic(clinic).build();
-        allPatients.addToClinic(updatedPatient, clinic.getId());
+        allPatients.addToClinic(updatedPatient, clinic.getId(), USER_NAME);
     }
 
     @Test
@@ -164,7 +169,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
                 withIVRLanguage(ivrLanguage).
                 withPatientId("12345678").
                 withClinic(clinic1).build();
-        allPatients.addToClinic(patient, clinic1.getId());
+        allPatients.addToClinic(patient, clinic1.getId(), USER_NAME);
 
         Patient similarPatient = PatientBuilder.startRecording().withDefaults().
                 withGender(gender).
@@ -173,7 +178,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
                 withId(patient.getId()).
                 withRevision(patient.getRevision()).
                 withClinic(clinic2).build();
-        allPatients.update(similarPatient);
+        allPatients.update(similarPatient, "USER_NAME");
 
         Patient patientFromDb = allPatients.get(patient.getId());
         assertEquals("clinic2", patientFromDb.getClinic().getName());
@@ -191,8 +196,8 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
         Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).build();
-        allPatients.add(patient);
-        allPatients.add(anotherPatient);
+        allPatients.add(patient, USER_NAME);
+        allPatients.add(anotherPatient, USER_NAME);
 
         List<Patient> dbPatients = allPatients.findByClinic(clinicForPatient.getId());
 
@@ -203,7 +208,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
     @Test
     public void shouldRemovePatient() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").withGender(gender).withIVRLanguage(ivrLanguage).build();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
 
         allPatients.remove(patient);
         Patient dbPatient = allPatients.findByPatientId("5678");
@@ -218,7 +223,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").withGender(gender).withIVRLanguage(ivrLanguage).withClinic(clinic).build();
         String mobilePhoneNumber = patient.getMobilePhoneNumber();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
 
         Patient dbPatient = allPatients.findByPatientId("5678");
         List<UniquePatientField> uniquePatientFields = allUniquePatientFields.getAll();
@@ -235,7 +240,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
         markForDeletion(clinicForPatient);
 
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
 
         assertEquals(clinicForPatient.getId(), allPatients.findClinicFor(patient));
     }
@@ -248,7 +253,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
                 .withPatientId(id)
                 .withGender(gender).withIVRLanguage(ivrLanguage)
                 .build();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
         String mobileNumber = patient.getMobilePhoneNumber();
 
         Patient loadedPatient = allPatients.findByMobileNumber(mobileNumber);
@@ -262,8 +267,8 @@ public class AllPatientsTest extends SpringIntegrationTest {
         Patient patient1 = PatientBuilder.startRecording().withDefaults().withPatientId("123213213").withPasscode("1212").build();
         String mobilePhoneNumber = patient1.getMobilePhoneNumber();
         Patient patient2 = PatientBuilder.startRecording().withDefaults().withPatientId("123213453").withMobileNumber(mobilePhoneNumber).withPasscode("1233").build();
-        allPatients.add(patient1);
-        allPatients.add(patient2);
+        allPatients.add(patient1, USER_NAME);
+        allPatients.add(patient2, USER_NAME);
 
         List<Patient> loadedPatients = allPatients.findAllByMobileNumber(mobilePhoneNumber);
         assertEquals(2, loadedPatients.size());
@@ -284,9 +289,9 @@ public class AllPatientsTest extends SpringIntegrationTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withPatientId("patientId").withGender(gender).withIVRLanguage(ivrLanguage).build();
         Patient anotherPatient_1 = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withPatientId("anotherPatient_1").withGender(gender).withIVRLanguage(ivrLanguage).build();
         Patient anotherPatient_2 = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).withPatientId("another_patient_2").withGender(gender).withIVRLanguage(ivrLanguage).build();
-        allPatients.add(patient);
-        allPatients.add(anotherPatient_1);
-        allPatients.add(anotherPatient_2);
+        allPatients.add(patient, USER_NAME);
+        allPatients.add(anotherPatient_1, USER_NAME);
+        allPatients.add(anotherPatient_2, USER_NAME);
 
         Patient dbPatient1 = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), clinicForPatient.getId());
         assertEquals(patient.getId(), dbPatient1.getId());
@@ -310,8 +315,8 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
         Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).withGender(gender).withIVRLanguage(ivrLanguage).build();
-        allPatients.add(patient);
-        allPatients.add(anotherPatient);
+        allPatients.add(patient, USER_NAME);
+        allPatients.add(anotherPatient, USER_NAME);
 
         Patient dbPatient1 = allPatients.findByIdAndClinicId(patient.getId(), clinicForPatient.getId());
         assertEquals(patient.getId(), dbPatient1.getId());
@@ -332,8 +337,8 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinicForPatient).withGender(gender).withIVRLanguage(ivrLanguage).build();
         Patient anotherPatient = PatientBuilder.startRecording().withDefaults().withClinic(anotherClinic).withGender(gender).withIVRLanguage(ivrLanguage).withPasscode("9998").build();
-        allPatients.add(patient);
-        allPatients.add(anotherPatient);
+        allPatients.add(patient, USER_NAME);
+        allPatients.add(anotherPatient, USER_NAME);
 
         Patient dbPatient1 = allPatients.findByMobileNumberAndPasscode(patient.getMobilePhoneNumber(), patient.getPatientPreferences().getPasscode());
         assertEquals(patient.getMobilePhoneNumber(), dbPatient1.getMobilePhoneNumber());
@@ -353,7 +358,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
         allHIVTestReasons.add(testReason);
         allModesOfTransmission.add(modeOfTransmission);
         Patient patient = PatientBuilder.startRecording().withDefaults().withHIVTestReason(testReason).withModeOfTransmission(modeOfTransmission).build();
-        allPatients.add(patient);
+        allPatients.add(patient, USER_NAME);
 
         Patient loadedPatient = allPatients.findByPatientId(patient.getPatientId());
         Assert.assertEquals("Vertical", loadedPatient.getMedicalHistory().getHivMedicalHistory().getModeOfTransmission().getType());

@@ -124,7 +124,7 @@ public class PatientController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate")
     public String deactivate(@RequestParam String id, @RequestParam Status status, Model uiModel, HttpServletRequest request) {
         try {
-            patientService.deactivate(id, status);
+            patientService.deactivate(id, status, loggedInUserId(request));
         } catch (RuntimeException e) {
             request.setAttribute("flash.flashError", "Error occured while deactivating patient: " + e.getMessage());
         }
@@ -157,7 +157,7 @@ public class PatientController extends BaseController {
             } else {
                 resumeFourDayRecallService.backFillAdherence(patient, startDate, DateUtil.now(), doseStatus.isTaken());
             }
-            patientService.activate(id);
+            patientService.activate(id, loggedInUserId(request));
         } catch (RuntimeException e) {
             request.setAttribute("flash.flashError", "Error occurred while reactivating patient: " + e.getMessage());
         }
@@ -219,7 +219,7 @@ public class PatientController extends BaseController {
             return CREATE_VIEW;
         }
         try {
-            patientService.create(patient, loggedInClinic(request));
+            patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
             uiModel.asMap().clear();
         } catch (RuntimeException e) {
             decorateViewWithUniqueConstraintError(patient, bindingResult, uiModel, e);
@@ -245,7 +245,7 @@ public class PatientController extends BaseController {
             return UPDATE_VIEW;
         }
         try {
-            patientService.update(patient);
+            patientService.update(patient, loggedInUserId(request));
             uiModel.asMap().clear();
         } catch (RuntimeException e) {
             decorateViewWithUniqueConstraintError(patient, bindingResult, uiModel, e);
@@ -271,7 +271,7 @@ public class PatientController extends BaseController {
             if (firstActivation) {
                 return activatePatientForFirstTime(patientDocId, request);
             }
-            patientService.activate(patientDocId);
+            patientService.activate(patientDocId, loggedInUserId(request));
         } catch (RuntimeException e) {
             request.setAttribute("flash.flashError", "Error occurred while activating patient: " + e.getMessage());
         }
@@ -281,7 +281,7 @@ public class PatientController extends BaseController {
     private String activatePatientForFirstTime(String patientDocId, HttpServletRequest request) {
         allClinicVisits.addAppointmentCalendar(patientDocId);
         ClinicVisit clinicVisit = allClinicVisits.getBaselineVisit(patientDocId);
-        patientService.activate(patientDocId);
+        patientService.activate(patientDocId, loggedInUserId(request));
         return "redirect:/clinicvisits?form&patientId=" + patientDocId + "&clinicVisitId=" + encodeUrlPathSegment(clinicVisit.getId(), request);
     }
 

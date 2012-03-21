@@ -25,6 +25,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(DateUtil.class)
 public class SuspendAdherenceCallsCommandTest {
+    public static final String PATIENT_DOC_ID = "patientDocId";
     @Mock
     private AllPatients allPatients;
     @Mock
@@ -42,7 +43,7 @@ public class SuspendAdherenceCallsCommandTest {
     public void shouldChangeStatusToSuspended() {
         final Patient patient = new Patient();
         final TAMAIVRContextForTest tamaivrContextForTest = new TAMAIVRContextForTest();
-
+        tamaivrContextForTest.patientDocumentId(PATIENT_DOC_ID);
         when(contextFactory.create(Matchers.<KooKooIVRContext>any())).thenReturn(tamaivrContextForTest);
         DateTime suspendedDateTime = new DateTime(2011, 11, 11, 0, 0, 0);
         when(DateUtil.now()).thenReturn(suspendedDateTime);
@@ -51,6 +52,6 @@ public class SuspendAdherenceCallsCommandTest {
         final SuspendAdherenceCallsCommand suspendAdherenceCallsCommand = new SuspendAdherenceCallsCommand(patientService, contextFactory);
         suspendAdherenceCallsCommand.execute(null);
 
-        verify(patientService).suspend(patient.getId());
+        verify(patientService).suspend(PATIENT_DOC_ID, PATIENT_DOC_ID);
     }
 }
