@@ -17,6 +17,7 @@ public abstract class ReportBuilder<T> {
     public static final int TITLE_ROW_HEIGHT = 500;
     public static final int TITLE_FONT_HEIGHT = 280;
     public static final int HEADER_ROW_HEIGHT = 500;
+    protected static final int MAX_ROWS_PER_SHEET = 30000;
 
     protected List<ExcelColumn> columns = new ArrayList<ExcelColumn>();
 
@@ -47,11 +48,14 @@ public abstract class ReportBuilder<T> {
     }
 
     private void addSheet(HSSFWorkbook workbook) {
-        HSSFSheet worksheet = workbook.createSheet(getWorksheetName());
-
-        buildReportLayout(worksheet);
-
-        fillReport(worksheet);
+        boolean doneBuilding = false;
+        int i = 0;
+        while (!doneBuilding) {
+            String sheetname = getWorksheetName() + (i++ == 0 ? "" : i);
+            HSSFSheet worksheet = workbook.createSheet(sheetname);
+            buildReportLayout(worksheet);
+            doneBuilding = fillReportData(worksheet);
+        }
     }
 
     private void buildReportLayout(HSSFSheet worksheet) {
@@ -127,7 +131,7 @@ public abstract class ReportBuilder<T> {
         return headerCellStyle;
     }
 
-    protected abstract void fillReport(HSSFSheet worksheet);
+    protected abstract boolean fillReportData(HSSFSheet worksheet);
 
     protected List<HSSFCellStyle> buildCellStylesForColumns(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = new ArrayList<HSSFCellStyle>();

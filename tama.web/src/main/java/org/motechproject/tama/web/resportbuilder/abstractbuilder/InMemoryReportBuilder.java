@@ -17,12 +17,14 @@ public abstract class InMemoryReportBuilder<T> extends ReportBuilder<T> {
     }
 
     @Override
-    protected void fillReport(HSSFSheet worksheet) {
+    protected boolean fillReportData(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForColumns(worksheet);
         for (T object : objects) {
             HSSFRow row = worksheet.createRow((short) currentRowIndex);
             buildRowData(row, getRowData(object), cellStyles);
             currentRowIndex++;
         }
+        // Done filling data
+        return true;
     }
 }

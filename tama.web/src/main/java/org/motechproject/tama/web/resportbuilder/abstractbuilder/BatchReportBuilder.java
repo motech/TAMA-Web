@@ -13,12 +13,12 @@ public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
 
     public BatchReportBuilder() {
         super();
-        pageSize = 100;
+        pageSize = 1000;
         initializeColumns();
     }
 
     @Override
-    protected void fillReport(HSSFSheet worksheet) {
+    protected boolean fillReportData(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForColumns(worksheet);
         List data = null;
         do {
@@ -26,10 +26,27 @@ public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
             for (Object dataObject : data) {
                 HSSFRow row = worksheet.createRow((short) currentRowIndex);
                 buildRowData(row, getRowData(dataObject), cellStyles);
-                currentRowIndex++;
+                boolean successfullyIncremented = incrementRowIndex();
+                if (!successfullyIncremented) {
+                    // Have more data to fill
+                    pageNumber++;
+                    return false;
+                }
             }
             pageNumber++;
         } while (!data.isEmpty());
+        //Done filling data
+        return true;
+    }
+
+    private boolean incrementRowIndex() {
+        if (currentRowIndex <= MAX_ROWS_PER_SHEET) {
+            currentRowIndex++;
+            return true;
+        } else {
+            currentRowIndex = 0;
+            return false;
+        }
     }
 
     protected abstract List fetchData(int pageNumber);
