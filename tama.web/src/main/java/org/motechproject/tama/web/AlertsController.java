@@ -44,15 +44,15 @@ public class AlertsController extends BaseController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String show(@PathVariable("id") String id, Model uiModel) {
-        PatientAlert patientAlert = patientAlertService.readAlert(id);
+    public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
+        PatientAlert patientAlert = patientAlertService.readAlert(id, loggedInUserId(request));
         uiModel.addAttribute("alertInfo", patientAlert);
         return "alerts/show" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
-    public String updateForm(@PathVariable("id") String id, Model uiModel) {
-        PatientAlert patientAlert = patientAlertService.readAlert(id);
+    public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
+        PatientAlert patientAlert = patientAlertService.readAlert(id, loggedInUserId(request));
         initUIModel(uiModel, patientAlert);
         return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
@@ -63,7 +63,7 @@ public class AlertsController extends BaseController {
             patientAlertService.updateAlert(alertId, symptomsAlertStatus, notes, doctorsNotes, type);
             uiModel.asMap().clear();
         } catch (RuntimeException e) {
-            PatientAlert patientAlert = patientAlertService.readAlert(alertId);
+            PatientAlert patientAlert = patientAlertService.readAlert(alertId, loggedInUserId(request));
             initUIModel(uiModel, patientAlert);
             return "alerts/update";
         }

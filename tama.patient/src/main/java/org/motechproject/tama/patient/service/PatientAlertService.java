@@ -8,6 +8,7 @@ import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.repository.AllAuditEvents;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,14 @@ public class PatientAlertService {
     private AlertService alertService;
     private PatientAlertSearchService patientAlertSearchService;
     private Logger logger = Logger.getLogger(PatientAlertService.class);
+    private AllAuditEvents allAuditEvents;
 
     @Autowired
-    public PatientAlertService(AllPatients allPatients, AlertService alertService, PatientAlertSearchService patientAlertSearchService) {
+    public PatientAlertService(AllPatients allPatients, AlertService alertService, PatientAlertSearchService patientAlertSearchService, AllAuditEvents allAuditEvents) {
         this.allPatients = allPatients;
         this.alertService = alertService;
         this.patientAlertSearchService = patientAlertSearchService;
+        this.allAuditEvents = allAuditEvents;
     }
 
     public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType) {
@@ -49,8 +52,9 @@ public class PatientAlertService {
         alertService.create(externalId, name, description, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
     }
 
-    public PatientAlert readAlert(String alertId) {
+    public PatientAlert readAlert(String alertId, String userName) {
         final Alert alert = alertService.get(alertId);
+        allAuditEvents.recordAppointmentEvent(userName, "Marking alert : " + alertId + " for : " + alert.getExternalId() + " as read");
         alertService.changeStatus(alert.getId(), AlertStatus.READ);
         return PatientAlert.newPatientAlert(alert, allPatients.get(alert.getExternalId()));
     }

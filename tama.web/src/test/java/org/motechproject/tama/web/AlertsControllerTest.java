@@ -46,6 +46,7 @@ public class AlertsControllerTest {
 
     private PatientAlerts patientAlerts;
     private Alert alert;
+    private final String USER_NAME = "userName";
 
     @Before
     public void setUp() {
@@ -97,8 +98,8 @@ public class AlertsControllerTest {
         PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
 
-        when(patientAlertService.readAlert(alertId)).thenReturn(patientAlert);
-        assertEquals("alerts/show" + PatientAlertType.SymptomReporting.name(), alertsController.show(alertId, uiModel));
+        when(patientAlertService.readAlert(alertId, USER_NAME)).thenReturn(patientAlert);
+        assertEquals("alerts/show" + PatientAlertType.SymptomReporting.name(), alertsController.show(alertId, uiModel, request));
         verify(uiModel, times(1)).addAttribute("alertInfo", patientAlert);
     }
 
@@ -109,8 +110,8 @@ public class AlertsControllerTest {
         }});
         PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
-        when(patientAlertService.readAlert(alertId)).thenReturn(patientAlert);
-        assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel));
+        when(patientAlertService.readAlert(alertId, USER_NAME)).thenReturn(patientAlert);
+        assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel, request));
     }
 
     @Test
@@ -126,8 +127,8 @@ public class AlertsControllerTest {
         }});
         PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
-        when(patientAlertService.readAlert(alertId)).thenReturn(patientAlert);
+        when(patientAlertService.readAlert(alertId, USER_NAME)).thenReturn(patientAlert);
         alertsController.update(uiModel, alertId, symptomsAlertStatus, notes, doctorsNotes, type, request);
-        assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel));
+        assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel, request));
     }
 }

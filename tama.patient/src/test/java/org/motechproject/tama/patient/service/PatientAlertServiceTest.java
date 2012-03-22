@@ -9,6 +9,7 @@ import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.repository.AllAuditEvents;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.*;
@@ -30,15 +31,18 @@ public class PatientAlertServiceTest {
     private AllPatients allPatients;
     @Mock
     private PatientAlertSearchService patientAlertSearchService;
-
-    private PatientAlertService patientAlertService;
+    @Mock
+    private AllAuditEvents allAuditEvents;
 
     private HashMap<String, String> symptomReportingData = new HashMap<String, String>();
+
+    private PatientAlertService patientAlertService;
+    private static final String USER_NAME = "userName";
 
     @Before
     public void setUp() {
         initMocks(this);
-        patientAlertService = new PatientAlertService(allPatients, alertService, patientAlertSearchService);
+        patientAlertService = new PatientAlertService(allPatients, alertService, patientAlertSearchService, allAuditEvents);
         symptomReportingData.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
     }
 
@@ -54,7 +58,7 @@ public class PatientAlertServiceTest {
         when(alertService.get(alertId)).thenReturn(alertForPatient);
         when(allPatients.get(patient.getId())).thenReturn(patient);
 
-        PatientAlert symptomReportingAlert = patientAlertService.readAlert(alertId);
+        PatientAlert symptomReportingAlert = patientAlertService.readAlert(alertId, USER_NAME);
         assertEquals(patient.getPatientId(), symptomReportingAlert.getPatientId());
         verify(alertService, times(1)).changeStatus(alertId, AlertStatus.READ);
     }
