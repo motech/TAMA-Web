@@ -24,7 +24,6 @@ import org.motechproject.util.DateUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -34,8 +33,6 @@ public class AllClinicVisitsTest extends BaseUnitTest {
 
     static final String PATIENT_ID = "patientId";
     public static final String USER_NAME = "userName";
-
-    protected Properties appointmentsProperties = new Properties();
 
     @Mock
     private AllPatients allPatients;
@@ -107,7 +104,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         RescheduleAppointmentRequest rescheduleAppointmentRequest = new RescheduleAppointmentRequest();
         when(rescheduleAppointmentRequestBuilder.create(PATIENT_ID, "visit2", today.toLocalDate())).thenReturn(rescheduleAppointmentRequest);
 
-        allClinicVisits.adjustDueDate(PATIENT_ID, "visit2", today.toLocalDate());
+        allClinicVisits.adjustDueDate(PATIENT_ID, "visit2", today.toLocalDate(), USER_NAME);
         verify(appointmentService).rescheduleAppointment(rescheduleAppointmentRequest);
     }
 
@@ -117,21 +114,21 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         final ConfirmAppointmentRequest request = new ConfirmAppointmentRequest();
 
         when(confirmAppointmentRequestBuilder.confirmAppointmentRequest(PATIENT_ID, "visit2", today)).thenReturn(request);
-        allClinicVisits.confirmAppointmentDate(PATIENT_ID, "visit2", today);
+        allClinicVisits.confirmAppointmentDate(PATIENT_ID, "visit2", today, USER_NAME);
         verify(appointmentService).confirmAppointment(request);
     }
 
     @Test
     public void shouldCloseVisit() {
         final DateTime today = DateUtil.now();
-        allClinicVisits.closeVisit(PATIENT_ID, "visit2", today);
+        allClinicVisits.closeVisit(PATIENT_ID, "visit2", today, USER_NAME);
         verify(appointmentService).visited(eq(PATIENT_ID), eq("visit2"), eq(today));
     }
 
     @Test
     public void shouldMarkTheClinicVisitAsMissed() throws Exception {
         String visitName = "visit";
-        allClinicVisits.markAsMissed(PATIENT_ID, visitName);
+        allClinicVisits.markAsMissed(PATIENT_ID, visitName, USER_NAME);
         verify(appointmentService).markVisitAsMissed(eq(PATIENT_ID), eq(visitName));
     }
 
@@ -171,7 +168,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         DateTime visitDate = DateUtil.now();
 
         List<String> labResultIds = new ArrayList<String>();
-        allClinicVisits.updateVisitDetails(visitId, visitDate, PATIENT_ID, treatmentAdviceId, labResultIds, vitalStatsId, oppInfectionsId);
+        allClinicVisits.updateVisitDetails(visitId, visitDate, PATIENT_ID, treatmentAdviceId, labResultIds, vitalStatsId, oppInfectionsId, USER_NAME);
 
         ArgumentCaptor<Map> mapArgumentCaptor = ArgumentCaptor.forClass(Map.class);
         verify(appointmentService).visited(PATIENT_ID, visitId, visitDate);

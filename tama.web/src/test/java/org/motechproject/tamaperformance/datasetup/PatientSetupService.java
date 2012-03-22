@@ -121,7 +121,7 @@ class PatientSetupService {
                 treatmentAdvice.getId(),
                 labResultIds,
                 vitalStatistics.getId(),
-                null
+                null, userName
         );
     }
 

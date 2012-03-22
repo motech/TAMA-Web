@@ -142,7 +142,7 @@ public class ClinicVisitsController extends BaseController {
         String reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel, httpServletRequest);
 
         try {
-            allClinicVisits.updateVisitDetails(clinicVisitId, clinicVisitUIModel.getDefaultVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId);
+            allClinicVisits.updateVisitDetails(clinicVisitId, clinicVisitUIModel.getDefaultVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId, loggedInUserId(httpServletRequest));
         } catch (RuntimeException e) {
             httpServletRequest.setAttribute("flash.flashError", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
             return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId());
@@ -201,31 +201,31 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/adjustDueDate.json/{clinicVisitId}", method = RequestMethod.POST)
     @ResponseBody
     public String adjustDueDate(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable("clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    @RequestParam(value = "adjustedDueDate") LocalDate adjustedDueDate) {
-        allClinicVisits.adjustDueDate(patientDocId, clinicVisitId, adjustedDueDate);
+    @RequestParam(value = "adjustedDueDate") LocalDate adjustedDueDate, HttpServletRequest request) {
+        allClinicVisits.adjustDueDate(patientDocId, clinicVisitId, adjustedDueDate, loggedInUserId(request));
         return "{'adjustedDueDate':'" + adjustedDueDate.toString(TAMAConstants.DATE_FORMAT) + "'}";
     }
 
     @RequestMapping(value = "/confirmVisitDate.json/{clinicVisitId}", method = RequestMethod.POST)
     @ResponseBody
     public String confirmVisitDate(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable("clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATETIME_FORMAT)
-    @RequestParam(value = "confirmedAppointmentDate") DateTime confirmedAppointmentDate) {
-        allClinicVisits.confirmAppointmentDate(patientDocId, clinicVisitId, confirmedAppointmentDate);
+    @RequestParam(value = "confirmedAppointmentDate") DateTime confirmedAppointmentDate, HttpServletRequest request) {
+        allClinicVisits.confirmAppointmentDate(patientDocId, clinicVisitId, confirmedAppointmentDate, loggedInUserId(request));
         return "{'confirmedAppointmentDate':'" + confirmedAppointmentDate.toString(TAMAConstants.DATETIME_FORMAT) + "'}";
     }
 
     @RequestMapping(value = "/markAsMissed.json/{clinicVisitId}", method = RequestMethod.POST)
     @ResponseBody
-    public String markAsMissed(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable(value = "clinicVisitId") String clinicVisitId) {
-        allClinicVisits.markAsMissed(patientDocId, clinicVisitId);
+    public String markAsMissed(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable(value = "clinicVisitId") String clinicVisitId, HttpServletRequest request) {
+        allClinicVisits.markAsMissed(patientDocId, clinicVisitId, loggedInUserId(request));
         return "{'missed':true}";
     }
 
     @RequestMapping(value = "/setVisitDate.json/{clinicVisitId}", method = RequestMethod.POST)
     @ResponseBody
     public String setVisitDate(@RequestParam(value = "patientId", required = true) String patientDocId, @PathVariable(value = "clinicVisitId") String clinicVisitId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    @RequestParam(value = "visitDate") DateTime visitDate) {
-        allClinicVisits.closeVisit(patientDocId, clinicVisitId, visitDate);
+    @RequestParam(value = "visitDate") DateTime visitDate, HttpServletRequest httpServletRequest) {
+        allClinicVisits.closeVisit(patientDocId, clinicVisitId, visitDate, loggedInUserId(httpServletRequest));
         return "{'visitDate':'" + visitDate.toString(TAMAConstants.DATE_FORMAT) + "'}";
     }
 

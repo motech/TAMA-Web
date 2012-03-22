@@ -82,14 +82,14 @@ public class AllClinicVisits {
         return appointmentService.addVisit(patientDocId, createVisitRequest).getName();
     }
 
-    public String updateVisitDetails(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId, String opportunisticInfectionsId) {
+    public String updateVisitDetails(String visitId, DateTime visitDate, String patientDocId, String treatmentAdviceId, List<String> labResultIds, String vitalStatisticsId, String opportunisticInfectionsId, String userName) {
         HashMap<String, Object> dataMap = new HashMap<String, Object>();
         dataMap.put(ClinicVisit.LAB_RESULTS, labResultIds);
         dataMap.put(ClinicVisit.REPORTED_OPPORTUNISTIC_INFECTIONS, opportunisticInfectionsId);
         dataMap.put(ClinicVisit.TREATMENT_ADVICE, treatmentAdviceId);
         dataMap.put(ClinicVisit.VITAL_STATISTICS, vitalStatisticsId);
         appointmentService.addCustomDataToVisit(patientDocId, visitId, dataMap);
-        appointmentService.visited(patientDocId, visitId, visitDate);
+        closeVisit(patientDocId, visitId, visitDate, userName);
         return visitId;
     }
 
@@ -117,21 +117,25 @@ public class AllClinicVisits {
         appointmentService.addCustomDataToVisit(patientDocId, clinicVisitId, dataMap);
     }
 
-    public void adjustDueDate(String patientDocId, String clinicVisitId, LocalDate adjustedDueDate) {
+    public void adjustDueDate(String patientDocId, String clinicVisitId, LocalDate adjustedDueDate, String userName) {
         RescheduleAppointmentRequest rescheduleAppointmentRequest = rescheduleAppointmentRequestBuilder.create(patientDocId, clinicVisitId, adjustedDueDate);
+        allAuditEvents.recordAppointmentEvent(userName, "Adjusting due date for patient : " + patientDocId + " for visit " + clinicVisitId + " to " + adjustedDueDate);
         appointmentService.rescheduleAppointment(rescheduleAppointmentRequest);
     }
 
-    public void confirmAppointmentDate(String patientDocId, String clinicVisitId, DateTime confirmedAppointmentDate) {
+    public void confirmAppointmentDate(String patientDocId, String clinicVisitId, DateTime confirmedAppointmentDate, String userName) {
         ConfirmAppointmentRequest request = confirmAppointmentRequestBuilder.confirmAppointmentRequest(patientDocId, clinicVisitId, confirmedAppointmentDate);
+        allAuditEvents.recordAppointmentEvent(userName, "Confirming visit date for patient : " + patientDocId + " for visit " + clinicVisitId + " to " + confirmedAppointmentDate);
         appointmentService.confirmAppointment(request);
     }
 
-    public void markAsMissed(String patientDocId, String clinicVisitId) {
+    public void markAsMissed(String patientDocId, String clinicVisitId, String userName) {
+        allAuditEvents.recordAppointmentEvent(userName, "Marking visit  : " + clinicVisitId + " for patient : " + patientDocId + " as missed ");
         appointmentService.markVisitAsMissed(patientDocId, clinicVisitId);
     }
 
-    public void closeVisit(String patientDocId, String clinicVisitId, DateTime visitDate) {
+    public void closeVisit(String patientDocId, String clinicVisitId, DateTime visitDate, String userName) {
+        allAuditEvents.recordAppointmentEvent(userName, "Closing visit " + clinicVisitId + " for : " + patientDocId + " on " + visitDate);
         appointmentService.visited(patientDocId, clinicVisitId, visitDate);
     }
 }

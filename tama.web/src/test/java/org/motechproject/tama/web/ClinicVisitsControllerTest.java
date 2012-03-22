@@ -217,7 +217,7 @@ public class ClinicVisitsControllerTest {
             }});
             when(vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, request)).thenReturn("vitalStatisticsId");
             when(opportunisticInfectionsController.create(opportunisticInfectionsUIModel, bindingResult, uiModel, request)).thenReturn("opportunisticInfectionsId");
-            when(allClinicVisits.updateVisitDetails(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId")).thenReturn(VISIT_ID);
+            when(allClinicVisits.updateVisitDetails(null, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId", USER_NAME)).thenReturn(VISIT_ID);
 
             String redirectURL = clinicVisitsController.create(VISIT_ID, clinicVisitUIModel, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
@@ -226,7 +226,7 @@ public class ClinicVisitsControllerTest {
             verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel, request);
             verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel, request);
             verify(opportunisticInfectionsController).create(opportunisticInfectionsUIModel, bindingResult, uiModel, request);
-            verify(allClinicVisits).updateVisitDetails(VISIT_ID, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId");
+            verify(allClinicVisits).updateVisitDetails(VISIT_ID, visitDate, "patientId", "treatmentAdviceId", Arrays.asList("labResultId"), "vitalStatisticsId", "opportunisticInfectionsId", USER_NAME);
         }
 
         @Test
@@ -239,7 +239,7 @@ public class ClinicVisitsControllerTest {
             assertEquals("redirect:/clinicvisits?form&patientId=" + PATIENT_ID + "&clinicVisitId=" + VISIT_ID, redirectURL);
             verify(labResultsController, never()).create(labResultsUIModel, bindingResult, uiModel, request);
             verify(vitalStatisticsController, never()).create(vitalStatistics, bindingResult, uiModel, request);
-            verify(allClinicVisits, never()).updateVisitDetails(anyString(), Matchers.<DateTime>any(), anyString(), anyString(), anyList(), anyString(), eq("opportunisticInfectionsId"));
+            verify(allClinicVisits, never()).updateVisitDetails(anyString(), Matchers.<DateTime>any(), anyString(), anyString(), anyList(), anyString(), eq("opportunisticInfectionsId"), eq(USER_NAME));
         }
     }
 
@@ -322,9 +322,9 @@ public class ClinicVisitsControllerTest {
         public void shouldUpdateConfirmVisitDate() throws Exception {
             final DateTime now = DateUtil.now();
 
-            String jsonReturned = clinicVisitsController.confirmVisitDate(PATIENT_ID, VISIT_ID, now);
+            String jsonReturned = clinicVisitsController.confirmVisitDate(PATIENT_ID, VISIT_ID, now, request);
 
-            verify(allClinicVisits).confirmAppointmentDate(PATIENT_ID, VISIT_ID, now);
+            verify(allClinicVisits).confirmAppointmentDate(PATIENT_ID, VISIT_ID, now, USER_NAME);
             assertTrue(new JSONObject(jsonReturned).has("confirmedAppointmentDate"));
         }
     }
@@ -333,8 +333,8 @@ public class ClinicVisitsControllerTest {
         @Test
         public void shouldUpdateAdjustedDueDate() throws Exception {
             LocalDate today = DateUtil.today();
-            String jsonReturned = clinicVisitsController.adjustDueDate(PATIENT_ID, VISIT_ID, today);
-            verify(allClinicVisits).adjustDueDate(PATIENT_ID, VISIT_ID, today);
+            String jsonReturned = clinicVisitsController.adjustDueDate(PATIENT_ID, VISIT_ID, today, request);
+            verify(allClinicVisits).adjustDueDate(PATIENT_ID, VISIT_ID, today, USER_NAME);
             assertTrue(new JSONObject(jsonReturned).has("adjustedDueDate"));
         }
     }
@@ -342,8 +342,8 @@ public class ClinicVisitsControllerTest {
     public static class MarkAsMissed extends SubjectUnderTest {
         @Test
         public void shouldMarkClinicVisitAsMissed() throws Exception {
-            String jsonReturned = clinicVisitsController.markAsMissed(PATIENT_ID, VISIT_ID);
-            verify(allClinicVisits).markAsMissed(PATIENT_ID, VISIT_ID);
+            String jsonReturned = clinicVisitsController.markAsMissed(PATIENT_ID, VISIT_ID, request);
+            verify(allClinicVisits).markAsMissed(PATIENT_ID, VISIT_ID, USER_NAME);
             assertTrue(new JSONObject(jsonReturned).has("missed"));
         }
     }
