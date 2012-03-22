@@ -6,7 +6,6 @@ import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.refdata.domain.LabTest;
@@ -20,13 +19,13 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
-public class AllLabResults extends AbstractCouchRepository<LabResult> {
+public class AllLabResults extends AuditableCouchRepository<LabResult> {
 
     private AllLabTests allLabTests;
 
     @Autowired
-    public AllLabResults(@Qualifier("tamaDbConnector") CouchDbConnector db, AllLabTests allLabTests) {
-        super(LabResult.class, db);
+    public AllLabResults(@Qualifier("tamaDbConnector") CouchDbConnector db, AllLabTests allLabTests, AllAuditRecords allAuditRecords) {
+        super(LabResult.class, db, allAuditRecords);
         this.allLabTests = allLabTests;
         initStandardDesignDocument();
     }
@@ -64,10 +63,10 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
         labResult.setLabTest(allLabTests.get(labResult.getLabTest_id()));
     }
 
-    public String upsert(LabResult labResult) {
+    public String upsert(LabResult labResult, String userName) {
         if (labResult.getId() == null) {
             if (labResult.getResult() == null || labResult.getResult().isEmpty()) return null;
-            add(labResult);
+            add(labResult, userName);
             return labResult.getId();
         } else {
             final LabResult savedLabResult = get(labResult.getId());
@@ -77,7 +76,7 @@ public class AllLabResults extends AbstractCouchRepository<LabResult> {
             } else {
                 savedLabResult.setTestDate(labResult.getTestDate());
                 savedLabResult.setResult(labResult.getResult());
-                update(savedLabResult);
+                update(savedLabResult, userName);
                 return savedLabResult.getId();
             }
         }

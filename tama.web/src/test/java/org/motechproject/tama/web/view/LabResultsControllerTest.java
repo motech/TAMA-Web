@@ -35,6 +35,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class LabResultsControllerTest {
     public static final String PATIENT_ID = "patientId";
+    public static final String USER_ID = "userId";
 
     private LabResultsController labResultsController;
     @Mock
@@ -129,7 +130,7 @@ public class LabResultsControllerTest {
 
         labResultsController.create(labResultsUIModel, bindingResult, uiModel, request);
 
-        verify(allLabResults, times(1)).upsert(labResult);
+        verify(allLabResults, times(1)).upsert(labResult, USER_ID);
     }
 
     @Test
@@ -171,7 +172,7 @@ public class LabResultsControllerTest {
         LabResultsUIModel labResultsUIModel = new LabResultsUIModel();
         labResultsUIModel.setLabResults(new LabResults(Arrays.asList(labResult)));
 
-        doThrow(new RuntimeException("Some error")).when(allLabResults).upsert(labResult);
+        doThrow(new RuntimeException("Some error")).when(allLabResults).upsert(labResult, USER_ID);
 
         labResultsController.create(labResultsUIModel, bindingResult, new ExtendedModelMap(), request);
 
@@ -269,7 +270,7 @@ public class LabResultsControllerTest {
         }};
         labResultsUIModel.setLabResults(labResults);
         labResultsUIModel.setClinicVisitId("clinicVisitId");
-        when(allLabResults.upsert(Matchers.<LabResult>any())).thenReturn("labResultId1").thenReturn("labResultId2");
+        when(allLabResults.upsert(Matchers.<LabResult>any(), USER_ID)).thenReturn("labResultId1").thenReturn("labResultId2");
 
         String redirectURL = labResultsController.update(labResultsUIModel, mock(BindingResult.class), new ExtendedModelMap(), request);
 

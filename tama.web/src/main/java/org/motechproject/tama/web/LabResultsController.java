@@ -55,7 +55,7 @@ public class LabResultsController extends BaseController {
             }
             for (LabResult labResult : labResultsUiModel.getLabResults()) {
                 if (labResult.getResult() == null || labResult.getResult().isEmpty()) continue;
-                String labResultId = this.allLabResults.upsert(labResult);
+                String labResultId = this.allLabResults.upsert(labResult, loggedInUserId(httpServletRequest));
                 labResultIds.add(labResultId);
             }
         } catch (RuntimeException e) {
@@ -99,7 +99,7 @@ public class LabResultsController extends BaseController {
         }
         List<String> allLabResultsIds = new ArrayList<String>();
         for (LabResult labResult : labResultsUIModel.getLabResults()) {
-            final String labResultId = allLabResults.upsert(labResult);
+            final String labResultId = allLabResults.upsert(labResult, loggedInUserId(httpServletRequest));
             if (labResultId != null) allLabResultsIds.add(labResultId);
         }
 
