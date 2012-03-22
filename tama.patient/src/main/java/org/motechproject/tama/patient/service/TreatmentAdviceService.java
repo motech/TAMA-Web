@@ -44,7 +44,7 @@ public class TreatmentAdviceService {
 
     public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, String userName) {
         TreatmentAdvice existingTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
-        endCurrentRegimen(discontinuationReason, existingTreatmentAdvice);
+        endCurrentRegimen(discontinuationReason, existingTreatmentAdvice, userName);
         allTreatmentAdvices.add(treatmentAdvice, userName);
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         callTimeSlotService.freeSlots(patient, existingTreatmentAdvice);
@@ -55,8 +55,8 @@ public class TreatmentAdviceService {
         return treatmentAdvice.getId();
     }
 
-    private void endCurrentRegimen(String discontinuationReason, TreatmentAdvice existingTreatmentAdvice) {
+    private void endCurrentRegimen(String discontinuationReason, TreatmentAdvice existingTreatmentAdvice, String userName) {
         existingTreatmentAdvice.endTheRegimen(discontinuationReason);
-        allTreatmentAdvices.update(existingTreatmentAdvice);
+        allTreatmentAdvices.update(existingTreatmentAdvice, userName);
     }
 }

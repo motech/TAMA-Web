@@ -16,6 +16,8 @@ import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.repository.AllLabTests;
+import org.motechproject.tama.security.AuthenticatedUser;
+import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.LabResultsController;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.springframework.ui.ExtendedModelMap;
@@ -23,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,8 +37,9 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class LabResultsControllerTest {
+
     public static final String PATIENT_ID = "patientId";
-    public static final String USER_ID = "userId";
+    public static final String USER_NAME = "userName";
 
     private LabResultsController labResultsController;
     @Mock
@@ -46,11 +50,18 @@ public class LabResultsControllerTest {
     private AllClinicVisits allClinicVisits;
     @Mock
     private HttpServletRequest request;
+    @Mock
+    AuthenticatedUser user;
+    @Mock
+    HttpSession session;
 
     @Before
     public void setUp() {
         initMocks(this);
         labResultsController = new LabResultsController(allLabResults, allLabTests, allClinicVisits);
+        when(user.getUsername()).thenReturn(USER_NAME);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
+        when(request.getSession()).thenReturn(session);
     }
 
     @Test
@@ -130,7 +141,7 @@ public class LabResultsControllerTest {
 
         labResultsController.create(labResultsUIModel, bindingResult, uiModel, request);
 
-        verify(allLabResults, times(1)).upsert(labResult, USER_ID);
+        verify(allLabResults, times(1)).upsert(labResult, USER_NAME);
     }
 
     @Test
@@ -172,7 +183,7 @@ public class LabResultsControllerTest {
         LabResultsUIModel labResultsUIModel = new LabResultsUIModel();
         labResultsUIModel.setLabResults(new LabResults(Arrays.asList(labResult)));
 
-        doThrow(new RuntimeException("Some error")).when(allLabResults).upsert(labResult, USER_ID);
+        doThrow(new RuntimeException("Some error")).when(allLabResults).upsert(labResult, USER_NAME);
 
         labResultsController.create(labResultsUIModel, bindingResult, new ExtendedModelMap(), request);
 
@@ -270,7 +281,7 @@ public class LabResultsControllerTest {
         }};
         labResultsUIModel.setLabResults(labResults);
         labResultsUIModel.setClinicVisitId("clinicVisitId");
-        when(allLabResults.upsert(Matchers.<LabResult>any(), USER_ID)).thenReturn("labResultId1").thenReturn("labResultId2");
+        when(allLabResults.upsert(Matchers.<LabResult>any(), eq(USER_NAME))).thenReturn("labResultId1").thenReturn("labResultId2");
 
         String redirectURL = labResultsController.update(labResultsUIModel, mock(BindingResult.class), new ExtendedModelMap(), request);
 

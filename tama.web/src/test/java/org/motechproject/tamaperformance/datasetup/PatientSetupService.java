@@ -140,7 +140,7 @@ class PatientSetupService {
                 .withPatientId(patient.getId())
                 .withCaptureDate(startDate)
                 .build();
-        allVitalStatistics.add(vitalStatistics);
+        allVitalStatistics.add(vitalStatistics, "userName");
         return vitalStatistics;
     }
 

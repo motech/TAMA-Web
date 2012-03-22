@@ -18,6 +18,7 @@ import static junit.framework.Assert.assertEquals;
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml", inheritLocations = false)
 public class AllVitalStatisticsTest extends SpringIntegrationTest {
 
+    public static final String USER_NAME = "userName";
     @Autowired
     private AllVitalStatistics allVitalStatistics;
 
@@ -33,9 +34,9 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
         VitalStatistics vitalStatistics_Tomorrow = new VitalStatisticsBuilder().withDefaults().withCaptureDate(today.plusDays(1)).withPatientId("patient_id").build();
         VitalStatistics vitalStatistics_Today = new VitalStatisticsBuilder().withDefaults().withCaptureDate(today).withPatientId("patient_id").build();
 
-        allVitalStatistics.add(vitalStatistics_Today);
-        allVitalStatistics.add(vitalStatistics_Tomorrow);
-        allVitalStatistics.add(vitalStatistics_Yesterday);
+        allVitalStatistics.add(vitalStatistics_Today, USER_NAME);
+        allVitalStatistics.add(vitalStatistics_Tomorrow, USER_NAME);
+        allVitalStatistics.add(vitalStatistics_Yesterday, USER_NAME);
 
         VitalStatistics latestVitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId("patient_id");
         assertEquals("patient_id", latestVitalStatistics.getPatientId());
@@ -48,10 +49,10 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
         vitalStatistics.setPatientId("patient_id");
         vitalStatistics.setCaptureDate(DateUtil.today());
         vitalStatistics.setPulse(100);
-        allVitalStatistics.add(vitalStatistics);
+        allVitalStatistics.add(vitalStatistics, USER_NAME);
 
         vitalStatistics.setPulse(200);
-        allVitalStatistics.update(vitalStatistics);
+        allVitalStatistics.update(vitalStatistics, USER_NAME);
         VitalStatistics savedVitalStatistics = allVitalStatistics.get(vitalStatistics.getId());
 
         assertEquals(new Integer(200), savedVitalStatistics.getPulse());
@@ -66,10 +67,10 @@ public class AllVitalStatisticsTest extends SpringIntegrationTest {
         VitalStatistics vitalStatistics_5DaysAfter = new VitalStatisticsBuilder().withDefaults().withPatientId("patient_id").withCaptureDate(today.plusDays(5)).build();
         VitalStatistics vitalStatistics_10DaysAfter = new VitalStatisticsBuilder().withDefaults().withPatientId("patient_id").withCaptureDate(today.plusDays(10)).build();
 
-        allVitalStatistics.add(vitalStatistics_Today);
-        allVitalStatistics.add(vitalStatistics_5DaysAfter);
-        allVitalStatistics.add(vitalStatistics_10DaysAgo);
-        allVitalStatistics.add(vitalStatistics_10DaysAfter);
+        allVitalStatistics.add(vitalStatistics_Today, USER_NAME);
+        allVitalStatistics.add(vitalStatistics_5DaysAfter, USER_NAME);
+        allVitalStatistics.add(vitalStatistics_10DaysAgo, USER_NAME);
+        allVitalStatistics.add(vitalStatistics_10DaysAfter, USER_NAME);
 
         LocalDate startDate = today.minusDays(11);
         LocalDate endDate = today.plusDays(5);

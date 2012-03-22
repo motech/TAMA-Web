@@ -44,7 +44,7 @@ public class VitalStatisticsController extends BaseController {
                 return null;
             }
             if (isNotEmpty(vitalStatistics)) {
-                allVitalStatistics.add(vitalStatistics);
+                allVitalStatistics.add(vitalStatistics, loggedInUserId(httpServletRequest));
             }
         } catch (RuntimeException e) {
             httpServletRequest.setAttribute("flash.flashErrorVitalStatistics", "Error occurred while creating Vital Statistics: " + e.getMessage());
@@ -85,14 +85,14 @@ public class VitalStatisticsController extends BaseController {
         vitalStatistics.setCaptureDate(DateUtil.today());
         if (vitalStatistics.getId() == null || vitalStatistics.getId().isEmpty()) {
             if (isNotEmpty(vitalStatistics)) {
-                allVitalStatistics.add(vitalStatistics);
+                allVitalStatistics.add(vitalStatistics, loggedInUserId(httpServletRequest));
                 allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
             }
         } else {
             final VitalStatistics savedVitalStatistics = allVitalStatistics.get(vitalStatistics.getId());
             vitalStatistics.setRevision(savedVitalStatistics.getRevision());
             if (isNotEmpty(vitalStatistics)) {
-                allVitalStatistics.update(vitalStatistics);
+                allVitalStatistics.update(vitalStatistics, loggedInUserId(httpServletRequest));
                 allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
             } else {
                 allVitalStatistics.remove(savedVitalStatistics);

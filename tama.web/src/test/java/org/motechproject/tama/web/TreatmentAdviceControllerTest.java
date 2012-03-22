@@ -4,6 +4,7 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
@@ -21,6 +22,8 @@ import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllDosageTypes;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tama.security.AuthenticatedUser;
+import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
@@ -31,6 +34,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,8 +53,6 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     @Mock
     private Model uiModel;
     @Mock
-    private HttpServletRequest request;
-    @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
     private AllPatients allPatients;
@@ -68,6 +70,12 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     private AllClinicVisits allClinicVisits;
     @Mock
     private CallTimeSlotService dosageTimeSlotService;
+    @Mock
+    AuthenticatedUser user;
+    @Mock
+    HttpServletRequest request;
+    @Mock
+    HttpSession session;
 
     private TreatmentAdviceController controller;
     private TreatmentAdvice treatmentAdvice;
@@ -76,13 +84,13 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-
         treatmentAdvice = getTreatmentAdvice();
-
         Patient patient = new Patient();
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-
+        Mockito.when(user.getUsername()).thenReturn(USER_NAME);
+        Mockito.when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
+        Mockito.when(request.getSession()).thenReturn(session);
         controller = new TreatmentAdviceController(allPatients, allRegimens, allDosageTypes, allMealAdviceTypes, treatmentAdviceService, treatmentAdviceViewMapper, allClinicVisits, dosageTimeSlotService);
     }
 
@@ -96,8 +104,12 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
-        final ArrayList<String> morningTimeSlots = new ArrayList<String>() {{ add("10:00"); }};
-        final ArrayList<String> eveningTimeSlots = new ArrayList<String>() {{ add("09:00"); }};
+        final ArrayList<String> morningTimeSlots = new ArrayList<String>() {{
+            add("10:00");
+        }};
+        final ArrayList<String> eveningTimeSlots = new ArrayList<String>() {{
+            add("09:00");
+        }};
         when(dosageTimeSlotService.availableMorningSlots()).thenReturn(morningTimeSlots);
         when(dosageTimeSlotService.availableEveningSlots()).thenReturn(eveningTimeSlots);
         controller.createForm(PATIENT_ID, uiModel);

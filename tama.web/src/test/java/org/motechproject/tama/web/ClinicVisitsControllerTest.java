@@ -23,6 +23,8 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Gender;
+import org.motechproject.tama.security.AuthenticatedUser;
+import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
@@ -34,6 +36,7 @@ import org.springframework.validation.BindingResult;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +68,8 @@ public class ClinicVisitsControllerTest {
 
         public static final String PATIENT_ID = "patientId";
         public static final String VISIT_ID = "clinicVisitId";
+        static final String USER_NAME = "userName";
+
         @Mock
         protected TreatmentAdviceController treatmentAdviceController;
         @Mock
@@ -73,8 +78,6 @@ public class ClinicVisitsControllerTest {
         protected VitalStatisticsController vitalStatisticsController;
         @Mock
         protected OpportunisticInfectionsController opportunisticInfectionsController;
-        @Mock
-        protected HttpServletRequest request;
         @Mock
         protected AllTreatmentAdvices allTreatmentAdvices;
         @Mock
@@ -87,6 +90,12 @@ public class ClinicVisitsControllerTest {
         protected Model uiModel;
         @Mock
         protected PatientService patientService;
+        @Mock
+        AuthenticatedUser user;
+        @Mock
+        HttpServletRequest request;
+        @Mock
+        HttpSession session;
 
         protected ClinicVisitsController clinicVisitsController;
 
@@ -101,6 +110,9 @@ public class ClinicVisitsControllerTest {
             when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
             when(allLabResults.findLatestLabResultsByPatientId(PATIENT_ID)).thenReturn(new LabResults());
+            when(user.getUsername()).thenReturn(USER_NAME);
+            when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
+            when(request.getSession()).thenReturn(session);
         }
     }
 

@@ -78,7 +78,7 @@ public class TreatmentAdviceServiceTest {
 
         assertEquals(treatmentAdvice.getId(), newTreatmentAdviceId);
         verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
-        verify(allTreatmentAdvices).update(existingTreatmentAdvice);
+        verify(allTreatmentAdvices).update(existingTreatmentAdvice, USER_NAME);
         verify(dailyCallPlan).reEnroll(patient, treatmentAdvice);
         verify(callTimeSlotService).freeSlots(patient, existingTreatmentAdvice);
         verify(callTimeSlotService).allotSlots(patient, treatmentAdvice);
@@ -96,7 +96,7 @@ public class TreatmentAdviceServiceTest {
 
         treatmentAdviceService.changeRegimen(existingTreatmentAdvice.getId(), "stop", treatmentAdvice, USER_NAME);
         verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
-        verify(allTreatmentAdvices).update(existingTreatmentAdvice);
+        verify(allTreatmentAdvices).update(existingTreatmentAdvice, USER_NAME);
         verify(weeklyCallPlan).reEnroll(patient, treatmentAdvice);
         verify(callTimeSlotService).freeSlots(patient, existingTreatmentAdvice);
         verify(callTimeSlotService, times(0)).allotSlots(patient, treatmentAdvice);
