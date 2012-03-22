@@ -19,8 +19,6 @@ import java.util.List;
 @Repository
 public class AllCallLogSummaries {
 
-    public static final int THRESHOLD = Integer.MAX_VALUE - 1;
-
     private AllCallLogs allCallLogs;
     private AllPatients allPatients;
     private AllClinics allClinics;
@@ -46,9 +44,5 @@ public class AllCallLogSummaries {
             callLogSummaries.add(callLogSummaryBuilder.build(callLog));
         }
         return callLogSummaries;
-    }
-
-    public boolean isNumberOfCallSummariesWithinThreshold(LocalDate startDate, LocalDate endDate) {
-        return allCallLogs.countLogsBetween(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59)) < THRESHOLD;
     }
 }

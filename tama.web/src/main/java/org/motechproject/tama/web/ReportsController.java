@@ -117,12 +117,8 @@ public class ReportsController {
                                         @RequestParam LocalDate endDate,
                                         ModelMap uiModel,
                                         HttpServletResponse response) {
-        if (allCallLogSummaries.isNumberOfCallSummariesWithinThreshold(startDate, endDate)) {
-            CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(allCallLogSummaries, startDate, endDate);
-            writeExcelToResponse(response, createExcelReport(callLogReportBuilder), "AllCallLogsReport.xls");
-        } else {
-            uiModel.addAttribute("threshold.exceed", "true");
-        }
+        CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(allCallLogSummaries, startDate, endDate);
+        writeExcelToResponse(response, createExcelReport(callLogReportBuilder), "AllCallLogsReport.xls");
     }
 
     @RequestMapping(value = "/reports/smsReport.xls", method = RequestMethod.GET)

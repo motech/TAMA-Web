@@ -145,7 +145,6 @@ public class ReportsControllerTest {
         List<CallLogSummary> callLogSummaries = new ArrayList<CallLogSummary>();
         HttpServletResponse httpServletResponse = initializeServletResponse();
 
-        when(allCallLogSummaries.isNumberOfCallSummariesWithinThreshold(startDate, endDate)).thenReturn(true);
         when(allCallLogSummaries.getAllCallLogSummariesBetween(eq(startDate), eq(endDate), anyInt(), anyInt())).thenReturn(callLogSummaries);
 
         reportsController.buildCallLogExcelReport(startDate, endDate, uiModel, httpServletResponse);
@@ -169,28 +168,6 @@ public class ReportsControllerTest {
         assertEquals(endDate, dateTimeArgumentCaptor.getAllValues().get(1).toLocalDate());
         assertEquals(new LocalTime(23, 59, 59), dateTimeArgumentCaptor.getAllValues().get(1).toLocalTime());
         verify(httpServletResponse.getOutputStream(), atLeastOnce()).write(Matchers.<byte[]>any());
-    }
-
-    @Test
-    public void shouldNotBuildCallLogReportsIfNumberOfCallSummariesIsNotWithinThreshold() throws IOException {
-        LocalDate startDate = DateUtil.today();
-        LocalDate endDate = DateUtil.today().plusYears(1);
-        HttpServletResponse response = initializeServletResponse();
-
-        when(allCallLogSummaries.isNumberOfCallSummariesWithinThreshold(startDate, endDate)).thenReturn(false);
-        reportsController.buildCallLogExcelReport(startDate, endDate, uiModel, response);
-
-        verifyNoMoreInteractions(response);
-    }
-
-    @Test
-    public void shouldNotifyUserIfNumberOfCallSummariesIsNotWithinThreshold() {
-        LocalDate startDate = DateUtil.today();
-        LocalDate endDate = DateUtil.today().plusYears(1);
-
-        when(allCallLogSummaries.isNumberOfCallSummariesWithinThreshold(startDate, endDate)).thenReturn(false);
-        reportsController.buildCallLogExcelReport(startDate, endDate, uiModel, null);
-        assertTrue(uiModel.containsAttribute("threshold.exceed"));
     }
 
     private HttpServletResponse initializeServletResponse() throws IOException {
