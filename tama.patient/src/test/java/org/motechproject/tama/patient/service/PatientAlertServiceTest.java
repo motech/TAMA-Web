@@ -83,13 +83,17 @@ public class PatientAlertServiceTest {
 
     @Test
     public void shouldUpdateSymptomReportingAlert() {
-        final String testPatientId = "testPatientId";
+        final String alertId = "alertId";
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+            setData(symptomReportingData);
+            setId(alertId);
+        }});
         String doctorsNotes = "doctorsNotes";
         String notes = "notes";
-        patientAlertService.updateAlert(testPatientId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.toString());
-        verify(alertService).setData(testPatientId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
-        verify(alertService).setData(testPatientId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
-        verify(alertService).setData(testPatientId, PatientAlert.NOTES, notes);
+        patientAlertService.updateAlert(alertId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.toString(), USER_NAME);
+        verify(alertService).setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
+        verify(alertService).setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
+        verify(alertService).setData(alertId, PatientAlert.NOTES, notes);
     }
 
     @Test
@@ -107,13 +111,18 @@ public class PatientAlertServiceTest {
 
     @Test
     public void shouldUpdateAppointmentReminderAlert() {
-        final String testPatientId = "testPatientId";
+        final String alertId = "alertId";
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+            setData(symptomReportingData);
+            setId(alertId);
+        }});
+
         String doctorsNotes = "doctorsNotes";
         String notes = "notes";
-        patientAlertService.updateAlert(testPatientId, "Open", notes, doctorsNotes, PatientAlertType.AppointmentReminder.name());
-        verify(alertService, never()).setData(testPatientId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
-        verify(alertService, never()).setData(testPatientId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
-        verify(alertService).setData(testPatientId, PatientAlert.NOTES, notes);
+        patientAlertService.updateAlert(alertId, "Open", notes, doctorsNotes, PatientAlertType.AppointmentReminder.name(), USER_NAME);
+        verify(alertService, never()).setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
+        verify(alertService, never()).setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
+        verify(alertService).setData(alertId, PatientAlert.NOTES, notes);
     }
 
     @Test
@@ -198,8 +207,10 @@ public class PatientAlertServiceTest {
 
     @Test
     public void shouldReturnFalseWhenUpdateUnSuccessful() {
+        when(alertService.get(anyString())).thenReturn(new Alert());
         doThrow(new RuntimeException("update exception")).when(alertService).setData(anyString(), anyString(), anyString());
-        assertFalse(patientAlertService.updateAlert(anyString(), anyString(), anyString(), anyString(), anyString()));
+        boolean condition = patientAlertService.updateAlert("", "", "", "", "", "");
+        assertFalse(condition);
     }
 
     @Test

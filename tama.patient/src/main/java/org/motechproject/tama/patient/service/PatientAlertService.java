@@ -54,23 +54,33 @@ public class PatientAlertService {
 
     public PatientAlert readAlert(String alertId, String userName) {
         final Alert alert = alertService.get(alertId);
-        allAuditEvents.recordAppointmentEvent(userName, "Marking alert : " + alertId + " for : " + alert.getExternalId() + " as read");
+        allAuditEvents.recordAppointmentEvent(userName, String.format("Marking alert : %s for : %s as read", alertId, alert.getExternalId()));
         alertService.changeStatus(alert.getId(), AlertStatus.READ);
         return PatientAlert.newPatientAlert(alert, allPatients.get(alert.getExternalId()));
     }
 
-    public boolean updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType) {
+    public boolean updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType, String userName) {
+        Alert alert = alertService.get(alertId);
         try {
             if (PatientAlertType.SymptomReporting.toString().equals(patientAlertType)) {
-                alertService.setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
-                alertService.setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
+                updateData(PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus, userName, alert);
+                updateData(PatientAlert.DOCTORS_NOTES, doctorsNotes, userName, alert);
             }
-            alertService.setData(alertId, PatientAlert.NOTES, notes);
+            updateData(PatientAlert.NOTES, notes, userName, alert);
         } catch (RuntimeException e) {
             logger.error(e);
             return false;
         }
         return true;
+    }
+
+    private void updateData(String key, String value, String userName, Alert alert) {
+        String alertId = alert.getId();
+        String oldValue = alert.getData().get(key);
+        if (oldValue != value) {
+            allAuditEvents.recordAppointmentEvent(userName, String.format("Changing %s for alert[%s] from  %s to %s", key, alertId, oldValue, value));
+            alertService.setData(alertId, key, value);
+        }
     }
 
     public void updateDoctorConnectedToDuringSymptomCall(String patientId, String doctorName) {

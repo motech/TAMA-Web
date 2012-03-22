@@ -119,23 +119,23 @@ public class AllClinicVisits {
 
     public void adjustDueDate(String patientDocId, String clinicVisitId, LocalDate adjustedDueDate, String userName) {
         RescheduleAppointmentRequest rescheduleAppointmentRequest = rescheduleAppointmentRequestBuilder.create(patientDocId, clinicVisitId, adjustedDueDate);
-        allAuditEvents.recordAppointmentEvent(userName, "Adjusting due date for patient : " + patientDocId + " for visit " + clinicVisitId + " to " + adjustedDueDate);
+        allAuditEvents.recordAppointmentEvent(userName, String.format("Adjusting due date for patient : %s for visit %s to %s", patientDocId, clinicVisitId, adjustedDueDate));
         appointmentService.rescheduleAppointment(rescheduleAppointmentRequest);
     }
 
     public void confirmAppointmentDate(String patientDocId, String clinicVisitId, DateTime confirmedAppointmentDate, String userName) {
         ConfirmAppointmentRequest request = confirmAppointmentRequestBuilder.confirmAppointmentRequest(patientDocId, clinicVisitId, confirmedAppointmentDate);
-        allAuditEvents.recordAppointmentEvent(userName, "Confirming visit date for patient : " + patientDocId + " for visit " + clinicVisitId + " to " + confirmedAppointmentDate);
+        allAuditEvents.recordAppointmentEvent(userName, String.format("Confirming visit date for patient : %s for visit %s to %s", patientDocId, clinicVisitId, confirmedAppointmentDate));
         appointmentService.confirmAppointment(request);
     }
 
     public void markAsMissed(String patientDocId, String clinicVisitId, String userName) {
-        allAuditEvents.recordAppointmentEvent(userName, "Marking visit  : " + clinicVisitId + " for patient : " + patientDocId + " as missed ");
+        allAuditEvents.recordAppointmentEvent(userName, String.format("Marking visit  : %s for patient : %s as missed ", clinicVisitId, patientDocId));
         appointmentService.markVisitAsMissed(patientDocId, clinicVisitId);
     }
 
     public void closeVisit(String patientDocId, String clinicVisitId, DateTime visitDate, String userName) {
-        allAuditEvents.recordAppointmentEvent(userName, "Closing visit " + clinicVisitId + " for : " + patientDocId + " on " + visitDate);
+        allAuditEvents.recordAppointmentEvent(userName, String.format("Closing visit %s for : %s on %s", clinicVisitId, patientDocId, visitDate));
         appointmentService.visited(patientDocId, clinicVisitId, visitDate);
     }
 }

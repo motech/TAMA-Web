@@ -55,9 +55,10 @@ public class AlertsControllerTest {
         patientAlerts = new PatientAlerts();
         alert = new Alert("externalId", null, null, 0, null);
 
-        when(authenticatedUser.getClinicId()).thenReturn(clinicId);
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(authenticatedUser);
+        when(authenticatedUser.getClinicId()).thenReturn(clinicId);
+        when(authenticatedUser.getUsername()).thenReturn(USER_NAME);
         alertsController = new AlertsController(patientAlertService);
     }
 
@@ -117,7 +118,7 @@ public class AlertsControllerTest {
     @Test
     public void shouldUpdate() {
         alertsController.update(uiModel, alertId, symptomsAlertStatus, notes, doctorsNotes, type, request);
-        verify(patientAlertService).updateAlert(alertId, symptomsAlertStatus, notes, doctorsNotes, type);
+        verify(patientAlertService).updateAlert(alertId, symptomsAlertStatus, notes, doctorsNotes, type, USER_NAME);
     }
 
     @Test
