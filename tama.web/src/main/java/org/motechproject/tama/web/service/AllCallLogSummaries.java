@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.domain.CallLog;
@@ -17,6 +18,8 @@ import java.util.List;
 
 @Repository
 public class AllCallLogSummaries {
+
+    public static final int THRESHOLD = 30000;
 
     private AllCallLogs allCallLogs;
     private AllPatients allPatients;
@@ -39,5 +42,9 @@ public class AllCallLogSummaries {
             callLogSummaries.add(callLogSummaryBuilder.build(callLog));
         }
         return callLogSummaries;
+    }
+
+    public boolean isNumberOfCallSummariesWithinThreshold(LocalDate startDate, LocalDate endDate) {
+        return allCallLogs.countLogsBetween(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59)) < THRESHOLD;
     }
 }

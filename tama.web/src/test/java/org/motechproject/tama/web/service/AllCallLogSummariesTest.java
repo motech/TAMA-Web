@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -63,7 +65,34 @@ public class AllCallLogSummariesTest {
         when(allCallLogs.findAllCallLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59))).thenReturn(Arrays.asList(callLog1, callLog2));
 
         List<CallLogSummary> allCallLogSummariesBetween = allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate);
-        
+
         assertNotNull(allCallLogSummariesBetween);
+    }
+
+    @Test
+    public void numberOfCallSummariesIsWithinThresholdIfNumberOfCallLogsIsLessThanThreshold() {
+        LocalDate startDate = DateUtil.today();
+        LocalDate endDate = DateUtil.today();
+
+        when(allCallLogs.countLogsBetween(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59))).thenReturn(AllCallLogSummaries.THRESHOLD - 1);
+        assertTrue(allCallLogSummaries.isNumberOfCallSummariesWithinThreshold(startDate, endDate));
+    }
+
+    @Test
+    public void numberOfCallSummariesIsNotWithinThresholdIfNumberOfCallLogsIsGreaterThanThreshold() {
+        LocalDate startDate = DateUtil.today();
+        LocalDate endDate = DateUtil.today();
+
+        when(allCallLogs.countLogsBetween(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59))).thenReturn(AllCallLogSummaries.THRESHOLD + 1);
+        assertFalse(allCallLogSummaries.isNumberOfCallSummariesWithinThreshold(startDate, endDate));
+    }
+
+    @Test
+    public void numberOfCallSummariesIsNotWithinThresholdIfNumberOfCallLogsEqualsThreshold() {
+        LocalDate startDate = DateUtil.today();
+        LocalDate endDate = DateUtil.today();
+
+        when(allCallLogs.countLogsBetween(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59))).thenReturn(AllCallLogSummaries.THRESHOLD);
+        assertFalse(allCallLogSummaries.isNumberOfCallSummariesWithinThreshold(startDate, endDate));
     }
 }

@@ -45,6 +45,12 @@ public class AllCallLogs extends AbstractCouchRepository<CallLog> {
         return db.queryView(q, CallLog.class);
     }
 
+    @View(name = "count_by_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { emit(doc.startTime, doc._id); } }", reduce = "_count")
+    public int countLogsBetween(DateTime startTime, DateTime endTime) {
+        ViewQuery q = createQuery("count_by_date_range").startKey(startTime).endKey(endTime).inclusiveEnd(true).reduce(true);
+        return rowCount(db.queryView(q));
+    }
+
     @View(name = "find_by_callType_and_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { var callType = 'Answered'; if(doc.callEvents) { for(var idx in doc.callEvents) { if (doc.callEvents[idx].name == 'Missed') { callType = 'Missed'; } } } emit([callType, doc.startTime], doc._id); } }", reduce = "_count")
     public int findTotalNumberOfCallLogsForDateRange(CallLogSearch callLogSearch) {
         ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getFromDate());
@@ -80,7 +86,7 @@ public class AllCallLogs extends AbstractCouchRepository<CallLog> {
     @View(name = "find_by_callType_patientId_and_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { var callType = 'Answered'; if(doc.callEvents) { for(var idx in doc.callEvents) { if (doc.callEvents[idx].name == 'Missed') { callType = 'Missed'; } } } emit([callType, doc.patientId.toLowerCase(), doc.startTime], doc._id); } }", reduce = "_count")
     public int findTotalNumberOfCallLogsForDateRangeAndPatientId(CallLogSearch callLogSearch) {
         ComplexKey startKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getPatientId(), callLogSearch.getFromDate());
-        ComplexKey endKey= ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getPatientId(), callLogSearch.getToDate());
+        ComplexKey endKey = ComplexKey.of(callLogSearch.getCallLogType().name(), callLogSearch.getPatientId(), callLogSearch.getToDate());
         ViewQuery q = createQuery("find_by_callType_patientId_and_date_range").startKey(startKey).endKey(endKey).reduce(true);
         return rowCount(db.queryView(q));
     }

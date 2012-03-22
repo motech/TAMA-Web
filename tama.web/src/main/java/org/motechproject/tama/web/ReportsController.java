@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -113,11 +114,15 @@ public class ReportsController {
                                         @RequestParam LocalDate startDate,
                                         @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
                                         @RequestParam LocalDate endDate,
+                                        ModelMap uiModel,
                                         HttpServletResponse response) {
-
-        List<CallLogSummary> callLogSummaryList = allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate);
-        CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(callLogSummaryList);
-        writeExcelToResponse(response, createExcelReport(callLogReportBuilder), "AllCallLogsReport.xls");
+        if (allCallLogSummaries.isNumberOfCallSummariesWithinThreshold(startDate, endDate)) {
+            List<CallLogSummary> callLogSummaryList = allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate);
+            CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(callLogSummaryList);
+            writeExcelToResponse(response, createExcelReport(callLogReportBuilder), "AllCallLogsReport.xls");
+        } else {
+            uiModel.addAttribute("threshold.exceed", "true");
+        }
     }
 
     @RequestMapping(value = "/reports/smsReport.xls", method = RequestMethod.GET)

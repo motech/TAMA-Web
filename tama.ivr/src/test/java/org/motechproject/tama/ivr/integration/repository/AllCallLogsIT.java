@@ -63,7 +63,7 @@ public class AllCallLogsIT extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldFindAllCallLogsInAGivenDateRange(){
+    public void shouldFindAllCallLogsInAGivenDateRange() {
         DateTime firstDay = DateUtil.now();
         DateTime secondDay = DateUtil.now().plusDays(1);
         DateTime thirdDay = DateUtil.now().plusDays(2);
@@ -173,6 +173,18 @@ public class AllCallLogsIT extends SpringIntegrationTest {
         assertEquals(callLog1, expectedCallLogs.get(0));
         assertEquals(callLog2, expectedCallLogs.get(1));
         assertEquals(callLog4, expectedCallLogs.get(2));
+    }
+
+    @Test
+    public void shouldCountTheNumberOfCallLogsBetweenDateRange() {
+        DateTime firstDay = DateUtil.now();
+        DateTime secondDay = DateUtil.now().plusDays(1);
+        DateTime thirdDay = DateUtil.now().plusDays(2);
+
+        CallLog callLog1 = createCallLog(firstDay, "clinic1", "Newcall", PATIENT_ID1);
+        CallLog callLog2 = createCallLog(secondDay, "clinic1", "GotDTMF", PATIENT_ID1);
+        CallLog callLog3 = createCallLog(thirdDay, "clinic1", "Newcall", PATIENT_ID2);
+        assertEquals(1, allCallLogs.countLogsBetween(secondDay, secondDay));
     }
 
     @Test
