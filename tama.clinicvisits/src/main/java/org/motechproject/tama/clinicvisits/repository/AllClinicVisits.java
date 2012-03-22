@@ -10,6 +10,7 @@ import org.motechproject.tama.clinicvisits.builder.servicecontract.RescheduleApp
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
+import org.motechproject.tama.common.repository.AllAuditEvents;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,16 +28,18 @@ public class AllClinicVisits {
     private CreateVisitRequestBuilder createVisitRequestBuilder;
     private ConfirmAppointmentRequestBuilder confirmAppointmentRequestBuilder;
     private RescheduleAppointmentRequestBuilder rescheduleAppointmentRequestBuilder;
+    private AllAuditEvents allAuditEvents;
 
     @Autowired
     public AllClinicVisits(AllPatients allPatients, AppointmentService appointmentService, AppointmentCalendarRequestBuilder appointmentCalendarRequestBuilder,
-                           CreateVisitRequestBuilder createVisitRequestBuilder, ConfirmAppointmentRequestBuilder confirmAppointmentRequestBuilder, RescheduleAppointmentRequestBuilder rescheduleAppointmentRequestBuilder) {
+                           CreateVisitRequestBuilder createVisitRequestBuilder, ConfirmAppointmentRequestBuilder confirmAppointmentRequestBuilder, RescheduleAppointmentRequestBuilder rescheduleAppointmentRequestBuilder, AllAuditEvents allAuditEvents) {
         this.allPatients = allPatients;
         this.appointmentService = appointmentService;
         this.appointmentCalendarRequestBuilder = appointmentCalendarRequestBuilder;
         this.createVisitRequestBuilder = createVisitRequestBuilder;
         this.confirmAppointmentRequestBuilder = confirmAppointmentRequestBuilder;
         this.rescheduleAppointmentRequestBuilder = rescheduleAppointmentRequestBuilder;
+        this.allAuditEvents = allAuditEvents;
     }
 
     public void addAppointmentCalendar(String patientDocId) {
@@ -65,9 +68,10 @@ public class AllClinicVisits {
         return clinicVisits;
     }
 
-    public void createUnScheduledAppointment(String patientDocId, DateTime dueDate, TypeOfVisit typeOfVisit) {
+    public void createUnScheduledAppointment(String patientDocId, DateTime dueDate, TypeOfVisit typeOfVisit, String userName) {
         String visitName = "visitFor-" + dueDate.getMillis();
         CreateVisitRequest createVisitRequest = createVisitRequestBuilder.adHocVisitRequest(visitName, typeOfVisit, dueDate);
+        allAuditEvents.recordAppointmentEvent(userName, "Added visit for : " + patientDocId + " with dueDate set as " + dueDate);
         appointmentService.addVisit(patientDocId, createVisitRequest);
     }
 

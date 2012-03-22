@@ -15,6 +15,7 @@ import org.motechproject.tama.clinicvisits.builder.servicecontract.RescheduleApp
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
+import org.motechproject.tama.common.repository.AllAuditEvents;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.testing.utils.BaseUnitTest;
@@ -32,6 +33,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class AllClinicVisitsTest extends BaseUnitTest {
 
     static final String PATIENT_ID = "patientId";
+    public static final String USER_NAME = "userName";
 
     protected Properties appointmentsProperties = new Properties();
 
@@ -47,14 +49,16 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     private ConfirmAppointmentRequestBuilder confirmAppointmentRequestBuilder;
     @Mock
     private RescheduleAppointmentRequestBuilder rescheduleAppointmentRequestBuilder;
-    
+    @Mock
+    private AllAuditEvents allAuditEvents;
+
     private AllClinicVisits allClinicVisits;
 
     @Before
     public void setUp() {
         initMocks(this);
         when(allPatients.get(PATIENT_ID)).thenReturn(PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build());
-        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentCalendarRequestBuilder, createVisitRequestBuilder, confirmAppointmentRequestBuilder, rescheduleAppointmentRequestBuilder);
+        allClinicVisits = new AllClinicVisits(allPatients, appointmentService, appointmentCalendarRequestBuilder, createVisitRequestBuilder, confirmAppointmentRequestBuilder, rescheduleAppointmentRequestBuilder, allAuditEvents);
     }
 
     @Test
@@ -144,7 +148,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
     public void shouldCreateUniqueVisitNameForUnscheduledAppointment() {
         DateTime dueDate = DateUtil.now();
 
-        allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
+        allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled, USER_NAME);
         verify(appointmentService).addVisit(eq(PATIENT_ID), Matchers.<CreateVisitRequest>any());
     }
 
@@ -154,7 +158,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         CreateVisitRequest createVisitRequest = mock(CreateVisitRequest.class);
 
         when(createVisitRequestBuilder.adHocVisitRequest(Matchers.<String>any(), eq(TypeOfVisit.Unscheduled), eq(dueDate))).thenReturn(createVisitRequest);
-        allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled);
+        allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled, USER_NAME);
         verify(appointmentService).addVisit(eq(PATIENT_ID), same(createVisitRequest));
     }
 

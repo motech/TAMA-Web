@@ -30,8 +30,6 @@ public class AuditRecord extends CouchEntity {
         this.after = after;
     }
 
-
-
     @JsonIgnore
     public CouchEntity getBefore() {
         return before;

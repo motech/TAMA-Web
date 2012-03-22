@@ -232,8 +232,8 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/createAppointment.json", method = RequestMethod.POST)
     @ResponseBody
     public String createAppointment(@RequestParam(value = "patientId", required = true) String patientDocId, @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    @RequestParam(value = "appointmentDueDate") DateTime appointmentDueDate, @RequestParam(value = "typeOfVisit") String typeOfVisit) {
-        allClinicVisits.createUnScheduledAppointment(patientDocId, appointmentDueDate, TypeOfVisit.valueOf(typeOfVisit));
+    @RequestParam(value = "appointmentDueDate") DateTime appointmentDueDate, @RequestParam(value = "typeOfVisit") String typeOfVisit, HttpServletRequest request) {
+        allClinicVisits.createUnScheduledAppointment(patientDocId, appointmentDueDate, TypeOfVisit.valueOf(typeOfVisit), loggedInUserId(request));
         return "{'result':'success'}";
     }
 

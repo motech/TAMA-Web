@@ -5,14 +5,12 @@ import org.ektorp.CouchDbConnector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.motechproject.tama.common.domain.CouchEntity;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +34,8 @@ public abstract class SpringIntegrationTest {
     }
 
     protected void deleteAll() {
-        tamaDbConnector.executeBulk(toDelete);
+        if (toDelete.size() > 0)
+            tamaDbConnector.executeBulk(toDelete);
         toDelete.clear();
     }
 

@@ -10,6 +10,7 @@ import org.motechproject.tama.common.domain.CouchEntity;
 @TypeDiscriminator("doc.baseClass == 'TAMAEvent'")
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public class TAMAEvent extends CouchEntity {
+
     @JsonProperty @Getter DateTime dateTime;
     @JsonProperty String baseClass = "TAMAEvent";
 

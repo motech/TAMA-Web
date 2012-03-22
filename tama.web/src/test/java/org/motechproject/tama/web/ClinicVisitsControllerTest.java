@@ -62,8 +62,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 })
 public class ClinicVisitsControllerTest {
 
-    public static final String USER_NAME = "userName";
-
     public static class SubjectUnderTest extends BaseUnitTest {
 
         public static final String PATIENT_ID = "patientId";
@@ -383,10 +381,10 @@ public class ClinicVisitsControllerTest {
         public void shouldSetDueDateWhenCreatingAppointment() {
             ArgumentCaptor<DateTime> argumentCaptor = ArgumentCaptor.forClass(DateTime.class);
 
-            clinicVisitsController.createAppointment(PATIENT_ID, now.plusDays(1), TypeOfVisit.Unscheduled.name());
-            clinicVisitsController.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled.name());
+            clinicVisitsController.createAppointment(PATIENT_ID, now.plusDays(1), TypeOfVisit.Unscheduled.name(), request);
+            clinicVisitsController.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled.name(), request);
 
-            verify(allClinicVisits, times(2)).createUnScheduledAppointment(eq(PATIENT_ID), argumentCaptor.capture(), same(TypeOfVisit.Unscheduled));
+            verify(allClinicVisits, times(2)).createUnScheduledAppointment(eq(PATIENT_ID), argumentCaptor.capture(), same(TypeOfVisit.Unscheduled), eq(USER_NAME));
             assertNotSame(argumentCaptor.getAllValues().get(0), argumentCaptor.getAllValues().get(1));
         }
 
@@ -394,10 +392,10 @@ public class ClinicVisitsControllerTest {
         public void shouldSetTypeOfVisitWhenCreatingAppointment() {
             ArgumentCaptor<TypeOfVisit> typeCaptor = ArgumentCaptor.forClass(TypeOfVisit.class);
 
-            clinicVisitsController.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled.name());
-            clinicVisitsController.createAppointment(PATIENT_ID, now, TypeOfVisit.Scheduled.name());
+            clinicVisitsController.createAppointment(PATIENT_ID, now, TypeOfVisit.Unscheduled.name(), request);
+            clinicVisitsController.createAppointment(PATIENT_ID, now, TypeOfVisit.Scheduled.name(), request);
 
-            verify(allClinicVisits, times(2)).createUnScheduledAppointment(eq(PATIENT_ID), eq(now), typeCaptor.capture());
+            verify(allClinicVisits, times(2)).createUnScheduledAppointment(eq(PATIENT_ID), eq(now), typeCaptor.capture(), eq(USER_NAME));
             assertNotSame(typeCaptor.getAllValues().get(0), typeCaptor.getAllValues().get(1));
         }
 
@@ -405,7 +403,7 @@ public class ClinicVisitsControllerTest {
         public void shouldReturnSuccessCodeAfterCreatingAppointment() {
             String successCode = "{'result':'success'}";
             assertEquals(successCode, clinicVisitsController.createAppointment(PATIENT_ID,
-                    now, TypeOfVisit.Unscheduled.name()));
+                    now, TypeOfVisit.Unscheduled.name(), request));
         }
     }
 }
