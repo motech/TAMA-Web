@@ -1,4 +1,4 @@
-package org.motechproject.tama.patient.repository;
+package org.motechproject.tama.common.repository;
 
 import org.ektorp.CouchDbConnector;
 import org.motechproject.tama.common.domain.CouchEntity;

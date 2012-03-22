@@ -13,7 +13,6 @@ public abstract class CouchEntity extends MotechBaseDataObject {
 
     private static final long serialVersionUID = 4517930750095396426L;
 
-
     private String documentType;
 
     public CouchEntity() {

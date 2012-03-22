@@ -6,6 +6,8 @@ import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.repository.AllAuditRecords;
+import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.refdata.domain.LabTest;

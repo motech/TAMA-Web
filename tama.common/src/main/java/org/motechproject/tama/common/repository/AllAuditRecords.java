@@ -1,9 +1,8 @@
-package org.motechproject.tama.patient.repository;
+package org.motechproject.tama.common.repository;
 
 import org.ektorp.CouchDbConnector;
+import org.motechproject.tama.common.domain.AuditRecord;
 import org.motechproject.tama.common.domain.CouchEntity;
-import org.motechproject.tama.common.repository.AbstractCouchRepository;
-import org.motechproject.tama.patient.domain.AuditRecord;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

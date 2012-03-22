@@ -8,6 +8,8 @@ import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.GenerateView;
 import org.ektorp.support.View;
+import org.motechproject.tama.common.repository.AllAuditRecords;
+import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.common.util.UUIDUtil;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.patient.domain.HIVMedicalHistory;

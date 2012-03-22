@@ -14,7 +14,7 @@ import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.MedicalHistory;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.UniquePatientField;
-import org.motechproject.tama.patient.repository.AllAuditRecords;
+import org.motechproject.tama.common.repository.AllAuditRecords;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 import org.motechproject.tama.refdata.domain.Gender;

@@ -1,11 +1,10 @@
-package org.motechproject.tama.patient.domain;
+package org.motechproject.tama.common.domain;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
-import org.motechproject.tama.common.domain.CouchEntity;
 
 @TypeDiscriminator("doc.documentType == 'AuditRecord'")
 public class AuditRecord extends CouchEntity {

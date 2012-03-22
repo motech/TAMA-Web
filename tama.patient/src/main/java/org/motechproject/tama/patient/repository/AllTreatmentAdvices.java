@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
+import org.motechproject.tama.common.repository.AllAuditRecords;
+import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
