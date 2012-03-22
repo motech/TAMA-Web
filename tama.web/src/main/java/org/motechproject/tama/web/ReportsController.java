@@ -15,6 +15,7 @@ import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.ReportBuilder;
 import org.motechproject.tama.web.service.AllCallLogSummaries;
 import org.motechproject.tama.web.resportbuilder.*;
+import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,8 +121,12 @@ public class ReportsController {
     }
 
     @RequestMapping(value = "/reports/smsReport.xls", method = RequestMethod.GET)
-    public void buildSMSExcelReport(HttpServletResponse response) {
-        SMSReportBuilder smsReportBuilder = new SMSReportBuilder(allSMSLogs.getAll());
+    public void buildSMSExcelReport(@DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                        @RequestParam LocalDate startDate,
+                                        @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                        @RequestParam LocalDate endDate,
+                                        HttpServletResponse response) {
+        SMSReportBuilder smsReportBuilder = new SMSReportBuilder(allSMSLogs.findAllSMSLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59)));
         writeExcelToResponse(response, createExcelReport(smsReportBuilder), "AllSMSReports.xls");
     }
 

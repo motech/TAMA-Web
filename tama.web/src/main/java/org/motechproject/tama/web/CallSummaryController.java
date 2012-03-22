@@ -10,6 +10,7 @@ import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.model.CallLogPageNavigator;
 import org.motechproject.tama.web.view.CallLogPreferencesFilter;
 import org.motechproject.tama.web.view.CallLogView;
+import org.motechproject.tama.web.view.CallSummaryReportsFilter;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -34,6 +35,7 @@ public class CallSummaryController {
     private CallLogViewMapper callLogViewMapper;
     private final String LIST_VIEW = "callsummary/list";
     private final String CREATE_VIEW = "callsummary/create";
+    private final String DOWNLOAD_VIEW = "callsummary/download";
     private static final int HOURS_OF_THE_DAY = 23;
     private static final int MINUTES_AND_SECONDS_TO_END_OF_DAY = 59;
     public static final String PATIENT_ID_WRONG_MESSAGE = "No call logs exist for the specified patient ID.";
@@ -119,6 +121,16 @@ public class CallSummaryController {
     public String filterLogs(Model uiModel) {
         populateUIModel(uiModel);
         return CREATE_VIEW;
+    }
+
+    @RequestMapping(params = "download", method = RequestMethod.GET)
+    public String download(Model uiModel) {
+        CallSummaryReportsFilter callSummaryReportsFilter = new CallSummaryReportsFilter();
+        callSummaryReportsFilter.setStartDate(DateUtil.today().toDate());
+        callSummaryReportsFilter.setEndDate(DateUtil.today().toDate());
+        uiModel.addAttribute("callLogReport", callSummaryReportsFilter);
+        uiModel.addAttribute("smsReport", callSummaryReportsFilter);
+        return DOWNLOAD_VIEW;
     }
 
     private void populateUIModel(Model uiModel) {

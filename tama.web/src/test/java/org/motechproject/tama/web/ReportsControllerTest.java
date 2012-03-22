@@ -1,10 +1,13 @@
 package org.motechproject.tama.web;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
@@ -149,10 +152,18 @@ public class ReportsControllerTest {
     @Test
     public void shouldBuildSMSExcelReport() throws IOException {
         HttpServletResponse httpServletResponse = initializeServletResponse();
+        LocalDate startDate = DateUtil.newDate(2010, 10, 10);
+        LocalDate endDate = DateUtil.newDate(2010, 10, 20);
 
-        reportsController.buildSMSExcelReport(httpServletResponse);
+        reportsController.buildSMSExcelReport(startDate, endDate, httpServletResponse);
 
-        verify(allSMSLogs).getAll();
+        ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
+
+        verify(allSMSLogs).findAllSMSLogsForDateRange(dateTimeArgumentCaptor.capture(), dateTimeArgumentCaptor.capture());
+        assertEquals(startDate, dateTimeArgumentCaptor.getAllValues().get(0).toLocalDate());
+        assertEquals(new LocalTime(0, 0, 0), dateTimeArgumentCaptor.getAllValues().get(0).toLocalTime());
+        assertEquals(endDate, dateTimeArgumentCaptor.getAllValues().get(1).toLocalDate());
+        assertEquals(new LocalTime(23, 59, 59), dateTimeArgumentCaptor.getAllValues().get(1).toLocalTime());
         verify(httpServletResponse.getOutputStream(), atLeastOnce()).write(Matchers.<byte[]>any());
     }
 

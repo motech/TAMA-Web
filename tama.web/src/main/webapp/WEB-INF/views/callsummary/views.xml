@@ -7,6 +7,9 @@
     <definition extends="default" name="callsummary/create">
         <put-attribute name="body" value="/WEB-INF/views/callsummary/create.jspx"/>
     </definition>
+    <definition extends="default" name="callsummary/download">
+        <put-attribute name="body" value="/WEB-INF/views/callsummary/download.jspx"/>
+    </definition>
     <definition extends="default" name="callsummary/nologs">
         <put-attribute name="body" value="/WEB-INF/views/callsummary/nologs.jspx"/>
     </definition>

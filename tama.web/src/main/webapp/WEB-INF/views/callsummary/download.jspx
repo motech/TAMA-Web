@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+     version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/reports/callLogReport.xls" var="calllog_download_url"/>
+    <spring:url value="/reports/smsReport.xls" var="sms_download_url"/>
+    <util:panel id="fc_org_motechproject_tama_DownloadReports" title="Download Reports" openPane="true">
+        <util:panel id="fc_org_motechproject_tama_DownloadCallLogReport" title="Download Call Logs" openPane="true">
+            <form action="${calllog_download_url}" method="GET" id="downloadCallLogsForm">
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogReport.startDate" id="c_org_motechproject_tama_calllog_startDate" label="Starting From" required="true" />
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogReport.endDate" id="c_org_motechproject_tama_calllog_endDate" label="Till" required="true" />
+                <span class="submit" id="downloadCallLogsSpan">
+                    <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'downloadCallLogs', event:'onclick'}));</script>
+                    <input id="downloadCallLogs" type="submit" value="Download as Excel"/>
+                </span>
+            </form>
+        </util:panel>
+        <util:panel id="fc_org_motechproject_tama_DownloadSMSReport" title="Download SMS Logs" openPane="true">
+            <form action="${sms_download_url}" method="GET" id="downloadSMSForm">
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="smsReport.startDate" id="c_org_motechproject_tama_sms_startDate" label="Starting From" required="true" />
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="smsReport.endDate" id="c_org_motechproject_tama_sms_endDate" label="Till" required="true" />
+                <span class="submit" id="downloadSMSSpan">
+                    <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'downloadSMS', event:'onclick'}));</script>
+                    <input id="downloadSMS" type="submit" value="Download as Excel"/>
+                </span>
+            </form>
+        </util:panel>
+    </util:panel>
+    <script type="text/javascript">
+        <![CDATA[
+            dojo.addOnLoad(function() {
+                callLogStartDateObj = dijit.byId("_callLogReport.startDate_id");
+                callLogEndDateObj = dijit.byId("_callLogReport.endDate_id");
+                smsStartDateObj = dijit.byId("_smsReport.startDate_id");
+                smsEndDateObj = dijit.byId("_smsReport.endDate_id");
+                setConstraintOnEndDate(callLogStartDateObj, callLogEndDateObj);
+                setConstraintOnEndDate(smsStartDateObj, smsEndDateObj);
+
+                dojo.connect(dojo.byId("downloadCallLogs"), "onclick", function(event){
+                    event.preventDefault();
+                    Spring.decorations['_callLogReport.startDate_id'][0].validate();
+                    Spring.decorations['_callLogReport.endDate_id'][0].validate();
+                    if (callLogStartDateObj.isValid() && callLogEndDateObj.isValid()){
+                        dojo.byId('downloadCallLogsForm').submit();
+                    }
+                });
+                dojo.connect(dojo.byId("downloadSMS"), "onclick", function(event){
+                    event.preventDefault();
+                    Spring.decorations['_smsReport.startDate_id'][0].validate();
+                    Spring.decorations['_smsReport.endDate_id'][0].validate();
+                    if (smsStartDateObj.isValid() && smsEndDateObj.isValid()){
+                        dojo.byId('downloadSMSForm').submit();
+                    }
+                });
+
+                dojo.connect(callLogStartDateObj, "onChange", function() {
+                    setConstraintOnEndDate(callLogStartDateObj, callLogEndDateObj);
+                });
+                dojo.connect(smsStartDateObj, "onChange", function() {
+                    setConstraintOnEndDate(smsStartDateObj, smsEndDateObj);
+                });
+            });
+        ]]>
+    </script>
+</div>
