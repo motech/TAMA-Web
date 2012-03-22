@@ -54,7 +54,9 @@ public class PatientAlertService {
 
     public PatientAlert readAlert(String alertId, String userName) {
         final Alert alert = alertService.get(alertId);
-        allAuditEvents.recordAppointmentEvent(userName, String.format("Marking alert : %s for : %s as read", alertId, alert.getExternalId()));
+        if (alert.getStatus() != AlertStatus.READ) {
+            allAuditEvents.recordAlertEvent(userName, String.format("Marking alert : %s for : %s as read", alertId, alert.getExternalId()));
+        }
         alertService.changeStatus(alert.getId(), AlertStatus.READ);
         return PatientAlert.newPatientAlert(alert, allPatients.get(alert.getExternalId()));
     }
@@ -77,8 +79,8 @@ public class PatientAlertService {
     private void updateData(String key, String value, String userName, Alert alert) {
         String alertId = alert.getId();
         String oldValue = alert.getData().get(key);
-        if (oldValue != value) {
-            allAuditEvents.recordAppointmentEvent(userName, String.format("Changing %s for alert[%s] from  %s to %s", key, alertId, oldValue, value));
+        if (!StringUtils.trimToEmpty(oldValue).equals(value)) {
+            allAuditEvents.recordAlertEvent(userName, String.format("Changing %s for alert[%s] from  %s to %s", key, alertId, oldValue, value));
             alertService.setData(alertId, key, value);
         }
     }
