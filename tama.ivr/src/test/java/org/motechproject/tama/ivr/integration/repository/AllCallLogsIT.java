@@ -43,6 +43,29 @@ public class AllCallLogsIT extends SpringIntegrationTest {
     }
 
     @Test
+    public void shouldFetchTheFirstPage() {
+        int firstPageIndex = 0;
+        int pageSize = 1;
+
+        DateTime now = DateUtil.now();
+        createCallLog(now);
+        createCallLog(now.plusDays(1));
+        createCallLog(now.plusDays(2));
+
+        assertEquals(pageSize, allCallLogs.findAllCallLogsForDateRange(now, now.plusDays(3), firstPageIndex, pageSize).size());
+    }
+
+    @Test
+    public void shouldSkipTheFirstPageWhenQueryingForTheSecondPage() {
+        DateTime now = DateUtil.now();
+        createCallLog(now);
+        CallLog callLogOnSecondPage = createCallLog(now.plusDays(1));
+        createCallLog(now.plusDays(2));
+
+        assertEquals(callLogOnSecondPage.getId(), allCallLogs.findAllCallLogsForDateRange(now, now.plusDays(3), 1, 1).get(0).getId());
+    }
+
+    @Test
     public void shouldReturnCallLogsFromParticularIndex_GivenADateRangeAndIndex() {
         DateTime firstDay = DateUtil.now();
         DateTime secondDay = DateUtil.now().plusDays(1);
@@ -74,7 +97,7 @@ public class AllCallLogsIT extends SpringIntegrationTest {
         createCallLog(thirdDay, "clinic1", "GotDTMF", PATIENT_ID1);
         createCallLog(thirdDay, "clinic2", "GotDTMF", PATIENT_ID1);
 
-        List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(firstDay, thirdDay);
+        List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(firstDay, thirdDay, 0, 10);
         assertEquals(5, allCallLogsForDateRange.size());
         assertEquals("clinic1", allCallLogsForDateRange.get(0).clinicId());
         assertEquals("clinic2", allCallLogsForDateRange.get(2).clinicId());

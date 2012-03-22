@@ -146,11 +146,11 @@ public class ReportsControllerTest {
         HttpServletResponse httpServletResponse = initializeServletResponse();
 
         when(allCallLogSummaries.isNumberOfCallSummariesWithinThreshold(startDate, endDate)).thenReturn(true);
-        when(allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate)).thenReturn(callLogSummaries);
+        when(allCallLogSummaries.getAllCallLogSummariesBetween(eq(startDate), eq(endDate), anyInt(), anyInt())).thenReturn(callLogSummaries);
 
         reportsController.buildCallLogExcelReport(startDate, endDate, uiModel, httpServletResponse);
 
-        verify(allCallLogSummaries).getAllCallLogSummariesBetween(startDate, endDate);
+        verify(allCallLogSummaries).getAllCallLogSummariesBetween(eq(startDate), eq(endDate), anyInt(), anyInt());
     }
 
     @Test

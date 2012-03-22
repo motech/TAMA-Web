@@ -11,10 +11,12 @@ import org.motechproject.tama.outbox.domain.OutboxMessageSummary;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxMessageSummaries;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.web.model.CallLogSummary;
+import org.motechproject.tama.web.resportbuilder.CallLogReportBuilder;
+import org.motechproject.tama.web.resportbuilder.DailyPillReminderReportBuilder;
+import org.motechproject.tama.web.resportbuilder.OutboxReportBuilder;
+import org.motechproject.tama.web.resportbuilder.SMSReportBuilder;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.ReportBuilder;
 import org.motechproject.tama.web.service.AllCallLogSummaries;
-import org.motechproject.tama.web.resportbuilder.*;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +31,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-
 
 @Controller
 public class ReportsController {
@@ -117,8 +118,7 @@ public class ReportsController {
                                         ModelMap uiModel,
                                         HttpServletResponse response) {
         if (allCallLogSummaries.isNumberOfCallSummariesWithinThreshold(startDate, endDate)) {
-            List<CallLogSummary> callLogSummaryList = allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate);
-            CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(callLogSummaryList);
+            CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(allCallLogSummaries, startDate, endDate);
             writeExcelToResponse(response, createExcelReport(callLogReportBuilder), "AllCallLogsReport.xls");
         } else {
             uiModel.addAttribute("threshold.exceed", "true");

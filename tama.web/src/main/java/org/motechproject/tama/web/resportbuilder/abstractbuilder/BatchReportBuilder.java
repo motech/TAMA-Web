@@ -1,44 +1,36 @@
 package org.motechproject.tama.web.resportbuilder.abstractbuilder;
 
-import com.google.gson.Gson;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.deser.BeanDeserializer;
-import org.codehaus.jackson.map.deser.BeanDeserializerFactory;
-import org.ektorp.ViewResult;
-import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public abstract class BatchReportBuilder extends ReportBuilder {
+public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
 
-    private ViewResult objects;
-    private Class reportClass;
+    private int pageNumber = 0;
+    protected final int pageSize;
 
-    public BatchReportBuilder(ViewResult objects, Class reportClass) {
+    public BatchReportBuilder() {
         super();
-        this.objects = objects;
-        this.reportClass = reportClass;
+        pageSize = 100;
         initializeColumns();
     }
 
     @Override
     protected void fillReport(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForColumns(worksheet);
-        for (ViewResult.Row databaseRow : objects.getRows()) {
-            Object object = new Gson().fromJson(databaseRow.getDocAsNode().toString(), reportClass);
-            HSSFRow row = worksheet.createRow((short) currentRowIndex);
-            buildRowData(row, getRowData(object), cellStyles);
-            object = null;
-            System.gc();
-            currentRowIndex++;
-        }
+        List data = null;
+        do {
+            data = fetchData(pageNumber);
+            for (Object dataObject : data) {
+                HSSFRow row = worksheet.createRow((short) currentRowIndex);
+                buildRowData(row, getRowData(dataObject), cellStyles);
+                currentRowIndex++;
+            }
+            pageNumber++;
+        } while (!data.isEmpty());
     }
+
+    protected abstract List fetchData(int pageNumber);
 }

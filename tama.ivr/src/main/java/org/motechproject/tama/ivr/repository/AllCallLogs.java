@@ -40,8 +40,8 @@ public class AllCallLogs extends AbstractCouchRepository<CallLog> {
     }
 
     @View(name = "find_by_date_range", map = "function(doc) { if(doc.documentType == 'CallLog') { emit(doc.startTime, doc._id); } }")
-    public List<CallLog> findAllCallLogsForDateRange(DateTime startDateTime, DateTime endDateTime) {
-        ViewQuery q = createQuery("find_by_date_range").startKey(startDateTime).endKey(endDateTime).includeDocs(true);
+    public List<CallLog> findAllCallLogsForDateRange(DateTime startDateTime, DateTime endDateTime, int pageNumber, int pageSize) {
+        ViewQuery q = createQuery("find_by_date_range").startKey(startDateTime).endKey(endDateTime).includeDocs(true).skip(pageNumber * pageSize).limit(pageSize);
         return db.queryView(q, CallLog.class);
     }
 

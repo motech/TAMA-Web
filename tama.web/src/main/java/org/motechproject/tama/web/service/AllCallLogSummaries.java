@@ -19,7 +19,7 @@ import java.util.List;
 @Repository
 public class AllCallLogSummaries {
 
-    public static final int THRESHOLD = 30000;
+    public static final int THRESHOLD = Integer.MAX_VALUE - 1;
 
     private AllCallLogs allCallLogs;
     private AllPatients allPatients;
@@ -34,9 +34,13 @@ public class AllCallLogSummaries {
         this.allIVRLanguages = allIVRLanguages;
     }
 
-    public List<CallLogSummary> getAllCallLogSummariesBetween(LocalDate startDate, LocalDate endDate) {
+    public List<CallLogSummary> getAllCallLogSummariesBetween(LocalDate startDate, LocalDate endDate, int pageNumber, int pageSize) {
         List<CallLogSummary> callLogSummaries = new ArrayList<CallLogSummary>();
-        List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59));
+        List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0),
+                DateUtil.newDateTime(endDate, 23, 59, 59),
+                pageNumber,
+                pageSize
+        );
         CallLogSummaryBuilder callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients, allClinics, allIVRLanguages);
         for (CallLog callLog : allCallLogsForDateRange) {
             callLogSummaries.add(callLogSummaryBuilder.build(callLog));

@@ -1,17 +1,26 @@
 package org.motechproject.tama.web.resportbuilder;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.web.model.CallLogSummary;
-import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
+import org.motechproject.tama.web.resportbuilder.abstractbuilder.BatchReportBuilder;
 import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
+import org.motechproject.tama.web.service.AllCallLogSummaries;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CallLogReportBuilder extends InMemoryReportBuilder<CallLogSummary> {
+public class CallLogReportBuilder extends BatchReportBuilder {
 
-    public CallLogReportBuilder(List<CallLogSummary> objects) {
-        super(objects);
+    private AllCallLogSummaries allCallLogSummaries;
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    public CallLogReportBuilder(AllCallLogSummaries allCallLogSummaries, LocalDate startDate, LocalDate endDate) {
+        super();
+        this.allCallLogSummaries = allCallLogSummaries;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     @Override
@@ -60,5 +69,10 @@ public class CallLogReportBuilder extends InMemoryReportBuilder<CallLogSummary> 
         row.add(callLogSummary.getAge());
         row.add(callLogSummary.getPatientDistanceFromClinic());
         return row;
+    }
+
+    @Override
+    protected List fetchData(int pageNumber) {
+        return allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate, pageNumber, pageSize);
     }
 }
