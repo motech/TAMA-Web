@@ -15,6 +15,8 @@ import static junit.framework.Assert.*;
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml", inheritLocations = false)
 public class AllTreatmentAdvicesTest extends SpringIntegrationTest {
 
+    public static final String USER_NAME = "userName";
+
     @Autowired
     AllTreatmentAdvices allTreatmentAdvices;
 
@@ -33,8 +35,8 @@ public class AllTreatmentAdvicesTest extends SpringIntegrationTest {
         inactiveTreatmentAdvice.setPatientId("patientA");
         activeTreatmentAdvice.setPatientId("patientA");
 
-        allTreatmentAdvices.add(activeTreatmentAdvice);
-        allTreatmentAdvices.add(inactiveTreatmentAdvice);
+        allTreatmentAdvices.add(activeTreatmentAdvice, USER_NAME);
+        allTreatmentAdvices.add(inactiveTreatmentAdvice, USER_NAME);
 
         TreatmentAdvice retrievedTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice("patientA");
 
@@ -56,9 +58,9 @@ public class AllTreatmentAdvicesTest extends SpringIntegrationTest {
         TreatmentAdvice adviceStartingDayBefore = TreatmentAdviceBuilder.startRecording().withDefaults().withPatientId("1111").withStartDate(dayBefore).build();
         TreatmentAdvice adviceStartingYesterday = TreatmentAdviceBuilder.startRecording().withDefaults().withPatientId("1111").withStartDate(yesterday).build();
 
-        allTreatmentAdvices.add(adviceStartingToday);
-        allTreatmentAdvices.add(adviceStartingDayBefore);
-        allTreatmentAdvices.add(adviceStartingYesterday);
+        allTreatmentAdvices.add(adviceStartingToday, USER_NAME);
+        allTreatmentAdvices.add(adviceStartingDayBefore, USER_NAME);
+        allTreatmentAdvices.add(adviceStartingYesterday, USER_NAME);
 
         TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice("1111");
 

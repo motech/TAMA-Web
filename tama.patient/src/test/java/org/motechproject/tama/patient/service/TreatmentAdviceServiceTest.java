@@ -30,6 +30,7 @@ public class TreatmentAdviceServiceTest {
     private CallTimeSlotService callTimeSlotService;
 
     private TreatmentAdviceService treatmentAdviceService;
+    private static final String USER_NAME = "userName";
 
     @Before
     public void setUp() {
@@ -45,8 +46,8 @@ public class TreatmentAdviceServiceTest {
 
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
 
-        treatmentAdviceService.createRegimen(treatmentAdvice);
-        verify(allTreatmentAdvices).add(treatmentAdvice);
+        treatmentAdviceService.createRegimen(treatmentAdvice, USER_NAME);
+        verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
         verify(dailyCallPlan).enroll(patient, treatmentAdvice);
     }
 
@@ -58,8 +59,8 @@ public class TreatmentAdviceServiceTest {
 
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
 
-        treatmentAdviceService.createRegimen(treatmentAdvice);
-        verify(allTreatmentAdvices).add(treatmentAdvice);
+        treatmentAdviceService.createRegimen(treatmentAdvice, USER_NAME);
+        verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
         verify(weeklyCallPlan).enroll(patient, treatmentAdvice);
     }
 
@@ -73,10 +74,10 @@ public class TreatmentAdviceServiceTest {
         when(allTreatmentAdvices.get(existingTreatmentAdvice.getId())).thenReturn(existingTreatmentAdvice);
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
 
-        final String newTreatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdvice.getId(), "stop", treatmentAdvice);
+        final String newTreatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdvice.getId(), "stop", treatmentAdvice, USER_NAME);
 
         assertEquals(treatmentAdvice.getId(), newTreatmentAdviceId);
-        verify(allTreatmentAdvices).add(treatmentAdvice);
+        verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(dailyCallPlan).reEnroll(patient, treatmentAdvice);
         verify(callTimeSlotService).freeSlots(patient, existingTreatmentAdvice);
@@ -93,8 +94,8 @@ public class TreatmentAdviceServiceTest {
         when(allTreatmentAdvices.get(existingTreatmentAdvice.getId())).thenReturn(existingTreatmentAdvice);
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
 
-        treatmentAdviceService.changeRegimen(existingTreatmentAdvice.getId(), "stop", treatmentAdvice);
-        verify(allTreatmentAdvices).add(treatmentAdvice);
+        treatmentAdviceService.changeRegimen(existingTreatmentAdvice.getId(), "stop", treatmentAdvice, USER_NAME);
+        verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
         verify(allTreatmentAdvices).update(existingTreatmentAdvice);
         verify(weeklyCallPlan).reEnroll(patient, treatmentAdvice);
         verify(callTimeSlotService).freeSlots(patient, existingTreatmentAdvice);

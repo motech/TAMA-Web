@@ -120,7 +120,7 @@ public class PatientServiceIT extends SpringIntegrationTest {
 
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults()
                 .withPatientId(patient.getId()).withRegimenId(regimen.getId()).build();
-        allTreatmentAdvices.add(treatmentAdvice);
+        allTreatmentAdvices.add(treatmentAdvice, USER_NAME);
 
         markForDeletion(regimen);
         markForDeletion(patient);

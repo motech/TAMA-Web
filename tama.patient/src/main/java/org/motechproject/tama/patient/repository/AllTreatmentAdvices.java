@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.View;
-import org.motechproject.tama.common.repository.AbstractCouchRepository;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -14,11 +13,11 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
-public class AllTreatmentAdvices extends AbstractCouchRepository<TreatmentAdvice> {
+public class AllTreatmentAdvices extends AuditableCouchRepository<TreatmentAdvice> {
 
     @Autowired
-    public AllTreatmentAdvices(@Qualifier("tamaDbConnector") CouchDbConnector db) {
-        super(TreatmentAdvice.class, db);
+    public AllTreatmentAdvices(@Qualifier("tamaDbConnector") CouchDbConnector db, AllAuditRecords allAuditRecords) {
+        super(TreatmentAdvice.class, db, allAuditRecords);
         initStandardDesignDocument();
     }
 

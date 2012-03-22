@@ -45,6 +45,7 @@ import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class TreatmentAdviceControllerTest extends BaseUnitTest {
+    public static final String USER_NAME = "userName";
     @Mock
     private Model uiModel;
     @Mock
@@ -71,7 +72,6 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     private TreatmentAdviceController controller;
     private TreatmentAdvice treatmentAdvice;
     private static String PATIENT_ID = "patientId";
-    private Patient patient;
 
     @Before
     public void setUp() throws Exception {
@@ -79,7 +79,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
 
         treatmentAdvice = getTreatmentAdvice();
 
-        patient = new Patient();
+        Patient patient = new Patient();
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
@@ -116,9 +116,9 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         when(bindingResult.hasErrors()).thenReturn(false);
         when(uiModel.asMap()).thenReturn(new HashMap<String, Object>());
 
-        controller.create(bindingResult, uiModel, treatmentAdvice);
+        controller.create(bindingResult, uiModel, treatmentAdvice, USER_NAME);
 
-        verify(treatmentAdviceService).createRegimen(treatmentAdvice);
+        verify(treatmentAdviceService).createRegimen(treatmentAdvice, USER_NAME);
     }
 
     @Test
@@ -198,12 +198,12 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         String existingTreatmentAdviceId = "existingTreatmentAdviceId";
         String discontinuationReason = "bad medicine";
         String clinicVisitId = "clinicVisitId";
-        when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(treatmentAdvice.getId());
+        when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, USER_NAME)).thenReturn(treatmentAdvice.getId());
 
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
         assertThat(redirectURL, is("redirect:/clinicvisits?form&patientId=" + PATIENT_ID + "&clinicVisitId=" + clinicVisitId));
-        verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
+        verify(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, USER_NAME);
         verify(allClinicVisits).changeRegimen(PATIENT_ID, clinicVisitId, treatmentAdvice.getId());
     }
 
@@ -212,7 +212,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         String existingTreatmentAdviceId = "existingTreatmentAdviceId";
         String discontinuationReason = "bad medicine";
         String clinicVisitId = "clinicVisitId";
-        doThrow(new RuntimeException("Some error")).when(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
+        doThrow(new RuntimeException("Some error")).when(treatmentAdviceService).changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, USER_NAME);
 
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);
 
@@ -225,7 +225,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         String discontinuationReason = "bad medicine";
         String clinicVisitId = "clinicVisitId";
         String newTreatmentAdviceId = "newTreatmentAdviceId";
-        when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice)).thenReturn(newTreatmentAdviceId);
+        when(treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, USER_NAME)).thenReturn(newTreatmentAdviceId);
         doThrow(new RuntimeException("Some error")).when(allClinicVisits).changeRegimen(PATIENT_ID, clinicVisitId, newTreatmentAdviceId);
 
         String redirectURL = controller.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, clinicVisitId, uiModel, request);

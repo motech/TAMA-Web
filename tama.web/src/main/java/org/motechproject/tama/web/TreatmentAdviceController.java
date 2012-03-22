@@ -79,7 +79,7 @@ public class TreatmentAdviceController extends BaseController {
         fixTimeString(treatmentAdvice);
         String treatmentAdviceId = existingTreatmentAdviceId;
         try {
-            treatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice);
+            treatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, loggedInUserId(httpServletRequest));
             allClinicVisits.changeRegimen(treatmentAdvice.getPatientId(), clinicVisitId, treatmentAdviceId);
             return ClinicVisitsController.redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId());
         } catch (RuntimeException e){
@@ -95,14 +95,14 @@ public class TreatmentAdviceController extends BaseController {
         populateModel(uiModel, treatmentAdvice);
     }
 
-    public String create(BindingResult bindingResult, Model uiModel, TreatmentAdvice treatmentAdvice) {
+    public String create(BindingResult bindingResult, Model uiModel, TreatmentAdvice treatmentAdvice, String userName) {
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("treatmentAdvice", treatmentAdvice);
             return null;
         }
         uiModel.asMap().clear();
         fixTimeString(treatmentAdvice);
-        return treatmentAdviceService.createRegimen(treatmentAdvice);
+        return treatmentAdviceService.createRegimen(treatmentAdvice, userName);
     }
 
     private void fixTimeString(TreatmentAdvice treatmentAdvice) {

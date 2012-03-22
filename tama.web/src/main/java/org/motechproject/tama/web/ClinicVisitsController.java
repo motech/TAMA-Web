@@ -131,7 +131,7 @@ public class ClinicVisitsController extends BaseController {
         String treatmentAdviceId = null;
         if (isNotBlank(treatmentAdvice.getRegimenId())) {
             try {
-                treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
+                treatmentAdviceId = treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice, loggedInUserId(httpServletRequest));
             } catch (RuntimeException e) {
                 httpServletRequest.setAttribute("flash.flashError", "Error occurred while creating treatment advice: " + e.getMessage());
                 return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId());

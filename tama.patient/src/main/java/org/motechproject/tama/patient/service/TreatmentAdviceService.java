@@ -32,8 +32,8 @@ public class TreatmentAdviceService {
         this.callPlans.put(callPreference, callPlan);
     }
 
-    public String createRegimen(TreatmentAdvice treatmentAdvice) {
-        allTreatmentAdvices.add(treatmentAdvice);
+    public String createRegimen(TreatmentAdvice treatmentAdvice, String userName) {
+        allTreatmentAdvices.add(treatmentAdvice, userName);
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         if (patient.isOnDailyPillReminder()) {
             callTimeSlotService.allotSlots(patient, treatmentAdvice);
@@ -42,10 +42,10 @@ public class TreatmentAdviceService {
         return treatmentAdvice.getId();
     }
 
-    public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice) {
+    public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, String userName) {
         TreatmentAdvice existingTreatmentAdvice = allTreatmentAdvices.get(existingTreatmentAdviceId);
         endCurrentRegimen(discontinuationReason, existingTreatmentAdvice);
-        allTreatmentAdvices.add(treatmentAdvice);
+        allTreatmentAdvices.add(treatmentAdvice, userName);
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
         callTimeSlotService.freeSlots(patient, existingTreatmentAdvice);
         if (patient.isOnDailyPillReminder()) {

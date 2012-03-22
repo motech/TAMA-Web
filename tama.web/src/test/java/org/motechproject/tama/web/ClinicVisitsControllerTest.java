@@ -59,6 +59,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 })
 public class ClinicVisitsControllerTest {
 
+    public static final String USER_NAME = "userName";
+
     public static class SubjectUnderTest extends BaseUnitTest {
 
         public static final String PATIENT_ID = "patientId";
@@ -199,7 +201,7 @@ public class ClinicVisitsControllerTest {
         @Test
         public void shouldCreateClinicVisit_AndRedirectToShowClinicVisitPage() {
             when(bindingResult.hasErrors()).thenReturn(false);
-            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice)).thenReturn("treatmentAdviceId");
+            when(treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice, USER_NAME)).thenReturn("treatmentAdviceId");
             when(labResultsController.create(labResultsUIModel, bindingResult, uiModel, request)).thenReturn(new ArrayList<String>() {{
                 add("labResultId");
             }});
@@ -210,7 +212,7 @@ public class ClinicVisitsControllerTest {
             String redirectURL = clinicVisitsController.create(VISIT_ID, clinicVisitUIModel, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 
             assertEquals("redirect:/clinicvisits/" + VISIT_ID + "?patientId=" + PATIENT_ID, redirectURL);
-            verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
+            verify(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice, USER_NAME);
             verify(labResultsController).create(labResultsUIModel, bindingResult, uiModel, request);
             verify(vitalStatisticsController).create(vitalStatistics, bindingResult, uiModel, request);
             verify(opportunisticInfectionsController).create(opportunisticInfectionsUIModel, bindingResult, uiModel, request);
@@ -220,7 +222,7 @@ public class ClinicVisitsControllerTest {
         @Test
         public void shouldRedirectToCreateForm_WhenTreatmentAdviceCreateErrorsOut() {
             when(bindingResult.hasErrors()).thenReturn(false);
-            doThrow(new RuntimeException("Some Error")).when(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice);
+            doThrow(new RuntimeException("Some Error")).when(treatmentAdviceController).create(bindingResult, uiModel, treatmentAdvice, USER_NAME);
 
             String redirectURL = clinicVisitsController.create(VISIT_ID, clinicVisitUIModel, treatmentAdvice, labResultsUIModel, vitalStatistics, opportunisticInfectionsUIModel, bindingResult, uiModel, request);
 

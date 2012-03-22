@@ -103,15 +103,15 @@ class PatientSetupService {
             Clinic clinic = clinics.get(patientsCreated % clinics.size());
             login(clinic);
             Patient patient = createActivePatient(medicalHistory, today);
-            recordFirstClinicVisit(patient, today, doseTime, timeOfRegistration);
+            recordFirstClinicVisit(patient, today, doseTime, timeOfRegistration, "userName");
             log.info("Created patient:" + patient.getPatientId() + ":for clinic:" + clinic.getName() + "with dose time:" + doseTime);
         }
     }
 
-    private void recordFirstClinicVisit(Patient patient, LocalDate startDate, LocalTime doseTime, DateTime now) {
+    private void recordFirstClinicVisit(Patient patient, LocalDate startDate, LocalTime doseTime, DateTime now, String userName) {
         ClinicVisit baselineClinicVisit = allClinicVisits.getBaselineVisit(patient.getId());
         TreatmentAdvice treatmentAdvice = createTreatmentAdviceForPatient(patient, doseTime, startDate);
-        List<String> labResultIds = createLabResults(patient, startDate);
+        List<String> labResultIds = createLabResults(patient, startDate, userName);
         VitalStatistics vitalStatistics = createVitalStatistics(patient, startDate);
 
         allClinicVisits.updateVisitDetails(
@@ -144,7 +144,7 @@ class PatientSetupService {
         return vitalStatistics;
     }
 
-    private List<String> createLabResults(Patient patient, LocalDate startDate) {
+    private List<String> createLabResults(Patient patient, LocalDate startDate, String userName) {
         List<String> labResultIds = new ArrayList<String>();
         for (LabTest labTest : allLabTests.getAll()) {
             LabResult labResult = LabResultBuilder
@@ -154,7 +154,7 @@ class PatientSetupService {
                     .withResult("100")
                     .withTestDate(startDate)
                     .build();
-            allLabResults.add(labResult);
+            allLabResults.add(labResult, userName);
             labResultIds.add(labResult.getId());
         }
         return labResultIds;
@@ -204,7 +204,7 @@ class PatientSetupService {
                 .withDrugCompositionGroupId(drugCompositionGroups[0].getId())
                 .build();
 
-        treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice);
+        treatmentAdviceController.create(bindingResult, uiModel, treatmentAdvice, "userName");
         return treatmentAdvice;
     }
 }
