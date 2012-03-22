@@ -71,13 +71,14 @@ public class AllClinicVisits {
     public void createUnScheduledAppointment(String patientDocId, DateTime dueDate, TypeOfVisit typeOfVisit, String userName) {
         String visitName = "visitFor-" + dueDate.getMillis();
         CreateVisitRequest createVisitRequest = createVisitRequestBuilder.adHocVisitRequest(visitName, typeOfVisit, dueDate);
-        allAuditEvents.recordAppointmentEvent(userName, "Added visit for : " + patientDocId + " with dueDate set as " + dueDate);
+        allAuditEvents.recordAppointmentEvent(userName, "Added unscheduled appointment for : " + patientDocId + " with dueDate set as " + dueDate);
         appointmentService.addVisit(patientDocId, createVisitRequest);
     }
 
-    public String createUnscheduledVisit(String patientDocId, DateTime appointmentDueDate, TypeOfVisit typeOfVisit) {
-        String visitName = "visitFor-" + appointmentDueDate.getMillis();
-        CreateVisitRequest createVisitRequest = createVisitRequestBuilder.adHocVisitRequestForToday(visitName, typeOfVisit, appointmentDueDate);
+    public String createUnscheduledVisit(String patientDocId, DateTime dueDate, TypeOfVisit typeOfVisit, String userName) {
+        String visitName = "visitFor-" + dueDate.getMillis();
+        CreateVisitRequest createVisitRequest = createVisitRequestBuilder.adHocVisitRequestForToday(visitName, typeOfVisit, dueDate);
+        allAuditEvents.recordAppointmentEvent(userName, "Added ad-hoc visit for : " + patientDocId);
         return appointmentService.addVisit(patientDocId, createVisitRequest).getName();
     }
 

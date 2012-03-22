@@ -141,7 +141,7 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         VisitResponse visitResponse = new VisitResponse().setName("visitName");
 
         when(appointmentService.addVisit(eq(PATIENT_ID), Matchers.<CreateVisitRequest>any())).thenReturn(visitResponse);
-        assertEquals("visitName", allClinicVisits.createUnscheduledVisit(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled));
+        assertEquals("visitName", allClinicVisits.createUnscheduledVisit(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled, USER_NAME));
     }
 
     @Test

@@ -360,7 +360,7 @@ public class ClinicVisitsControllerTest {
         @Test
         public void shouldCreateVisit() {
             clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
-            verify(allClinicVisits).createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled);
+            verify(allClinicVisits).createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled, USER_NAME);
         }
 
         @Test
