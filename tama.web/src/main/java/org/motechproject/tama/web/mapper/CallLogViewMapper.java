@@ -15,6 +15,7 @@ import java.util.List;
 
 @Component
 public class CallLogViewMapper {
+
     private AllPatients allPatients;
     private Patients allLoadedPatients = new Patients();
 

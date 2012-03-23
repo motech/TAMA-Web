@@ -6,24 +6,23 @@ import org.json.JSONException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.domain.DailyPillReminderSummary;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
+import org.motechproject.tama.ivr.domain.SMSLog;
 import org.motechproject.tama.ivr.repository.AllSMSLogs;
 import org.motechproject.tama.outbox.domain.OutboxMessageSummary;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxMessageSummaries;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.web.resportbuilder.CallLogReportBuilder;
 import org.motechproject.tama.web.resportbuilder.DailyPillReminderReportBuilder;
 import org.motechproject.tama.web.resportbuilder.OutboxReportBuilder;
 import org.motechproject.tama.web.resportbuilder.SMSReportBuilder;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.ReportBuilder;
-import org.motechproject.tama.web.service.AllCallLogSummaries;
+import org.motechproject.tama.web.service.CallLogExcelReportService;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -39,7 +38,7 @@ public class ReportsController {
     private DailyPillReminderReportService dailyPillReminderReportService;
     private OutboxMessageReportService outboxMessageReportService;
     private AllOutboxMessageSummaries allOutboxMessageSummaries;
-    private AllCallLogSummaries allCallLogSummaries;
+    private CallLogExcelReportService callLogExcelReportService;
     private AllSMSLogs allSMSLogs;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,13 +49,13 @@ public class ReportsController {
                              DailyPillReminderReportService dailyPillReminderReportService,
                              OutboxMessageReportService outboxMessageReportService,
                              AllOutboxMessageSummaries allOutboxMessageSummaries,
-                             AllCallLogSummaries allCallLogSummaries,
+                             CallLogExcelReportService callLogExcelReportService,
                              AllSMSLogs allSMSLogs) {
         this.patientService = patientService;
         this.dailyPillReminderReportService = dailyPillReminderReportService;
         this.outboxMessageReportService = outboxMessageReportService;
         this.allOutboxMessageSummaries = allOutboxMessageSummaries;
-        this.allCallLogSummaries = allCallLogSummaries;
+        this.callLogExcelReportService = callLogExcelReportService;
         this.allSMSLogs = allSMSLogs;
     }
 
@@ -115,19 +114,19 @@ public class ReportsController {
                                         @RequestParam LocalDate startDate,
                                         @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
                                         @RequestParam LocalDate endDate,
-                                        ModelMap uiModel,
                                         HttpServletResponse response) {
-        CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(allCallLogSummaries, startDate, endDate);
-        writeExcelToResponse(response, createExcelReport(callLogReportBuilder), "AllCallLogsReport.xls");
+        HSSFWorkbook callLogReport = callLogExcelReportService.buildReport(startDate, endDate);
+        writeExcelToResponse(response, callLogReport, "AllCallLogsReport.xls");
     }
 
     @RequestMapping(value = "/reports/smsReport.xls", method = RequestMethod.GET)
     public void buildSMSExcelReport(@DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                        @RequestParam LocalDate startDate,
-                                        @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                        @RequestParam LocalDate endDate,
-                                        HttpServletResponse response) {
-        SMSReportBuilder smsReportBuilder = new SMSReportBuilder(allSMSLogs.findAllSMSLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59)));
+                                    @RequestParam LocalDate startDate,
+                                    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                    @RequestParam LocalDate endDate,
+                                    HttpServletResponse response) {
+        List<SMSLog> allSMSLogsForDateRange = allSMSLogs.findAllSMSLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59));
+        SMSReportBuilder smsReportBuilder = new SMSReportBuilder(allSMSLogsForDateRange);
         writeExcelToResponse(response, createExcelReport(smsReportBuilder), "AllSMSReports.xls");
     }
 

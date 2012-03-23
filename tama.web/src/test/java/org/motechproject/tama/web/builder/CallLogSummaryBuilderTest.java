@@ -8,13 +8,16 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.Clinics;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Patients;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
+import org.motechproject.tama.refdata.domain.IVRLanguages;
 import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.model.CallLogSummary;
@@ -57,7 +60,7 @@ public class CallLogSummaryBuilderTest {
         String clinicId = "clinicId";
         callLog = new CallLog(patientDocId);
         callLog.patientId("patientId");
-        initiatedTime= DateUtil.newDateTime(2011, 10, 10, 10, 9, 10);
+        initiatedTime = DateUtil.newDateTime(2011, 10, 10, 10, 9, 10);
         startTime = DateUtil.newDateTime(2011, 10, 10, 10, 10, 10);
         callLog.setStartTime(initiatedTime);
         callLog.setEndTime(DateUtil.now());
@@ -69,7 +72,7 @@ public class CallLogSummaryBuilderTest {
         final CallEvent callEvent = mock(CallEvent.class);
         when(callEvent.getTimeStamp()).thenReturn(startTime);
         when(callEvent.getData()).thenReturn(new CallEventCustomData());
-        callLog.setCallEvents(new ArrayList<CallEvent>(){{
+        callLog.setCallEvents(new ArrayList<CallEvent>() {{
             add(callEvent);
         }});
         Clinic clinic = new Clinic(clinicId);
@@ -82,11 +85,15 @@ public class CallLogSummaryBuilderTest {
         when(allPatients.getAll()).thenReturn(Arrays.asList(patient));
         when(callLogViewMapper.toCallLogView(Arrays.asList(callLog))).thenReturn(Arrays.asList(callLogView));
 
-        callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients, allClinics, allIVRLanguages);
+        callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients,
+                new Patients(allPatients.getAll()),
+                new Clinics(allClinics.getAll()),
+                new IVRLanguages(allIVRLanguages.getAll())
+        );
     }
 
     @Test
-    public void shouldBuildCallSummaryForOutboundGivenCallLog(){
+    public void shouldBuildCallSummaryForOutboundGivenCallLog() {
         setUpCallLog(CallDirection.Outbound);
         CallLogSummary callLogSummary = callLogSummaryBuilder.build(callLog);
 
@@ -104,7 +111,7 @@ public class CallLogSummaryBuilderTest {
     }
 
     @Test
-    public void shouldBuildCallSummaryForGivenInboundCallLog(){
+    public void shouldBuildCallSummaryForGivenInboundCallLog() {
         setUpCallLog(CallDirection.Inbound);
         CallLogSummary callLogSummary = callLogSummaryBuilder.build(callLog);
 

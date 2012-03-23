@@ -19,9 +19,8 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.web.model.CallLogSummary;
-import org.motechproject.tama.web.service.AllCallLogSummaries;
+import org.motechproject.tama.web.service.CallLogExcelReportService;
 import org.motechproject.util.DateUtil;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletOutputStream;
@@ -52,17 +51,16 @@ public class ReportsControllerTest {
     @Mock
     private AllOutboxMessageSummaries allOutboxMessageSummaries;
     @Mock
-    private AllCallLogSummaries allCallLogSummaries;
+    private CallLogExcelReportService callLogExcelReportService;
     @Mock
     private AllSMSLogs allSMSLogs;
 
-    private ModelMap uiModel = new ModelMap();
     private ReportsController reportsController;
 
     @Before
     public void setUp() {
         initMocks(this);
-        reportsController = new ReportsController(patientService, dailyPillReminderReportService, outboxReportService, allOutboxMessageSummaries, allCallLogSummaries, allSMSLogs);
+        reportsController = new ReportsController(patientService, dailyPillReminderReportService, outboxReportService, allOutboxMessageSummaries, callLogExcelReportService, allSMSLogs);
     }
 
     private void initializePatientService(String patientDocumentId) {
@@ -142,14 +140,11 @@ public class ReportsControllerTest {
     public void shouldBuildCallLogsExcelReport() throws IOException {
         LocalDate startDate = new LocalDate(2011, 1, 1);
         LocalDate endDate = new LocalDate(2011, 1, 3);
-        List<CallLogSummary> callLogSummaries = new ArrayList<CallLogSummary>();
         HttpServletResponse httpServletResponse = initializeServletResponse();
 
-        when(allCallLogSummaries.getAllCallLogSummariesBetween(eq(startDate), eq(endDate), anyInt(), anyInt())).thenReturn(callLogSummaries);
+        reportsController.buildCallLogExcelReport(startDate, endDate, httpServletResponse);
 
-        reportsController.buildCallLogExcelReport(startDate, endDate, uiModel, httpServletResponse);
-
-        verify(allCallLogSummaries).getAllCallLogSummariesBetween(eq(startDate), eq(endDate), anyInt(), anyInt());
+        verify(callLogExcelReportService).buildReport(eq(startDate), eq(endDate));
     }
 
     @Test

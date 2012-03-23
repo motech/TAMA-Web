@@ -35,11 +35,11 @@ public class CallLogSummaryBuilder {
     private Clinics allLoadedClinics = new Clinics();
     private IVRLanguages allLoadedIVRLanguages = new IVRLanguages();
 
-    public CallLogSummaryBuilder(AllPatients allPatients, AllClinics allClinics, AllIVRLanguages allIVRLanguages) {
+    public CallLogSummaryBuilder(AllPatients allPatients, Patients allLoadedPatients, Clinics allLoadedClinics, IVRLanguages allLoadedIVRLanguages) {
         this.allPatients = allPatients;
-        this.allLoadedPatients = new Patients(allPatients.getAll());
-        this.allLoadedClinics = new Clinics(allClinics.getAll());
-        this.allLoadedIVRLanguages = new IVRLanguages(allIVRLanguages.getAll());
+        this.allLoadedPatients = allLoadedPatients;
+        this.allLoadedClinics = allLoadedClinics;
+        this.allLoadedIVRLanguages = allLoadedIVRLanguages;
     }
 
     public CallLogSummary build(CallLog callLog) {
