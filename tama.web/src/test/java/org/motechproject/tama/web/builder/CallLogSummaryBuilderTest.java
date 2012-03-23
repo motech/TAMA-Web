@@ -8,7 +8,6 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.facility.domain.Clinic;
-import org.motechproject.tama.facility.domain.Clinics;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -17,7 +16,6 @@ import org.motechproject.tama.patient.domain.Patients;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
-import org.motechproject.tama.refdata.domain.IVRLanguages;
 import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.model.CallLogSummary;
@@ -85,11 +83,7 @@ public class CallLogSummaryBuilderTest {
         when(allPatients.getAll()).thenReturn(Arrays.asList(patient));
         when(callLogViewMapper.toCallLogView(Arrays.asList(callLog))).thenReturn(Arrays.asList(callLogView));
 
-        callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients,
-                new Patients(allPatients.getAll()),
-                new Clinics(allClinics.getAll()),
-                new IVRLanguages(allIVRLanguages.getAll())
-        );
+        callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients, new Patients(allPatients.getAll()), allIVRLanguages);
     }
 
     @Test

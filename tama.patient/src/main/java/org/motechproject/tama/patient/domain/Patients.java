@@ -1,21 +1,26 @@
 package org.motechproject.tama.patient.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 
-public class Patients extends ArrayList<Patient> {
+public class Patients {
+
+    private HashMap<String, Patient> patientMap = new HashMap<String, Patient>();
+
     public Patients() {
     }
 
-    public Patients(Collection<? extends Patient> c) {
-        super(c);
+    public Patients(List<Patient> patients) {
+        for (Patient patient : patients) {
+            patientMap.put(patient.getId(), patient);
+        }
     }
 
     public Patient getBy(String id) {
-        for (Patient patient : this) {
-            if (patient.getId().equals(id))
-                return patient;
-        }
-        return null;
+        return patientMap.get(id);
+    }
+
+    public boolean isEmpty() {
+        return patientMap.isEmpty();
     }
 }

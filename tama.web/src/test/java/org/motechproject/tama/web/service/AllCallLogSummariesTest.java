@@ -4,8 +4,6 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.tama.facility.domain.Clinic;
-import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.domain.Patient;
@@ -33,8 +31,6 @@ public class AllCallLogSummariesTest {
     @Mock
     private AllPatients allPatients;
     @Mock
-    private AllClinics allClinics;
-    @Mock
     private AllIVRLanguagesCache allIVRLanguages;
 
     private AllCallLogSummaries allCallLogSummaries;
@@ -46,9 +42,8 @@ public class AllCallLogSummariesTest {
     public void setup() {
         initMocks(this);
         when(allPatients.getAll()).thenReturn(new ArrayList<Patient>());
-        when(allClinics.getAll()).thenReturn(new ArrayList<Clinic>());
         when(allIVRLanguages.getAll()).thenReturn(new ArrayList<IVRLanguage>());
-        allCallLogSummaries = new AllCallLogSummaries(allCallLogs, allPatients, allClinics, allIVRLanguages);
+        allCallLogSummaries = new AllCallLogSummaries(allCallLogs, allPatients, allIVRLanguages);
     }
 
     @Test

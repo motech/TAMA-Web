@@ -4,12 +4,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.facility.domain.Clinics;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Patients;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.refdata.domain.IVRLanguages;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.view.CallFlowGroupView;
@@ -30,14 +29,12 @@ public class CallLogSummaryBuilder {
 
     private AllPatients allPatients;
     private Patients allLoadedPatients = new Patients();
-    private Clinics allLoadedClinics = new Clinics();
-    private IVRLanguages allLoadedIVRLanguages = new IVRLanguages();
+    private AllIVRLanguagesCache allIVRLanguages;
 
-    public CallLogSummaryBuilder(AllPatients allPatients, Patients allLoadedPatients, Clinics allLoadedClinics, IVRLanguages allLoadedIVRLanguages) {
+    public CallLogSummaryBuilder(AllPatients allPatients, Patients allLoadedPatients, AllIVRLanguagesCache allIVRLanguages) {
         this.allPatients = allPatients;
         this.allLoadedPatients = allLoadedPatients;
-        this.allLoadedClinics = allLoadedClinics;
-        this.allLoadedIVRLanguages = allLoadedIVRLanguages;
+        this.allIVRLanguages = allIVRLanguages;
     }
 
     public CallLogSummary build(CallLog callLog) {
@@ -104,7 +101,7 @@ public class CallLogSummaryBuilder {
                 return patient.getClinic().getName();
             }
         } else {
-            return allLoadedClinics.getBy(callLog.clinicId()).getName();
+            return getPatientWhenCallLogForPatientNotEmpty(callLog).getClinic().getName();
         }
     }
 
@@ -126,11 +123,11 @@ public class CallLogSummaryBuilder {
 
     private String getTravelTimeToClinic(CallLog callLog) {
         Patient patient = getPatientWhenCallLogForPatientNotEmpty(callLog);
-        return patient !=null ? patient.getTravelTimeToClinicInDays() + " Days, " + patient.getTravelTimeToClinicInHours() + " Hours, and " + patient.getTravelTimeToClinicInMinutes() + " Minutes" : " - ";
+        return patient != null ? patient.getTravelTimeToClinicInDays() + " Days, " + patient.getTravelTimeToClinicInHours() + " Hours, and " + patient.getTravelTimeToClinicInMinutes() + " Minutes" : " - ";
     }
 
     private String getCallLanguage(CallLog callLog) {
-        return isEmpty(callLog.callLanguage()) ? " - " : allLoadedIVRLanguages.getBy(callLog.callLanguage()).getName();
+        return isEmpty(callLog.callLanguage()) ? " - " : allIVRLanguages.getByCode(callLog.callLanguage()).getName();
     }
 
     private String getCallLogFlowsAndSetFlowDurations(CallLog callLog) {

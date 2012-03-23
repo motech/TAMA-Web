@@ -1,13 +1,10 @@
 package org.motechproject.tama.web.service;
 
 import org.joda.time.LocalDate;
-import org.motechproject.tama.facility.domain.Clinics;
-import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.domain.Patients;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.refdata.domain.IVRLanguages;
 import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.builder.CallLogSummaryBuilder;
 import org.motechproject.tama.web.model.CallLogSummary;
@@ -21,13 +18,9 @@ public class AllCallLogSummaries {
     private AllCallLogs allCallLogs;
     private CallLogSummaryBuilder callLogSummaryBuilder;
 
-    public AllCallLogSummaries(AllCallLogs allCallLogs, AllPatients allPatients, AllClinics allClinics, AllIVRLanguagesCache allIVRLanguages) {
+    public AllCallLogSummaries(AllCallLogs allCallLogs, AllPatients allPatients, AllIVRLanguagesCache allIVRLanguages) {
         this.allCallLogs = allCallLogs;
-        this.callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients,
-                new Patients(allPatients.getAll()),
-                new Clinics(allClinics.getAll()),
-                new IVRLanguages(allIVRLanguages.getAll())
-        );
+        this.callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients, new Patients(allPatients.getAll()), allIVRLanguages);
     }
 
     public List<CallLogSummary> getAllCallLogSummariesBetween(LocalDate startDate, LocalDate endDate, int pageNumber, int pageSize) {

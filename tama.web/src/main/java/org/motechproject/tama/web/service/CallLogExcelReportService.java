@@ -2,7 +2,6 @@ package org.motechproject.tama.web.service;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.joda.time.LocalDate;
-import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
@@ -19,20 +18,18 @@ public class CallLogExcelReportService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private AllCallLogs allCallLogs;
-    private AllClinics allClinics;
     private AllPatients allPatients;
     private AllIVRLanguagesCache allIVRLanguages;
 
     @Autowired
-    public CallLogExcelReportService(AllCallLogs allCallLogs, AllClinics allClinics, AllPatients allPatients, AllIVRLanguagesCache allIVRLanguages) {
+    public CallLogExcelReportService(AllCallLogs allCallLogs, AllPatients allPatients, AllIVRLanguagesCache allIVRLanguages) {
         this.allCallLogs = allCallLogs;
-        this.allClinics = allClinics;
         this.allPatients = allPatients;
         this.allIVRLanguages = allIVRLanguages;
     }
 
     public HSSFWorkbook buildReport(LocalDate startDate, LocalDate endDate) {
-        AllCallLogSummaries allCallLogSummaries = new AllCallLogSummaries(allCallLogs, allPatients, allClinics, allIVRLanguages);
+        AllCallLogSummaries allCallLogSummaries = new AllCallLogSummaries(allCallLogs, allPatients, allIVRLanguages);
         CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(allCallLogSummaries, startDate, endDate);
         return createExcelReport(callLogReportBuilder);
     }
