@@ -118,7 +118,7 @@ public class AlertsControllerTest {
     @Test
     public void shouldUpdate() {
         alertsController.update(uiModel, alertId, symptomsAlertStatus, notes, doctorsNotes, type, request);
-        verify(patientAlertService).updateAlert(alertId, symptomsAlertStatus, notes, doctorsNotes, type, USER_NAME);
+        verify(patientAlertService).updateAlertData(alertId, symptomsAlertStatus, notes, doctorsNotes, type, USER_NAME);
     }
 
     @Test

@@ -11,6 +11,7 @@ import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
+import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.symptomreporting.service.SymptomReportingService;
 import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
 import org.motechproject.tama.symptomsreporting.decisiontree.service.SymptomReportingTreeService;
@@ -24,18 +25,20 @@ public class SymptomReportingController extends SafeIVRController {
     private TAMAIVRContextFactory contextFactory;
     private SymptomReportingService symptomReportingService;
     private SymptomReportingTreeService symptomReportingTreeService;
+    private PatientAlertService patientAlertService;
 
     @Autowired
-    protected SymptomReportingController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, SymptomReportingService symptomReportingService, SymptomReportingTreeService symptomReportingTreeService, StandardResponseController standardResponseController) {
-        this(ivrMessage, callDetailRecordsService, new TAMAIVRContextFactory(), symptomReportingService, symptomReportingTreeService, standardResponseController);
+    protected SymptomReportingController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, SymptomReportingService symptomReportingService, SymptomReportingTreeService symptomReportingTreeService, StandardResponseController standardResponseController, PatientAlertService patientAlertService) {
+        this(ivrMessage, callDetailRecordsService, new TAMAIVRContextFactory(), symptomReportingService, symptomReportingTreeService, standardResponseController, patientAlertService);
     }
 
     public SymptomReportingController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, TAMAIVRContextFactory contextFactory, SymptomReportingService symptomReportingService, SymptomReportingTreeService symptomReportingTreeService,
-                                      StandardResponseController standardResponseController) {
+                                      StandardResponseController standardResponseController, PatientAlertService patientAlertService) {
         super(ivrMessage, callDetailRecordsService, standardResponseController);
         this.contextFactory = contextFactory;
         this.symptomReportingService = symptomReportingService;
         this.symptomReportingTreeService = symptomReportingTreeService;
+        this.patientAlertService = patientAlertService;
     }
 
     @Override
@@ -49,6 +52,9 @@ public class SymptomReportingController extends SafeIVRController {
         tamaIvrContext.symptomReportingTree(symptomReportingTree);
         tamaIvrContext.callState(CallState.SYMPTOM_REPORTING_TREE);
 
+        patientAlertService.createSymptomsReportingAlert(tamaIvrContext.patientDocumentId());
+
         return KookooResponseFactory.empty(callId);
     }
+
 }

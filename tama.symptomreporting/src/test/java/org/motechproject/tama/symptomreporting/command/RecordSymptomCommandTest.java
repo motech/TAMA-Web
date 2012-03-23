@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
+import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,8 @@ public class RecordSymptomCommandTest {
     private TAMAIVRContextFactory tamaivrContextFactory;
     @Mock
     private SymptomRecordingService symptomRecordingService;
+    @Mock
+    private PatientAlertService patientAlertService;
 
     @Before
     public void setup() {
@@ -37,10 +40,11 @@ public class RecordSymptomCommandTest {
         when(httpSession.getAttribute(TAMAIVRContext.PATIENT_ID)).thenReturn("patientId");
         when(kooKooIVRContext.callId()).thenReturn("callId");
 
-        RecordSymptomCommand recordSymptomCommand = new RecordSymptomCommand(symptomRecordingService, "fever");
+        RecordSymptomCommand recordSymptomCommand = new RecordSymptomCommand(symptomRecordingService, patientAlertService, "fever");
         recordSymptomCommand.execute(kooKooIVRContext);
 
         verify(symptomRecordingService).save(eq("fever"), eq("patientId"), eq("callId"), any(DateTime.class));
+        verify(patientAlertService).appendSymptomToAlert("patientId", "fever");
     }
 
 }

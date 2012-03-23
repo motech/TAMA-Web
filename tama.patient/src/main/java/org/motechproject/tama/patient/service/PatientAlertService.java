@@ -14,6 +14,7 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,20 +37,30 @@ public class PatientAlertService {
         this.allAuditEvents = allAuditEvents;
     }
 
+    public void createSymptomsReportingAlert(String patientDocId) {
+        Patient patient = allPatients.get(patientDocId);
+        Map<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+        data.put(PatientAlert.PATIENT_CALL_PREFERENCE, patient.getPatientPreferences().getDisplayCallPreference());
+        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+        data.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.NA.name());
+        alertService.create(patientDocId, "", "", AlertType.MEDIUM, AlertStatus.NEW, TAMAConstants.NO_ALERT_PRIORITY, data);
+    }
+
     public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType) {
         createAlert(externalId, priority, name, description, patientAlertType, new HashMap<String, String>());
     }
 
-    public void createAlert(String externalId, Integer priority, String name, String description, PatientAlertType patientAlertType, Map<String, String> data) {
+    public void createAlert(String patientDocId, Integer priority, String name, String description, PatientAlertType patientAlertType, Map<String, String> data) {
         data.put(PatientAlert.PATIENT_ALERT_TYPE, patientAlertType.name());
-        Patient patient = allPatients.get(externalId);
+        Patient patient = allPatients.get(patientDocId);
         if (patient != null) {
             data.put(PatientAlert.PATIENT_CALL_PREFERENCE, patient.getPatientPreferences().getDisplayCallPreference());
         }
         if (PatientAlertType.SymptomReporting.equals(patientAlertType)) {
             data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
         }
-        alertService.create(externalId, name, description, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
+        alertService.create(patientDocId, name, description, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
     }
 
     public PatientAlert readAlert(String alertId, String userName) {
@@ -61,7 +72,7 @@ public class PatientAlertService {
         return PatientAlert.newPatientAlert(alert, allPatients.get(alert.getExternalId()));
     }
 
-    public boolean updateAlert(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType, String userName) {
+    public boolean updateAlertData(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType, String userName) {
         Alert alert = alertService.get(alertId);
         try {
             if (PatientAlertType.SymptomReporting.toString().equals(patientAlertType)) {
@@ -123,5 +134,26 @@ public class PatientAlertService {
         String patientDocId = StringUtils.isEmpty(patientId) ? null : patient.getId();
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, alertStatus);
         return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType);
+    }
+
+    public void appendSymptomToAlert(String patientDocId, String symptom) {
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId);
+        PatientAlert lastReportedAlert = allAlerts.lastSymptomReportedAlert();
+        String description = lastReportedAlert.getDescription();
+        String newDescription = description == null ? symptom : StringUtils.join(Arrays.asList(description, symptom), ", ");
+        alertService.setDescription(lastReportedAlert.getAlertId(), newDescription);
+    }
+
+    public void updateAdviceOnSymptomsReportingAlert(String patientDocId, String adviceGiven, int priority) {
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId);
+        PatientAlert lastReportedAlert = allAlerts.lastSymptomReportedAlert();
+        alertService.setName(lastReportedAlert.getAlertId(), adviceGiven);
+        alertService.setPriority(lastReportedAlert.getAlertId(), priority);
+    }
+
+    public void setConnectedToDoctorStatusOnSymptomsReportingAlert(String patientDocId, TAMAConstants.ReportedType reportedType) {
+        PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId);
+        PatientAlert lastReportedAlert = allAlerts.lastSymptomReportedAlert();
+        alertService.setData(lastReportedAlert.getAlertId(), PatientAlert.CONNECTED_TO_DOCTOR, reportedType.name());
     }
 }

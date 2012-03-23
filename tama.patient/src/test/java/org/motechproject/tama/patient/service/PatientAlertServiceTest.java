@@ -17,6 +17,7 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -90,7 +91,7 @@ public class PatientAlertServiceTest {
         }});
         String doctorsNotes = "doctorsNotes";
         String notes = "notes";
-        patientAlertService.updateAlert(alertId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.toString(), USER_NAME);
+        patientAlertService.updateAlertData(alertId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.toString(), USER_NAME);
         verify(alertService).setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
         verify(alertService).setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
         verify(alertService).setData(alertId, PatientAlert.NOTES, notes);
@@ -119,7 +120,7 @@ public class PatientAlertServiceTest {
 
         String doctorsNotes = "doctorsNotes";
         String notes = "notes";
-        patientAlertService.updateAlert(alertId, "Open", notes, doctorsNotes, PatientAlertType.AppointmentReminder.name(), USER_NAME);
+        patientAlertService.updateAlertData(alertId, "Open", notes, doctorsNotes, PatientAlertType.AppointmentReminder.name(), USER_NAME);
         verify(alertService, never()).setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
         verify(alertService, never()).setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
         verify(alertService).setData(alertId, PatientAlert.NOTES, notes);
@@ -209,7 +210,7 @@ public class PatientAlertServiceTest {
     public void shouldReturnFalseWhenUpdateUnSuccessful() {
         when(alertService.get(anyString())).thenReturn(new Alert());
         doThrow(new RuntimeException("update exception")).when(alertService).setData(anyString(), anyString(), anyString());
-        boolean condition = patientAlertService.updateAlert("", "", "", "", "", "");
+        boolean condition = patientAlertService.updateAlertData("", "", "", "", "", "");
         assertFalse(condition);
     }
 
@@ -289,5 +290,80 @@ public class PatientAlertServiceTest {
         PatientAlerts readAlertsForClinic = patientAlertService.getUnreadAlertsFor("testClinicId", null, PatientAlertType.AdherenceInRed, null, null);
 
         assertEquals(3, readAlertsForClinic.size());
+    }
+
+    @Test
+    public void shouldAppendTheFirstSymptomReportedToAlert() {
+        final Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientDocId").build();
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+        final Alert alert = new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, data);
+        alert.setId("alertId");
+
+        PatientAlerts alerts = new PatientAlerts() {{
+            add(PatientAlert.newPatientAlert(alert, patient));
+        }};
+
+        when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
+        patientAlertService.appendSymptomToAlert(patient.getId(), "fever");
+
+        verify(alertService).setDescription(alert.getId(), "fever");
+    }
+
+    @Test
+    public void shouldAppendSubsequentSymptomReportedToAlert() {
+        final Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientDocId").build();
+
+        HashMap<String, String> data = new HashMap<String, String>() {{
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+        }};
+        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, AlertStatus.READ, 2, data);
+        alert.setId("alertId");
+
+        PatientAlerts alerts = new PatientAlerts() {{
+            add(PatientAlert.newPatientAlert(alert, patient));
+        }};
+
+        when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
+        patientAlertService.appendSymptomToAlert(patient.getId(), "fever");
+
+        verify(alertService).setDescription(alert.getId(), "nausea, fever");
+    }
+
+    @Test
+    public void shouldCreateSymptomsReportingAlert() {
+        String patientDocId = "patientDocId";
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocId).build();
+        when(allPatients.get(patientDocId)).thenReturn(patient);
+
+        patientAlertService.createSymptomsReportingAlert(patientDocId);
+
+        Map<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+        data.put(PatientAlert.PATIENT_CALL_PREFERENCE, patient.getPatientPreferences().getDisplayCallPreference());
+        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+        data.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.NA.name());
+        verify(alertService).create(patientDocId, "", "", AlertType.MEDIUM, AlertStatus.NEW, TAMAConstants.NO_ALERT_PRIORITY, data);
+    }
+
+    @Test
+    public void shouldSetConnectedToDoctorStatusOnSymptomsAlert() {
+        String patientDocId = "patientDocId", alertId = "alertId";
+        final Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocId).build();
+
+        HashMap<String, String> data = new HashMap<String, String>() {{
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+        }};
+
+        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, AlertStatus.READ, 2, data);
+        alert.setId(alertId);
+
+        PatientAlerts alerts = new PatientAlerts() {{
+            add(PatientAlert.newPatientAlert(alert, patient));
+        }};
+        when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
+
+        patientAlertService.setConnectedToDoctorStatusOnSymptomsReportingAlert(patientDocId, TAMAConstants.ReportedType.No);
+        verify(alertService).setData(alertId, PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.No.name());
     }
 }
