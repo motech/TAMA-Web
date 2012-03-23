@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.resportbuilder.abstractbuilder;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -34,7 +35,7 @@ public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
                 }
             }
             pageNumber++;
-        } while (!data.isEmpty());
+        } while (CollectionUtils.isNotEmpty(data));
         //Done filling data
         return true;
     }
