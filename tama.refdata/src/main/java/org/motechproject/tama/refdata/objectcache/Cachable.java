@@ -20,13 +20,13 @@ public abstract class Cachable<T> {
         return objectMap.get(key);
     }
 
-    public List<T> getAll() {
-        return repository.getAll();
-    }
-
     public void refresh(){
         objectMap.clear();
         populateObjectMap();
+    }
+
+    public List<T> getAll() {
+        return repository.getAll();
     }
 
     private void populateObjectMap() {

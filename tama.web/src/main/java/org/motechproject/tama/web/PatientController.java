@@ -9,7 +9,6 @@ import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
-import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
@@ -18,7 +17,10 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Regimen;
-import org.motechproject.tama.refdata.repository.*;
+import org.motechproject.tama.refdata.objectcache.AllGendersCache;
+import org.motechproject.tama.refdata.objectcache.AllHIVTestReasonsCache;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
+import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 import org.motechproject.tama.web.model.DoseStatus;
 import org.motechproject.tama.web.model.IncompletePatientDataWarning;
 import org.motechproject.tama.web.model.ListPatientViewModel;
@@ -74,10 +76,10 @@ public class PatientController extends BaseController {
     private static final String PATIENT_INSERT_ERROR = "Sorry, there was an error while creating/updating the patient. Please try again.";
 
     private AllPatients allPatients;
-    private AllGenders allGenders;
-    private AllIVRLanguages allIVRLanguages;
-    private AllHIVTestReasons allTestReasons;
-    private AllModesOfTransmission allModesOfTransmission;
+    private AllGendersCache allGenders;
+    private AllIVRLanguagesCache allIVRLanguages;
+    private AllHIVTestReasonsCache allTestReasons;
+    private AllModesOfTransmissionCache allModesOfTransmission;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllVitalStatistics allVitalStatistics;
     private AllLabResults allLabResults;
@@ -88,7 +90,7 @@ public class PatientController extends BaseController {
     private Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
 
     @Autowired
-    public PatientController(AllPatients allPatients, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
+    public PatientController(AllPatients allPatients, AllGendersCache allGenders, AllIVRLanguagesCache allIVRLanguages, AllHIVTestReasonsCache allTestReasons, AllModesOfTransmissionCache allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
                              AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService,
                              @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly, AllClinicVisits allClinicVisits) {
         this.allPatients = allPatients;

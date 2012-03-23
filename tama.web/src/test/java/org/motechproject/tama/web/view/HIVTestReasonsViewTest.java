@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.refdata.domain.HIVTestReason;
-import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
+import org.motechproject.tama.refdata.objectcache.AllHIVTestReasonsCache;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class HIVTestReasonsViewTest {
     private HIVTestReasonsView HIVTestReasonsView;
 
     @Mock
-    private AllHIVTestReasons HIVTestReasons;
+    private AllHIVTestReasonsCache HIVTestReasons;
 
     @Before
     public void setUp() {

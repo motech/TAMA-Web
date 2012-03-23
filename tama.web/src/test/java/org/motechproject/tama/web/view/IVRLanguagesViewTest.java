@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class IVRLanguagesViewTest {
     private IVRLanguagesView IVRLanguagesView;
 
     @Mock
-    private AllIVRLanguages allIVRLanguages;
+    private AllIVRLanguagesCache allIVRLanguages;
 
     @Before
     public void setUp() {

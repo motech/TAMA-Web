@@ -16,10 +16,10 @@ import org.motechproject.tama.patient.domain.HIVMedicalHistory;
 import org.motechproject.tama.patient.domain.MedicalHistory;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientPreferences;
-import org.motechproject.tama.refdata.repository.AllGenders;
-import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
-import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
+import org.motechproject.tama.refdata.objectcache.AllGendersCache;
+import org.motechproject.tama.refdata.objectcache.AllHIVTestReasonsCache;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
+import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -30,16 +30,16 @@ import java.util.List;
 public class AllPatients extends AuditableCouchRepository<Patient> {
 
     private AllClinics allClinics;
-    private AllGenders allGenders;
-    private AllIVRLanguages allIVRLanguages;
+    private AllGendersCache allGenders;
+    private AllIVRLanguagesCache allIVRLanguages;
     private AllUniquePatientFields allUniquePatientFields;
-    private AllHIVTestReasons allHIVTestReasons;
-    private AllModesOfTransmission allModesOfTransmission;
+    private AllHIVTestReasonsCache allHIVTestReasons;
+    private AllModesOfTransmissionCache allModesOfTransmission;
 
     @Autowired
-    public AllPatients(@Qualifier("tamaDbConnector") CouchDbConnector db, AllClinics allClinics, AllGenders allGenders,
-                       AllIVRLanguages allIVRLanguages, AllUniquePatientFields allUniquePatientFields,
-                       AllHIVTestReasons allHIVTestReasons, AllModesOfTransmission allModesOfTransmission,
+    public AllPatients(@Qualifier("tamaDbConnector") CouchDbConnector db, AllClinics allClinics, AllGendersCache allGenders,
+                       AllIVRLanguagesCache allIVRLanguages, AllUniquePatientFields allUniquePatientFields,
+                       AllHIVTestReasonsCache allHIVTestReasons, AllModesOfTransmissionCache allModesOfTransmission,
                        AllAuditRecords allAuditRecords) {
         super(Patient.class, db, allAuditRecords);
         this.allClinics = allClinics;
@@ -165,19 +165,19 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
     private void loadPatientDependencies(Patient patient) {
         if (patient == null) return;
         if (!StringUtils.isBlank(patient.getGenderId()))
-            patient.setGender(allGenders.get(patient.getGenderId()));
+            patient.setGender(allGenders.getBy(patient.getGenderId()));
         PatientPreferences patientPreferences = patient.getPatientPreferences();
         if (!StringUtils.isBlank(patientPreferences.getIvrLanguageId()))
-            patientPreferences.setIvrLanguage(allIVRLanguages.get(patientPreferences.getIvrLanguageId()));
+            patientPreferences.setIvrLanguage(allIVRLanguages.getBy(patientPreferences.getIvrLanguageId()));
         if (!StringUtils.isBlank(patient.getClinic_id()))
             patient.setClinic(allClinics.get(patient.getClinic_id()));
         MedicalHistory medicalHistory = patient.getMedicalHistory();
         if (medicalHistory != null) {
             HIVMedicalHistory hivMedicalHistory = medicalHistory.getHivMedicalHistory();
             if (!StringUtils.isBlank(hivMedicalHistory.getTestReasonId()))
-                hivMedicalHistory.setTestReason(allHIVTestReasons.get(hivMedicalHistory.getTestReasonId()));
+                hivMedicalHistory.setTestReason(allHIVTestReasons.getBy(hivMedicalHistory.getTestReasonId()));
             if (!StringUtils.isBlank(hivMedicalHistory.getModeOfTransmissionId()))
-                hivMedicalHistory.setModeOfTransmission(allModesOfTransmission.get(hivMedicalHistory.getModeOfTransmissionId()));
+                hivMedicalHistory.setModeOfTransmission(allModesOfTransmission.getBy(hivMedicalHistory.getModeOfTransmissionId()));
         }
     }
 }

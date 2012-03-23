@@ -2,7 +2,7 @@ package org.motechproject.tama.web.view;
 
 
 import org.motechproject.tama.refdata.domain.IVRLanguage;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,9 +10,9 @@ import java.util.List;
 
 public class IVRLanguagesView {
 
-    private final AllIVRLanguages allIVRLanguages;
+    private final AllIVRLanguagesCache allIVRLanguages;
 
-    public IVRLanguagesView(AllIVRLanguages allIVRLanguages) {
+    public IVRLanguagesView(AllIVRLanguagesCache allIVRLanguages) {
         this.allIVRLanguages = allIVRLanguages;
     }
 

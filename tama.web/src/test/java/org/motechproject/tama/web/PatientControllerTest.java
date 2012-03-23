@@ -25,7 +25,10 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Gender;
-import org.motechproject.tama.refdata.repository.*;
+import org.motechproject.tama.refdata.objectcache.AllGendersCache;
+import org.motechproject.tama.refdata.objectcache.AllHIVTestReasonsCache;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
+import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.model.DoseStatus;
@@ -81,13 +84,13 @@ public class PatientControllerTest {
         @Mock
         AllPatients allPatients;
         @Mock
-        AllGenders allGenders;
+        AllGendersCache allGenders;
         @Mock
-        AllIVRLanguages allIVRLanguages;
+        AllIVRLanguagesCache allIVRLanguages;
         @Mock
-        AllHIVTestReasons allTestReasons;
+        AllHIVTestReasonsCache allTestReasons;
         @Mock
-        AllModesOfTransmission allModesOfTransmission;
+        AllModesOfTransmissionCache allModesOfTransmission;
         @Mock
         AllVitalStatistics allVitalStatistics;
         @Mock

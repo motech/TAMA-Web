@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.motechproject.cmslite.api.model.CMSLiteException;
 import org.motechproject.cmslite.api.model.StreamContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.refdata.seed.MD5Checksum;
 import org.motechproject.tama.web.model.FileUploadFormBean;
 import org.motechproject.tama.web.view.IVRLanguagesView;
@@ -29,10 +29,10 @@ public class FileUploadController {
     private final String FILE_UPLOAD_VIEW = "fileupload/select";
     private final String FILE_UPLOADED_VIEW = "fileupload/success";
     private CMSLiteService cmsLiteService;
-    private AllIVRLanguages allIVRLanguages;
+    private AllIVRLanguagesCache allIVRLanguages;
 
     @Autowired
-    public FileUploadController(CMSLiteService cmsLiteService, AllIVRLanguages allIVRLanguages) {
+    public FileUploadController(CMSLiteService cmsLiteService, AllIVRLanguagesCache allIVRLanguages) {
         this.cmsLiteService = cmsLiteService;
         this.allIVRLanguages = allIVRLanguages;
     }

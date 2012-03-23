@@ -5,7 +5,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.resportbuilder.CallLogReportBuilder;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.ReportBuilder;
 import org.slf4j.Logger;
@@ -21,10 +21,10 @@ public class CallLogExcelReportService {
     private AllCallLogs allCallLogs;
     private AllClinics allClinics;
     private AllPatients allPatients;
-    private AllIVRLanguages allIVRLanguages;
+    private AllIVRLanguagesCache allIVRLanguages;
 
     @Autowired
-    public CallLogExcelReportService(AllCallLogs allCallLogs, AllClinics allClinics, AllPatients allPatients, AllIVRLanguages allIVRLanguages) {
+    public CallLogExcelReportService(AllCallLogs allCallLogs, AllClinics allClinics, AllPatients allPatients, AllIVRLanguagesCache allIVRLanguages) {
         this.allCallLogs = allCallLogs;
         this.allClinics = allClinics;
         this.allPatients = allPatients;

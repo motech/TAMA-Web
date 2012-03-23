@@ -18,7 +18,7 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
 import org.motechproject.tama.refdata.domain.IVRLanguages;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.view.CallLogView;
@@ -44,7 +44,7 @@ public class CallLogSummaryBuilderTest {
     @Mock
     AllClinics allClinics;
     @Mock
-    AllIVRLanguages allIVRLanguages;
+    AllIVRLanguagesCache allIVRLanguages;
 
     private CallLog callLog;
     private DateTime startTime;

@@ -8,7 +8,7 @@ import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.domain.Patients;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.domain.IVRLanguages;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.builder.CallLogSummaryBuilder;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.util.DateUtil;
@@ -21,7 +21,7 @@ public class AllCallLogSummaries {
     private AllCallLogs allCallLogs;
     private CallLogSummaryBuilder callLogSummaryBuilder;
 
-    public AllCallLogSummaries(AllCallLogs allCallLogs, AllPatients allPatients, AllClinics allClinics, AllIVRLanguages allIVRLanguages) {
+    public AllCallLogSummaries(AllCallLogs allCallLogs, AllPatients allPatients, AllClinics allClinics, AllIVRLanguagesCache allIVRLanguages) {
         this.allCallLogs = allCallLogs;
         this.callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients,
                 new Patients(allPatients.getAll()),

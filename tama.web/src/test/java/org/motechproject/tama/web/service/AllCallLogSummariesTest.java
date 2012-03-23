@@ -11,7 +11,7 @@ import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.util.DateUtil;
 
@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -37,7 +35,7 @@ public class AllCallLogSummariesTest {
     @Mock
     private AllClinics allClinics;
     @Mock
-    private AllIVRLanguages allIVRLanguages;
+    private AllIVRLanguagesCache allIVRLanguages;
 
     private AllCallLogSummaries allCallLogSummaries;
 

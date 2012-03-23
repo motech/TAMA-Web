@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.refdata.domain.ModeOfTransmission;
-import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
+import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,7 @@ public class ModesOfTransmissionViewTest {
     private ModesOfTransmissionView modesOfTransmissionView;
 
     @Mock
-    private AllModesOfTransmission modesOfTransmission;
+    private AllModesOfTransmissionCache modesOfTransmission;
 
     @Before
     public void setUp() {

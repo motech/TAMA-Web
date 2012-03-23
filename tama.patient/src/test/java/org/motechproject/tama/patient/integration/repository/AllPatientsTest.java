@@ -21,6 +21,10 @@ import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.domain.HIVTestReason;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
 import org.motechproject.tama.refdata.domain.ModeOfTransmission;
+import org.motechproject.tama.refdata.objectcache.AllGendersCache;
+import org.motechproject.tama.refdata.objectcache.AllHIVTestReasonsCache;
+import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
+import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 import org.motechproject.tama.refdata.repository.AllGenders;
 import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
 import org.motechproject.tama.refdata.repository.AllIVRLanguages;
@@ -51,13 +55,25 @@ public class AllPatientsTest extends SpringIntegrationTest {
     private AllGenders allGenders;
 
     @Autowired
+    private AllGendersCache allGendersCache;
+
+    @Autowired
     private AllHIVTestReasons allHIVTestReasons;
+
+    @Autowired
+    private AllHIVTestReasonsCache allHIVTestReasonsCache;
 
     @Autowired
     private AllModesOfTransmission allModesOfTransmission;
 
     @Autowired
+    private AllModesOfTransmissionCache allModesOfTransmissionCache;
+
+    @Autowired
     private AllIVRLanguages allIVRLanguages;
+
+    @Autowired
+    private AllIVRLanguagesCache allIVRLanguagesCache;
 
     @Autowired
     private AllAuditRecords allAuditRecords;
@@ -70,14 +86,16 @@ public class AllPatientsTest extends SpringIntegrationTest {
     @Before
     public void before() {
         super.before();
-        allPatients = new AllPatients(tamaDbConnector, allClinics, allGenders, allIVRLanguages, allUniquePatientFields, allHIVTestReasons, allModesOfTransmission, allAuditRecords);
+        allPatients = new AllPatients(tamaDbConnector, allClinics, allGendersCache, allIVRLanguagesCache, allUniquePatientFields, allHIVTestReasonsCache, allModesOfTransmissionCache, allAuditRecords);
         markForDeletion(allUniquePatientFields.getAll().toArray());
         markForDeletion(allPatients.getAll().toArray());
         deleteAll();
         gender = Gender.newGender("Male");
         allGenders.add(gender);
+        allGendersCache.refresh();
         ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
         allIVRLanguages.add(ivrLanguage);
+        allIVRLanguagesCache.refresh();
     }
 
     @After
@@ -356,7 +374,10 @@ public class AllPatientsTest extends SpringIntegrationTest {
         ModeOfTransmission modeOfTransmission = medicalHistory.getHivMedicalHistory().getModeOfTransmission();
 
         allHIVTestReasons.add(testReason);
+        allHIVTestReasonsCache.refresh();
         allModesOfTransmission.add(modeOfTransmission);
+        allModesOfTransmissionCache.refresh();
+
         Patient patient = PatientBuilder.startRecording().withDefaults().withHIVTestReason(testReason).withModeOfTransmission(modeOfTransmission).build();
         allPatients.add(patient, USER_NAME);
 
