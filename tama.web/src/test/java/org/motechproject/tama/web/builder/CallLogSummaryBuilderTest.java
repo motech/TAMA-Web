@@ -78,7 +78,7 @@ public class CallLogSummaryBuilderTest {
         CallLogView callLogView = mock(CallLogView.class);
         clinic.setName("clinicName");
 
-        when(allIVRLanguages.getAll()).thenReturn(Arrays.asList(IVRLanguage.newIVRLanguage("English", "en")));
+        when(allIVRLanguages.getByCode("en")).thenReturn(IVRLanguage.newIVRLanguage("English", "en"));
         when(allClinics.getAll()).thenReturn(Arrays.asList(clinic));
         when(allPatients.getAll()).thenReturn(Arrays.asList(patient));
         when(callLogViewMapper.toCallLogView(Arrays.asList(callLog))).thenReturn(Arrays.asList(callLogView));
