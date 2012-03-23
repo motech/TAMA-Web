@@ -60,7 +60,7 @@ public class PatientControllerIT extends SpringIntegrationTest {
         markForDeletion(patient);
 
 
-        patientController.activate(patient.getId(), new ExtendedModelMap(), request);
+        patientController.activate(patient.getId(), request);
 
         Patient patientFromDB = allPatients.get(patient.getId());
         assertEquals(Status.Active.toString(), patientFromDB.getStatus().toString());

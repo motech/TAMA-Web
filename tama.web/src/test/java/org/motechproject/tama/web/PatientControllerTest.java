@@ -16,7 +16,6 @@ import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
-import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.*;
@@ -82,8 +81,6 @@ public class PatientControllerTest {
         @Mock
         AllPatients allPatients;
         @Mock
-        AllClinics allClinics;
-        @Mock
         AllGenders allGenders;
         @Mock
         AllIVRLanguages allIVRLanguages;
@@ -98,8 +95,6 @@ public class PatientControllerTest {
         @Mock
         AllLabResults allLabResults;
         @Mock
-        AllRegimens allRegimens;
-        @Mock
         PatientService patientService;
         @Mock
         DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
@@ -111,7 +106,7 @@ public class PatientControllerTest {
         @Before
         public void setUp() {
             initMocks(this);
-            controller = new PatientController(allPatients, allClinics, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, allRegimens, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, 28, allClinicVisits);
+            controller = new PatientController(allPatients, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, 28, allClinicVisits);
             when(user.getUsername()).thenReturn(USER_NAME);
             when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
             when(request.getSession()).thenReturn(session);
@@ -127,7 +122,7 @@ public class PatientControllerTest {
             when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
             when(allPatients.get(PATIENT_ID)).thenReturn(patient);
             doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
-            String nextPage = controller.activate(PATIENT_ID, uiModel, request);
+            String nextPage = controller.activate(PATIENT_ID, request);
 
             verify(patientService).activate(PATIENT_ID, USER_NAME);
             verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
@@ -142,7 +137,7 @@ public class PatientControllerTest {
 
             when(allPatients.get(PATIENT_ID)).thenReturn(patient);
             doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
-            String nextPage = controller.activate(PATIENT_ID, uiModel, request);
+            String nextPage = controller.activate(PATIENT_ID, request);
 
             verify(patientService).activate(PATIENT_ID, USER_NAME);
             verify(allClinicVisits, never()).addAppointmentCalendar(eq(PATIENT_ID));
@@ -158,7 +153,7 @@ public class PatientControllerTest {
             doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
             doThrow(new RuntimeException("Some Exception")).when(patientService).activate(PATIENT_ID, USER_NAME);
 
-            String nextPage = controller.activate(PATIENT_ID, uiModel, request);
+            String nextPage = controller.activate(PATIENT_ID, request);
 
             verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
             verify(request).setAttribute("flash.flashError", "Error occurred while activating patient: Some Exception");
@@ -175,7 +170,7 @@ public class PatientControllerTest {
             when(allPatients.get(PATIENT_ID)).thenReturn(patient);
             doNothing().when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
 
-            String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, uiModel, request);
+            String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
 
             verify(patientService).activate(PATIENT_ID, USER_NAME);
             verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
@@ -191,7 +186,7 @@ public class PatientControllerTest {
             when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
             when(request.getCharacterEncoding()).thenReturn("utf8");
 
-            String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, uiModel, request);
+            String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
 
             verify(patientService).activate(PATIENT_ID, USER_NAME);
             assertEquals("redirect:/patients", nextPage);
@@ -205,7 +200,7 @@ public class PatientControllerTest {
             when(allPatients.get(PATIENT_ID)).thenReturn(patient);
             doThrow(new RuntimeException("Some Exception")).when(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
 
-            String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, uiModel, request);
+            String nextPage = controller.activateAndRedirectToListPatient(PATIENT_ID, request);
 
             verify(patientService, never()).activate(PATIENT_ID, USER_NAME);
             verify(allClinicVisits).addAppointmentCalendar(PATIENT_ID);
@@ -218,7 +213,7 @@ public class PatientControllerTest {
         @Test
         public void shouldDeactivatePatientAndRedirectToPatientViewPage() {
             String id = PATIENT_ID;
-            String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, uiModel, request);
+            String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, request);
 
             verify(patientService).deactivate(id, Status.Patient_Withdraws_Consent, USER_NAME);
             assertEquals("redirect:/patients/patient_id", nextPage);
@@ -229,7 +224,7 @@ public class PatientControllerTest {
             String id = PATIENT_ID;
             doThrow(new RuntimeException("Some exception")).when(patientService).deactivate(id, Status.Patient_Withdraws_Consent, USER_NAME);
 
-            String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, uiModel, request);
+            String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, request);
 
             assertEquals("redirect:/patients/patient_id", nextPage);
             verify(request).setAttribute("flash.flashError", "Error occured while deactivating patient: Some exception");
@@ -243,7 +238,7 @@ public class PatientControllerTest {
             Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.DailyPillReminder).withLastSuspendedDate(now.minusDays(2)).build();
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
-            controller.reactivatePatient(PATIENT_ID, DoseStatus.NOT_TAKEN, uiModel, request);
+            controller.reactivatePatient(PATIENT_ID, DoseStatus.NOT_TAKEN, request);
 
             ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
             verify(dailyPillReminderAdherenceService, times(1)).backFillAdherence(eq(PATIENT_ID), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(false));
@@ -256,7 +251,7 @@ public class PatientControllerTest {
             Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(now.minusDays(2)).build();
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
-            controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, uiModel, request);
+            controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, request);
 
             ArgumentCaptor<DateTime> dateTimeArgumentCaptor = ArgumentCaptor.forClass(DateTime.class);
             verify(resumeFourDayRecallService, times(1)).backFillAdherence(eq(patientFromUI), eq(patientFromUI.getLastSuspendedDate()), dateTimeArgumentCaptor.capture(), eq(true));
@@ -268,7 +263,7 @@ public class PatientControllerTest {
             Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
-            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, uiModel, request);
+            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, request);
 
             verify(patientService).activate(PATIENT_ID, USER_NAME);
             assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
@@ -280,7 +275,7 @@ public class PatientControllerTest {
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
             doThrow(new RuntimeException("Some error")).when(patientService).activate(PATIENT_ID, USER_NAME);
 
-            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, uiModel, request);
+            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, request);
 
             assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
             verify(request).setAttribute("flash.flashError", "Error occurred while reactivating patient: Some error");
@@ -292,7 +287,7 @@ public class PatientControllerTest {
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
             doThrow(new RuntimeException("Some error")).when(resumeFourDayRecallService).backFillAdherence(eq(patientFromUI), eq(patientFromUI.getLastSuspendedDate()), Matchers.any(DateTime.class), eq(true));
 
-            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, uiModel, request);
+            String nextPage = controller.reactivatePatient(PATIENT_ID, DoseStatus.TAKEN, request);
 
             assertTrue(nextPage.contains("redirect:/patients/" + PATIENT_ID));
             verify(patientService, never()).activate(PATIENT_ID, USER_NAME);

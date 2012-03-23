@@ -23,7 +23,6 @@ import org.motechproject.tama.web.model.DoseStatus;
 import org.motechproject.tama.web.model.IncompletePatientDataWarning;
 import org.motechproject.tama.web.model.ListPatientViewModel;
 import org.motechproject.tama.web.model.PatientSummary;
-import org.motechproject.tama.web.view.ClinicsView;
 import org.motechproject.tama.web.view.HIVTestReasonsView;
 import org.motechproject.tama.web.view.IVRLanguagesView;
 import org.motechproject.tama.web.view.ModesOfTransmissionView;
@@ -75,7 +74,6 @@ public class PatientController extends BaseController {
     private static final String PATIENT_INSERT_ERROR = "Sorry, there was an error while creating/updating the patient. Please try again.";
 
     private AllPatients allPatients;
-    private AllClinics allClinics;
     private AllGenders allGenders;
     private AllIVRLanguages allIVRLanguages;
     private AllHIVTestReasons allTestReasons;
@@ -83,7 +81,6 @@ public class PatientController extends BaseController {
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllVitalStatistics allVitalStatistics;
     private AllLabResults allLabResults;
-    private AllRegimens allRegimens;
     private PatientService patientService;
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
     private AllClinicVisits allClinicVisits;
@@ -91,11 +88,10 @@ public class PatientController extends BaseController {
     private Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
 
     @Autowired
-    public PatientController(AllPatients allPatients, AllClinics allClinics, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
-                             AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, AllRegimens allRegimens, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService,
+    public PatientController(AllPatients allPatients, AllGenders allGenders, AllIVRLanguages allIVRLanguages, AllHIVTestReasons allTestReasons, AllModesOfTransmission allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
+                             AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService,
                              @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly, AllClinicVisits allClinicVisits) {
         this.allPatients = allPatients;
-        this.allClinics = allClinics;
         this.allGenders = allGenders;
         this.allIVRLanguages = allIVRLanguages;
         this.allTestReasons = allTestReasons;
@@ -103,7 +99,6 @@ public class PatientController extends BaseController {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allVitalStatistics = allVitalStatistics;
         this.allLabResults = allLabResults;
-        this.allRegimens = allRegimens;
         this.patientService = patientService;
         this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
         this.resumeFourDayRecallService = resumeFourDayRecallService;
@@ -112,17 +107,17 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate")
-    public String activate(@RequestParam String id, Model uiModel, HttpServletRequest request) {
-        return activatePatient(id, REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request), uiModel, request);
+    public String activate(@RequestParam String id, HttpServletRequest request) {
+        return activatePatient(id, REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request), request);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
-    public String activateAndRedirectToListPatient(@PathVariable String id, Model uiModel, HttpServletRequest request) {
-        return activatePatient(id, REDIRECT_TO_LIST_VIEW, uiModel, request);
+    public String activateAndRedirectToListPatient(@PathVariable String id, HttpServletRequest request) {
+        return activatePatient(id, REDIRECT_TO_LIST_VIEW, request);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate")
-    public String deactivate(@RequestParam String id, @RequestParam Status status, Model uiModel, HttpServletRequest request) {
+    public String deactivate(@RequestParam String id, @RequestParam Status status, HttpServletRequest request) {
         try {
             patientService.deactivate(id, status, loggedInUserId(request));
         } catch (RuntimeException e) {
@@ -147,7 +142,7 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/reactivatePatient")
-    public String reactivatePatient(@RequestParam String id, @RequestParam DoseStatus doseStatus, Model uiModel, HttpServletRequest request) {
+    public String reactivatePatient(@RequestParam String id, @RequestParam DoseStatus doseStatus, HttpServletRequest request) {
         Patient patient = allPatients.get(id);
 
         final DateTime startDate = patient.getStatus().isTemporarilyDeactivated() ? patient.getLastDeactivationDate() : patient.getLastSuspendedDate();
@@ -264,7 +259,7 @@ public class PatientController extends BaseController {
         return REDIRECT_TO_SUMMARY_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
 
-    private String activatePatient(String patientDocId, String redirectPage, Model uiModel, HttpServletRequest request) {
+    private String activatePatient(String patientDocId, String redirectPage, HttpServletRequest request) {
         try {
             Patient patient = allPatients.get(patientDocId);
             boolean firstActivation = patient.getActivationDate() == null;
@@ -317,7 +312,6 @@ public class PatientController extends BaseController {
     }
 
     private void populateModel(Model uiModel) {
-        uiModel.addAttribute("clinics", new ClinicsView(allClinics).getAll());
         uiModel.addAttribute("ivrlanguages", new IVRLanguagesView(allIVRLanguages).getAll());
         uiModel.addAttribute("daysInAMonth", TAMAConstants.Time.MAX_DAYS_IN_A_MONTH.list());
         uiModel.addAttribute("hoursInADay", TAMAConstants.Time.MAX_HOURS_IN_A_DAY.list());

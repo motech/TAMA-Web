@@ -171,7 +171,7 @@ class PatientSetupService {
                 .withRegistrationDate(today)
                 .build();
         patientController.create(patient, bindingResult, uiModel, request);
-        patientController.activate(patient.getId(), uiModel, request);
+        patientController.activate(patient.getId(), request);
         return patient;
     }
 
