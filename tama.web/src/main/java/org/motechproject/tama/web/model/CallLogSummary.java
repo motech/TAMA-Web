@@ -14,9 +14,10 @@ public class CallLogSummary {
     private String flowDurations;
     private String flows;
     private String age;
+    private String gender;
 
     public CallLogSummary(String patientId, String sourcePhoneNumber, String destinationPhoneNumber, String initiatedDateTime,
-                          String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic, String flows, String flowDurations, String age) {
+                          String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic, String flows, String flowDurations, String gender, String age) {
         this.patientId = patientId;
         this.sourcePhoneNumber = sourcePhoneNumber;
         this.destinationPhoneNumber = destinationPhoneNumber;
@@ -28,6 +29,7 @@ public class CallLogSummary {
         this.patientDistanceFromClinic = patientDistanceFromClinic;
         this.flows = flows;
         this.flowDurations = flowDurations;
+        this.gender = gender;
         this.age = age;
     }
 
@@ -78,5 +80,9 @@ public class CallLogSummary {
 
     public String getAge() {
         return age;
+    }
+
+    public String getGender() {
+        return gender;
     }
 }

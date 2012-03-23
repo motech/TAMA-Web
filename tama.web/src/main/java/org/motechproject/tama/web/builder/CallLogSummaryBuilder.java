@@ -56,13 +56,8 @@ public class CallLogSummaryBuilder {
                 getTravelTimeToClinic(callLog),
                 getCallLogFlowsAndSetFlowDurations(callLog),
                 getFlowDurations(callLog),
+                getGender(callLog),
                 getAge(callLog));
-    }
-
-    private String getAge(CallLog callLog) {
-        if (isEmpty(callLog.patientId())) return " - ";
-        Patient patient = allLoadedPatients.getBy(callLog.getPatientDocumentId());
-        return String.valueOf(patient.getAge());
     }
 
     private String getFlowDurations(CallLog callLog) {
@@ -81,10 +76,10 @@ public class CallLogSummaryBuilder {
         return " - ";
     }
 
-
     private String getInitiatedTime(CallLog callLog, boolean inboundCall) {
         return inboundCall ? "NA" : callLog.getStartTime().toString(CALL_LOG_DATETIME_FORMAT);
     }
+
 
     private DateTime getTimeStampOfFirstEvent(CallLog callLog) {
         return callLog.getCallEvents().isEmpty() ? callLog.getStartTime() : callLog.getCallEvents().get(0).getTimeStamp();
@@ -132,9 +127,8 @@ public class CallLogSummaryBuilder {
     }
 
     private String getTravelTimeToClinic(CallLog callLog) {
-        if (isEmpty(callLog.patientId())) return " - ";
-        Patient patient = allLoadedPatients.getBy(callLog.getPatientDocumentId());
-        return patient.getTravelTimeToClinicInDays() + " Days, " + patient.getTravelTimeToClinicInHours() + " Hours, and " + patient.getTravelTimeToClinicInMinutes() + " Minutes";
+        Patient patient = getPatientWhenCallLogForPatientNotEmpty(callLog);
+        return patient !=null ? patient.getTravelTimeToClinicInDays() + " Days, " + patient.getTravelTimeToClinicInHours() + " Hours, and " + patient.getTravelTimeToClinicInMinutes() + " Minutes" : " - ";
     }
 
     private String getCallLanguage(CallLog callLog) {
@@ -161,5 +155,20 @@ public class CallLogSummaryBuilder {
         } else {
             return callLog.getPhoneNumber();
         }
+    }
+
+    private String getGender(CallLog callLog) {
+        Patient patient = getPatientWhenCallLogForPatientNotEmpty(callLog);
+        return patient != null ? String.valueOf(patient.getGenderType()) : " - ";
+    }
+
+    private String getAge(CallLog callLog) {
+        Patient patient = getPatientWhenCallLogForPatientNotEmpty(callLog);
+        return patient != null ? String.valueOf(patient.getAge()) : " - ";
+    }
+
+    private Patient getPatientWhenCallLogForPatientNotEmpty(CallLog callLog) {
+        if (isEmpty(callLog.patientId())) return null;
+        return allLoadedPatients.getBy(callLog.getPatientDocumentId());
     }
 }

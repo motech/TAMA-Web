@@ -37,6 +37,7 @@ public class CallLogReportBuilder extends InMemoryReportBuilder<CallLogSummary> 
         columns.add(new ExcelColumn("Language", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Flows Accessed", Cell.CELL_TYPE_STRING, 14000));
         columns.add(new ExcelColumn("Flow Durations", Cell.CELL_TYPE_STRING, 14000));
+        columns.add(new ExcelColumn("Gender", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Age", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Distance of Patient from Clinic", Cell.CELL_TYPE_STRING, 8000));
     }
@@ -55,6 +56,7 @@ public class CallLogReportBuilder extends InMemoryReportBuilder<CallLogSummary> 
         row.add(callLogSummary.getLanguage());
         row.add(callLogSummary.getFlows());
         row.add(callLogSummary.getFlowDurations());
+        row.add(callLogSummary.getGender());
         row.add(callLogSummary.getAge());
         row.add(callLogSummary.getPatientDistanceFromClinic());
         return row;

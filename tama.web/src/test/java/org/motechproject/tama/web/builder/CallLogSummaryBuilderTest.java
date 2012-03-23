@@ -13,6 +13,7 @@ import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
 import org.motechproject.tama.refdata.repository.AllIVRLanguages;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
@@ -72,7 +73,7 @@ public class CallLogSummaryBuilderTest {
             add(callEvent);
         }});
         Clinic clinic = new Clinic(clinicId);
-        Patient patient = PatientBuilder.startRecording().withId(patientDocId).withPatientId("patientId").withClinic(clinic).withTravelTimeToClinicInDays(1).withTravelTimeToClinicInHours(1).withTravelTimeToClinicInMinutes(1).withDateOfBirth(DateUtil.today().minusYears(40)).build();
+        Patient patient = PatientBuilder.startRecording().withId(patientDocId).withPatientId("patientId").withGender(Gender.newGender("Male")).withClinic(clinic).withTravelTimeToClinicInDays(1).withTravelTimeToClinicInHours(1).withTravelTimeToClinicInMinutes(1).withDateOfBirth(DateUtil.today().minusYears(40)).build();
         CallLogView callLogView = mock(CallLogView.class);
         clinic.setName("clinicName");
 
@@ -99,6 +100,7 @@ public class CallLogSummaryBuilderTest {
         assertEquals("patientId", callLogSummary.getPatientId());
         assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());
         assertEquals("40", callLogSummary.getAge());
+        assertEquals("Male", callLogSummary.getGender());
     }
 
     @Test
@@ -116,5 +118,6 @@ public class CallLogSummaryBuilderTest {
         assertEquals("patientId", callLogSummary.getPatientId());
         assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());
         assertEquals("40", callLogSummary.getAge());
+        assertEquals("Male", callLogSummary.getGender());
     }
 }
