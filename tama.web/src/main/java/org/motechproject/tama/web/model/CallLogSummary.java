@@ -11,13 +11,12 @@ public class CallLogSummary {
     private String clinicName;
     private String language;
     private String patientDistanceFromClinic;
+    private String flowDurations;
     private String flows;
-
-    public CallLogSummary() {
-    }
+    private String age;
 
     public CallLogSummary(String patientId, String sourcePhoneNumber, String destinationPhoneNumber, String initiatedDateTime,
-                          String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic, String flows) {
+                          String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic, String flows, String flowDurations, String age) {
         this.patientId = patientId;
         this.sourcePhoneNumber = sourcePhoneNumber;
         this.destinationPhoneNumber = destinationPhoneNumber;
@@ -28,6 +27,8 @@ public class CallLogSummary {
         this.language = language;
         this.patientDistanceFromClinic = patientDistanceFromClinic;
         this.flows = flows;
+        this.flowDurations = flowDurations;
+        this.age = age;
     }
 
 
@@ -63,15 +64,19 @@ public class CallLogSummary {
         return patientDistanceFromClinic;
     }
 
-    public void setFlows(String flows) {
-        this.flows = flows;
-    }
-
     public String getFlows() {
         return flows;
     }
 
     public String getInitiatedDateTime() {
         return initiatedDateTime;
+    }
+
+    public String getFlowDurations() {
+        return flowDurations;
+    }
+
+    public String getAge() {
+        return age;
     }
 }

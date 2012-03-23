@@ -72,7 +72,7 @@ public class CallLogSummaryBuilderTest {
             add(callEvent);
         }});
         Clinic clinic = new Clinic(clinicId);
-        Patient patient = PatientBuilder.startRecording().withId(patientDocId).withPatientId("patientId").withClinic(clinic).withTravelTimeToClinicInDays(1).withTravelTimeToClinicInHours(1).withTravelTimeToClinicInMinutes(1).build();
+        Patient patient = PatientBuilder.startRecording().withId(patientDocId).withPatientId("patientId").withClinic(clinic).withTravelTimeToClinicInDays(1).withTravelTimeToClinicInHours(1).withTravelTimeToClinicInMinutes(1).withDateOfBirth(DateUtil.today().minusYears(40)).build();
         CallLogView callLogView = mock(CallLogView.class);
         clinic.setName("clinicName");
 
@@ -98,6 +98,7 @@ public class CallLogSummaryBuilderTest {
         assertEquals("English", callLogSummary.getLanguage());
         assertEquals("patientId", callLogSummary.getPatientId());
         assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());
+        assertEquals("40", callLogSummary.getAge());
     }
 
     @Test
@@ -114,5 +115,6 @@ public class CallLogSummaryBuilderTest {
         assertEquals("English", callLogSummary.getLanguage());
         assertEquals("patientId", callLogSummary.getPatientId());
         assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());
+        assertEquals("40", callLogSummary.getAge());
     }
 }

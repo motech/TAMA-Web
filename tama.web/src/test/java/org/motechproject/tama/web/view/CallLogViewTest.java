@@ -174,6 +174,7 @@ public class CallLogViewTest {
         assertEquals("Menu, Symptoms, Pill Reminder", callLogView.getFlows());
     }
 
+
     @Test
     public void shouldSetStartTime_FromFirstCallEvent_IfCallEventExists() {
         CallLog callLog = setUpCallLogs();
@@ -202,6 +203,43 @@ public class CallLogViewTest {
         assertEquals(startTime.toLocalTime(), callLogView.getCallStartTime());
     }
 
+    @Test
+    public void shouldReturnCorrectFlowTimesForDifferentFlows() {
+        CallLog callLog = setUpCallLogs();
+        DateTime now = DateTime.now();
+        callLog.setEndTime(now.plusMinutes(5).plusSeconds(10));
+        final CallEvent newCallEvent = createCallEvent("NewCall", CallState.STARTED.name(), "", "signature_music", "");
+        newCallEvent.setTimeStamp(DateUtil.now());
+        final CallEvent menuEvent = createCallEvent("gotDtmf", CallState.AUTHENTICATED.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "responseXML1", "");
+        menuEvent.setTimeStamp(DateUtil.now().plusSeconds(10));
+        final CallEvent pillConfirmationEvent = createCallEvent("gotDtmf", CallState.AUTHENTICATED.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "responseXML2", "");
+        pillConfirmationEvent.setTimeStamp(DateUtil.now().plusMinutes(1).plusSeconds(10));
+        final CallEvent transitioningToSymptomEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "", "");
+        transitioningToSymptomEvent.setTimeStamp(DateUtil.now().plusMinutes(2).plusSeconds(10));
+        final CallEvent transitionedToSymptomEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING_TREE.name(), TAMATreeRegistry.REGIMEN_1_TO_6, "responseXML3", "");
+        transitionedToSymptomEvent.setTimeStamp(DateUtil.now().plusMinutes(2).plusSeconds(10));
+        final CallEvent symptomReportingEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING_TREE.name(), TAMATreeRegistry.REGIMEN_1_TO_6, "responseXML4", "");
+        symptomReportingEvent.setTimeStamp(DateUtil.now().plusMinutes(4).plusSeconds(10));
+        final CallEvent hangUpEvent = createCallEvent("Hangup", "", "", "", "");
+        hangUpEvent.setTimeStamp(DateUtil.now().plusMinutes(5).plusSeconds(10));
+
+        callLog.setCallEvents(new ArrayList<CallEvent>() {{
+            add(newCallEvent);
+            add(menuEvent);
+            add(pillConfirmationEvent);
+            add(transitioningToSymptomEvent);
+            add(transitionedToSymptomEvent);
+            add(symptomReportingEvent);
+            add(hangUpEvent);
+        }});
+
+        callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
+        assertEquals("0 min 10 sec", callLogView.getCallFlowGroupViews().get(0).getFlowDuration());
+        assertEquals("2 min 0 sec", callLogView.getCallFlowGroupViews().get(1).getFlowDuration());
+        assertEquals("3 min 0 sec", callLogView.getCallFlowGroupViews().get(2).getFlowDuration());
+        assertEquals("0 min 0 sec", callLogView.getCallFlowGroupViews().get(3).getFlowDuration());
+    }
+
     private CallEvent createCallEvent(String name, String callState, String treeName, String responseXML, String callType) {
         CallEventCustomData callEventCustomData = new CallEventCustomData();
         callEventCustomData.add(CallEventConstants.CALL_STATE, callState);
@@ -216,7 +254,7 @@ public class CallLogViewTest {
     private CallLog setUpCallLogs() {
         CallLog callLog = new CallLog();
         callLog.setStartTime(startTime);
-        callLog.setEndTime(new DateTime(2011, 10, 7, 0, 0, 0).plusMinutes(2));
+        callLog.setEndTime(startTime.plusMinutes(2));
         return callLog;
     }
 }

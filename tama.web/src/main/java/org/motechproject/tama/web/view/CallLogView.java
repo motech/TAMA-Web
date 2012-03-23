@@ -1,6 +1,7 @@
 package org.motechproject.tama.web.view;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -110,12 +111,25 @@ public class CallLogView {
         for (CallEvent callEvent : callLog.getCallEvents()) {
             CallEventView callEventView = new CallEventView(callEvent);
             String flowToWhichCallEventBelongs = getFlow(callEventView);
-            if (flowToWhichCallEventBelongs.equals(getFlowOfLastCallFlowGroup())) {
-                addEventToLastFlow(callEventView);
+            if (flowToWhichCallEventBelongs.equals(getFlowOfCurrentCallFlowGroup())) {
+                addEventToCurrentFlow(callEventView);
             } else {
                 createNewFlow(flowToWhichCallEventBelongs, callEventView);
+                setFlowEndTimeForLastFlow(callEventView.getTimeStamp());
             }
         }
+    }
+
+    private void setFlowEndTimeForLastFlow(DateTime flowEndTimeForLastToLastFlow) {
+        CallFlowGroupView lastCallFlowGroupView = getLastCallFlowGroupView();
+        if (lastCallFlowGroupView != null) {
+            lastCallFlowGroupView.setFlowEndTime(flowEndTimeForLastToLastFlow);
+        }
+    }
+
+    private CallFlowGroupView getLastCallFlowGroupView() {
+        int listSize = callFlowGroupViews.size();
+        return listSize > 1 ? callFlowGroupViews.get(listSize - 2) : null;
     }
 
     private void constructCallFlowTitle() {
@@ -127,7 +141,7 @@ public class CallLogView {
         if(authenticated) {
             flows = StringUtils.join(flowsInViews, ", ");
         } else if(missed) {
-            flows = CallTypeConstants.MISSED +  " "  + getLastCallFlowGroupView().missedCallType();
+            flows = CallTypeConstants.MISSED +  " "  + getCurrentCallFlowGroupView().missedCallType();
         } else{
             flows = CallTypeConstants.UNAUTHENTICATED;
         }
@@ -135,6 +149,8 @@ public class CallLogView {
 
     private void createNewFlow(String flow, CallEventView callEventView) {
         CallFlowGroupView callFlowGroupView = new CallFlowGroupView(flow, callEventView);
+        callFlowGroupView.setFlowStartTime(callEventView.getTimeStamp());
+        callFlowGroupView.setFlowEndTime(callLog.getEndTime());
         callFlowGroupViews.add(callFlowGroupView);
     }
 
@@ -160,18 +176,18 @@ public class CallLogView {
         return CallTypeConstants.MENU;
     }
 
-    private void addEventToLastFlow(CallEventView callEventView) {
+    private void addEventToCurrentFlow(CallEventView callEventView) {
         if (!callFlowGroupViews.isEmpty()) {
-            getLastCallFlowGroupView().add(callEventView);
+            getCurrentCallFlowGroupView().add(callEventView);
         }
     }
 
-    private String getFlowOfLastCallFlowGroup() {
+    private String getFlowOfCurrentCallFlowGroup() {
         if (callFlowGroupViews.isEmpty()) return null;
-        return getLastCallFlowGroupView().getFlow();
+        return getCurrentCallFlowGroupView().getFlow();
     }
 
-    private CallFlowGroupView getLastCallFlowGroupView() {
+    private CallFlowGroupView getCurrentCallFlowGroupView() {
         return callFlowGroupViews.get(callFlowGroupViews.size() - 1);
     }
 

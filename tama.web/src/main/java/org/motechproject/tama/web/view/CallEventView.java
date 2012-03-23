@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.view;
 
+import org.joda.time.DateTime;
 import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
@@ -55,6 +56,10 @@ public class CallEventView {
 
     public String getCallType() {
         return getData(IVRService.CALL_TYPE);
+    }
+
+    public DateTime getTimeStamp(){
+        return callEvent.getTimeStamp();
     }
 
     private String getData(String key) {
