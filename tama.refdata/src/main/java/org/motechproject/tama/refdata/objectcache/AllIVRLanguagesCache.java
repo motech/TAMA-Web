@@ -22,6 +22,13 @@ public class AllIVRLanguagesCache extends Cachable<IVRLanguage>{
     }
 
     @Override
+    public void refresh(){
+        super.refresh();
+        codeObjectMap.clear();
+        populateCodeObjectMap();
+    }
+
+    @Override
     protected String getKey(IVRLanguage ivrLanguage) {
         return ivrLanguage.getId();
     }

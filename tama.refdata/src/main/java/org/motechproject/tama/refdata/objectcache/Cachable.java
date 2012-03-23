@@ -24,6 +24,11 @@ public abstract class Cachable<T> {
         return repository.getAll();
     }
 
+    public void refresh(){
+        objectMap.clear();
+        populateObjectMap();
+    }
+
     private void populateObjectMap() {
          for (T t : getAll()) {
              this.objectMap.put(getKey(t), t);
