@@ -38,7 +38,8 @@ public class CallLogExcelReportService {
         try {
             return reportBuilder.getExcelWorkbook();
         } catch (Exception e) {
-            logger.error("Error while generating excel report: " + e.getMessage());
+            e.printStackTrace();
+            logger.error("Error while generating excel report: " + e);
         }
         return null;
     }

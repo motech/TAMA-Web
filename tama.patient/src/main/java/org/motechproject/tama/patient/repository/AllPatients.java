@@ -7,6 +7,7 @@ import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
 import org.ektorp.support.GenerateView;
+import org.ektorp.support.ListFunction;
 import org.ektorp.support.View;
 import org.motechproject.tama.common.repository.AllAuditRecords;
 import org.motechproject.tama.common.repository.AuditableCouchRepository;
@@ -58,7 +59,7 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         if (patients.isEmpty()) return null;
 
         Patient patient = patients.get(0);
-        loadPatientDependencies(patient);
+        loadPatientDependencies(patient, true);
         return patient;
     }
 
@@ -67,7 +68,7 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         ViewQuery q = createQuery("find_by_clinic").key(clinicId).includeDocs(true);
         List<Patient> patients = db.queryView(q, Patient.class);
         for (Patient patient : patients) {
-            loadPatientDependencies(patient);
+            loadPatientDependencies(patient, true);
         }
         return patients;
     }
@@ -81,7 +82,7 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         ViewQuery q = createQuery("find_by_mobile_number").key(phoneNumber).includeDocs(true);
         List<Patient> patients = db.queryView(q, Patient.class);
         for (Patient patient : patients) {
-            loadPatientDependencies(patient);
+            loadPatientDependencies(patient, true);
         }
         return patients;
     }
@@ -89,7 +90,7 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
     public Patient findByMobileNumberAndPasscode(String phoneNumber, String passcode) {
         List<Patient> patients = findAllByMobileNumberAndPasscode(phoneNumber, passcode);
         Patient patient = singleResult(patients);
-        loadPatientDependencies(patient);
+        loadPatientDependencies(patient, true);
         return patient;
     }
 
@@ -142,15 +143,50 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
     @Override
     public Patient get(String id) {
         Patient patient = super.get(id);
-        loadPatientDependencies(patient);
+        loadPatientDependencies(patient, true);
         return patient;
     }
 
     @Override
+    @View(name = "all_patients_join_clinic", map = "function(doc) {" +
+            "                             if (doc.documentType =='Patient') {" +
+            "                                   emit([doc.clinic_id, 1], doc._id);" +
+            "                             } else if(doc.documentType =='Clinic') {" +
+            "                                   emit([doc._id, 0], doc._id);" +
+            "                             }" +
+            "                         }")
+    @ListFunction(name = "all_patients_join_clinic_list", function = "function(head, req) {" +
+            "     var headers = {'Content-Type': 'application/json'}; " +
+            "     var result; " +
+            "     if(req.query.include_docs != 'true') { " +
+            "           start({'code': 400, headers: headers}); " +
+            "           result = {'error': 'I require include_docs=true'}; " +
+            "     } else { " +
+            "           start({'headers': headers}); " +
+            "           result = {'content': []}; " +
+            "   var clinicRow = getRow();" +
+            "   while(clinicRow) {" +
+            "   var nextRow = getRow();" +
+            "   while(nextRow){" +
+            "       if(nextRow.value.documentType === 'Patient'){" +
+            "       var patientRow = nextRow;" +
+            "   patientRow.value.clinic = clinicRow.value; " +
+            "   result.content.push(patientRow.value); " +
+            "   }" +
+            "   }" +
+            "   clinicRow = nextRow;" +
+            "           } " +
+            "     } " +
+            "     send(JSON.stringify(result)); " +
+            "}")
     public List<Patient> getAll() {
-        List<Patient> patients = super.getAll();
+        ComplexKey startKey = ComplexKey.of(null, null);
+        ComplexKey endKey = ComplexKey.of(ComplexKey.emptyObject(), ComplexKey.emptyObject());
+
+        ViewQuery q = createQuery("all_patients_join_clinic").startKey(startKey).endKey(endKey).includeDocs(true).listName("all_patients_join_clinic_list");
+        final List<Patient> patients = db.queryView(q, Patient.class);
         for (Patient patient : patients) {
-            loadPatientDependencies(patient);
+            loadPatientDependencies(patient, false);
         }
         return patients;
     }
@@ -162,14 +198,14 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         return db.queryView(q, Patient.class);
     }
 
-    private void loadPatientDependencies(Patient patient) {
+    private void loadPatientDependencies(Patient patient, boolean shouldLoadClinic) {
         if (patient == null) return;
         if (!StringUtils.isBlank(patient.getGenderId()))
             patient.setGender(allGenders.getBy(patient.getGenderId()));
         PatientPreferences patientPreferences = patient.getPatientPreferences();
         if (!StringUtils.isBlank(patientPreferences.getIvrLanguageId()))
             patientPreferences.setIvrLanguage(allIVRLanguages.getBy(patientPreferences.getIvrLanguageId()));
-        if (!StringUtils.isBlank(patient.getClinic_id()))
+        if (!StringUtils.isBlank(patient.getClinic_id()) && shouldLoadClinic)
             patient.setClinic(allClinics.get(patient.getClinic_id()));
         MedicalHistory medicalHistory = patient.getMedicalHistory();
         if (medicalHistory != null) {

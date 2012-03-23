@@ -87,23 +87,23 @@ public class AllPatientsTest extends SpringIntegrationTest {
     public void before() {
         super.before();
         allPatients = new AllPatients(tamaDbConnector, allClinics, allGendersCache, allIVRLanguagesCache, allUniquePatientFields, allHIVTestReasonsCache, allModesOfTransmissionCache, allAuditRecords);
-        markForDeletion(allUniquePatientFields.getAll().toArray());
-        markForDeletion(allPatients.getAll().toArray());
-        deleteAll();
-        gender = Gender.newGender("Male");
-        allGenders.add(gender);
-        allGendersCache.refresh();
-        ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
-        allIVRLanguages.add(ivrLanguage);
-        allIVRLanguagesCache.refresh();
+//        markForDeletion(allUniquePatientFields.getAll().toArray());
+//        markForDeletion(allPatients.getAll().toArray());
+//        deleteAll();
+//        gender = Gender.newGender("Male");
+//        allGenders.add(gender);
+//        allGendersCache.refresh();
+//        ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
+//        allIVRLanguages.add(ivrLanguage);
+//        allIVRLanguagesCache.refresh();
     }
 
     @After
     public void after() {
-        markForDeletion(gender);
-        markForDeletion(ivrLanguage);
-        markForDeletion(allUniquePatientFields.getAll().toArray());
-        markForDeletion(allPatients.getAll().toArray());
+//        markForDeletion(gender);
+//        markForDeletion(ivrLanguage);
+//        markForDeletion(allUniquePatientFields.getAll().toArray());
+//        markForDeletion(allPatients.getAll().toArray());
         super.after();
     }
 
@@ -117,6 +117,13 @@ public class AllPatientsTest extends SpringIntegrationTest {
         Patient loadedPatient = allPatients.findByPatientId("12345678");
         assertNotNull(loadedPatient);
         assertEquals("12345678", loadedPatient.getPatientId());
+    }
+
+    @Test
+    public void shouldGetPatientWithClinic(){
+        final List<Patient> all = allPatients.getAll();
+        assertNotNull(all.get(0).getId());
+        assertNotNull(all.get(0).getClinic());
     }
 
     @Test
