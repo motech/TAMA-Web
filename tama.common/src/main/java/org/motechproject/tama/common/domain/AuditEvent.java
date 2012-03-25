@@ -13,10 +13,8 @@ public class AuditEvent extends CouchEntity {
     @JsonProperty
     String userName;
     @JsonProperty
-    @Getter
     String description;
     @JsonProperty
-    @Getter
     AuditEventType eventType;
 
     public AuditEvent() {
@@ -32,5 +30,37 @@ public class AuditEvent extends CouchEntity {
     public enum AuditEventType {
         Appointment,
         Alert
+    }
+
+    public DateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(DateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public AuditEventType getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(AuditEventType eventType) {
+        this.eventType = eventType;
     }
 }

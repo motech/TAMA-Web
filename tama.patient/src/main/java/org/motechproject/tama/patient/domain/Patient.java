@@ -31,11 +31,11 @@ public class Patient extends CouchEntity {
     public static final String CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT = "Constraint:Unique:Clinic/PatientId::";
     public static final String PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT = "Constraint:Unique:PhoneNumber/Passcode::";
 
-    @Getter @Setter protected String patientId;
+    protected String patientId;
 
     @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
-    @Getter @Setter protected String mobilePhoneNumber;
+    protected String mobilePhoneNumber;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
@@ -49,18 +49,18 @@ public class Patient extends CouchEntity {
     @ManyToOne
     private Clinic clinic;
 
-    @Getter @Setter private String genderId;
-    @Getter @Setter private String clinic_id;
+    private String genderId;
+    private String clinic_id;
 
     @Valid
-    @Getter @Setter private PatientPreferences patientPreferences = new PatientPreferences();
-    @Getter @Setter private MedicalHistory medicalHistory;
-    @Getter @Setter private Status status = Status.Inactive;
-    @Getter @Setter private String notes;
+    private PatientPreferences patientPreferences = new PatientPreferences();
+    private MedicalHistory medicalHistory;
+    private Status status = Status.Inactive;
+    private String notes;
 
-    @Getter @Setter private int travelTimeToClinicInDays;
-    @Getter @Setter private int travelTimeToClinicInHours;
-    @Getter @Setter private int travelTimeToClinicInMinutes;
+    private int travelTimeToClinicInDays;
+    private int travelTimeToClinicInHours;
+    private int travelTimeToClinicInMinutes;
 
     private Date registrationDateAsDate;
     private DateTime lastSuspendedDate;
@@ -263,5 +263,93 @@ public class Patient extends CouchEntity {
 
     public boolean shouldReceiveAppointmentReminder() {
         return getPatientPreferences().getActivateAppointmentReminders();
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
+
+    public String getMobilePhoneNumber() {
+        return mobilePhoneNumber;
+    }
+
+    public void setMobilePhoneNumber(String mobilePhoneNumber) {
+        this.mobilePhoneNumber = mobilePhoneNumber;
+    }
+
+    public String getGenderId() {
+        return genderId;
+    }
+
+    public void setGenderId(String genderId) {
+        this.genderId = genderId;
+    }
+
+    public String getClinic_id() {
+        return clinic_id;
+    }
+
+    public void setClinic_id(String clinic_id) {
+        this.clinic_id = clinic_id;
+    }
+
+    public PatientPreferences getPatientPreferences() {
+        return patientPreferences;
+    }
+
+    public void setPatientPreferences(PatientPreferences patientPreferences) {
+        this.patientPreferences = patientPreferences;
+    }
+
+    public MedicalHistory getMedicalHistory() {
+        return medicalHistory;
+    }
+
+    public void setMedicalHistory(MedicalHistory medicalHistory) {
+        this.medicalHistory = medicalHistory;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public int getTravelTimeToClinicInDays() {
+        return travelTimeToClinicInDays;
+    }
+
+    public void setTravelTimeToClinicInDays(int travelTimeToClinicInDays) {
+        this.travelTimeToClinicInDays = travelTimeToClinicInDays;
+    }
+
+    public int getTravelTimeToClinicInHours() {
+        return travelTimeToClinicInHours;
+    }
+
+    public void setTravelTimeToClinicInHours(int travelTimeToClinicInHours) {
+        this.travelTimeToClinicInHours = travelTimeToClinicInHours;
+    }
+
+    public int getTravelTimeToClinicInMinutes() {
+        return travelTimeToClinicInMinutes;
+    }
+
+    public void setTravelTimeToClinicInMinutes(int travelTimeToClinicInMinutes) {
+        this.travelTimeToClinicInMinutes = travelTimeToClinicInMinutes;
     }
 }

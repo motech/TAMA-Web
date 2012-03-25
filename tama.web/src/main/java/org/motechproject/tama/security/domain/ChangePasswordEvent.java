@@ -8,10 +8,10 @@ import org.motechproject.util.DateUtil;
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public class ChangePasswordEvent extends TAMAEvent {
 
-    @JsonProperty @Getter String clinicianName;
-    @JsonProperty @Getter String clinicName;
-    @JsonProperty @Getter String clinicId;
-    @JsonProperty @Getter String username;
+    @JsonProperty String clinicianName;
+    @JsonProperty String clinicName;
+    @JsonProperty String clinicId;
+    @JsonProperty String username;
 
     public ChangePasswordEvent() {}
 
@@ -20,6 +20,38 @@ public class ChangePasswordEvent extends TAMAEvent {
         this.clinicianName = clinicianName;
         this.clinicName = clinicName;
         this.clinicId = clinicId;
+        this.username = username;
+    }
+
+    public String getClinicianName() {
+        return clinicianName;
+    }
+
+    public void setClinicianName(String clinicianName) {
+        this.clinicianName = clinicianName;
+    }
+
+    public String getClinicName() {
+        return clinicName;
+    }
+
+    public void setClinicName(String clinicName) {
+        this.clinicName = clinicName;
+    }
+
+    public String getClinicId() {
+        return clinicId;
+    }
+
+    public void setClinicId(String clinicId) {
+        this.clinicId = clinicId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
         this.username = username;
     }
 }

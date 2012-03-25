@@ -11,7 +11,7 @@ import org.motechproject.tama.common.domain.CouchEntity;
 @JsonTypeInfo(use=JsonTypeInfo.Id.CLASS, include=JsonTypeInfo.As.PROPERTY, property="@class")
 public class TAMAEvent extends CouchEntity {
 
-    @JsonProperty @Getter DateTime dateTime;
+    @JsonProperty DateTime dateTime;
     @JsonProperty String baseClass = "TAMAEvent";
 
     public TAMAEvent() {
@@ -20,5 +20,21 @@ public class TAMAEvent extends CouchEntity {
 
     public TAMAEvent(DateTime dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public DateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(DateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public String getBaseClass() {
+        return baseClass;
+    }
+
+    public void setBaseClass(String baseClass) {
+        this.baseClass = baseClass;
     }
 }

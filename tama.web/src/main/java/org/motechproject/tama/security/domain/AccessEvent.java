@@ -11,11 +11,11 @@ public class AccessEvent extends TAMAEvent {
 
     public enum AccessEventType {Login, Logout};
 
-    @JsonProperty @Getter String userName;
-    @JsonProperty @Getter String sourceAddress;
-    @JsonProperty @Getter String sessionId;
-    @JsonProperty @Getter AccessEventType eventType;
-    @JsonProperty @Getter String loginStatus;
+    @JsonProperty String userName;
+    @JsonProperty String sourceAddress;
+    @JsonProperty String sessionId;
+    @JsonProperty AccessEventType eventType;
+    @JsonProperty String loginStatus;
 
     public AccessEvent() {}
 
@@ -26,5 +26,45 @@ public class AccessEvent extends TAMAEvent {
         this.sessionId = sessionId;
         this.eventType = eventType;
         this.loginStatus = status;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getSourceAddress() {
+        return sourceAddress;
+    }
+
+    public void setSourceAddress(String sourceAddress) {
+        this.sourceAddress = sourceAddress;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public AccessEventType getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(AccessEventType eventType) {
+        this.eventType = eventType;
+    }
+
+    public String getLoginStatus() {
+        return loginStatus;
+    }
+
+    public void setLoginStatus(String loginStatus) {
+        this.loginStatus = loginStatus;
     }
 }

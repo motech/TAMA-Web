@@ -10,10 +10,8 @@ import org.motechproject.util.DateUtil;
 @TypeDiscriminator("doc.documentType == 'SMSLog'")
 public class SMSLog extends CouchEntity {
 
-    @Getter
     @JsonProperty
     private String recipient;
-    @Getter
     @JsonProperty
     private String message;
     private DateTime sentDateTime;
@@ -33,5 +31,21 @@ public class SMSLog extends CouchEntity {
 
     public void setSentDateTime(DateTime sentDateTime) {
         this.sentDateTime = DateUtil.setTimeZone(sentDateTime);
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

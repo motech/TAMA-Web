@@ -14,15 +14,15 @@ import java.util.List;
 public class OutboxMessageLog extends CouchEntity {
 
     @JsonProperty
-    @Getter String patientDocId;
+    String patientDocId;
     @JsonProperty
-    @Getter String outboxMessageId;
+    String outboxMessageId;
     @JsonProperty
     DateTime createdOn;
     @JsonProperty
-    @Getter String typeName;
+    String typeName;
     @JsonProperty
-    @Getter List<PlayedLog> playedLogs = new ArrayList<PlayedLog>();
+    List<PlayedLog> playedLogs = new ArrayList<PlayedLog>();
 
     public OutboxMessageLog() {
     }
@@ -48,7 +48,7 @@ public class OutboxMessageLog extends CouchEntity {
         @JsonProperty
         DateTime date;
         @JsonProperty
-        @Getter private List<String> files;
+        private List<String> files;
 
         public PlayedLog() {
         }
@@ -81,5 +81,37 @@ public class OutboxMessageLog extends CouchEntity {
             result = 31 * result + (files != null ? files.hashCode() : 0);
             return result;
         }
+    }
+
+    public String getPatientDocId() {
+        return patientDocId;
+    }
+
+    public void setPatientDocId(String patientDocId) {
+        this.patientDocId = patientDocId;
+    }
+
+    public String getOutboxMessageId() {
+        return outboxMessageId;
+    }
+
+    public void setOutboxMessageId(String outboxMessageId) {
+        this.outboxMessageId = outboxMessageId;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public List<PlayedLog> getPlayedLogs() {
+        return playedLogs;
+    }
+
+    public void setPlayedLogs(List<PlayedLog> playedLogs) {
+        this.playedLogs = playedLogs;
     }
 }
