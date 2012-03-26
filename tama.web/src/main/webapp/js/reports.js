@@ -120,7 +120,7 @@ dojo.declare("tama.OutboxMessagesReportWidget", tama.ReportWidget, {
             [
                 {name:'Date of Posting (yyyy-mm-dd)', field:'createdOn', width:'180px'},
                 {name:'Type of Message', field:'typeName', width:'110px'},
-                {name:'Date/Time of Playing \n (yyyy-mm-dd hh:mm)', field:'playedOn', width:'250px'},
+                {name:'Date/Time of Playing \n (yyyy-mm-dd hh:mm:ss)', field:'playedOn', width:'250px'},
                 {name:'Message Content', field:'playedFiles', width:'380px'}
             ]
         ];

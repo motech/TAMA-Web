@@ -95,8 +95,8 @@ public class CallLogSummaryBuilderTest {
         assertEquals("clinicName", callLogSummary.getClinicName());
         assertEquals("TAMA", callLogSummary.getSourcePhoneNumber());
         assertEquals("1234567890", callLogSummary.getDestinationPhoneNumber());
-        assertEquals("10/10/2011 10:09:10", callLogSummary.getInitiatedDateTime());
-        assertEquals("10/10/2011 10:10:10", callLogSummary.getStartDateTime());
+        assertEquals("2011-10-10 10:09:10", callLogSummary.getInitiatedDateTime());
+        assertEquals("2011-10-10 10:10:10", callLogSummary.getStartDateTime());
         assertEquals("English", callLogSummary.getLanguage());
         assertEquals("patientId", callLogSummary.getPatientId());
         assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());
@@ -114,7 +114,7 @@ public class CallLogSummaryBuilderTest {
         assertEquals("1234567890", callLogSummary.getSourcePhoneNumber());
         assertEquals("TAMA", callLogSummary.getDestinationPhoneNumber());
         assertEquals("NA", callLogSummary.getInitiatedDateTime());
-        assertEquals("10/10/2011 10:10:10", callLogSummary.getStartDateTime());
+        assertEquals("2011-10-10 10:10:10", callLogSummary.getStartDateTime());
         assertEquals("English", callLogSummary.getLanguage());
         assertEquals("patientId", callLogSummary.getPatientId());
         assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());

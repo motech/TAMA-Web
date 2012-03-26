@@ -56,14 +56,12 @@ public class CallFlowGroupView {
         this.flowEndTime = flowEndTime;
     }
 
-    public String getFlowDuration() {
-        int flowDurationInSeconds = new Period(flowStartTime, flowEndTime, PeriodType.seconds()).getSeconds();
-        int flowDurationInMinutes = flowDurationInSeconds / 60;
-        flowDurationInSeconds = flowDurationInSeconds % 60;
-        return String.format("%s min %s sec",String.valueOf(flowDurationInMinutes), String.valueOf(flowDurationInSeconds));
+    public int getFlowDuration() {
+        return new Period(flowStartTime, flowEndTime, PeriodType.seconds()).getSeconds();
     }
 
-    public int getFlowDurationInSeconds() {
-        return new Period(flowStartTime, flowEndTime, PeriodType.seconds()).getSeconds();
+    @Override
+    public String toString() {
+        return flow;
     }
 }

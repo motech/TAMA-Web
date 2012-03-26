@@ -49,8 +49,8 @@ public class OutboxMessageSummaryBuilderTest {
         log.playedOn(createdOn.plusDays(2), Arrays.asList("file2", "100"));
         List<OutboxMessageSummary> summaries = outboxMessageSummaryBuilder.build(log);
         assertEquals(2, summaries.size());
-        assertSummary(summaries.get(0), "2011-10-10", "type", "2011-10-11 10:00", " FILE_ONE FILE_TWO");
-        assertSummary(summaries.get(1), "2011-10-10", "type", "2011-10-12 10:00", " FILE_TWO 100");
+        assertSummary(summaries.get(0), "2011-10-10", "type", "2011-10-11 10:00:00", " FILE_ONE FILE_TWO");
+        assertSummary(summaries.get(1), "2011-10-10", "type", "2011-10-12 10:00:00", " FILE_TWO 100");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class OutboxMessageSummaryBuilderTest {
 
         List<OutboxMessageSummary> summaries = outboxMessageSummaryBuilder.build(log);
         assertEquals(1, summaries.size());
-        assertSummary(summaries.get(0), "2011-10-10", "type", "2011-10-11 10:00", " a 123 b");
+        assertSummary(summaries.get(0), "2011-10-10", "type", "2011-10-11 10:00:00", " a 123 b");
     }
 
     private void assertSummary(OutboxMessageSummary summary, String createdOn, String type, String playedOn, String playedFiles) {

@@ -25,8 +25,8 @@ public class CallFlowGroupViewTest {
         DateTime flowStartTime = DateUtil.now();
 
         callFlowGroupView.setFlowStartTime(flowStartTime);
-        callFlowGroupView.setFlowEndTime(flowStartTime.plusHours(1).plusMinutes(2).plusSeconds(3));
+        callFlowGroupView.setFlowEndTime(flowStartTime.plusMinutes(2).plusSeconds(3));
 
-        assertEquals("62 min 3 sec", callFlowGroupView.getFlowDuration());
+        assertEquals(123, callFlowGroupView.getFlowDuration());
     }
 }

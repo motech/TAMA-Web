@@ -1,5 +1,7 @@
 package org.motechproject.tama.web.model;
 
+import java.util.Map;
+
 public class CallLogSummary {
 
     private String patientId;
@@ -11,13 +13,14 @@ public class CallLogSummary {
     private String clinicName;
     private String language;
     private String patientDistanceFromClinic;
-    private String flowDurations;
+    private Map<String, CallFlowDetails> flowDetailsMap;
     private String flows;
     private String age;
     private String gender;
 
     public CallLogSummary(String patientId, String sourcePhoneNumber, String destinationPhoneNumber, String initiatedDateTime,
-                          String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic, String flows, String flowDurations, String gender, String age) {
+                          String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic,
+                          String flows, Map<String, CallFlowDetails> flowDetailsMap, String gender, String age) {
         this.patientId = patientId;
         this.sourcePhoneNumber = sourcePhoneNumber;
         this.destinationPhoneNumber = destinationPhoneNumber;
@@ -28,7 +31,7 @@ public class CallLogSummary {
         this.language = language;
         this.patientDistanceFromClinic = patientDistanceFromClinic;
         this.flows = flows;
-        this.flowDurations = flowDurations;
+        this.flowDetailsMap = flowDetailsMap;
         this.gender = gender;
         this.age = age;
     }
@@ -74,8 +77,8 @@ public class CallLogSummary {
         return initiatedDateTime;
     }
 
-    public String getFlowDurations() {
-        return flowDurations;
+    public Map<String, CallFlowDetails> getFlowDetailsMap() {
+        return flowDetailsMap;
     }
 
     public String getAge() {

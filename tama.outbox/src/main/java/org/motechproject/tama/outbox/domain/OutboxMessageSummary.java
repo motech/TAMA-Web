@@ -2,6 +2,8 @@ package org.motechproject.tama.outbox.domain;
 
 import org.joda.time.DateTime;
 
+import static org.motechproject.tama.common.TAMAConstants.DATETIME_YYYY_MM_DD_FORMAT;
+
 public class OutboxMessageSummary {
 
     private String createdOn;
@@ -34,7 +36,7 @@ public class OutboxMessageSummary {
     }
 
     public void playedOn(DateTime playedOn, String playedFiles) {
-        this.playedOn = playedOn == null ? "" : playedOn.toString("yyyy-MM-dd HH:mm");
+        this.playedOn = playedOn == null ? "" : playedOn.toString(DATETIME_YYYY_MM_DD_FORMAT);
         this.playedFiles = playedFiles;
     }
 

@@ -3,6 +3,7 @@ package org.motechproject.tama.web.resportbuilder;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
@@ -41,7 +42,7 @@ public class AppointmentCalendarBuilder extends InMemoryReportBuilder<ClinicVisi
         columns.add(new ExcelColumn("Visit Name", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Appointment Due Date (yyyy-mm-dd)", Cell.CELL_TYPE_STRING, 5000));
         columns.add(new ExcelColumn("Adjusted Due Date (yyyy-mm-dd)", Cell.CELL_TYPE_STRING, 5000));
-        columns.add(new ExcelColumn("Appointment Set for (yyyy-mm-dd hh:mm)", Cell.CELL_TYPE_STRING, 5000));
+        columns.add(new ExcelColumn("Appointment Set for (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 5000));
         columns.add(new ExcelColumn("Actual Date of Visit (yyyy-mm-dd)", Cell.CELL_TYPE_STRING, 5000));
         columns.add(new ExcelColumn("Type of Visit", Cell.CELL_TYPE_STRING));
     }
@@ -52,7 +53,7 @@ public class AppointmentCalendarBuilder extends InMemoryReportBuilder<ClinicVisi
         List<Object> row = new ArrayList<Object>();
         String appointmentDuedate = clinicVisit.getAppointmentDueDate() != null ? clinicVisit.getAppointmentDueDate().toLocalDate().toString() : null;
         String adjustedDueDate = clinicVisit.getAdjustedDueDate() != null ? clinicVisit.getAdjustedDueDate().toString() : null;
-        String confirmedAppointmentDate = clinicVisit.getConfirmedAppointmentDate() != null ? clinicVisit.getConfirmedAppointmentDate().toString("yyyy-MM-dd HH:mm") : null;
+        String confirmedAppointmentDate = clinicVisit.getConfirmedAppointmentDate() != null ? clinicVisit.getConfirmedAppointmentDate().toString(TAMAConstants.DATETIME_YYYY_MM_DD_FORMAT) : null;
         String visitDate = clinicVisit.getVisitDate() != null ? clinicVisit.getVisitDate().toLocalDate().toString() : null;
         visitDate = clinicVisit.isMissed() ? "Missed" : visitDate;
 
