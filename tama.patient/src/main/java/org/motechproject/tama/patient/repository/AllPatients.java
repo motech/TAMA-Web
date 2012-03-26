@@ -13,6 +13,7 @@ import org.ektorp.support.View;
 import org.motechproject.tama.common.repository.AllAuditRecords;
 import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.common.util.UUIDUtil;
+import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.patient.domain.HIVMedicalHistory;
 import org.motechproject.tama.patient.domain.MedicalHistory;
@@ -69,10 +70,12 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
 
     @View(name = "find_by_clinic", map = "function(doc) {if (doc.documentType =='Patient' && doc.clinic_id) {emit(doc.clinic_id, doc._id);}}")
     public List<Patient> findByClinic(String clinicId) {
+        final Clinic clinic = allClinics.get(clinicId);
         ViewQuery q = createQuery("find_by_clinic").key(clinicId).includeDocs(true);
         List<Patient> patients = db.queryView(q, Patient.class);
         for (Patient patient : patients) {
-            loadPatientDependencies(patient, true);
+            loadPatientDependencies(patient, false);
+            patient.setClinic(clinic);
         }
         return patients;
     }
