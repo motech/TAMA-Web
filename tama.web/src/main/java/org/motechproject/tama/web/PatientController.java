@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
@@ -146,7 +147,10 @@ public class PatientController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, value = "/reactivatePatient")
     public String reactivatePatient(@RequestParam String id, @RequestParam DoseStatus doseStatus, HttpServletRequest request) {
         Patient patient = allPatients.get(id);
-
+        final TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(id);
+        if (treatmentAdvice == null){
+            return activate(id, request);
+        }
         final DateTime startDate = patient.getStatus().isTemporarilyDeactivated() ? patient.getLastDeactivationDate() : patient.getLastSuspendedDate();
         try {
             if (patient.isOnDailyPillReminder()) {
@@ -199,9 +203,6 @@ public class PatientController extends BaseController {
         List<ListPatientViewModel> listPatientViewModels = new ArrayList<ListPatientViewModel>();
         for (Patient patient : allPatients.findByClinic(clinicId)) {
             ListPatientViewModel listPatientViewModel = new ListPatientViewModel(patient);
-            if (allTreatmentAdvices.currentTreatmentAdvice(patient.getId()) != null) {
-                listPatientViewModel.setOnTreatmentAdvice(true);
-            }
             listPatientViewModels.add(listPatientViewModel);
         }
         uiModel.addAttribute(PATIENTS, listPatientViewModels);

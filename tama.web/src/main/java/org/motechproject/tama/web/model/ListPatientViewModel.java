@@ -6,7 +6,6 @@ import org.motechproject.tama.patient.domain.Status;
 public class ListPatientViewModel extends Patient {
 
     private Patient patient;
-    private boolean onTreatmentAdvice;
 
     public ListPatientViewModel(Patient patient) {
         this.setId(patient.getId());
@@ -24,23 +23,11 @@ public class ListPatientViewModel extends Patient {
         return patient;
     }
 
-    public boolean getOnTreatmentAdvice() {
-        return onTreatmentAdvice;
-    }
-
-    public boolean isOnTreatmentAdvice() {
-        return onTreatmentAdvice;
-    }
-
-    public void setOnTreatmentAdvice(boolean onTreatmentAdvice) {
-        this.onTreatmentAdvice = onTreatmentAdvice;
-    }
-
     public boolean isActivateEnabled() {
         return !getStatus().equals(Status.Active) && !isReviveEnabled();
     }
 
     public boolean isReviveEnabled() {
-        return onTreatmentAdvice && (getStatus().equals(Status.Temporary_Deactivation) || getStatus().equals(Status.Suspended));
+        return (getStatus().equals(Status.Temporary_Deactivation) || getStatus().equals(Status.Suspended));
     }
 }

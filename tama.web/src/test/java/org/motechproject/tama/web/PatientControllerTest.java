@@ -18,6 +18,7 @@ import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -235,6 +236,13 @@ public class PatientControllerTest {
     }
 
     public static class ReactivatePatient extends SubjectUnderTest {
+
+        @Before
+        public void setUp() {
+            super.setUp();
+            when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(TreatmentAdviceBuilder.startRecording().withDefaults().build());
+        }
+
         @Test
         public void shouldBackFill_whenPatientIsOnDailyPillReminder() {
             DateTime now = DateUtil.now();
@@ -297,6 +305,7 @@ public class PatientControllerTest {
             verify(request).setAttribute("flash.flashError", "Error occurred while reactivating patient: Some error");
         }
     }
+
 
     public static class Show extends SubjectUnderTest {
         @Test
