@@ -3,7 +3,10 @@ package org.motechproject.tama.patient.service;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.server.alerts.contract.UpdateCriteria;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
@@ -21,6 +24,7 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -35,8 +39,6 @@ public class PatientAlertServiceTest {
     @Mock
     private AllAuditEvents allAuditEvents;
 
-    private HashMap<String, String> symptomReportingData = new HashMap<String, String>();
-
     private PatientAlertService patientAlertService;
     private static final String USER_NAME = "userName";
 
@@ -44,7 +46,6 @@ public class PatientAlertServiceTest {
     public void setUp() {
         initMocks(this);
         patientAlertService = new PatientAlertService(allPatients, alertService, patientAlertSearchService, allAuditEvents);
-        symptomReportingData.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
     }
 
     @Test
@@ -61,7 +62,7 @@ public class PatientAlertServiceTest {
 
         PatientAlert symptomReportingAlert = patientAlertService.readAlert(alertId, USER_NAME);
         assertEquals(patient.getPatientId(), symptomReportingAlert.getPatientId());
-        verify(alertService, times(1)).changeStatus(alertId, AlertStatus.READ);
+        verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.READ))));
     }
 
     @Test
@@ -83,21 +84,6 @@ public class PatientAlertServiceTest {
     }
 
     @Test
-    public void shouldUpdateSymptomReportingAlert() {
-        final String alertId = "alertId";
-        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
-            setData(symptomReportingData);
-            setId(alertId);
-        }});
-        String doctorsNotes = "doctorsNotes";
-        String notes = "notes";
-        patientAlertService.updateAlertData(alertId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.toString(), USER_NAME);
-        verify(alertService).setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
-        verify(alertService).setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
-        verify(alertService).setData(alertId, PatientAlert.NOTES, notes);
-    }
-
-    @Test
     public void shouldCreateAppointmentReminderAlert() {
         final String testPatientId = "testPatientId";
         final String symptomReported = "some ugly rash";
@@ -111,19 +97,81 @@ public class PatientAlertServiceTest {
     }
 
     @Test
+    public void shouldUpdateSymptomReportingAlert() {
+        final String alertId = "alertId";
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+            setId(alertId);
+        }});
+        String doctorsNotes = "doctorsNotes";
+        String notes = "notes";
+        patientAlertService.updateAlertData(alertId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.toString(), USER_NAME);
+
+        Map<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
+        data.put(PatientAlert.DOCTORS_NOTES, doctorsNotes);
+        data.put(PatientAlert.NOTES, notes);
+        verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().data(data))));
+    }
+
+    @Test
     public void shouldUpdateAppointmentReminderAlert() {
         final String alertId = "alertId";
         when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
-            setData(symptomReportingData);
             setId(alertId);
         }});
 
         String doctorsNotes = "doctorsNotes";
         String notes = "notes";
         patientAlertService.updateAlertData(alertId, "Open", notes, doctorsNotes, PatientAlertType.AppointmentReminder.name(), USER_NAME);
-        verify(alertService, never()).setData(alertId, PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
-        verify(alertService, never()).setData(alertId, PatientAlert.DOCTORS_NOTES, doctorsNotes);
-        verify(alertService).setData(alertId, PatientAlert.NOTES, notes);
+
+        Map<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.NOTES, notes);
+        verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().data(data))));
+    }
+
+    @Test
+    public void shouldNotUpdateAlertDataWhenThereAreNoChanges() {
+        final String alertId = "alertId";
+        String doctorsNotes = "doctorsNotes";
+        String notes = "notes";
+        final String symptomsAlertStatus = "Open";
+
+        final Map<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
+        data.put(PatientAlert.DOCTORS_NOTES, doctorsNotes);
+        data.put(PatientAlert.NOTES, notes);
+
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+            setData(data);
+            setId(alertId);
+        }});
+
+        patientAlertService.updateAlertData(alertId, symptomsAlertStatus, notes, doctorsNotes, PatientAlertType.SymptomReporting.name(), USER_NAME);
+
+        verify(alertService, never()).update(Matchers.<String>any(), Matchers.<UpdateCriteria>any());
+    }
+
+    @Test
+    public void shouldNotUpdateAlertDataWhenValuesAreNullOrEmpty() {
+        final String alertId = "alertId";
+
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+            setData(new HashMap<String, String>());
+            setId(alertId);
+        }});
+
+        patientAlertService.updateAlertData(alertId, "", "", "", PatientAlertType.SymptomReporting.name(), USER_NAME);
+
+        verify(alertService, never()).update(Matchers.<String>any(), Matchers.<UpdateCriteria>any());
+    }
+
+
+    @Test
+    public void shouldReturnFalseWhenUpdateUnSuccessful() {
+        when(alertService.get(anyString())).thenReturn(new Alert());
+        doThrow(new RuntimeException("update exception")).when(alertService).update(Matchers.<String>any(), Matchers.<UpdateCriteria>any());
+        boolean condition = patientAlertService.updateAlertData("", "", "notes", "", "", "");
+        assertFalse(condition);
     }
 
     @Test
@@ -136,9 +184,13 @@ public class PatientAlertServiceTest {
             setPatientId(testPatientId);
             setId(testPatientId);
         }};
+
+        final HashMap<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+
         PatientAlerts alerts = new PatientAlerts() {{
             add(PatientAlert.newPatientAlert(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
-                setData(symptomReportingData);
+                setData(data);
                 setId(alertId);
             }}, patient));
         }};
@@ -148,8 +200,10 @@ public class PatientAlertServiceTest {
 
         patientAlertService.updateDoctorConnectedToDuringSymptomCall(testPatientId, doctorName);
 
-        verify(alertService).setData(alertId, PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.Yes.toString());
-        verify(alertService).setData(alertId, PatientAlert.DOCTOR_NAME, doctorName);
+        Map<String, String> updatedData = new HashMap<String, String>();
+        updatedData.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.Yes.toString());
+        updatedData.put(PatientAlert.DOCTOR_NAME, doctorName);
+        verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().data(updatedData))));
     }
 
     @Test
@@ -204,14 +258,6 @@ public class PatientAlertServiceTest {
         assertEquals(2, adherenceInRedAlerts.size());
         assertEquals(1, adherenceInRedAlerts.get(0).getAlert().getPriority());
         assertEquals(1, adherenceInRedAlerts.get(1).getAlert().getPriority());
-    }
-
-    @Test
-    public void shouldReturnFalseWhenUpdateUnSuccessful() {
-        when(alertService.get(anyString())).thenReturn(new Alert());
-        doThrow(new RuntimeException("update exception")).when(alertService).setData(anyString(), anyString(), anyString());
-        boolean condition = patientAlertService.updateAlertData("", "", "", "", "", "");
-        assertFalse(condition);
     }
 
     @Test
@@ -307,7 +353,7 @@ public class PatientAlertServiceTest {
         when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
         patientAlertService.appendSymptomToAlert(patient.getId(), "fever");
 
-        verify(alertService).setDescription(alert.getId(), "fever");
+        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).description("fever"))));
     }
 
     @Test
@@ -327,7 +373,7 @@ public class PatientAlertServiceTest {
         when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
         patientAlertService.appendSymptomToAlert(patient.getId(), "fever");
 
-        verify(alertService).setDescription(alert.getId(), "nausea, fever");
+        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).description("nausea, fever"))));
     }
 
     @Test
@@ -364,6 +410,43 @@ public class PatientAlertServiceTest {
         when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
 
         patientAlertService.setConnectedToDoctorStatusOnSymptomsReportingAlert(patientDocId, TAMAConstants.ReportedType.No);
-        verify(alertService).setData(alertId, PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.No.name());
+        HashMap<String, String> newData = new HashMap<String, String>();
+        newData.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.No.name());
+        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).data(newData))));
+    }
+
+    @Test
+    public void shouldUpdateAdviceAndPriorityOnSymptomsAlert() {
+        String patientDocId = "patientDocId", alertId = "alertId";
+        final Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocId).build();
+
+        HashMap<String, String> data = new HashMap<String, String>() {{
+            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+        }};
+
+        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, AlertStatus.READ, 1, data);
+        alert.setId(alertId);
+
+        PatientAlerts alerts = new PatientAlerts() {{
+            add(PatientAlert.newPatientAlert(alert, patient));
+        }};
+        when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
+
+        patientAlertService.updateAdviceOnSymptomsReportingAlert(patientDocId, "Some advice", 2);
+        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).priority(2).name("Some advice"))));
+    }
+
+    private class UpdateCriteriaMatcher extends ArgumentMatcher<UpdateCriteria> {
+        private UpdateCriteria updateCriteria;
+
+        private UpdateCriteriaMatcher(UpdateCriteria updateCriteria) {
+            this.updateCriteria = updateCriteria;
+        }
+
+        @Override
+        public boolean matches(Object argument) {
+            UpdateCriteria other = (UpdateCriteria) argument;
+            return updateCriteria.getAll().equals(other.getAll());
+        }
     }
 }
