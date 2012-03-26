@@ -60,7 +60,7 @@ public class OpportunisticInfectionsController extends BaseController {
                 return null;
             }
 
-            allReportedOpportunisticInfections.add(reportedOpportunisticInfections);
+            allReportedOpportunisticInfections.add(reportedOpportunisticInfections, loggedInUserId(httpServletRequest));
             return reportedOpportunisticInfections.getId();
         } catch (RuntimeException e) {
             httpServletRequest.setAttribute("flash.flashErrorOpportunisticInfections", "Error occurred while creating Opportunistic Infections: " + e.getMessage());
@@ -125,14 +125,14 @@ public class OpportunisticInfectionsController extends BaseController {
     public String update(OpportunisticInfectionsUIModel opportunisticInfectionsUIModel, HttpServletRequest httpServletRequest) {
         ReportedOpportunisticInfections storedOpportunisticInfections = getStoredOpportunisticInfections(opportunisticInfectionsUIModel);
         if (storedOpportunisticInfections != null) {
-            allReportedOpportunisticInfections.remove(storedOpportunisticInfections);
+            allReportedOpportunisticInfections.remove(storedOpportunisticInfections, loggedInUserId(httpServletRequest));
         }
         ReportedOpportunisticInfections reportedOpportunisticInfections = buildReportedOpportunisticInfections(opportunisticInfectionsUIModel);
         if (reportedOpportunisticInfections.getOpportunisticInfectionIds().isEmpty()) {
             allClinicVisits.updateOpportunisticInfections(opportunisticInfectionsUIModel.getPatientId(),
                     opportunisticInfectionsUIModel.getClinicVisitId(), null);
         } else {
-            allReportedOpportunisticInfections.add(reportedOpportunisticInfections);
+            allReportedOpportunisticInfections.add(reportedOpportunisticInfections, loggedInUserId(httpServletRequest));
             allClinicVisits.updateOpportunisticInfections(opportunisticInfectionsUIModel.getPatientId(),
                     opportunisticInfectionsUIModel.getClinicVisitId(), reportedOpportunisticInfections.getId());
         }

@@ -228,7 +228,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").withGender(gender).withIVRLanguage(ivrLanguage).build();
         allPatients.add(patient, USER_NAME);
 
-        allPatients.remove(patient);
+        allPatients.remove(patient, USER_NAME);
         Patient dbPatient = allPatients.findByPatientId("5678");
         List<UniquePatientField> uniquePatientFields = allUniquePatientFields.get(patient);
 

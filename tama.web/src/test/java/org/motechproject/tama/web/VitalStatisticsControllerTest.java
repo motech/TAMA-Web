@@ -226,7 +226,7 @@ public class VitalStatisticsControllerTest {
 
         final String returnUrl = vitalStatisticsController.update(vitalStatisticsUIModel, httpServletRequest);
 
-        verify(allVitalStatistics, times(1)).remove(savedVitalStatistics);
+        verify(allVitalStatistics, times(1)).remove(savedVitalStatistics, USER_NAME);
         verify(allClinicVisits, times(1)).updateVitalStatistics(PATIENT_ID, clinicVisit.getId(), null);
         assertEquals("redirect:/clinicvisits/" + clinicVisit.getId() + "?patientId=" + PATIENT_ID, returnUrl);
     }

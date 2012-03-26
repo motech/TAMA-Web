@@ -73,7 +73,7 @@ public class AllLabResults extends AuditableCouchRepository<LabResult> {
         } else {
             final LabResult savedLabResult = get(labResult.getId());
             if (labResult.getResult() == null || labResult.getResult().isEmpty()) {
-                remove(savedLabResult);
+                remove(savedLabResult, userName);
                 return null;
             } else {
                 savedLabResult.setTestDate(labResult.getTestDate());

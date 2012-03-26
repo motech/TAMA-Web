@@ -95,7 +95,7 @@ public class VitalStatisticsController extends BaseController {
                 allVitalStatistics.update(vitalStatistics, loggedInUserId(httpServletRequest));
                 allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
             } else {
-                allVitalStatistics.remove(savedVitalStatistics);
+                allVitalStatistics.remove(savedVitalStatistics, loggedInUserId(httpServletRequest));
                 allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), null);
             }
         }

@@ -4,7 +4,6 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
@@ -88,9 +87,9 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         Patient patient = new Patient();
         patient.getPatientPreferences().setCallPreference(CallPreference.DailyPillReminder);
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        Mockito.when(user.getUsername()).thenReturn(USER_NAME);
-        Mockito.when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
-        Mockito.when(request.getSession()).thenReturn(session);
+        when(user.getUsername()).thenReturn(USER_NAME);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
+        when(request.getSession()).thenReturn(session);
         controller = new TreatmentAdviceController(allPatients, allRegimens, allDosageTypes, allMealAdviceTypes, treatmentAdviceService, treatmentAdviceViewMapper, allClinicVisits, dosageTimeSlotService);
     }
 
