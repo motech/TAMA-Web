@@ -1,7 +1,5 @@
 package org.motechproject.tama.patient.repository;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
@@ -93,17 +91,14 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         return patient;
     }
 
+
+    @View(name = "find_by_patient_id_and_clinic_id", map = "function(doc) {if (doc.documentType =='Patient' && doc.patientId && doc.clinic_id) {emit([doc.patientId.toLowerCase(), doc.clinic_id.toLowerCase()], doc._id);}}")
     public Patient findByPatientIdAndClinicId(final String patientId, final String clinicId) {
-        List<Patient> patients = findByClinic(clinicId);
-        if (patients == null) return null;
-        CollectionUtils.filter(patients, new Predicate() {
-            @Override
-            public boolean evaluate(Object o) {
-                Patient patient = (Patient) o;
-                return patientId.equalsIgnoreCase(patient.getPatientId());
-            }
-        });
-        return singleResult(patients);
+        ComplexKey key = ComplexKey.of(patientId.toLowerCase(), clinicId.toLowerCase());
+        ViewQuery q = createQuery("find_by_patient_id_and_clinic_id").key(key).includeDocs(true);
+        Patient patient = singleResult(db.queryView(q, Patient.class));
+        loadPatientDependencies(patient);
+        return patient;
     }
 
     public Patient findByIdAndClinicId(final String id, String clinicId) {

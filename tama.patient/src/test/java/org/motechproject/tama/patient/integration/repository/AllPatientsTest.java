@@ -295,7 +295,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
     }
 
     @Test
-    public void shouldFindbyPatientIdAndClinicId(){
+    public void findbyPatientIdAndClinicId_shouldFindBy_CaseInsensitivePatientId_And_ClinicId(){
         Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
         allClinics.add(clinicForPatient);
         markForDeletion(clinicForPatient);
@@ -311,7 +311,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
         allPatients.add(anotherPatient_1, USER_NAME);
         allPatients.add(anotherPatient_2, USER_NAME);
 
-        Patient dbPatient1 = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), clinicForPatient.getId());
+        Patient dbPatient1 = allPatients.findByPatientIdAndClinicId("PatientID", clinicForPatient.getId());
         assertEquals(patient.getId(), dbPatient1.getId());
 
         Patient dbPatient2 = allPatients.findByPatientIdAndClinicId(anotherPatient_2.getPatientId(), anotherClinic.getId());
