@@ -104,7 +104,7 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         ComplexKey key = ComplexKey.of(patientId.toLowerCase(), clinicId.toLowerCase());
         ViewQuery q = createQuery("find_by_patient_id_and_clinic_id").key(key).includeDocs(true);
         Patient patient = singleResult(db.queryView(q, Patient.class));
-        loadPatientDependencies(patient);
+        loadPatientDependencies(patient, true);
         return patient;
     }
 
