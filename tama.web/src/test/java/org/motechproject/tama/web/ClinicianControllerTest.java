@@ -10,16 +10,20 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tama.facility.repository.AllClinicians;
 import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.security.AuthenticatedUser;
+import org.motechproject.tama.security.LoginSuccessHandler;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -36,11 +40,18 @@ public class ClinicianControllerTest {
     private Model uiModel;
     @Mock
     private HttpServletRequest request;
+    @Mock
+    private HttpSession session;
 
     @Before
     public void setUp() {
         initMocks(this);
         controller = new ClinicianController(clinicians, clinics);
+
+        when(request.getSession()).thenReturn(session);
+        AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
+        when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(authenticatedUser);
+        when(authenticatedUser.getUsername()).thenReturn("admin");
     }
 
     @Test

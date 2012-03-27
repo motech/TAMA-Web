@@ -38,7 +38,7 @@ public class CliniciansTest extends SpringIntegrationTest {
     public void testShouldPersistClinician() {
         String name = unique("testName1");
         Clinician testClinician = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
-        allClinicians.add(testClinician);
+        allClinicians.add(testClinician, "admin");
 
         Clinician clinician = allClinicians.get(testClinician.getId());
 
@@ -51,12 +51,12 @@ public class CliniciansTest extends SpringIntegrationTest {
     public void testNotShouldPersistClinicianWithNonUniqueUserName() {
         String name = unique("testName1");
         Clinician clinician = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
-        allClinicians.add(clinician);
+        allClinicians.add(clinician, "admin");
 
         Clinician dbClinician = allClinicians.get(clinician.getId());
 
         Clinician clinicianWithSameName = ClinicianBuilder.startRecording().withName(name).withUserName(name).build();
-        allClinicians.add(clinicianWithSameName);
+        allClinicians.add(clinicianWithSameName, "admin");
         markForDeletion(dbClinician, allCliniciansIds.get(dbClinician), clinicianWithSameName);
     }
 
@@ -66,10 +66,10 @@ public class CliniciansTest extends SpringIntegrationTest {
         String testName = unique("testName2");
         String newName = unique("newName");
         Clinician testClinician = ClinicianBuilder.startRecording().withName(testName).withUserName(testName).build();
-        allClinicians.add(testClinician);
+        allClinicians.add(testClinician, "admin");
 
         testClinician.setName(newName);
-        allClinicians.update(testClinician);
+        allClinicians.update(testClinician, "admin");
 
         Clinician clinician = allClinicians.get(testClinician.getId());
 
@@ -86,7 +86,7 @@ public class CliniciansTest extends SpringIntegrationTest {
         allClinics.add(testClinic);
         Clinician testClinician = ClinicianBuilder.startRecording().withName("testName").
                 withUserName("jack").withPassword("samurai").withClinic(testClinic).build();
-        allClinicians.add(testClinician);
+        allClinicians.add(testClinician, "admin");
 
         Clinician byUserNameAndPassword = allClinicians.findByUserNameAndPassword("jack", "samurai");
         assertNotNull(byUserNameAndPassword);
@@ -101,7 +101,7 @@ public class CliniciansTest extends SpringIntegrationTest {
         allClinics.add(clinic);
         String clinicianId = unique("foo");
         Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withUserName(clinicianId).build();
-        allClinicians.add(clinician);
+        allClinicians.add(clinician, "admin");
         Clinician returnedClinician = allClinicians.findByUsername(clinicianId);
         assertNotNull(returnedClinician);
         assertNotNull(returnedClinician.getClinic());
@@ -118,12 +118,12 @@ public class CliniciansTest extends SpringIntegrationTest {
         allClinics.add(clinic);
         String clinicianId = unique("foo");
         Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withPassword("bar").withUserName(clinicianId).build();
-        allClinicians.add(clinician);
+        allClinicians.add(clinician, "admin");
         Clinician returnedClinician = allClinicians.findByUsername(clinicianId);
         assertEquals("bar", returnedClinician.getPassword());
 
         returnedClinician.setPassword("foobar");
-        allClinicians.updatePassword(returnedClinician);
+        allClinicians.updatePassword(returnedClinician, "admin");
         returnedClinician = allClinicians.findByUsername(clinicianId);
         assertEquals("foobar", returnedClinician.getPassword());
 

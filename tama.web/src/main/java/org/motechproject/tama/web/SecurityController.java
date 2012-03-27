@@ -47,7 +47,7 @@ public class SecurityController extends BaseController {
             return "changePassword";
         } else {
             user.setPassword(newPassword);
-            allTAMAUsers.update(user.getTAMAUser());
+            allTAMAUsers.update(user.getTAMAUser(), loggedInUserId(request));
             allTAMAEvents.newChangePasswordEvent(user.getName(), user.getClinicName(), user.getClinicId(), user.getTAMAUser().getUsername());
             return "passwordReset";
         }
@@ -71,7 +71,7 @@ public class SecurityController extends BaseController {
         AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
         Clinician clinician = allTAMAUsers.getClinician(id);
         clinician.setPassword(newPassword);
-        allTAMAUsers.update(clinician);
+        allTAMAUsers.update(clinician, loggedInUserId(request));
         allTAMAEvents.newChangePasswordEvent(clinician.getName(), clinician.getClinicName(), clinician.getClinicId(), user.getUsername());
 
         return "setClinicianPasswordSuccess";

@@ -67,11 +67,13 @@ public class SecurityControllerTest {
         when(authenticatedUser.getPassword()).thenReturn("oldPassword");
         when(authenticatedUser.getTAMAUser()).thenReturn(tamaUser);
         when(authenticatedUser.getName()).thenReturn(tamaUser.getName());
+        when(authenticatedUser.getUsername()).thenReturn(tamaUser.getUsername());
         when(authenticatedUser.getClinicName()).thenReturn(tamaUser.getClinicName());
+
 
         String viewName = securityController.changePassword("oldPassword", "new", uiModel, request);
         verify(authenticatedUser, times(1)).setPassword("new");
-        verify(allTAMAUsers, times(1)).update(tamaUser);
+        verify(allTAMAUsers, times(1)).update(tamaUser, tamaUser.getUsername());
         verify(allTAMAEvents, times(1)).newChangePasswordEvent(tamaUser.getName(), tamaUser.getClinicName(), tamaUser.getClinicId(), tamaUser.getUsername());
         assertEquals("passwordReset", viewName);
     }
@@ -102,7 +104,7 @@ public class SecurityControllerTest {
         String viewName = securityController.resetClinicianPasswordPost("someClinicianId", "newPassword", "newPassword", uiModel, request);
         assertEquals("setClinicianPasswordSuccess", viewName);
         verify(clinician).setPassword("newPassword");
-        verify(allTAMAUsers).update(clinician);
+        verify(allTAMAUsers).update(clinician, "admin");
         verify(allTAMAEvents, times(1)).newChangePasswordEvent("clinician0", "clinic0", "clinic_0_id", "admin");
     }
 }

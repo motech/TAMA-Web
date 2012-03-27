@@ -17,9 +17,9 @@ public class AllTAMAUsers {
     @Autowired
     AllAdministrators allAdministrators;
 
-    public void update(TAMAUser user) {
+    public void update(TAMAUser user, String userName) {
         if (user instanceof Clinician) {
-            allClinicians.updatePassword((Clinician) user);
+            allClinicians.updatePassword((Clinician) user, userName);
         } else if (user instanceof Administrator) {
             allAdministrators.updatePassword((Administrator) user);
         }

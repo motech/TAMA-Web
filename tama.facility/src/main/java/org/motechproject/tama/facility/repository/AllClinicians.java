@@ -4,7 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.support.GenerateView;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
-import org.motechproject.tama.common.repository.AbstractCouchRepository;
+import org.motechproject.tama.common.repository.AllAuditRecords;
+import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.facility.domain.Clinician;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,14 +14,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class AllClinicians extends AbstractCouchRepository<Clinician> {
+public class AllClinicians extends AuditableCouchRepository<Clinician> {
     private AllClinics allClinics;
     private AllClinicianIds allClinicianIds;
     private PBEStringEncryptor encryptor;
 
     @Autowired
-    public AllClinicians(@Qualifier("tamaDbConnector") CouchDbConnector db, PBEStringEncryptor encryptor, AllClinics allClinics, AllClinicianIds clinicinanIds) {
-        super(Clinician.class, db);
+    public AllClinicians(@Qualifier("tamaDbConnector") CouchDbConnector db, PBEStringEncryptor encryptor, AllClinics allClinics, AllClinicianIds clinicinanIds, AllAuditRecords allAuditRecords) {
+        super(Clinician.class, db, allAuditRecords);
         this.allClinics = allClinics;
         this.encryptor = encryptor;
         this.allClinicianIds = clinicinanIds;
@@ -45,32 +46,32 @@ public class AllClinicians extends AbstractCouchRepository<Clinician> {
     }
 
     @Override
-    public void add(Clinician clinician) {
+    public void add(Clinician clinician, String userName) {
         clinician.setEncryptedPassword(encryptor.encrypt(clinician.getPassword()));
         allClinicianIds.add(clinician);
-        super.add(clinician);
+        super.add(clinician, userName);
     }
 
     @Override
-    public void remove(Clinician clinician) {
-        super.remove(clinician);
+    public void remove(Clinician clinician, String userName) {
+        super.remove(clinician, userName);
         allClinicianIds.remove(clinician);
     }
 
     @Override
-    public void update(Clinician clinician) {
+    public void update(Clinician clinician, String userName) {
         Clinician dbClinician = get(clinician.getId());
         clinician.setUsername(dbClinician.getUsername());
         clinician.setRevision(dbClinician.getRevision());
         clinician.setEncryptedPassword(dbClinician.getEncryptedPassword());
-        super.update(clinician);
+        super.update(clinician, userName);
     }
 
-    public void updatePassword(Clinician clinician) {
+    public void updatePassword(Clinician clinician, String userName) {
         Clinician dbClinician = get(clinician.getId());
         clinician.setRevision(dbClinician.getRevision());
         clinician.setEncryptedPassword(encryptor.encrypt(clinician.getPassword()));
-        super.update(clinician);
+        super.update(clinician, userName);
     }
 
     @Override
@@ -93,5 +94,4 @@ public class AllClinicians extends AbstractCouchRepository<Clinician> {
         clinician.setPassword(encryptor.decrypt(clinician.getPassword()));
         return clinician;
     }
-
 }

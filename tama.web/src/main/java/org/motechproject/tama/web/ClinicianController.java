@@ -45,7 +45,7 @@ public class ClinicianController extends BaseController {
             return CREATE_VIEW;
         }
         try {
-            allClinicians.add(clinician);
+            allClinicians.add(clinician, loggedInUserId(httpServletRequest));
             uiModel.asMap().clear();
         } catch (UpdateConflictException e) {
             bindingResult.addError(new FieldError("Clinician", "username", clinician.getUsername(), false,
@@ -82,7 +82,7 @@ public class ClinicianController extends BaseController {
             return UPDATE_VIEW;
         }
         uiModel.asMap().clear();
-        allClinicians.update(clinician);
+        allClinicians.update(clinician, loggedInUserId(httpServletRequest));
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(clinician.getId().toString(), httpServletRequest);
     }
 
