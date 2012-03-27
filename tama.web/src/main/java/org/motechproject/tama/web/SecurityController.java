@@ -62,15 +62,18 @@ public class SecurityController extends BaseController {
     @RequestMapping(value = "resetClinicianPassword/{id}", method = RequestMethod.POST)
     public String resetClinicianPasswordPost(@PathVariable("id") String id, @RequestParam(value = "j_newPassword", required = true) String newPassword,
                                              @RequestParam(value = "j_newPasswordConfirm", required = true) String newPasswordConfirmation,
-                                             Model uiModel) {
+                                             Model uiModel, HttpServletRequest request) {
         if (!newPassword.equals(newPasswordConfirmation)) {
             uiModel.addAttribute("errors", new FieldError("password", "j_newPasswordConfirm", TAMAMessages.NEW_PASSWORD_MISMATCH));
             uiModel.addAttribute("clinicianId", id);
             return "setClinicianPassword";
         }
+        AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
         Clinician clinician = allTAMAUsers.getClinician(id);
         clinician.setPassword(newPassword);
         allTAMAUsers.update(clinician);
+        allTAMAEvents.newChangePasswordEvent(clinician.getName(), clinician.getClinicName(), clinician.getClinicId(), user.getUsername());
+
         return "setClinicianPasswordSuccess";
     }
 
