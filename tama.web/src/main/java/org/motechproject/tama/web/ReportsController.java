@@ -116,7 +116,7 @@ public class ReportsController {
                                         @RequestParam LocalDate endDate,
                                         HttpServletResponse response) {
         HSSFWorkbook callLogReport = callLogExcelReportService.buildReport(startDate, endDate);
-        writeExcelToResponse(response, callLogReport, "AllCallLogsReport.xls");
+        writeExcelToResponse(response, callLogReport, "CallSummaryReport.xls");
     }
 
     @RequestMapping(value = "/reports/smsReport.xls", method = RequestMethod.GET)
@@ -127,7 +127,7 @@ public class ReportsController {
                                     HttpServletResponse response) {
         List<SMSLog> allSMSLogsForDateRange = allSMSLogs.findAllSMSLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59));
         SMSReportBuilder smsReportBuilder = new SMSReportBuilder(startDate, endDate, allSMSLogsForDateRange);
-        writeExcelToResponse(response, createExcelReport(smsReportBuilder), "AllSMSReports.xls");
+        writeExcelToResponse(response, createExcelReport(smsReportBuilder), "SMSReport.xls");
     }
 
     private HSSFWorkbook createExcelReport(ReportBuilder reportBuilder) {

@@ -94,7 +94,7 @@ public abstract class ReportBuilder<T> {
         fontTitle.setFontHeight((short) TITLE_FONT_HEIGHT);
 
         HSSFCellStyle cellStyleTitle = worksheet.getWorkbook().createCellStyle();
-        cellStyleTitle.setAlignment(CellStyle.ALIGN_CENTER);
+        cellStyleTitle.setAlignment(CellStyle.ALIGN_LEFT);
         cellStyleTitle.setWrapText(true);
         cellStyleTitle.setFont(fontTitle);
         return cellStyleTitle;

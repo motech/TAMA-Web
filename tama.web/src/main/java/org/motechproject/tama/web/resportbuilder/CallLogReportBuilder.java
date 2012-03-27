@@ -37,18 +37,18 @@ public class CallLogReportBuilder extends BatchReportBuilder {
 
     @Override
     protected String getWorksheetName() {
-        return "AllCallLogsReport";
+        return "CallSummaryReport";
     }
 
     @Override
     protected String getTitle() {
-        return "All Call Logs Report";
+        return "Call Summary Report";
     }
 
     @Override
     protected void initializeColumns() {
         columns = new ArrayList<ExcelColumn>();
-        columns.add(new ExcelColumn("Patient ID", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Patient ID", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Source Phone Number", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Destination Phone Number", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Clinic Name", Cell.CELL_TYPE_STRING, 8000));

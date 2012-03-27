@@ -27,12 +27,12 @@ public class SMSReportBuilder extends InMemoryReportBuilder<SMSLog> {
 
     @Override
     protected String getWorksheetName() {
-        return "ALLSMSReports";
+        return "SMSReport";
     }
 
     @Override
     protected String getTitle() {
-        return "All SMS Reports";
+        return "SMS Report";
     }
 
     @Override

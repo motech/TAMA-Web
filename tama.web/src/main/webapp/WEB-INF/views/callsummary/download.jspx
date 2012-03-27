@@ -10,7 +10,7 @@
     <spring:url value="/reports/callLogReport.xls" var="calllog_download_url"/>
     <spring:url value="/reports/smsReport.xls" var="sms_download_url"/>
     <util:panel id="fc_org_motechproject_tama_DownloadReports" title="Download Reports" openPane="true">
-        <util:panel id="fc_org_motechproject_tama_DownloadCallLogReport" title="Download Call Logs" openPane="true">
+        <util:panel id="fc_org_motechproject_tama_DownloadCallLogReport" title="Download Call Summary Report" openPane="true">
             <form action="${calllog_download_url}" method="GET" id="downloadCallLogsForm">
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogReport.startDate" id="c_org_motechproject_tama_calllog_startDate" label="Starting From" required="true" />
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogReport.endDate" id="c_org_motechproject_tama_calllog_endDate" label="Till" required="true" />
@@ -20,7 +20,7 @@
                 </span>
             </form>
         </util:panel>
-        <util:panel id="fc_org_motechproject_tama_DownloadSMSReport" title="Download SMS Logs" openPane="true">
+        <util:panel id="fc_org_motechproject_tama_DownloadSMSReport" title="Download SMS Report" openPane="true">
             <form action="${sms_download_url}" method="GET" id="downloadSMSForm">
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="smsReport.startDate" id="c_org_motechproject_tama_sms_startDate" label="Starting From" required="true" />
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="smsReport.endDate" id="c_org_motechproject_tama_sms_endDate" label="Till" required="true" />
