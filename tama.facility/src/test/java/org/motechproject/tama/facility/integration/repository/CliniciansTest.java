@@ -83,7 +83,7 @@ public class CliniciansTest extends SpringIntegrationTest {
         City city = City.newCity("Test");
         allCities.add(city);
         Clinic testClinic = ClinicBuilder.startRecording().withName("testClinic").withCity(city).build();
-        allClinics.add(testClinic);
+        allClinics.add(testClinic, "admin");
         Clinician testClinician = ClinicianBuilder.startRecording().withName("testName").
                 withUserName("jack").withPassword("samurai").withClinic(testClinic).build();
         allClinicians.add(testClinician, "admin");
@@ -98,7 +98,7 @@ public class CliniciansTest extends SpringIntegrationTest {
         City city = City.newCity("Test");
         allCities.add(city);
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
-        allClinics.add(clinic);
+        allClinics.add(clinic, "admin");
         String clinicianId = unique("foo");
         Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withUserName(clinicianId).build();
         allClinicians.add(clinician, "admin");
@@ -115,7 +115,7 @@ public class CliniciansTest extends SpringIntegrationTest {
         City city = City.newCity("Test");
         allCities.add(city);
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
-        allClinics.add(clinic);
+        allClinics.add(clinic, "admin");
         String clinicianId = unique("foo");
         Clinician clinician = ClinicianBuilder.startRecording().withClinic(clinic).withPassword("bar").withUserName(clinicianId).build();
         allClinicians.add(clinician, "admin");

@@ -2,7 +2,8 @@ package org.motechproject.tama.facility.repository;
 
 import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
-import org.motechproject.tama.common.repository.AbstractCouchRepository;
+import org.motechproject.tama.common.repository.AllAuditRecords;
+import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.refdata.repository.AllCities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class AllClinics extends AbstractCouchRepository<Clinic> {
+public class AllClinics extends AuditableCouchRepository<Clinic> {
 
     private AllCities allCities;
 
     @Autowired
-    public AllClinics(@Qualifier("tamaDbConnector") CouchDbConnector db, AllCities allCities) {
-        super(Clinic.class, db);
+    public AllClinics(@Qualifier("tamaDbConnector") CouchDbConnector db, AllCities allCities, AllAuditRecords allAuditRecords) {
+        super(Clinic.class, db, allAuditRecords);
         this.allCities = allCities;
         initStandardDesignDocument();
     }

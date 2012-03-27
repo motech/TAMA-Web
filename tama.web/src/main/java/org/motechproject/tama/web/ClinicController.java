@@ -36,7 +36,7 @@ public class ClinicController extends BaseController {
             return "clinics/clinicForm";
         }
         uiModel.asMap().clear();
-        allClinics.add(clinic);
+        allClinics.add(clinic, loggedInUserId(httpServletRequest));
         return "redirect:/clinics/" + encodeUrlPathSegment(clinic.getId().toString(), httpServletRequest);
     }
 
@@ -67,7 +67,7 @@ public class ClinicController extends BaseController {
         }
         uiModel.asMap().clear();
         clinic.setRevision(allClinics.get(clinic.getId()).getRevision());
-        allClinics.update(clinic);
+        allClinics.update(clinic, loggedInUserId(httpServletRequest));
         return "redirect:/clinics/" + encodeUrlPathSegment(clinic.getId().toString(), httpServletRequest);
     }
 

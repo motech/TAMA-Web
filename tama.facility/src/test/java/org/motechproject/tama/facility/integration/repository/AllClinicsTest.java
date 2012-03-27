@@ -44,7 +44,7 @@ public class AllClinicsTest extends SpringIntegrationTest {
         allCities.add(city);
 
         Clinic clinic = ClinicBuilder.startRecording().withCity(city).build();
-        allClinics.add(clinic);
+        allClinics.add(clinic, "admin");
 
         Clinic returnedClinic = allClinics.get(clinic.getId());
 
@@ -65,10 +65,10 @@ public class AllClinicsTest extends SpringIntegrationTest {
         allCities.add(anotherCity);
 
         Clinic clinic = ClinicBuilder.startRecording().withCity(city).build();
-        allClinics.add(clinic);
+        allClinics.add(clinic, "admin");
 
         Clinic anotherClinic = ClinicBuilder.startRecording().withCity(anotherCity).build();
-        allClinics.add(anotherClinic);
+        allClinics.add(anotherClinic, "admin");
 
         List<Clinic> returnedClinics = allClinics.getAll();
 

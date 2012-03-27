@@ -61,7 +61,7 @@ public class PatientServiceIT extends SpringIntegrationTest {
     @Test
     public void shouldSuspendPatient() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
-        allClinics.add(clinic);
+        allClinics.add(clinic, "admin");
         markForDeletion(clinic);
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).build();
         allPatients.add(patient, USER_NAME);
@@ -82,7 +82,7 @@ public class PatientServiceIT extends SpringIntegrationTest {
     @Test
     public void shouldActivatePatient() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
-        allClinics.add(clinic);
+        allClinics.add(clinic, "admin");
         markForDeletion(clinic);
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).build();
         allPatients.add(patient, USER_NAME);
@@ -103,7 +103,7 @@ public class PatientServiceIT extends SpringIntegrationTest {
     @Test
     public void shouldDeactivatePatient() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
-        allClinics.add(clinic);
+        allClinics.add(clinic, "admin");
         markForDeletion(clinic);
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withClinic(clinic).build();
         allPatients.add(patient, USER_NAME);
@@ -122,7 +122,7 @@ public class PatientServiceIT extends SpringIntegrationTest {
     @Test
     public void shouldDeactivatePatient_AndCreatePatientEventLogWhenTemporaryDeactivation() {
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
-        allClinics.add(clinic);
+        allClinics.add(clinic, "admin");
         markForDeletion(clinic);
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withClinic(clinic).build();
         allPatients.add(patient, USER_NAME);
@@ -146,7 +146,7 @@ public class PatientServiceIT extends SpringIntegrationTest {
         allRegimens.add(regimen);
 
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
-        allClinics.add(clinic);
+        allClinics.add(clinic, "admin");
         markForDeletion(clinic);
 
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).build();
