@@ -11,7 +11,7 @@ import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
-import org.motechproject.tama.patient.service.PatientAlertService;
+import org.motechproject.tama.symptomreporting.service.SymptomReportingAlertService;
 import org.motechproject.tama.symptomreporting.service.SymptomReportingService;
 import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
 import org.motechproject.tama.symptomsreporting.decisiontree.service.SymptomReportingTreeService;
@@ -38,7 +38,7 @@ public class SymptomReportingControllerTest {
     @Mock
     private StandardResponseController standardResponseController;
     @Mock
-    private PatientAlertService patientAlertService;
+    private SymptomReportingAlertService symptomReportingAlertService;
 
     @Before
     public void setUp() {
@@ -47,7 +47,7 @@ public class SymptomReportingControllerTest {
 
     @Test
     public void shouldHandleDTMFEventForSymptomReportingFlow() {
-        SymptomReportingController symptomReportingController = new SymptomReportingController(ivrMessage, callDetailRecordsService, contextFactory, symptomReportingService, symptomReportingTreeService, standardResponseController, patientAlertService);
+        SymptomReportingController symptomReportingController = new SymptomReportingController(ivrMessage, callDetailRecordsService, contextFactory, symptomReportingService, symptomReportingTreeService, standardResponseController, symptomReportingAlertService);
 
         String callId = "123";
         String patientId = "patientId";
@@ -68,7 +68,7 @@ public class SymptomReportingControllerTest {
 
         verify(symptomReportingService).getPatientMedicalConditions(patientId);
         verify(symptomReportingTreeService).parseRulesAndFetchTree(medicalCondition);
-        verify(patientAlertService).createSymptomsReportingAlert(patientId);
+        verify(symptomReportingAlertService).createSymptomsReportingAlert(patientId);
 
         assertEquals(symptomReportingTree, tamaivrContext.symptomReportingTree());
         assertEquals(CallState.SYMPTOM_REPORTING_TREE, tamaivrContext.callState());

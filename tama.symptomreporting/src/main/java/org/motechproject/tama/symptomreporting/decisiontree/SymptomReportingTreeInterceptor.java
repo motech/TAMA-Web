@@ -3,10 +3,10 @@ package org.motechproject.tama.symptomreporting.decisiontree;
 import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.symptomreporting.command.*;
 import org.motechproject.tama.symptomreporting.filter.*;
 import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
+import org.motechproject.tama.symptomreporting.service.SymptomReportingAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class SymptomReportingTreeInterceptor {
     private Properties prescriptionSMSProperties;
 
     private SymptomRecordingService symptomRecordingService;
-    private PatientAlertService patientAlertService;
+    private SymptomReportingAlertService symptomReportingAlertService;
 
     @Autowired
     public SymptomReportingTreeInterceptor(UpdateAdviceCommand updateAdviceCommand,
@@ -47,7 +47,7 @@ public class SymptomReportingTreeInterceptor {
                                            SendSMSService sendSMSService,
                                            AllPatients allPatients,
                                            @Qualifier("prescriptionSMSProperties") Properties prescriptionSMSProperties,
-                                           PatientAlertService patientAlertService) {
+                                           SymptomReportingAlertService symptomReportingAlertService) {
 
         this.updateAdviceCommand = updateAdviceCommand;
         this.dialStateCommand = dialStateCommand;
@@ -60,7 +60,7 @@ public class SymptomReportingTreeInterceptor {
         this.allPatients = allPatients;
         this.prescriptionSMSProperties = prescriptionSMSProperties;
         this.symptomRecordingService = symptomRecordingService;
-        this.patientAlertService = patientAlertService;
+        this.symptomReportingAlertService = symptomReportingAlertService;
     }
 
     public void addCommands(Node node) {
@@ -100,7 +100,7 @@ public class SymptomReportingTreeInterceptor {
         Transition yesTransition = priorityNode.getTransitions().get(userSelectedOption);
         Node yesNode = yesTransition.getDestinationNode();
         if (yesNode != null) {
-            yesNode.setTreeCommands(new RecordSymptomCommand(symptomRecordingService, patientAlertService, symptomId));
+            yesNode.setTreeCommands(new RecordSymptomCommand(symptomRecordingService, symptomReportingAlertService, symptomId));
         }
     }
 

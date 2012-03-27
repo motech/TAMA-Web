@@ -8,10 +8,10 @@ import org.mockito.Mock;
 import org.motechproject.decisiontree.model.*;
 import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.symptomreporting.command.*;
 import org.motechproject.tama.symptomreporting.filter.*;
 import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
+import org.motechproject.tama.symptomreporting.service.SymptomReportingAlertService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,12 +43,11 @@ public class SymptomReportingTreeInterceptorTest {
     @Mock
     private SMSFilter smsFilter;
     @Mock
-    private PatientAlertService patientAlertService;
+    private SymptomReportingAlertService symptomReportingAlertService;
 
     private SuspendAdherenceCallsFilter suspendAdherenceCallsFilter = new SuspendAdherenceCallsFilter();
 
     private SymptomReportingTreeInterceptor interceptor;
-
 
     @Before
     public void setUp() {
@@ -71,10 +70,8 @@ public class SymptomReportingTreeInterceptorTest {
 
         SwitchDialPromptFilter switchDialPromptFilter = new SwitchDialPromptFilter(new FirstPriorityFilter(), new SecondPriorityFilter());
 
-        interceptor = new SymptomReportingTreeInterceptor(
-                symptomReportingAlertsCommand, dialStateCommand,
-                suspendAdherenceCallsCommand,
-                symptomRecordingService, alertFilters, switchDialPromptFilter, suspendAdherenceCallsFilter, smsFilter, sendSMSService, allPatients, properties, patientAlertService);
+        interceptor = new SymptomReportingTreeInterceptor(symptomReportingAlertsCommand, dialStateCommand, suspendAdherenceCallsCommand,
+                symptomRecordingService, alertFilters, switchDialPromptFilter, suspendAdherenceCallsFilter, smsFilter, sendSMSService, allPatients, properties, symptomReportingAlertService);
     }
 
     @Test
@@ -90,25 +87,15 @@ public class SymptomReportingTreeInterceptorTest {
 
         assertEquals(0, rootNode.getTreeCommands().size());
         interceptor.addCommands(node1);
-        verify(symptomReportingAlertsCommand)
-                .get(1, node1
-                );
+        verify(symptomReportingAlertsCommand).get(1, node1);
         interceptor.addCommands(node2);
-        verify(symptomReportingAlertsCommand)
-                .get(2, node2
-                );
+        verify(symptomReportingAlertsCommand).get(2, node2);
         interceptor.addCommands(node3);
-        verify(symptomReportingAlertsCommand)
-                .get(3, node3
-                );
+        verify(symptomReportingAlertsCommand).get(3, node3);
         interceptor.addCommands(node4);
-        verify(symptomReportingAlertsCommand)
-                .get(4, node4
-                );
+        verify(symptomReportingAlertsCommand).get(4, node4);
         interceptor.addCommands(node5);
-        verify(symptomReportingAlertsCommand)
-                .get(5, node5
-                );
+        verify(symptomReportingAlertsCommand).get(5, node5);
     }
 
     @Test
@@ -118,8 +105,7 @@ public class SymptomReportingTreeInterceptorTest {
         List<Prompt> prompts = node1.getPrompts();
         assertEquals(2, prompts.size());
         assertEquals("adv_crocin01", prompts.get(0).getName());
-        assertEquals(dialStateCommand.getClass(), prompts.get(1).getCommand()
-                .getClass());
+        assertEquals(dialStateCommand.getClass(), prompts.get(1).getCommand().getClass());
 
         Node node2 = node("some other node");
         interceptor.addCommands(node2);
@@ -133,8 +119,7 @@ public class SymptomReportingTreeInterceptorTest {
         List<Prompt> prompts = node1.getPrompts();
         assertEquals(2, prompts.size());
         assertEquals("adv_seeclinicasapdepression", prompts.get(0).getName());
-        assertEquals(dialStateCommand.getClass(), prompts.get(1).getCommand()
-                .getClass());
+        assertEquals(dialStateCommand.getClass(), prompts.get(1).getCommand().getClass());
     }
 
     @Test
@@ -144,24 +129,21 @@ public class SymptomReportingTreeInterceptorTest {
                 new AudioPrompt().setName("cy_fever"),
                 new AudioPrompt().setName("adv_crocin01"));
         interceptor.addCommands(node1);
-        Assert.assertTrue(node1.getTreeCommands().contains(
-                suspendAdherenceCallsCommand));
+        Assert.assertTrue(node1.getTreeCommands().contains(suspendAdherenceCallsCommand));
 
         Node node2 = new Node().setPrompts(
                 new AudioPrompt().setName("cn_swellfacelegs"),
                 new AudioPrompt().setName("cy_fever"),
                 new AudioPrompt().setName("adv_noteatanythg"));
         interceptor.addCommands(node2);
-        Assert.assertTrue(node2.getTreeCommands().contains(
-                suspendAdherenceCallsCommand));
+        Assert.assertTrue(node2.getTreeCommands().contains(suspendAdherenceCallsCommand));
 
         Node node3 = new Node().setPrompts(
                 new AudioPrompt().setName("cn_swellfacelegs"),
                 new AudioPrompt().setName("cy_fever"),
                 new AudioPrompt().setName("adv_stopmedicineseeclinicasap"));
         interceptor.addCommands(node3);
-        Assert.assertTrue(node3.getTreeCommands().contains(
-                suspendAdherenceCallsCommand));
+        Assert.assertTrue(node3.getTreeCommands().contains(suspendAdherenceCallsCommand));
     }
 
     @Test
@@ -170,8 +152,7 @@ public class SymptomReportingTreeInterceptorTest {
                 new AudioPrompt().setName("cn_swellfacelegs"),
                 new AudioPrompt().setName("cy_fever"));
         interceptor.addCommands(node);
-        assertFalse(node.getTreeCommands().contains(
-                suspendAdherenceCallsCommand));
+        assertFalse(node.getTreeCommands().contains(suspendAdherenceCallsCommand));
     }
 
     @Test
@@ -234,7 +215,7 @@ public class SymptomReportingTreeInterceptorTest {
         boolean recordAdviceGivenCommandFound = false;
         for (ITreeCommand command : commands) {
             if (command instanceof RecordAdviceGivenCommand) {
-                recordAdviceGivenCommandFound =  true;
+                recordAdviceGivenCommandFound = true;
                 assertEquals("adv_crocin02", ((RecordAdviceGivenCommand) command).getAdviceNodeName());
             }
         }

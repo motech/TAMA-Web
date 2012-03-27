@@ -5,9 +5,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.symptomreporting.SymptomReportingContextForTest;
 import org.motechproject.tama.symptomreporting.factory.SymptomReportingContextFactory;
+import org.motechproject.tama.symptomreporting.service.SymptomReportingAlertService;
 import org.motechproject.tama.symptomreporting.service.SymptomReportingService;
 import org.motechproject.util.Cookies;
 
@@ -29,7 +29,7 @@ public class DialStateCommandTest {
     @Mock
     private SymptomReportingContextFactory symptomReportingContextFactory;
     @Mock
-    private PatientAlertService patientAlertService;
+    private SymptomReportingAlertService symptomReportingAlertService;
 
     private SymptomReportingContextForTest symptomReportingContext;
 
@@ -43,11 +43,11 @@ public class DialStateCommandTest {
 
     @Test
     public void shouldStartCall() {
-        DialStateCommand dialStateCommand = new DialStateCommand(symptomsReportingService, symptomReportingContextFactory, patientAlertService);
+        DialStateCommand dialStateCommand = new DialStateCommand(symptomsReportingService, symptomReportingContextFactory, symptomReportingAlertService);
         dialStateCommand.execute(kooKooIVRContext);
 
         assertTrue(symptomReportingContext.getStartCall());
         verify(symptomsReportingService).smsOTCAdviceToAllClinicians(PATIENT_DOC_ID, CALL_LOG_ID);
-        verify(patientAlertService).setConnectedToDoctorStatusOnSymptomsReportingAlert(PATIENT_DOC_ID, TAMAConstants.ReportedType.No);
+        verify(symptomReportingAlertService).setConnectedToDoctorStatusOnSymptomsReportingAlert(PATIENT_DOC_ID, TAMAConstants.ReportedType.No);
     }
 }

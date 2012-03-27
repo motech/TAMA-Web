@@ -11,7 +11,6 @@ import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.service.AlertService;
-import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.repository.AllAuditEvents;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -165,45 +164,12 @@ public class PatientAlertServiceTest {
         verify(alertService, never()).update(Matchers.<String>any(), Matchers.<UpdateCriteria>any());
     }
 
-
     @Test
     public void shouldReturnFalseWhenUpdateUnSuccessful() {
         when(alertService.get(anyString())).thenReturn(new Alert());
         doThrow(new RuntimeException("update exception")).when(alertService).update(Matchers.<String>any(), Matchers.<UpdateCriteria>any());
         boolean condition = patientAlertService.updateAlertData("", "", "notes", "", "", "");
         assertFalse(condition);
-    }
-
-    @Test
-    public void shouldUpdateDoctorConnectedToDuringSymptomCall() {
-        final String testPatientId = "testPatientId";
-        final String alertId = "alertId";
-        String doctorName = "kumarasamy";
-
-        final Patient patient = new Patient() {{
-            setPatientId(testPatientId);
-            setId(testPatientId);
-        }};
-
-        final HashMap<String, String> data = new HashMap<String, String>();
-        data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
-
-        PatientAlerts alerts = new PatientAlerts() {{
-            add(PatientAlert.newPatientAlert(new Alert(testPatientId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
-                setData(data);
-                setId(alertId);
-            }}, patient));
-        }};
-
-        when(allPatients.get(testPatientId)).thenReturn(patient);
-        when(patientAlertSearchService.search(testPatientId)).thenReturn(alerts);
-
-        patientAlertService.updateDoctorConnectedToDuringSymptomCall(testPatientId, doctorName);
-
-        Map<String, String> updatedData = new HashMap<String, String>();
-        updatedData.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.Yes.toString());
-        updatedData.put(PatientAlert.DOCTOR_NAME, doctorName);
-        verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().data(updatedData))));
     }
 
     @Test
@@ -336,104 +302,6 @@ public class PatientAlertServiceTest {
         PatientAlerts readAlertsForClinic = patientAlertService.getUnreadAlertsFor("testClinicId", null, PatientAlertType.AdherenceInRed, null, null);
 
         assertEquals(3, readAlertsForClinic.size());
-    }
-
-    @Test
-    public void shouldAppendTheFirstSymptomReportedToAlert() {
-        final Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientDocId").build();
-        HashMap<String, String> data = new HashMap<String, String>();
-        data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
-        final Alert alert = new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, data);
-        alert.setId("alertId");
-
-        PatientAlerts alerts = new PatientAlerts() {{
-            add(PatientAlert.newPatientAlert(alert, patient));
-        }};
-
-        when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
-        patientAlertService.appendSymptomToAlert(patient.getId(), "fever");
-
-        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).description("fever"))));
-    }
-
-    @Test
-    public void shouldAppendSubsequentSymptomReportedToAlert() {
-        final Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientDocId").build();
-
-        HashMap<String, String> data = new HashMap<String, String>() {{
-            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
-        }};
-        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, AlertStatus.READ, 2, data);
-        alert.setId("alertId");
-
-        PatientAlerts alerts = new PatientAlerts() {{
-            add(PatientAlert.newPatientAlert(alert, patient));
-        }};
-
-        when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
-        patientAlertService.appendSymptomToAlert(patient.getId(), "fever");
-
-        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).description("nausea, fever"))));
-    }
-
-    @Test
-    public void shouldCreateSymptomsReportingAlert() {
-        String patientDocId = "patientDocId";
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocId).build();
-        when(allPatients.get(patientDocId)).thenReturn(patient);
-
-        patientAlertService.createSymptomsReportingAlert(patientDocId);
-
-        Map<String, String> data = new HashMap<String, String>();
-        data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
-        data.put(PatientAlert.PATIENT_CALL_PREFERENCE, patient.getPatientPreferences().getDisplayCallPreference());
-        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
-        data.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.NA.name());
-        verify(alertService).create(patientDocId, "", "", AlertType.MEDIUM, AlertStatus.NEW, TAMAConstants.NO_ALERT_PRIORITY, data);
-    }
-
-    @Test
-    public void shouldSetConnectedToDoctorStatusOnSymptomsAlert() {
-        String patientDocId = "patientDocId", alertId = "alertId";
-        final Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocId).build();
-
-        HashMap<String, String> data = new HashMap<String, String>() {{
-            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
-        }};
-
-        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, AlertStatus.READ, 2, data);
-        alert.setId(alertId);
-
-        PatientAlerts alerts = new PatientAlerts() {{
-            add(PatientAlert.newPatientAlert(alert, patient));
-        }};
-        when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
-
-        patientAlertService.setConnectedToDoctorStatusOnSymptomsReportingAlert(patientDocId, TAMAConstants.ReportedType.No);
-        HashMap<String, String> newData = new HashMap<String, String>();
-        newData.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.No.name());
-        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).data(newData))));
-    }
-
-    @Test
-    public void shouldUpdateAdviceAndPriorityOnSymptomsAlert() {
-        String patientDocId = "patientDocId", alertId = "alertId";
-        final Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocId).build();
-
-        HashMap<String, String> data = new HashMap<String, String>() {{
-            put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
-        }};
-
-        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, AlertStatus.READ, 1, data);
-        alert.setId(alertId);
-
-        PatientAlerts alerts = new PatientAlerts() {{
-            add(PatientAlert.newPatientAlert(alert, patient));
-        }};
-        when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
-
-        patientAlertService.updateAdviceOnSymptomsReportingAlert(patientDocId, "Some advice", 2);
-        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).priority(2).name("Some advice"))));
     }
 
     private class UpdateCriteriaMatcher extends ArgumentMatcher<UpdateCriteria> {

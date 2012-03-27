@@ -3,19 +3,19 @@ package org.motechproject.tama.symptomreporting.command;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
+import org.motechproject.tama.symptomreporting.service.SymptomReportingAlertService;
 import org.motechproject.util.DateUtil;
 
 public class RecordSymptomCommand implements ITreeCommand {
     private SymptomRecordingService symptomRecordingService;
-    private PatientAlertService patientAlertService;
+    private SymptomReportingAlertService symptomReportingAlertService;
     private String symptomFileName;
 
-    public RecordSymptomCommand(SymptomRecordingService symptomRecordingService, PatientAlertService patientAlertService, String symptomFileName) {
+    public RecordSymptomCommand(SymptomRecordingService symptomRecordingService, SymptomReportingAlertService symptomReportingAlertService, String symptomFileName) {
         this.symptomRecordingService = symptomRecordingService;
         this.symptomFileName = symptomFileName;
-        this.patientAlertService = patientAlertService;
+        this.symptomReportingAlertService = symptomReportingAlertService;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class RecordSymptomCommand implements ITreeCommand {
     }
 
     private void setSymptomOnAlert(TAMAIVRContext ivrContext) {
-        patientAlertService.appendSymptomToAlert(ivrContext.patientDocumentId(), symptomFileName);
+        symptomReportingAlertService.appendSymptomToAlert(ivrContext.patientDocumentId(), symptomFileName);
     }
 
     public String getFileName() {

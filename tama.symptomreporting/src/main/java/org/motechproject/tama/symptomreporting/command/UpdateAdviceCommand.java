@@ -8,7 +8,7 @@ import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
-import org.motechproject.tama.patient.service.PatientAlertService;
+import org.motechproject.tama.symptomreporting.service.SymptomReportingAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -22,18 +22,18 @@ import static org.hamcrest.Matchers.startsWith;
 public class UpdateAdviceCommand {
 
     private Logger logger = Logger.getLogger(this.getClass());
-    private PatientAlertService patientAlertService;
+    private SymptomReportingAlertService symptomReportingAlertService;
 
     private Properties properties;
     private TAMAIVRContextFactory contextFactory;
 
     @Autowired
-    public UpdateAdviceCommand(PatientAlertService patientAlertService, @Qualifier("symptomProperties") Properties properties) {
-        this(patientAlertService, properties, new TAMAIVRContextFactory());
+    public UpdateAdviceCommand(SymptomReportingAlertService symptomReportingAlertService, @Qualifier("symptomProperties") Properties properties) {
+        this(symptomReportingAlertService, properties, new TAMAIVRContextFactory());
     }
 
-    UpdateAdviceCommand(PatientAlertService patientAlertService, Properties properties, TAMAIVRContextFactory contextFactory) {
-        this.patientAlertService = patientAlertService;
+    UpdateAdviceCommand(SymptomReportingAlertService symptomReportingAlertService, Properties properties, TAMAIVRContextFactory contextFactory) {
+        this.symptomReportingAlertService = symptomReportingAlertService;
         this.properties = properties;
         this.contextFactory = contextFactory;
     }
@@ -45,7 +45,7 @@ public class UpdateAdviceCommand {
             public String[] execute(Object o) {
                 TAMAIVRContext ivrContext = contextFactory.create((KooKooIVRContext) o);
                 String externalId = ivrContext.patientDocumentId();
-                patientAlertService.updateAdviceOnSymptomsReportingAlert(externalId, adviceGiven, priority);
+                symptomReportingAlertService.updateAdviceOnSymptomsReportingAlert(externalId, adviceGiven, priority);
                 return new String[0];
             }
         };

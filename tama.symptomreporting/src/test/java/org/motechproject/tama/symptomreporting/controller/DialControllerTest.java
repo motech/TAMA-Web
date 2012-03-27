@@ -10,10 +10,10 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.symptomreporting.SymptomReportingContextForTest;
 import org.motechproject.tama.symptomreporting.factory.SymptomReportingContextFactory;
 import org.motechproject.tama.symptomreporting.service.SymptomRecordingService;
+import org.motechproject.tama.symptomreporting.service.SymptomReportingAlertService;
 import org.motechproject.tama.symptomreporting.service.SymptomReportingService;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class DialControllerTest {
     @Mock
     private SymptomReportingContextFactory contextFactory;
     @Mock
-    private PatientAlertService patientAlertService;
+    private SymptomReportingAlertService symptomReportingAlertService;
     @Mock
     private SymptomRecordingService symptomRecordingService;
     @Mock
@@ -68,7 +68,7 @@ public class DialControllerTest {
         when(ivrMessage.getWav(TamaIVRMessage.CONNECTING_TO_DOCTOR, "en")).thenReturn("connecting-to-dr");
         when(ivrMessage.getWav(TamaIVRMessage.CANNOT_CONNECT_TO_DOCTOR, "en")).thenReturn("cannot-connect");
 
-        dialController = new DialController(null, callDetailRecordService, null, contextFactory, allPatients, patientAlertService, symptomRecordingService);
+        dialController = new DialController(null, callDetailRecordService, null, contextFactory, allPatients, symptomReportingAlertService, symptomRecordingService);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class DialControllerTest {
 
         assertFalse(dialResponse.contains("<dial moh=\"ring\">0ph2</dial>"));
         assertTrue(symptomReportingContext.getEndCall());
-        verify(patientAlertService).updateDoctorConnectedToDuringSymptomCall("patientId", "name1");
+        verify(symptomReportingAlertService).updateDoctorConnectedToDuringSymptomCall("patientId", "name1");
         verify(symptomRecordingService).setAsConnectedToDoctor(callId);
     }
 
