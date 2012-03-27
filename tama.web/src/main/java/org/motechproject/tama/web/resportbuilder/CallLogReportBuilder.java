@@ -43,7 +43,7 @@ public class CallLogReportBuilder extends BatchReportBuilder {
         columns.add(new ExcelColumn("Patient ID", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Source Phone Number", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Destination Phone Number", Cell.CELL_TYPE_STRING, 8000));
-        columns.add(new ExcelColumn("Clinic Name", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Clinic Name", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("TAMA Initiated Call At (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Call Started At (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Call Ended At (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 10000));
