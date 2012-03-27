@@ -157,9 +157,9 @@
         </div>
     </div>
     <spring:url value="/resources-${applicationVersion}/js/schedulePopup.js" var="schedulePopupUrl"/>
-    <spring:url value="/resources-${applicationVersion}/js/tamaConfirmBox.js" var="tamaConfirmBoxUrl"/>
+    <spring:url value="/resources-${applicationVersion}/js/tamaDialog.js" var="tamaDialogUrl"/>
     <script src="${schedulePopupUrl}"><!--required--></script>
-    <script src="${tamaConfirmBoxUrl}"><!--required--></script>
+    <script src="${tamaDialogUrl}"><!--required--></script>
 
     <spring:url value="/clinicvisits/adjustDueDate.json" var="adjustDatePostUrl"/>
     <spring:url value="/clinicvisits/confirmVisitDate.json" var="confirmVisitDateUrl"/>

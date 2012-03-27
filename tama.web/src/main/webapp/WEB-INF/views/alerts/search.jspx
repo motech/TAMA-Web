@@ -4,6 +4,10 @@
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:spring="http://www.springframework.org/tags">
 
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+    <spring:url value="/resources-${applicationVersion}/js/tamaDialog.js" var="tamaDialogUrl"/>
+    <script src="${tamaDialogUrl}"><!--required--></script>
+
     <util:panel id="alert_filter_pane" title="Filter Alerts" openPane="true">
             <field:input field="patientId" label="Patient ID :" id = "searchByPatientId" required="false" />
             <form:label path="patientAlertType">Alert Type :</form:label>
@@ -49,7 +53,7 @@
 
                     if (canAlertListBePossiblyLarge(patientIdObj.value, alertStartDateObj.value, alertEndDateObj.value)) {
                         event.preventDefault();
-                        alert("This can result in large list. Please narrow down your search criteria.");
+                        new tama.AlertBox("Alert", "There is too much data to load. Please narrow down your search criteria.").show();
                     }
                 });
 
