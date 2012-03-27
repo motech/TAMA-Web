@@ -123,7 +123,8 @@ public class CallLogReportBuilder extends BatchReportBuilder {
 
     @Override
     protected List fetchData() {
-        List<CallLog> callLogs = allCallLogSummaries.getAllCallLogSummariesBetween(startKey,startDocId, endKey, pageSize);
+        List<CallLog> callLogs = allCallLogSummaries.getAllCallLogSummariesBetween(startKey,startDocId, endKey, startDocId==null?pageSize:pageSize+1);
+        if (startDocId != null) callLogs.remove(0);
         if (CollectionUtils.isNotEmpty(callLogs)) {
             final CallLog lastCallLog = callLogs.get(callLogs.size() - 1);
             startKey = lastCallLog.getStartTime();

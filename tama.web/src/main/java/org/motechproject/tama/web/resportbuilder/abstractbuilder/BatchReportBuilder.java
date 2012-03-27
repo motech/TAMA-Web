@@ -32,7 +32,7 @@ public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
                     return false;
                 }
             }
-        } while (CollectionUtils.isNotEmpty(data));
+        } while (data.size() == pageSize);
         //Done filling data
         return true;
     }
