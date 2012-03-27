@@ -62,7 +62,11 @@ public class AllCallLogsIT extends SpringIntegrationTest {
         CallLog callLogOnSecondPage = createCallLog(now.plusDays(1));
         createCallLog(now.plusDays(2));
 
-        assertEquals(callLogOnSecondPage.getId(), allCallLogs.findAllCallLogsForDateRange(now, now.plusDays(3), 1, 1).get(0).getId());
+        final List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(now, now.plusDays(3), 1, 1);
+        final CallLog firstCallLog = allCallLogsForDateRange.get(0);
+        assertEquals(callLogOnSecondPage.getId(), firstCallLog.getId());
+        assertEquals("GotDTMF" , firstCallLog.getCallEvents().get(0).getName());
+        
     }
 
     @Test

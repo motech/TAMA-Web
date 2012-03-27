@@ -18,6 +18,7 @@ import org.motechproject.tama.web.view.CallLogView;
 
 import java.util.*;
 
+import static org.apache.commons.lang.StringUtils.endsWith;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.apache.commons.lang.StringUtils.join;
 import static org.motechproject.tama.common.TAMAConstants.DATETIME_YYYY_MM_DD_FORMAT;
@@ -47,7 +48,7 @@ public class CallLogSummaryBuilder {
                 getInitiatedTime(callLog, isInboundCall),
                 getTimeStampOfFirstEvent(callLog).toString(DATETIME_YYYY_MM_DD_FORMAT),
                 callLog.getEndTime().toString(DATETIME_YYYY_MM_DD_FORMAT),
-                getClinicId(callLog),
+                getClinicName(callLog),
                 getCallLanguage(callLog),
                 getTravelTimeToClinic(callLog),
                 getCallLogFlows(callLog),
@@ -78,7 +79,7 @@ public class CallLogSummaryBuilder {
             callFlowDetails.setTotalAccessDuration(flowDurationMap.get(flow));
             callFlowDetails.setIndividualAccessDurations(allDurationsForFlow.get(flow));
             callFlowDetails.setNumberOfTimesAccessed(numberOfTimesFlowAccessedMap.get(flow));
-            callFlowDetailsMap.put(flow , callFlowDetails);
+            callFlowDetailsMap.put(flow, callFlowDetails);
         }
     }
 
@@ -151,16 +152,13 @@ public class CallLogSummaryBuilder {
         }
     }
 
-    private String getClinicId(CallLog callLog) {
-        if (isEmpty(callLog.clinicId())) {
-            if (CollectionUtils.isEmpty(callLog.getLikelyPatientIds())) {
-                return NOT_REGISTERED_USER;
-            } else {
-                Patient patient = allLoadedPatients.getBy(callLog.getLikelyPatientIds().get(0));
-                return patient.getClinic().getName();
-            }
+    private String getClinicName(CallLog callLog) {
+        if (CollectionUtils.isEmpty(callLog.getLikelyPatientIds()) && StringUtils.isEmpty(callLog.getPatientDocumentId())) {
+            return NOT_REGISTERED_USER;
         } else {
-            return getPatientWhenPatientIdNotEmpty(callLog).getClinic().getName();
+            final String patientDocId = StringUtils.isNotEmpty(callLog.getPatientDocumentId()) ? callLog.getPatientDocumentId() : callLog.getLikelyPatientIds().get(0);
+            Patient patient = allLoadedPatients.getBy(patientDocId);
+            return patient.getClinic().getName();
         }
     }
 
@@ -191,9 +189,9 @@ public class CallLogSummaryBuilder {
 
     private String getCallLogFlows(CallLog callLog) {
         List<CallLogView> callLogViews = mapCallLogToCallLogView(callLog);
-        if (callLogViews.isEmpty()){
+        if (callLogViews.isEmpty()) {
             return " - ";
-        }else {
+        } else {
             CallLogView callLogView = callLogViews.get(0);
             return StringUtils.join(callLogView.getCallFlowGroupViews(), ", ");
         }
