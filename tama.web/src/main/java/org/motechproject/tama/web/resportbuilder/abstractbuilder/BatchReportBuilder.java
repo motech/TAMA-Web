@@ -9,7 +9,6 @@ import java.util.List;
 
 public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
 
-    private int pageNumber = 0;
     protected final int pageSize;
 
     public BatchReportBuilder() {
@@ -23,18 +22,16 @@ public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
         List<HSSFCellStyle> cellStyles = buildCellStylesForColumns(worksheet);
         List data = null;
         do {
-            data = fetchData(pageNumber);
+            data = fetchData();
             for (Object dataObject : data) {
                 HSSFRow row = worksheet.createRow((short) currentRowIndex);
                 buildRowData(row, getRowData(dataObject), cellStyles);
                 boolean successfullyIncremented = incrementRowIndex();
                 if (!successfullyIncremented) {
                     // Have more data to fill
-                    pageNumber++;
                     return false;
                 }
             }
-            pageNumber++;
         } while (CollectionUtils.isNotEmpty(data));
         //Done filling data
         return true;
@@ -50,5 +47,5 @@ public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
         }
     }
 
-    protected abstract List fetchData(int pageNumber);
+    protected abstract List fetchData();
 }

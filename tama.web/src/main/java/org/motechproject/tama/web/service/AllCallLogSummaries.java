@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.service;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
@@ -23,14 +24,14 @@ public class AllCallLogSummaries {
         this.callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients, new Patients(allPatients.getAll()), allIVRLanguages);
     }
 
-    public List<CallLogSummary> getAllCallLogSummariesBetween(LocalDate startDate, LocalDate endDate, int pageNumber, int pageSize) {
+    public List<CallLog> getAllCallLogSummariesBetween(DateTime startDate, String startDocId, DateTime endDate, int pageSize) {
+        List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(startDate, startDocId, endDate, pageSize);
+        return allCallLogsForDateRange;
+    }
+
+    public List<CallLogSummary> getSummariesFor(List<CallLog> callLogs) {
         List<CallLogSummary> callLogSummaries = new ArrayList<CallLogSummary>();
-        List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0),
-                DateUtil.newDateTime(endDate, 23, 59, 59),
-                pageNumber,
-                pageSize
-        );
-        for (CallLog callLog : allCallLogsForDateRange) {
+        for (CallLog callLog : callLogs) {
             callLogSummaries.add(callLogSummaryBuilder.build(callLog));
         }
         return callLogSummaries;

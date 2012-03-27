@@ -52,17 +52,18 @@ public class AllCallLogsIT extends SpringIntegrationTest {
         createCallLog(now.plusDays(1));
         createCallLog(now.plusDays(2));
 
-        assertEquals(pageSize, allCallLogs.findAllCallLogsForDateRange(now, now.plusDays(3), firstPageIndex, pageSize).size());
+        assertEquals(pageSize, allCallLogs.findAllCallLogsForDateRange(now, null, now.plusDays(3), pageSize).size());
     }
 
     @Test
     public void shouldSkipTheFirstPageWhenQueryingForTheSecondPage() {
         DateTime now = DateUtil.now();
         createCallLog(now);
-        CallLog callLogOnSecondPage = createCallLog(now.plusDays(1));
+        final DateTime startTimeKey = now.plusDays(1);
+        CallLog callLogOnSecondPage = createCallLog(startTimeKey);
         createCallLog(now.plusDays(2));
 
-        final List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(now, now.plusDays(3), 1, 1);
+        final List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(startTimeKey, null, now.plusDays(3), 1);
         final CallLog firstCallLog = allCallLogsForDateRange.get(0);
         assertEquals(callLogOnSecondPage.getId(), firstCallLog.getId());
         assertEquals("GotDTMF" , firstCallLog.getCallEvents().get(0).getName());
@@ -101,7 +102,7 @@ public class AllCallLogsIT extends SpringIntegrationTest {
         createCallLog(thirdDay, "clinic1", "GotDTMF", PATIENT_ID1);
         createCallLog(thirdDay, "clinic2", "GotDTMF", PATIENT_ID1);
 
-        List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(firstDay, thirdDay, 0, 10);
+        List<CallLog> allCallLogsForDateRange = allCallLogs.findAllCallLogsForDateRange(firstDay, null, thirdDay,10);
         assertEquals(5, allCallLogsForDateRange.size());
         assertEquals("clinic1", allCallLogsForDateRange.get(0).clinicId());
         assertEquals("clinic2", allCallLogsForDateRange.get(2).clinicId());

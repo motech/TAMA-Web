@@ -59,13 +59,16 @@ public class AllCallLogSummariesTest {
         when(callLog2.getStartTime()).thenReturn(DateUtil.now());
         when(callLog2.getEndTime()).thenReturn(DateUtil.now());
         when(allCallLogs.findAllCallLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0),
+                null,
                 DateUtil.newDateTime(endDate, 23, 59, 59),
-                pageNumber,
                 pageSize)
         ).thenReturn(Arrays.asList(callLog1, callLog2));
 
-        List<CallLogSummary> allCallLogSummariesBetween = allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate, pageNumber, pageSize);
+        List<CallLog> allCallLogSummariesBetween = allCallLogSummaries.getAllCallLogSummariesBetween(DateUtil.newDateTime(startDate, 0, 0, 0),
+                        null,
+                        DateUtil.newDateTime(endDate, 23, 59, 59),
+                        pageSize);
 
-        assertNotNull(allCallLogSummariesBetween);
+        assertNotNull(allCallLogSummaries.getSummariesFor(allCallLogSummariesBetween));
     }
 }

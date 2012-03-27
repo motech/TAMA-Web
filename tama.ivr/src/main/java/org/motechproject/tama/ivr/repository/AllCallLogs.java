@@ -1,5 +1,6 @@
 package org.motechproject.tama.ivr.repository;
 
+import org.apache.commons.lang.StringUtils;
 import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
@@ -57,8 +58,9 @@ public class AllCallLogs extends AbstractCouchRepository<CallLog> {
             "  emit(doc.startTime, d); " +
             " }" +
             "}" )
-    public List<CallLog> findAllCallLogsForDateRange(DateTime startDateTime, DateTime endDateTime, int pageNumber, int pageSize) {
-        ViewQuery q = createQuery("find_by_date_range").startKey(startDateTime).endKey(endDateTime).skip(pageNumber * pageSize).limit(pageSize);
+    public List<CallLog> findAllCallLogsForDateRange(DateTime startDateTime, String startDocId, DateTime endDateTime, int pageSize) {
+        ViewQuery q = createQuery("find_by_date_range").startKey(startDateTime).endKey(endDateTime).limit(pageSize);
+        if (StringUtils.isNotEmpty(startDocId)) q.startDocId(startDocId);
         return db.queryView(q, CallLog.class);
     }
 

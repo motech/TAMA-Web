@@ -1,12 +1,16 @@
 package org.motechproject.tama.web.resportbuilder;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.web.model.CallFlowDetails;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.BatchReportBuilder;
 import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
 import org.motechproject.tama.web.service.AllCallLogSummaries;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,14 +21,15 @@ import static org.motechproject.tama.common.CallTypeConstants.*;
 public class CallLogReportBuilder extends BatchReportBuilder {
 
     private AllCallLogSummaries allCallLogSummaries;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private DateTime startKey;
+    private String startDocId;
+    final private DateTime endKey;
 
     public CallLogReportBuilder(AllCallLogSummaries allCallLogSummaries, LocalDate startDate, LocalDate endDate) {
         super();
         this.allCallLogSummaries = allCallLogSummaries;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.startKey = DateUtil.newDateTime(startDate);
+        this.endKey = DateUtil.newDateTime(endDate, 23, 59, 59);
     }
 
     @Override
@@ -117,7 +122,13 @@ public class CallLogReportBuilder extends BatchReportBuilder {
     }
 
     @Override
-    protected List fetchData(int pageNumber) {
-        return allCallLogSummaries.getAllCallLogSummariesBetween(startDate, endDate, pageNumber, pageSize);
+    protected List fetchData() {
+        List<CallLog> callLogs = allCallLogSummaries.getAllCallLogSummariesBetween(startKey,startDocId, endKey, pageSize);
+        if (CollectionUtils.isNotEmpty(callLogs)) {
+            final CallLog lastCallLog = callLogs.get(callLogs.size() - 1);
+            startKey = lastCallLog.getStartTime();
+            startDocId = lastCallLog.getId();
+        }
+        return allCallLogSummaries.getSummariesFor(callLogs);
     }
 }
