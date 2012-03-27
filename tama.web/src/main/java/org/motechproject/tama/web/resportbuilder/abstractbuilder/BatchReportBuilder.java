@@ -14,7 +14,7 @@ public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
 
     public BatchReportBuilder() {
         super();
-        pageSize = 1000;
+        pageSize = 10000;
         initializeColumns();
     }
 
