@@ -10,6 +10,7 @@
 
     <page:show id="ps_org_motechproject_tama_domain_Clinic" object="${clinic}" path="/clinics" delete="false">
         <field:display field="name" id="s_org_motechproject_tama_domain_Clinic_name" object="${clinic}" />
+        <field:display field="greetingName" id="s_org_motechproject_tama_domain_Clinic_greeting" object="${clinic}" />
         <field:display field="address" id="s_org_motechproject_tama_domain_Clinic_address" object="${clinic}" />
         <field:display field="phone" id="s_org_motechproject_tama_domain_Clinic_phone" object="${clinic}" />
         <field:display field="city" id="s_org_motechproject_tama_domain_Clinic_city" object="${clinic}" />

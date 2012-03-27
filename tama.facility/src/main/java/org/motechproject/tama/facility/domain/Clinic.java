@@ -24,6 +24,9 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
     private String name;
 
     @NotNull
+    private String greetingName;
+
+    @NotNull
     private String address;
 
     @NotNull
@@ -108,6 +111,14 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
     @Override
     public int compareTo(Clinic o) {
         return name.toLowerCase().compareTo(o.name.toLowerCase());
+    }
+
+    public String getGreetingName() {
+        return greetingName;
+    }
+
+    public void setGreetingName(String greetingName) {
+        this.greetingName = greetingName;
     }
 
     public static class ClinicianContact implements Serializable {
