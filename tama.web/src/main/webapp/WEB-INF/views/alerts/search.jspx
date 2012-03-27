@@ -5,6 +5,8 @@
      xmlns:spring="http://www.springframework.org/tags">
 
     <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+    <spring:eval expression="@tamaProperties['max.date.range.for.alerts.in.months']" var="maxDateRangeForAlerts"/>
+
     <spring:url value="/resources-${applicationVersion}/js/tamaDialog.js" var="tamaDialogUrl"/>
     <script src="${tamaDialogUrl}"><!--required--></script>
 
@@ -33,8 +35,9 @@
         <![CDATA[
             function canAlertListBePossiblyLarge(patientId, startDate, endDate){
                 var oneMonthInMillis = 24*60*60*1000*30;
+                var maxDateRangeInMillis = oneMonthInMillis * parseInt("${maxDateRangeForAlerts}");
                 if (patientId != "") return false;
-                return Math.abs(endDate - startDate) > oneMonthInMillis;
+                return Math.abs(endDate - startDate) > maxDateRangeInMillis;
             }
 
             dojo.addOnLoad(function() {
@@ -53,7 +56,7 @@
 
                     if (canAlertListBePossiblyLarge(patientIdObj.value, alertStartDateObj.value, alertEndDateObj.value)) {
                         event.preventDefault();
-                        new tama.AlertBox("Alert", "There is too much data to load. Please narrow down your search criteria.").show();
+                        new tama.AlertBox("Alert", "There is too much data to load. Please specify a patientId or narrow down the date range in your search criteria.").show();
                     }
                 });
 
