@@ -1,6 +1,10 @@
 package org.motechproject.tama.web.resportbuilder;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
+import org.joda.time.LocalDate;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.domain.SMSLog;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
@@ -12,8 +16,13 @@ import static org.motechproject.tama.common.TAMAConstants.DATETIME_YYYY_MM_DD_FO
 
 public class SMSReportBuilder extends InMemoryReportBuilder<SMSLog> {
 
-    public SMSReportBuilder(List<SMSLog> objects) {
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    public SMSReportBuilder(LocalDate startDate, LocalDate endDate, List<SMSLog> objects) {
         super(objects);
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     @Override
@@ -42,5 +51,12 @@ public class SMSReportBuilder extends InMemoryReportBuilder<SMSLog> {
         row.add(smsLog.getRecipient());
         row.add(smsLog.getMessage());
         return row;
+    }
+
+    @Override
+    protected void buildSummary(HSSFSheet worksheet) {
+        List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
+        buildSummaryRow(worksheet, cellStyles, "Report Start Date", startDate.toString(TAMAConstants.DATE_FORMAT));
+        buildSummaryRow(worksheet, cellStyles, "Report End Date", endDate.toString(TAMAConstants.DATE_FORMAT));
     }
 }

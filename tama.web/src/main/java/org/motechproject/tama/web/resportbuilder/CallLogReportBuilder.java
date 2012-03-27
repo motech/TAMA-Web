@@ -1,10 +1,13 @@
 package org.motechproject.tama.web.resportbuilder;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.ivr.domain.CallLog;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.web.model.CallFlowDetails;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.BatchReportBuilder;
@@ -20,12 +23,12 @@ import static org.motechproject.tama.common.CallTypeConstants.*;
 
 public class CallLogReportBuilder extends BatchReportBuilder {
 
-    private AllCallLogSummaries allCallLogSummaries;
     private DateTime startKey;
+    private DateTime endKey;
     private String startDocId;
-    final private DateTime endKey;
+    private AllCallLogSummaries allCallLogSummaries;
 
-    public CallLogReportBuilder(AllCallLogSummaries allCallLogSummaries, LocalDate startDate, LocalDate endDate) {
+    public CallLogReportBuilder(LocalDate startDate, LocalDate endDate, AllCallLogSummaries allCallLogSummaries) {
         super();
         this.allCallLogSummaries = allCallLogSummaries;
         this.startKey = DateUtil.newDateTime(startDate);
@@ -123,7 +126,8 @@ public class CallLogReportBuilder extends BatchReportBuilder {
 
     @Override
     protected List fetchData() {
-        List<CallLog> callLogs = allCallLogSummaries.getAllCallLogSummariesBetween(startKey,startDocId, endKey, startDocId==null?pageSize:pageSize+1);
+        int pageSizeValue = startDocId == null ? pageSize : pageSize + 1;
+        List<CallLog> callLogs = allCallLogSummaries.getAllCallLogSummariesBetween(startKey, startDocId, endKey, pageSizeValue);
         if (startDocId != null) callLogs.remove(0);
         if (CollectionUtils.isNotEmpty(callLogs)) {
             final CallLog lastCallLog = callLogs.get(callLogs.size() - 1);
@@ -131,5 +135,12 @@ public class CallLogReportBuilder extends BatchReportBuilder {
             startDocId = lastCallLog.getId();
         }
         return allCallLogSummaries.getSummariesFor(callLogs);
+    }
+
+    @Override
+    protected void buildSummary(HSSFSheet worksheet) {
+        List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
+        buildSummaryRow(worksheet, cellStyles, "Report Start Date", startKey.toString(TAMAConstants.DATE_FORMAT));
+        buildSummaryRow(worksheet, cellStyles, "Report End Date", endKey.toString(TAMAConstants.DATE_FORMAT));
     }
 }

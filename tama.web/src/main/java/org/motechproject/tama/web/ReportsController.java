@@ -126,7 +126,7 @@ public class ReportsController {
                                     @RequestParam LocalDate endDate,
                                     HttpServletResponse response) {
         List<SMSLog> allSMSLogsForDateRange = allSMSLogs.findAllSMSLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59));
-        SMSReportBuilder smsReportBuilder = new SMSReportBuilder(allSMSLogsForDateRange);
+        SMSReportBuilder smsReportBuilder = new SMSReportBuilder(startDate, endDate, allSMSLogsForDateRange);
         writeExcelToResponse(response, createExcelReport(smsReportBuilder), "AllSMSReports.xls");
     }
 
