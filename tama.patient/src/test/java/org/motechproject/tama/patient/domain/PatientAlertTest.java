@@ -46,4 +46,13 @@ public class PatientAlertTest {
         patientAlert.setAlert(alert);
         Assert.assertEquals("n/a", patientAlert.getConnectedToDoctor());
     }
+
+    @Test
+    public void shouldReturnEmptyStringWhenPriorityIsZero() {
+        Alert alert = new Alert("externalId", AlertType.MEDIUM, AlertStatus.NEW, 0, new HashMap<String, String>());
+
+        final PatientAlert patientAlert = new PatientAlert();
+        patientAlert.setAlert(alert);
+        Assert.assertEquals("n/a", patientAlert.getAlertPriority());
+    }
 }

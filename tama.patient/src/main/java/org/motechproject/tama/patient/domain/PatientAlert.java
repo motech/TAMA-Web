@@ -57,10 +57,13 @@ public class PatientAlert {
     }
 
     public String getAlertPriority() {
-        if (PatientAlertType.SymptomReporting.name().equals(getType().name()))
+        if (this.alert.getPriority() == 0) {
+            return "n/a";
+        } else if (PatientAlertType.SymptomReporting.name().equals(getType().name())) {
             return String.format("SYMPTOM PRIO-%d", this.alert.getPriority());
-        if (this.alert.getPriority() > 0) return String.valueOf(this.alert.getPriority());
-        return StringUtils.EMPTY;
+        } else {
+            return String.valueOf(this.alert.getPriority());
+        }
     }
 
     public String getGeneratedOn() {
@@ -143,7 +146,7 @@ public class PatientAlert {
         return patientAlert;
     }
 
-    public String getAlertStatus(){
+    public String getAlertStatus() {
         AlertStatus status = alert.getStatus();
         return status.equals(AlertStatus.NEW) ? "UNREAD" : status.toString();
     }
