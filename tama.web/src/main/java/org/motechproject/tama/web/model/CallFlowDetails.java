@@ -1,32 +1,29 @@
 package org.motechproject.tama.web.model;
 
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static ch.lambdaj.Lambda.sum;
+
 public class CallFlowDetails {
 
-    private int numberOfTimesAccessed;
-    private String individualAccessDurations;
-    private int totalAccessDuration;
+    private List<Integer> accessDurations = new ArrayList<Integer>();
 
     public int getNumberOfTimesAccessed() {
-        return numberOfTimesAccessed;
-    }
-
-    public void setNumberOfTimesAccessed(int numberOfTimesAccessed) {
-        this.numberOfTimesAccessed = numberOfTimesAccessed;
-    }
-
-    public String getIndividualAccessDurations() {
-        return individualAccessDurations;
-    }
-
-    public void setIndividualAccessDurations(String individualAccessDurations) {
-        this.individualAccessDurations = individualAccessDurations;
+        return accessDurations.size();
     }
 
     public int getTotalAccessDuration() {
-        return totalAccessDuration;
+        return sum(accessDurations).intValue();
     }
 
-    public void setTotalAccessDuration(int totalAccessDuration) {
-        this.totalAccessDuration = totalAccessDuration;
+    public String getIndividualAccessDurations() {
+        return accessDurations.isEmpty() ? "NA" : StringUtils.join(accessDurations, ", ");
+    }
+
+    public void flowAccessed(int flowDuration) {
+        accessDurations.add(flowDuration);
     }
 }
