@@ -17,6 +17,7 @@ import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.PatientAlertSearchService;
 import org.motechproject.tama.patient.service.PatientAlertService;
+import org.motechproject.tama.symptomreporting.domain.SymptomReportingProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,13 +38,17 @@ public class SymptomReportingAlertServiceTest {
     private PatientAlertService patientAlertService;
     @Mock
     private AllAuditEvents allAuditEvents;
+    @Mock
+    private SymptomReportingProperties symptomReportingProperties;
 
     private SymptomReportingAlertService symptomReportingAlertService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        symptomReportingAlertService = new SymptomReportingAlertService(allPatients, alertService, patientAlertSearchService, allAuditEvents, patientAlertService);
+        symptomReportingAlertService = new SymptomReportingAlertService(allPatients, alertService, patientAlertSearchService, allAuditEvents, patientAlertService, symptomReportingProperties);
+        when(symptomReportingProperties.symptomDescription("fever")).thenReturn("you have fever");
+        when(symptomReportingProperties.symptomDescription("nausea")).thenReturn("you have nausea");
     }
 
     @Test
@@ -93,7 +98,7 @@ public class SymptomReportingAlertServiceTest {
         when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
         symptomReportingAlertService.appendSymptomToAlert(patient.getId(), "fever");
 
-        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).description("fever"))));
+        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).description("you have fever"))));
     }
 
     @Test
@@ -103,7 +108,7 @@ public class SymptomReportingAlertServiceTest {
         HashMap<String, String> data = new HashMap<String, String>() {{
             put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
         }};
-        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, AlertStatus.READ, 2, data);
+        final Alert alert = new Alert(patient.getId(), "", "you have nausea", AlertType.MEDIUM, AlertStatus.READ, 2, data);
         alert.setId("alertId");
 
         PatientAlerts alerts = new PatientAlerts() {{
@@ -113,7 +118,7 @@ public class SymptomReportingAlertServiceTest {
         when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
         symptomReportingAlertService.appendSymptomToAlert(patient.getId(), "fever");
 
-        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).description("nausea, fever"))));
+        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).description("you have nausea, you have fever"))));
     }
 
     @Test

@@ -11,6 +11,7 @@ import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.service.PatientAlertSearchService;
 import org.motechproject.tama.patient.service.PatientAlertService;
+import org.motechproject.tama.symptomreporting.domain.SymptomReportingProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,14 +29,16 @@ public class SymptomReportingAlertService {
     private PatientAlertSearchService patientAlertSearchService;
     private AllAuditEvents allAuditEvents;
     private PatientAlertService patientAlertService;
+    private SymptomReportingProperties symptomReportingProperties;
 
     @Autowired
-    public SymptomReportingAlertService(AllPatients allPatients, AlertService alertService, PatientAlertSearchService patientAlertSearchService, AllAuditEvents allAuditEvents, PatientAlertService patientAlertService) {
+    public SymptomReportingAlertService(AllPatients allPatients, AlertService alertService, PatientAlertSearchService patientAlertSearchService, AllAuditEvents allAuditEvents, PatientAlertService patientAlertService, SymptomReportingProperties symptomReportingProperties) {
         this.allPatients = allPatients;
         this.alertService = alertService;
         this.patientAlertSearchService = patientAlertSearchService;
         this.allAuditEvents = allAuditEvents;
         this.patientAlertService = patientAlertService;
+        this.symptomReportingProperties = symptomReportingProperties;
     }
 
     public void createSymptomsReportingAlert(String patientDocId) {
@@ -58,11 +61,12 @@ public class SymptomReportingAlertService {
         patientAlertService.updateData(lastReportedAlert.getAlert(), data, patientDocId);
     }
 
-    public void appendSymptomToAlert(String patientDocId, String symptom) {
+    public void appendSymptomToAlert(String patientDocId, String symptomId) {
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId);
         PatientAlert lastReportedAlert = allAlerts.lastSymptomReportedAlert();
         String description = lastReportedAlert.getDescription();
-        String newDescription = StringUtils.isEmpty(description) ? symptom : StringUtils.join(Arrays.asList(description, symptom), ", ");
+        String symptomDescription = symptomReportingProperties.symptomDescription(symptomId);
+        String newDescription = StringUtils.isEmpty(description) ? symptomDescription : StringUtils.join(Arrays.asList(description, symptomDescription), ", ");
         UpdateCriteria updateCriteria = new UpdateCriteria().description(newDescription).status(AlertStatus.NEW);
         allAuditEvents.recordAlertEvent(patientDocId, String.format(AUDIT_FORMAT, lastReportedAlert.getAlertId(), updateCriteria));
         alertService.update(lastReportedAlert.getAlertId(), updateCriteria);
