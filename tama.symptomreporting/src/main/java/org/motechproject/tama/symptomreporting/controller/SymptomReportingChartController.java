@@ -6,10 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
+import org.motechproject.tama.symptomreporting.domain.SymptomReportingProperties;
 import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,17 +19,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 @Controller
 @RequestMapping("/symptoms")
 public class SymptomReportingChartController {
 	
-    @Autowired
     AllSymptomReports allSymptomReports;
-    
-    @Autowired @Qualifier("symptomProperties") 
-    Properties symptomTable;
+    SymptomReportingProperties symptomReportingProperties;
+
+    @Autowired
+    public SymptomReportingChartController(AllSymptomReports allSymptomReports, SymptomReportingProperties symptomReportingProperties) {
+        this.allSymptomReports = allSymptomReports;
+        this.symptomReportingProperties = symptomReportingProperties;
+    }
 
     @RequestMapping(value = "/list.json", method = RequestMethod.GET)
     @ResponseBody
@@ -46,10 +48,10 @@ public class SymptomReportingChartController {
 	            JSONObject event = new JSONObject();
 	            event.put("start", report.getReportedAt());
 	            if (lastReportedAtMap.get(symptomId) == null || report.getReportedAt().isBefore(lastReportedAtMap.get(symptomId).minusDays(7)))
-                    event.put("title", lookupSymptom(symptomId));
+                    event.put("title", symptomReportingProperties.symptomLabel(symptomId));
 	            event.put("durationEvent", false);
 	            event.put("trackNum", trackNumberGenerator.trackNumberFor(symptomId));
-	            event.put("description", lookupDesc(symptomId));
+	            event.put("description", symptomReportingProperties.symptomDescription(symptomId));
 	            events.put(event);
                 lastReportedAtMap.put(symptomId,report.getReportedAt());
         	}
@@ -71,12 +73,4 @@ public class SymptomReportingChartController {
 			return tracksUsed.get(symptom);
 		}
     }
-
-    private String lookupSymptom(String symptomId) {
-        return symptomTable.getProperty(symptomId);
-    }
-
-    private String lookupDesc(String symptomId) {
-    	return symptomTable.getProperty(symptomId + ".desc");
-	}
 }
