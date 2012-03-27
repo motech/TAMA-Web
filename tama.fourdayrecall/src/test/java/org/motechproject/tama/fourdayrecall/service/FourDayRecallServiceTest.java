@@ -1,33 +1,41 @@
 package org.motechproject.tama.fourdayrecall.service;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.patient.domain.CallPreference;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
+import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class FourDayRecallServiceTest {
+public class FourDayRecallServiceTest extends BaseUnitTest {
     @Mock
     protected FourDayRecallSchedulerService fourDayRecallSchedulerService;
     @Mock
     protected PatientService patientService;
     @Mock
     protected TreatmentAdviceService treatmentAdviceService;
+    @Mock
+    private AllPatientEventLogs allPatientEventLogs;
+
     private FourDayRecallService fourDayRecallService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        fourDayRecallService = new FourDayRecallService(fourDayRecallSchedulerService, patientService, treatmentAdviceService);
+        mockCurrentDate(new DateTime(1983, 1, 30, 10, 0));
+        fourDayRecallService = new FourDayRecallService(fourDayRecallSchedulerService, patientService, treatmentAdviceService, allPatientEventLogs);
     }
 
     @Test
@@ -38,6 +46,7 @@ public class FourDayRecallServiceTest {
         verify(treatmentAdviceService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(patientService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService, never()).scheduleFourDayRecallJobs(patient, null);
+        assertPatientEventLog(patient);
     }
 
     @Test
@@ -49,6 +58,7 @@ public class FourDayRecallServiceTest {
         verify(patientService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(treatmentAdviceService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService).scheduleFourDayRecallJobs(patient, treatmentAdvice);
+        assertPatientEventLog(patient);
     }
 
     @Test
@@ -71,5 +81,14 @@ public class FourDayRecallServiceTest {
         verify(treatmentAdviceService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService).unscheduleFourDayRecallJobs(patient);
         verify(fourDayRecallSchedulerService).scheduleFourDayRecallJobs(patient, treatmentAdvice);
+        assertPatientEventLog(patient);
+    }
+
+    private void assertPatientEventLog(Patient patient) {
+        ArgumentCaptor<PatientEventLog> eventLogArgumentCaptor = ArgumentCaptor.forClass(PatientEventLog.class);
+        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture());
+        assertEquals(PatientEvent.Switched_To_Weekly_Adherence, eventLogArgumentCaptor.getValue().getEvent());
+        assertEquals(patient.getId(), eventLogArgumentCaptor.getValue().getPatientId());
+        assertEquals(DateUtil.now(), eventLogArgumentCaptor.getValue().getDate());
     }
 }
