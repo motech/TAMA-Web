@@ -21,23 +21,35 @@
             <field:datetime dateTimePattern="dd/MM/yyyy" field="endDate" label="Till" id="alertFilterEndDate" required="true"/>
             <span class="submit" id="filter">
                 <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'alertFilter', event:'onclick'}));</script>
-                <input id="alertFilter" type="submit" value="Filter"/>
+                <input id="alertFilterButton" type="submit" value="Filter"/>
             </span>
     </util:panel>
 
     <script type="text/javascript">
         <![CDATA[
+            function canAlertListBePossiblyLarge(patientId, startDate, endDate){
+                var oneMonthInMillis = 24*60*60*1000*30;
+                if (patientId != "") return false;
+                return Math.abs(endDate - startDate) > oneMonthInMillis;
+            }
+
             dojo.addOnLoad(function() {
                 alertStartDateObj = dijit.byId("_startDate_id");
                 alertEndDateObj = dijit.byId("_endDate_id");
+                patientIdObj = dijit.byId("_patientId_id");
                 setConstraintOnEndDate(alertStartDateObj, alertEndDateObj);
 
-                dojo.connect(dojo.byId("alertFilter"), "onclick", function(event){
+                dojo.connect(dojo.byId("alertFilterButton"), "onclick", function(event){
                     Spring.decorations['_startDate_id'][0].validate();
                     Spring.decorations['_endDate_id'][0].validate();
 
                     if (!(alertStartDateObj.isValid() && alertEndDateObj.isValid())){
                         event.preventDefault();
+                    }
+
+                    if (canAlertListBePossiblyLarge(patientIdObj.value, alertStartDateObj.value, alertEndDateObj.value)) {
+                        event.preventDefault();
+                        alert("This can result in large list. Please narrow down your search criteria.");
                     }
                 });
 
@@ -47,5 +59,5 @@
             });
         ]]>
     </script>
-    
+
 </div>
