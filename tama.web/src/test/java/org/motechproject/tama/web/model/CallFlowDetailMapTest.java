@@ -12,6 +12,7 @@ import org.motechproject.tama.web.view.CallLogView;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -21,6 +22,7 @@ public class CallFlowDetailMapTest {
 
     @Mock
     private CallLogView callLogView;
+
     CallFlowGroupView callFlowGroupView;
 
     @Before
@@ -39,12 +41,9 @@ public class CallFlowDetailMapTest {
 
     @Test
     public void shouldPopulateMapWithFlowDetails() {
-        setUp();
         CallFlowDetailMap callFlowDetailMap = new CallFlowDetailMap();
 
-        callFlowDetailMap.populateFlowDetails(new ArrayList<CallLogView>() {{
-            add(callLogView);
-        }});
+        callFlowDetailMap.populateFlowDetails(Arrays.asList(callLogView));
 
         CallFlowDetails menuFlow = callFlowDetailMap.getCallFlowDetailsMap().get(CallTypeConstants.MENU);
         assertEquals(123, menuFlow.getTotalAccessDuration());

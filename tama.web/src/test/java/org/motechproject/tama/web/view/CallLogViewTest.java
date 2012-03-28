@@ -151,32 +151,7 @@ public class CallLogViewTest {
     @Test
     public void associateEventsToRightFlows_GivenAListOfCallEvents() {
         CallLog callLog = setUpCallLogs();
-        DateTime now = DateTime.now();
-        callLog.setEndTime(now.plusMinutes(5).plusSeconds(10));
-        final CallEvent newCallEvent = createCallEvent("NewCall", CallState.STARTED.name(), "", "signature_music", "");
-        newCallEvent.setTimeStamp(DateUtil.now());
-        final CallEvent menuEvent = createCallEvent("gotDtmf", CallState.AUTHENTICATED.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "responseXML1", "");
-        menuEvent.setTimeStamp(DateUtil.now().plusSeconds(10));
-        final CallEvent pillConfirmationEvent = createCallEvent("gotDtmf", CallState.AUTHENTICATED.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "responseXML2", "");
-        pillConfirmationEvent.setTimeStamp(DateUtil.now().plusMinutes(1).plusSeconds(10));
-        final CallEvent transitioningToSymptomEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING.name(), TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, "", "");
-        transitioningToSymptomEvent.setTimeStamp(DateUtil.now().plusMinutes(2).plusSeconds(10));
-        final CallEvent transitionedToSymptomEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING_TREE.name(), TAMATreeRegistry.REGIMEN_1_TO_6, "responseXML3", "");
-        transitionedToSymptomEvent.setTimeStamp(DateUtil.now().plusMinutes(2).plusSeconds(10));
-        final CallEvent symptomReportingEvent = createCallEvent("gotDtmf", CallState.SYMPTOM_REPORTING_TREE.name(), TAMATreeRegistry.REGIMEN_1_TO_6, "responseXML4", "");
-        symptomReportingEvent.setTimeStamp(DateUtil.now().plusMinutes(4).plusSeconds(10));
-        final CallEvent hangUpEvent = createCallEvent("Hangup", "", "", "", "");
-        hangUpEvent.setTimeStamp(DateUtil.now().plusMinutes(5).plusSeconds(10));
-
-        callLog.setCallEvents(new ArrayList<CallEvent>() {{
-            add(newCallEvent);
-            add(menuEvent);
-            add(pillConfirmationEvent);
-            add(transitioningToSymptomEvent);
-            add(transitionedToSymptomEvent);
-            add(symptomReportingEvent);
-            add(hangUpEvent);
-        }});
+        addDefaultSetOfEventsToCallLog(callLog);
 
         callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
         assertEquals(3, callLogView.getCallFlowGroupViews().size());
@@ -214,6 +189,15 @@ public class CallLogViewTest {
     @Test
     public void shouldReturnCorrectFlowTimesForDifferentFlows() {
         CallLog callLog = setUpCallLogs();
+        addDefaultSetOfEventsToCallLog(callLog);
+
+        callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
+        assertEquals(10, callLogView.getCallFlowGroupViews().get(0).getFlowDuration());
+        assertEquals(120, callLogView.getCallFlowGroupViews().get(1).getFlowDuration());
+        assertEquals(180, callLogView.getCallFlowGroupViews().get(2).getFlowDuration());
+    }
+
+    private void addDefaultSetOfEventsToCallLog(CallLog callLog) {
         DateTime now = DateTime.now();
         callLog.setEndTime(now.plusMinutes(5).plusSeconds(10));
         final CallEvent newCallEvent = createCallEvent("NewCall", CallState.STARTED.name(), "", "signature_music", "");
@@ -240,11 +224,6 @@ public class CallLogViewTest {
             add(symptomReportingEvent);
             add(hangUpEvent);
         }});
-
-        callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
-        assertEquals(10, callLogView.getCallFlowGroupViews().get(0).getFlowDuration());
-        assertEquals(120, callLogView.getCallFlowGroupViews().get(1).getFlowDuration());
-        assertEquals(180, callLogView.getCallFlowGroupViews().get(2).getFlowDuration());
     }
 
     private CallEvent createCallEvent(String name, String callState, String treeName, String responseXML, String callType) {
