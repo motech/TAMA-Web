@@ -29,8 +29,7 @@ public class CallLogExcelReportService {
     }
 
     public HSSFWorkbook buildReport(LocalDate startDate, LocalDate endDate) {
-        AllCallLogSummaries allCallLogSummaries = new AllCallLogSummaries(allCallLogs, allPatients, allIVRLanguages);
-        CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(startDate, endDate, allCallLogSummaries);
+        CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(allCallLogs, allPatients, allIVRLanguages, startDate, endDate);
         return createExcelReport(callLogReportBuilder);
     }
 

@@ -58,7 +58,7 @@ public class AllCallLogs extends AbstractCouchRepository<CallLog> {
             "  emit(doc.startTime, d); " +
             " }" +
             "}" )
-    public List<CallLog> findAllCallLogsForDateRange(DateTime startDateTime, String startDocId, DateTime endDateTime, int pageSize) {
+    public List<CallLog> findAllCallLogsForDateRange(DateTime startDateTime, DateTime endDateTime, int pageSize, String startDocId) {
         ViewQuery q = createQuery("find_by_date_range").startKey(startDateTime).endKey(endDateTime).limit(pageSize);
         if (StringUtils.isNotEmpty(startDocId)) q.startDocId(startDocId);
         return db.queryView(q, CallLog.class);
