@@ -66,8 +66,8 @@ public class RegimenOneTest extends BaseIVRTest {
         ivrResponse = caller.enter("3");
         IVRAssert.asksForCollectDtmfWith(ivrResponse, MISSED_PILL_FEEDBACK_FIRST_TIME, DOSE_CANNOT_BE_TAKEN_MENU);
 
-        ivrResponse = caller.enter("1");
-        caller.listenMore();
+        caller.enter("1");
+        ivrResponse = caller.listenMore();
         IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW, "q_fever");
     }
 
@@ -83,9 +83,9 @@ public class RegimenOneTest extends BaseIVRTest {
         IVRAssert.asksForCollectDtmfWith(ivrResponse, "greeting2generic", "pilltdf3tc_tavin-l", "pillnvp_nevir", TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
 
         // Regimen1
-        ivrResponse = caller.enter("2");
+        caller.enter("2");
 
-        caller.listenMore();
+        ivrResponse = caller.listenMore();
         IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW, "q_fever");
 
         ivrResponse = caller.enter("1");
@@ -97,8 +97,7 @@ public class RegimenOneTest extends BaseIVRTest {
         ivrResponse = ignoreContactingDoctor(5);
         IVRAssert.assertAudioFilesPresent(ivrResponse, "001_06_06_mayhangupormainmenu");
 
-        ivrResponse = caller.listenMore();
-
+        caller.listenMore();
         caller.hangup();
     }
 
