@@ -44,7 +44,7 @@ public class IncomingWelcomeGreetingMessageTest {
         String patientId = "testPatientId";
 
         incomingWelcomeGreetingMessage = new IncomingWelcomeGreetingMessage(allPatients, allClinics, clinicNameMessageBuilder);
-        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
+        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("clinic name").withGreetingName("testClinicName").build();
         patient = PatientBuilder.startRecording().withId(patientId).withClinic(clinic).withIVRLanguage(IVRLanguage.newIVRLanguage("English", "en")).build();
         ivrContext = new TAMAIVRContextForTest().patientDocumentId(patientId);
 
@@ -54,12 +54,12 @@ public class IncomingWelcomeGreetingMessageTest {
 
     @Test
     public void shouldPlayWelcomeGreetingMessageDependingOnClinic() {
-        when(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage())).thenReturn("welcome_to_" + clinic.getName());
+        when(clinicNameMessageBuilder.getInboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage())).thenReturn("welcome_to_" + clinic.getGreetingName());
 
         final String[] messagesToBePlayed = incomingWelcomeGreetingMessage.executeCommand(ivrContext);
         assertNotNull(messagesToBePlayed);
         assertEquals(1, messagesToBePlayed.length);
-        assertEquals(String.format("welcome_to_%s", clinic.getName()), messagesToBePlayed[0]);
+        assertEquals(String.format("welcome_to_%s", clinic.getGreetingName()), messagesToBePlayed[0]);
     }
 
     @Test

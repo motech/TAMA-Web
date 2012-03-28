@@ -27,6 +27,11 @@ public class ClinicBuilder {
         return this;
     }
 
+    public ClinicBuilder withGreetingName(String testGreetingName) {
+        this.clinic.setGreetingName(testGreetingName);
+        return this;
+    }
+
     public ClinicBuilder withPhoneNumber(String phoneNumber) {
         this.clinic.setPhone(phoneNumber);
         return this;

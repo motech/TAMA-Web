@@ -29,7 +29,7 @@ public class ClinicNameMessageBuilderTest {
 
     @Test
     public void shouldReturnDefaultOutboundMessage_WhenClinicSpecificMessageNotAvailable(){
-        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
+        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("clinic name").withGreetingName("testClinicName").build();
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
 
         when(cmsLiteService.isStreamContentAvailable("en", "testclinicname.wav")).thenReturn(false);
@@ -38,16 +38,16 @@ public class ClinicNameMessageBuilderTest {
 
     @Test
     public void shouldReturnOutboundClinicMessage_WhenClinicSpecificMessageAvailable(){
-        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
+        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("clinic name").withGreetingName("testClinicName").build();
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
 
         when(cmsLiteService.isStreamContentAvailable("en", "testclinicname.wav")).thenReturn(true);
-        assertEquals(clinic.getName(), clinicNameMessageBuilder.getOutboundMessage(clinic, ivrLanguage));
+        assertEquals(clinic.getGreetingName(), clinicNameMessageBuilder.getOutboundMessage(clinic, ivrLanguage));
     }
 
     @Test
     public void shouldReturnDefaultInboundMessage_WhenClinicSpecificMessageNotAvailable(){
-        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
+        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("clinic name").withGreetingName("testClinicName").build();
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
 
         when(cmsLiteService.isStreamContentAvailable("en", "welcome_to_testclinicname.wav")).thenReturn(false);
@@ -56,7 +56,7 @@ public class ClinicNameMessageBuilderTest {
 
     @Test
     public void shouldReturnInboundClinicMessage_WhenClinicSpecificMessageAvailable(){
-        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("testClinicName").build();
+        clinic = ClinicBuilder.startRecording().withId("testClinicId").withName("clinic name").withGreetingName("testClinicName").build();
         IVRLanguage ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
 
         when(cmsLiteService.isStreamContentAvailable("en", "welcome_to_testclinicname.wav")).thenReturn(true);

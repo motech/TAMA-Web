@@ -20,14 +20,14 @@ public class ClinicNameMessageBuilder {
     }
 
     public String getOutboundMessage(Clinic clinic, IVRLanguage preferredLanguage) {
-        if (!cmsLiteService.isStreamContentAvailable(preferredLanguage.getCode(), getClinicWavFileName(clinic.getName()))) {
+        if (!cmsLiteService.isStreamContentAvailable(preferredLanguage.getCode(), getClinicWavFileName(clinic.getGreetingName()))) {
             return TamaIVRMessage.DEFAULT_OUTBOUND_CLINIC_MESSAGE;
         }
-        return clinic.getName();
+        return clinic.getGreetingName();
     }
 
     public String getInboundMessage(Clinic clinic, IVRLanguage preferredLanguage) {
-        String clinicMessage = String.format("welcome_to_%s", clinic.getName());
+        String clinicMessage = String.format("welcome_to_%s", clinic.getGreetingName());
         if (!cmsLiteService.isStreamContentAvailable(preferredLanguage.getCode(), getClinicWavFileName(clinicMessage))) {
             return TamaIVRMessage.DEFAULT_INBOUND_CLINIC_MESSAGE;
         }

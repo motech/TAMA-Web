@@ -43,7 +43,7 @@ public class OutgoingWelcomeGreetingMessageTest {
     @Before
     public void setup() {
         initMocks(this);
-        clinic = ClinicBuilder.startRecording().withDefaults().withId("clinicId").withName("clinicName").build();
+        clinic = ClinicBuilder.startRecording().withDefaults().withId("clinicId").withName("clinic name").withGreetingName("clinicName").build();
         patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).withIVRLanguage(IVRLanguage.newIVRLanguage("english", "en")).build();
         context = new TAMAIVRContextForTest().patientDocumentId("patientId");
 
@@ -54,7 +54,7 @@ public class OutgoingWelcomeGreetingMessageTest {
 
     @Test
     public void shouldReturnMessageBasedOnClinicAndPlayGreetingMessage() {
-        when(clinicNameMessageBuilder.getOutboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage())).thenReturn(clinic.getName());
+        when(clinicNameMessageBuilder.getOutboundMessage(clinic, patient.getPatientPreferences().getIvrLanguage())).thenReturn(clinic.getGreetingName());
         String[] messages = welcomeGreetingMessage.executeCommand(context);
         assertEquals(2, messages.length);
         assertEquals("clinicName", messages[0]);
