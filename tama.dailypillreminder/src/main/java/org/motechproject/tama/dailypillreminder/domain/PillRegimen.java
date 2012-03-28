@@ -86,15 +86,16 @@ public class PillRegimen {
         List<Dose> allProbableDoses = new ArrayList<Dose>();
         LocalDate givenDate = specifiedDateTime.toLocalDate();
         for (DosageResponse dosageResponse : getDosageResponses()) {
-            if (DateUtil.isOnOrBefore(dosageResponse.getStartDate(), givenDate.minusDays(2)))
+            DateTime startDate = DateUtil.newDateTime(dosageResponse.getStartDate());
+            if (DateUtil.isOnOrBefore(startDate, DateUtil.newDateTime(givenDate.minusDays(2))))
                 allProbableDoses.add(getDoseOn(dosageResponse, givenDate.minusDays(2)));
-            if (DateUtil.isOnOrBefore(dosageResponse.getStartDate(), givenDate.minusDays(1)))
+            if (DateUtil.isOnOrBefore(startDate, DateUtil.newDateTime(givenDate.minusDays(1))))
                 allProbableDoses.add(getDoseOn(dosageResponse, givenDate.minusDays(1)));
-            if (DateUtil.isOnOrBefore(dosageResponse.getStartDate(), givenDate))
+            if (DateUtil.isOnOrBefore(startDate, DateUtil.newDateTime(givenDate)))
                 allProbableDoses.add(getDoseOn(dosageResponse, givenDate));
-            if (DateUtil.isOnOrBefore(dosageResponse.getStartDate(), givenDate.plusDays(1)))
+            if (DateUtil.isOnOrBefore(startDate, DateUtil.newDateTime(givenDate.plusDays(1))))
                 allProbableDoses.add(getDoseOn(dosageResponse, givenDate.plusDays(1)));
-            if (DateUtil.isOnOrBefore(dosageResponse.getStartDate(), givenDate.plusDays(2)))
+            if (DateUtil.isOnOrBefore(startDate, DateUtil.newDateTime(givenDate.plusDays(2))))
                 allProbableDoses.add(getDoseOn(dosageResponse, givenDate.plusDays(2)));
         }
         Collections.sort(allProbableDoses);
