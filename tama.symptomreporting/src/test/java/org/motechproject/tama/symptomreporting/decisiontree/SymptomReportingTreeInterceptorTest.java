@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.decisiontree.model.*;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.symptomreporting.command.*;
@@ -103,13 +104,14 @@ public class SymptomReportingTreeInterceptorTest {
         Node node1 = node("adv_crocin01");
         interceptor.addCommands(node1);
         List<Prompt> prompts = node1.getPrompts();
-        assertEquals(2, prompts.size());
-        assertEquals("adv_crocin01", prompts.get(0).getName());
-        assertEquals(dialStateCommand.getClass(), prompts.get(1).getCommand().getClass());
+        assertEquals(3, prompts.size());
+        assertEquals(TamaIVRMessage.START_SYMPTOM_FLOW, prompts.get(0).getName());
+        assertEquals("adv_crocin01", prompts.get(1).getName());
+        assertEquals(dialStateCommand.getClass(), prompts.get(2).getCommand().getClass());
 
         Node node2 = node("some other node");
         interceptor.addCommands(node2);
-        assertTrue(node2.getPrompts().size() == 1);
+        assertTrue(node2.getPrompts().size() == 2);
     }
 
     @Test
@@ -117,9 +119,19 @@ public class SymptomReportingTreeInterceptorTest {
         Node node1 = node("adv_seeclinicasapdepression");
         interceptor.addCommands(node1);
         List<Prompt> prompts = node1.getPrompts();
-        assertEquals(2, prompts.size());
-        assertEquals("adv_seeclinicasapdepression", prompts.get(0).getName());
-        assertEquals(dialStateCommand.getClass(), prompts.get(1).getCommand().getClass());
+        assertEquals(3, prompts.size());
+        assertEquals(TamaIVRMessage.START_SYMPTOM_FLOW, prompts.get(0).getName());
+        assertEquals("adv_seeclinicasapdepression", prompts.get(1).getName());
+        assertEquals(dialStateCommand.getClass(), prompts.get(2).getCommand().getClass());
+    }
+
+    @Test
+    public void shouldAddSymptomStartWavFile_ToTheBeginningOfTheRootNode() {
+        Node node1 = node("adv_seeclinicasapdepression");
+        interceptor.addCommands(node1);
+        List<Prompt> prompts = node1.getPrompts();
+        assertEquals(3, prompts.size());
+        assertEquals(TamaIVRMessage.START_SYMPTOM_FLOW, prompts.get(0).getName());
     }
 
     @Test

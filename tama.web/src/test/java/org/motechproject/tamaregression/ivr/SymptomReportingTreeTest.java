@@ -92,11 +92,9 @@ public class SymptomReportingTreeTest extends BaseIVRTest {
 
         // Regimen4_2
         ivrResponse = caller.enter("2");
-        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW);
 
         caller.listenMore();
-        ivrResponse = caller.listenMore();
-        IVRAssert.assertAudioFilesPresent(ivrResponse, "q_nauseaorvomiting");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW, "q_nauseaorvomiting");
 
         ivrResponse = caller.enter("1");
         IVRAssert.assertAudioFilesPresent(ivrResponse, "cy_nauseaorvomiting", "q_shortnessofbreathorgiddiness");

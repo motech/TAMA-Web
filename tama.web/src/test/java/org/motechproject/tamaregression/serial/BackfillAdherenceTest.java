@@ -78,11 +78,9 @@ public class BackfillAdherenceTest extends BaseIVRTest {
         IVRAssert.asksForCollectDtmfWith(ivrResponse, DEFAULT_INBOUND_CLINIC_MESSAGE, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW);
 
         ivrResponse = caller.enter("2");
-        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW);
 
         caller.listenMore();
-        ivrResponse = caller.listenMore();
-        IVRAssert.assertAudioFilesPresent(ivrResponse, "q_nauseaorvomiting");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW, "q_nauseaorvomiting");
 
         ivrResponse = caller.enter("1");
         IVRAssert.assertAudioFilesPresent(ivrResponse, "cy_nauseaorvomiting", "q_shortnessofbreathorgiddiness");

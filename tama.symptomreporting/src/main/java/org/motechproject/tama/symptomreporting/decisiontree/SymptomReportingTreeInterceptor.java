@@ -1,6 +1,7 @@
 package org.motechproject.tama.symptomreporting.decisiontree;
 
 import org.motechproject.decisiontree.model.*;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.symptomreporting.command.*;
@@ -64,12 +65,17 @@ public class SymptomReportingTreeInterceptor {
     }
 
     public void addCommands(Node node) {
+        addPromptToRootNode(node);
         addUpdateAdviceCommand(node);
         addDialPrompt(node);
         addSendSMSCommand(node);
         addSuspendAdherenceCallsCommand(node);
         addCommandToLogSymptoms(node);
         addRecordAdviceGivenCommand(node);
+    }
+
+    private void addPromptToRootNode(Node node) {
+        node.addPromptToBeginning(new AudioPrompt().setName(TamaIVRMessage.START_SYMPTOM_FLOW));
     }
 
     private void addRecordAdviceGivenCommand(Node root) {

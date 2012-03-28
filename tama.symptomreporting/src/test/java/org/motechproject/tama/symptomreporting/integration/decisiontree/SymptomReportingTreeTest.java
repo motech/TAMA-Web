@@ -3,6 +3,7 @@ package org.motechproject.tama.symptomreporting.integration.decisiontree;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Tree;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.symptomreporting.decisiontree.SymptomReportingTree;
 import org.motechproject.tama.symptomreporting.decisiontree.SymptomReportingTreeInterceptor;
@@ -28,6 +29,7 @@ public class SymptomReportingTreeTest {
         Tree regimen1_1Tree = new SymptomReportingTree(symptomReportingTreeService, symptomReportingTreeInterceptor, tamaTreeRegistry).getTree("Regimen1_1");
 
         assertEquals("Regimen1_1", regimen1_1Tree.getName());
-        assertEquals("q_fever", regimen1_1Tree.getRootNode().getPrompts().get(0).getName());
+        assertEquals(TamaIVRMessage.START_SYMPTOM_FLOW, regimen1_1Tree.getRootNode().getPrompts().get(0).getName());
+        assertEquals("q_fever", regimen1_1Tree.getRootNode().getPrompts().get(1).getName());
     }
 }

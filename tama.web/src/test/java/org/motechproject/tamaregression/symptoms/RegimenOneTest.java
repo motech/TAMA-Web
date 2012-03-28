@@ -67,11 +67,8 @@ public class RegimenOneTest extends BaseIVRTest {
         IVRAssert.asksForCollectDtmfWith(ivrResponse, MISSED_PILL_FEEDBACK_FIRST_TIME, DOSE_CANNOT_BE_TAKEN_MENU);
 
         ivrResponse = caller.enter("1");
-        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW);
-
         caller.listenMore();
-        ivrResponse = caller.listenMore();
-        IVRAssert.assertAudioFilesPresent(ivrResponse, "q_fever");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW, "q_fever");
     }
 
     private void assertSymptomReportingCallFlow(TestPatient patient) throws IOException {
@@ -87,11 +84,9 @@ public class RegimenOneTest extends BaseIVRTest {
 
         // Regimen1
         ivrResponse = caller.enter("2");
-        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW);
 
         caller.listenMore();
-        ivrResponse = caller.listenMore();
-        IVRAssert.assertAudioFilesPresent(ivrResponse, "q_fever");
+        IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.START_SYMPTOM_FLOW, "q_fever");
 
         ivrResponse = caller.enter("1");
         IVRAssert.assertAudioFilesPresent(ivrResponse, "cy_fever", "q_headachevomiting");
