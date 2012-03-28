@@ -10,6 +10,7 @@ import java.util.List;
 public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
 
     protected final int pageSize;
+    private static final int HEADER_ROW_COUNT = 4;
 
     public BatchReportBuilder() {
         super();
@@ -21,30 +22,17 @@ public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
     protected boolean fillReportData(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForColumns(worksheet);
         List data = null;
+        currentRowIndex = HEADER_ROW_COUNT;
         do {
             data = fetchData();
             for (Object dataObject : data) {
                 HSSFRow row = worksheet.createRow((short) currentRowIndex);
                 buildRowData(row, getRowData(dataObject), cellStyles);
-                boolean successfullyIncremented = incrementRowIndex();
-                if (!successfullyIncremented) {
-                    // Have more data to fill
-                    return false;
-                }
+                currentRowIndex++;
+                if (currentRowIndex == (MAX_ROWS_PER_SHEET + HEADER_ROW_COUNT)) return false; // Have more data to fill
             }
         } while (data.size() == pageSize);
-        //Done filling data
         return true;
-    }
-
-    private boolean incrementRowIndex() {
-        if (currentRowIndex <= MAX_ROWS_PER_SHEET) {
-            currentRowIndex++;
-            return true;
-        } else {
-            currentRowIndex = 0;
-            return false;
-        }
     }
 
     protected abstract List fetchData();

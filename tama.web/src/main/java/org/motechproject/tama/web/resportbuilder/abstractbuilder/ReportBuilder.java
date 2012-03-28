@@ -53,6 +53,7 @@ public abstract class ReportBuilder<T> {
         while (!doneBuilding) {
             String sheetname = getWorksheetName() + (i++ == 0 ? "" : i);
             HSSFSheet worksheet = workbook.createSheet(sheetname);
+            currentRowIndex = 0;
             buildReportLayout(worksheet);
             doneBuilding = fillReportData(worksheet);
         }
