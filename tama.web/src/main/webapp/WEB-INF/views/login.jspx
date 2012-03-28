@@ -54,5 +54,12 @@
       </div>
     </form>
   </util:panel>
+  <script type="text/javascript">
+      <![CDATA[
+          dojo.addOnLoad(function() {
+              dijit.focus(dojo.byId('j_username'));
+          });
+      ]]>
+  </script>
 </div>
 
