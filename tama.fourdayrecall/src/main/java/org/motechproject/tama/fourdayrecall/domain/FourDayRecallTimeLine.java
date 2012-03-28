@@ -42,7 +42,7 @@ public class FourDayRecallTimeLine {
 
         DateTime recallDateTimeForFirstWeek = fourDayRecallDateService.nextRecallOn(startDateForFirstWeek, patient);
         LocalDate nextWeekStartDate = null;
-        if (DateUtil.isOnOrBefore(DateUtil.newDate(treatmentAdvice.getStartDate()), startDateForFirstWeek)
+        if (DateUtil.isOnOrBefore(DateUtil.newDateTime(treatmentAdvice.getStartDate()), DateUtil.newDateTime(startDateForFirstWeek))
                 && !recallDateTimeForFirstWeek.plusDays(daysToRetry).isBefore(fromDate)
                 && !recallDateTimeForFirstWeek.isAfter(toDate)) {
             nextWeekStartDate = startDateForFirstWeek;

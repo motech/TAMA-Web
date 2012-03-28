@@ -8,6 +8,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.appointments.api.contract.*;
+import org.motechproject.appointments.api.service.AppointmentService;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.AppointmentCalendarRequestBuilder;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.ConfirmAppointmentRequestBuilder;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.CreateVisitRequestBuilder;
