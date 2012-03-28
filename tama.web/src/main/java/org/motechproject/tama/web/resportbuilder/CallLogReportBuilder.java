@@ -19,7 +19,6 @@ import org.motechproject.tama.web.resportbuilder.abstractbuilder.BatchReportBuil
 import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
 import org.motechproject.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +56,7 @@ public class CallLogReportBuilder extends BatchReportBuilder {
 
     @Override
     protected void initializeColumns() {
-        columns = new ArrayList<ExcelColumn>();
+        columns = new LinkedList<ExcelColumn>();
         columns.add(new ExcelColumn("Patient ID", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Source Phone Number", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Destination Phone Number", Cell.CELL_TYPE_STRING, 8000));
