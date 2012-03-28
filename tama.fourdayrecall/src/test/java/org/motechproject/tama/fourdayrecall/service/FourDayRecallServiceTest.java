@@ -9,8 +9,7 @@ import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
-import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.patient.service.TreatmentAdviceService;
+import org.motechproject.tama.patient.service.registry.CallPlanRegistry;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -23,11 +22,9 @@ public class FourDayRecallServiceTest extends BaseUnitTest {
     @Mock
     protected FourDayRecallSchedulerService fourDayRecallSchedulerService;
     @Mock
-    protected PatientService patientService;
-    @Mock
-    protected TreatmentAdviceService treatmentAdviceService;
-    @Mock
     private AllPatientEventLogs allPatientEventLogs;
+    @Mock
+    private CallPlanRegistry callPlanRegistry;
 
     private FourDayRecallService fourDayRecallService;
 
@@ -35,7 +32,7 @@ public class FourDayRecallServiceTest extends BaseUnitTest {
     public void setUp() {
         initMocks(this);
         mockCurrentDate(new DateTime(1983, 1, 30, 10, 0));
-        fourDayRecallService = new FourDayRecallService(fourDayRecallSchedulerService, patientService, treatmentAdviceService, allPatientEventLogs);
+        fourDayRecallService = new FourDayRecallService(fourDayRecallSchedulerService, allPatientEventLogs, callPlanRegistry);
     }
 
     @Test
@@ -43,8 +40,7 @@ public class FourDayRecallServiceTest extends BaseUnitTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         fourDayRecallService.enroll(patient, null);
 
-        verify(treatmentAdviceService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
-        verify(patientService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
+        verify(callPlanRegistry).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService, never()).scheduleFourDayRecallJobs(patient, null);
         assertPatientEventLog(patient);
     }
@@ -55,8 +51,7 @@ public class FourDayRecallServiceTest extends BaseUnitTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         fourDayRecallService.enroll(patient, treatmentAdvice);
 
-        verify(patientService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
-        verify(treatmentAdviceService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
+        verify(callPlanRegistry).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService).scheduleFourDayRecallJobs(patient, treatmentAdvice);
         assertPatientEventLog(patient);
     }
@@ -66,8 +61,7 @@ public class FourDayRecallServiceTest extends BaseUnitTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         fourDayRecallService.disEnroll(patient, null);
 
-        verify(treatmentAdviceService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
-        verify(patientService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
+        verify(callPlanRegistry).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService, never()).unscheduleFourDayRecallJobs(patient);
     }
 
@@ -77,8 +71,7 @@ public class FourDayRecallServiceTest extends BaseUnitTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         fourDayRecallService.reEnroll(patient, treatmentAdvice);
 
-        verify(patientService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
-        verify(treatmentAdviceService).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
+        verify(callPlanRegistry).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService).unscheduleFourDayRecallJobs(patient);
         verify(fourDayRecallSchedulerService).scheduleFourDayRecallJobs(patient, treatmentAdvice);
         assertPatientEventLog(patient);

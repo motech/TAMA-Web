@@ -1,4 +1,4 @@
-package org.motechproject.tama.patient.strategy;
+package org.motechproject.tama.patient.service;
 
 import org.motechproject.tama.patient.domain.Patient;
 

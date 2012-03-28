@@ -11,6 +11,7 @@ import org.motechproject.tama.dailypillreminder.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.service.registry.CallPlanRegistry;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.patient.service.TreatmentAdviceService;
@@ -38,6 +39,8 @@ public class DailyPillReminderServiceTest extends BaseUnitTest {
     protected TreatmentAdviceService treatmentAdviceService;
     @Mock
     private AllPatientEventLogs allPatientEventLogs;
+    @Mock
+    private CallPlanRegistry callPlanRegistry;
 
     private DailyPillReminderService dailyPillReminderService;
 
@@ -45,7 +48,7 @@ public class DailyPillReminderServiceTest extends BaseUnitTest {
     public void setUp() {
         initMocks(this);
         mockCurrentDate(new DateTime(1983, 1, 30, 10, 0));
-        dailyPillReminderService = new DailyPillReminderService(pillReminderService, pillRegimenRequestMapper, dailyPillReminderSchedulerService, patientService, treatmentAdviceService, allPatientEventLogs);
+        dailyPillReminderService = new DailyPillReminderService(pillReminderService, pillRegimenRequestMapper, dailyPillReminderSchedulerService, allPatientEventLogs, callPlanRegistry);
     }
 
     @Test
@@ -53,8 +56,7 @@ public class DailyPillReminderServiceTest extends BaseUnitTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         dailyPillReminderService.enroll(patient, null);
 
-        verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
-        verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
+        verify(callPlanRegistry).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(pillRegimenRequestMapper, never()).map(null, null);
         verify(pillReminderService, never()).createNew(any(DailyPillRegimenRequest.class));
         verify(dailyPillReminderSchedulerService, never()).scheduleDailyPillReminderJobs(patient, null);
@@ -67,8 +69,7 @@ public class DailyPillReminderServiceTest extends BaseUnitTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         dailyPillReminderService.enroll(patient, treatmentAdvice);
 
-        verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
-        verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
+        verify(callPlanRegistry).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(pillRegimenRequestMapper).map(patient, treatmentAdvice);
         verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));
         verify(dailyPillReminderSchedulerService).scheduleDailyPillReminderJobs(patient, treatmentAdvice);
@@ -80,8 +81,7 @@ public class DailyPillReminderServiceTest extends BaseUnitTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         dailyPillReminderService.disEnroll(patient, null);
 
-        verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
-        verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
+        verify(callPlanRegistry).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(pillReminderService, never()).remove(patient.getId());
         verify(dailyPillReminderSchedulerService, never()).unscheduleDailyPillReminderJobs(patient);
     }
@@ -92,8 +92,7 @@ public class DailyPillReminderServiceTest extends BaseUnitTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         dailyPillReminderService.reEnroll(patient, treatmentAdvice);
 
-        verify(treatmentAdviceService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
-        verify(patientService).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
+        verify(callPlanRegistry).registerCallPlan(CallPreference.DailyPillReminder, dailyPillReminderService);
         verify(pillRegimenRequestMapper).map(patient, treatmentAdvice);
         verify(pillReminderService).remove(patient.getId());
         verify(pillReminderService).createNew(any(DailyPillRegimenRequest.class));

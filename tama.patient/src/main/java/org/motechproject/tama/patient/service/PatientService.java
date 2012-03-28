@@ -4,18 +4,14 @@ import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
-import org.motechproject.tama.patient.strategy.CallPlan;
-import org.motechproject.tama.patient.strategy.ChangePatientPreferenceContext;
-import org.motechproject.tama.patient.strategy.ChangePatientPreferenceStrategy;
-import org.motechproject.tama.patient.strategy.Outbox;
+import org.motechproject.tama.patient.service.registry.OutboxRegistry;
+import org.motechproject.tama.patient.strategy.ChangedPatientPreferenceContext;
+import org.motechproject.tama.patient.strategy.PatientPreferenceChangedStrategyFactory;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class PatientService {
@@ -24,33 +20,27 @@ public class PatientService {
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllRegimens allRegimens;
     private AllPatientEventLogs allPatientEventLogs;
-    private Map<CallPreference, CallPlan> callPlans;
-    private Outbox outbox;
+    private PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory;
+    private OutboxRegistry outboxRegistry;
 
     @Autowired
     public PatientService(AllPatients allPatients,
                           AllTreatmentAdvices allTreatmentAdvices,
                           AllRegimens allRegimens,
-                          AllPatientEventLogs allPatientEventLogs) {
+                          AllPatientEventLogs allPatientEventLogs,
+                          PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory, OutboxRegistry outboxRegistry) {
 
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allRegimens = allRegimens;
         this.allPatientEventLogs = allPatientEventLogs;
-        this.callPlans = new HashMap<CallPreference, CallPlan>();
-    }
-
-    public void registerCallPlan(CallPreference callPreference, CallPlan callPlan) {
-        this.callPlans.put(callPreference, callPlan);
-    }
-
-    public void registerOutbox(Outbox outbox) {
-        this.outbox = outbox;
+        this.preferenceChangedStrategyFactory = preferenceChangedStrategyFactory;
+        this.outboxRegistry = outboxRegistry;
     }
 
     public void create(Patient patient, String clinicId, String userName) {
         allPatients.addToClinic(patient, clinicId, userName);
-        outbox.enroll(patient);
+        outboxRegistry.getOutbox().enroll(patient);
     }
 
     public void update(Patient patient, String userName) {
@@ -61,7 +51,12 @@ public class PatientService {
         patient.setLastDeactivationDate(dbPatient.getLastDeactivationDate());
         patient.setLastSuspendedDate(dbPatient.getLastSuspendedDate());
         allPatients.update(patient, userName);
-        updateOnPatientPreferencesChanged(dbPatient, patient);
+
+        final ChangedPatientPreferenceContext changedPatientPreferenceContext = new ChangedPatientPreferenceContext(dbPatient, patient);
+        if (changedPatientPreferenceContext.patientPreferenceHasChanged()) {
+            preferenceChangedStrategyFactory.getStrategy(changedPatientPreferenceContext).execute(dbPatient, patient, allTreatmentAdvices.currentTreatmentAdvice(patient.getId()));
+//            logPatientPreferenceChanges(changedPatientPreferenceContext);
+        }
     }
 
     public void activate(String id, String userName) {
@@ -75,7 +70,7 @@ public class PatientService {
         Patient patient = allPatients.get(id);
         patient.deactivate(deactivationStatus);
         allPatients.update(patient, userName);
-        if(deactivationStatus.isTemporarilyDeactivated()) {
+        if (deactivationStatus.isTemporarilyDeactivated()) {
             allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Temporary_Deactivation, DateUtil.now()));
         }
     }
@@ -85,14 +80,6 @@ public class PatientService {
         patient.suspend();
         allPatients.update(patient, userName);
         allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension, DateUtil.now()));
-    }
-
-    private void updateOnPatientPreferencesChanged(Patient dbPatient, Patient patient) {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
-        ChangePatientPreferenceStrategy changePatientPreferenceStrategy = new ChangePatientPreferenceContext(callPlans, outbox).getStrategy(dbPatient, patient);
-        if (changePatientPreferenceStrategy != null) {
-            changePatientPreferenceStrategy.execute(dbPatient, patient, treatmentAdvice);
-        }
     }
 
     public Regimen currentRegimen(Patient patient) {

@@ -20,7 +20,7 @@ import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.service.PatientService;
+import org.motechproject.tama.patient.service.registry.OutboxRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,8 +41,6 @@ public class OutboxServiceTest {
     @Mock
     protected VoiceOutboxService voiceOutboxService;
     @Mock
-    protected PatientService patientService;
-    @Mock
     private IVRCall ivrCall;
     @Mock
     private AllPatients allPatients;
@@ -50,6 +48,9 @@ public class OutboxServiceTest {
     protected OutboxSchedulerService outboxSchedulerService;
     @Mock
     private OutboxEventHandler outboxEventHandler;
+    @Mock
+    private OutboxRegistry outboxRegistry;
+
     private OutboxService outboxService;
     private Patient patient;
     private MotechEvent motechEvent;
@@ -57,7 +58,7 @@ public class OutboxServiceTest {
     @Before
     public void setUp() {
         initMocks(this);
-        outboxService = new OutboxService(allPatients, ivrCall, voiceOutboxService, outboxSchedulerService, patientService, outboxEventHandler);
+        outboxService = new OutboxService(allPatients, ivrCall, voiceOutboxService, outboxSchedulerService, outboxEventHandler, outboxRegistry);
         setUpEventWithExternalId();
         setUpPatientAsActive();
         setUpOutboxWithAtLeastOneUnreadMessage();
@@ -68,7 +69,7 @@ public class OutboxServiceTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         outboxService.enroll(patient);
 
-        verify(patientService).registerOutbox(outboxService);
+        verify(outboxRegistry).registerOutbox(outboxService);
         verify(outboxSchedulerService, never()).scheduleOutboxJobs(patient);
     }
 
@@ -77,7 +78,7 @@ public class OutboxServiceTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
         outboxService.enroll(patient);
 
-        verify(patientService).registerOutbox(outboxService);
+        verify(outboxRegistry).registerOutbox(outboxService);
         verify(outboxSchedulerService).scheduleOutboxJobs(patient);
     }
 
@@ -87,7 +88,7 @@ public class OutboxServiceTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
         outboxService.reEnroll(dbPatient, patient);
 
-        verify(patientService).registerOutbox(outboxService);
+        verify(outboxRegistry).registerOutbox(outboxService);
         verify(outboxSchedulerService).unscheduleOutboxJobs(dbPatient);
         verify(outboxSchedulerService).scheduleOutboxJobs(patient);
     }
@@ -97,7 +98,7 @@ public class OutboxServiceTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Monday, new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
         outboxService.enroll(patient);
 
-        verify(patientService).registerOutbox(outboxService);
+        verify(outboxRegistry).registerOutbox(outboxService);
         verify(outboxSchedulerService).scheduleOutboxJobs(patient);
     }
 
@@ -106,7 +107,7 @@ public class OutboxServiceTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withWeeklyCallPreference(DayOfWeek.Monday, new TimeOfDay(5, 30, TimeMeridiem.AM)).build();
         outboxService.disEnroll(patient);
 
-        verify(patientService).registerOutbox(outboxService);
+        verify(outboxRegistry).registerOutbox(outboxService);
         verify(outboxSchedulerService).unscheduleOutboxJobs(patient);
     }
 

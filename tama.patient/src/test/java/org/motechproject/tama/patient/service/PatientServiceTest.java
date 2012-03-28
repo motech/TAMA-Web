@@ -5,8 +5,8 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -16,8 +16,10 @@ import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
-import org.motechproject.tama.patient.strategy.CallPlan;
-import org.motechproject.tama.patient.strategy.Outbox;
+import org.motechproject.tama.patient.service.registry.OutboxRegistry;
+import org.motechproject.tama.patient.strategy.CallPlanChangedStrategy;
+import org.motechproject.tama.patient.strategy.ChangedPatientPreferenceContext;
+import org.motechproject.tama.patient.strategy.PatientPreferenceChangedStrategyFactory;
 import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllRegimens;
@@ -26,7 +28,6 @@ import org.motechproject.util.DateUtil;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -45,9 +46,12 @@ public class PatientServiceTest extends BaseUnitTest {
     @Mock
     private Outbox outbox;
     @Mock
-    private CallPlan dailyCallPlan;
+    private PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory;
     @Mock
-    private CallPlan weeklyCallPlan;
+    CallPlanChangedStrategy callPlanChangedStrategy;
+    @Mock
+    private OutboxRegistry outboxRegistry;
+
     private PatientService patientService;
     final private String USER_NAME = "userName";
 
@@ -57,14 +61,8 @@ public class PatientServiceTest extends BaseUnitTest {
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(allPatients, allTreatmentAdvices, allRegimens, allPatientEventLogs);
-        patientService.registerOutbox(outbox);
-        registerKnownCallPlans();
-    }
-
-    private void registerKnownCallPlans() {
-        patientService.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
-        patientService.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
+        patientService = new PatientService(allPatients, allTreatmentAdvices, allRegimens, allPatientEventLogs, preferenceChangedStrategyFactory, outboxRegistry);
+        when(outboxRegistry.getOutbox()).thenReturn(outbox);
     }
 
     @Test
@@ -149,14 +147,11 @@ public class PatientServiceTest extends BaseUnitTest {
 
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
-
         patientService.update(patient, USER_NAME);
 
         assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
-        verify(outbox, never()).reEnroll(dbPatient, patient);
-        verify(dailyCallPlan, never()).disEnroll(dbPatient, currentTreatmentAdvice);
-        verify(weeklyCallPlan, never()).enroll(patient, currentTreatmentAdvice);
         verify(allPatients).update(patient, USER_NAME);
+        verifyZeroInteractions(preferenceChangedStrategyFactory);
     }
 
     @Test
@@ -179,95 +174,24 @@ public class PatientServiceTest extends BaseUnitTest {
         assertEquals(dbPatient.getRegistrationDate(), patient.getRegistrationDate());
     }
 
-
     @Test
-    public void patientChangesHisCallPlanDailyToWeekly() {
+    public void patientChangesHisPreferences() {
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
         TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
 
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
+        when(preferenceChangedStrategyFactory.getStrategy(Matchers.<ChangedPatientPreferenceContext>any())).thenReturn(callPlanChangedStrategy);
 
         patientService.update(patient, USER_NAME);
 
-        assertNotNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
-        verify(outbox).reEnroll(dbPatient, patient);
-        verify(dailyCallPlan).disEnroll(dbPatient, currentTreatmentAdvice);
-        verify(weeklyCallPlan).enroll(patient, currentTreatmentAdvice);
+        verify(callPlanChangedStrategy).execute(dbPatient, patient, currentTreatmentAdvice);
         verify(allPatients).update(patient, USER_NAME);
     }
 
     @Test
-    public void patientChangesHisCallPlanWeeklyToDaily() {
-        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
-        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
-
-        when(allPatients.get(patient.getId())).thenReturn(dbPatient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
-
-        patientService.update(patient, USER_NAME);
-
-        assertNotNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
-        verify(outbox).reEnroll(dbPatient, patient);
-        verify(weeklyCallPlan).disEnroll(dbPatient, currentTreatmentAdvice);
-        verify(dailyCallPlan).enroll(patient, currentTreatmentAdvice);
-        verify(allPatients).update(patient, USER_NAME);
-    }
-
-    @Test
-    public void patientChangesHisDayOfWeeklyCall() {
-        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withWeeklyCallPreference(DayOfWeek.Saturday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
-        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
-
-        when(allPatients.get(patient.getId())).thenReturn(dbPatient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
-
-        patientService.update(patient, USER_NAME);
-
-        assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
-        verify(outbox, never()).reEnroll(dbPatient, patient);
-        verify(weeklyCallPlan).reEnroll(dbPatient, currentTreatmentAdvice);
-        verify(allPatients).update(patient, USER_NAME);
-    }
-
-    @Test
-    public void dailyReminderPatientChangesHisBestCallTime() {
-        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(5, 0, TimeMeridiem.AM)).build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
-        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
-
-        when(allPatients.get(patient.getId())).thenReturn(dbPatient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
-
-        patientService.update(patient, USER_NAME);
-
-        assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
-        verify(outbox).reEnroll(dbPatient, patient);
-        verify(allPatients).update(patient, USER_NAME);
-    }
-
-    @Test
-    public void weeklyReminderPatientChangesHisBestCallTime() {
-        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withWeeklyCallPreference(DayOfWeek.Saturday, new TimeOfDay(5, 0, TimeMeridiem.AM)).build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withWeeklyCallPreference(DayOfWeek.Saturday, new TimeOfDay(10, 0, TimeMeridiem.AM)).build();
-        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
-
-        when(allPatients.get(patient.getId())).thenReturn(dbPatient);
-        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
-
-        patientService.update(patient, USER_NAME);
-
-        assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
-        verify(outbox).reEnroll(dbPatient, patient);
-        verify(weeklyCallPlan).reEnroll(dbPatient, currentTreatmentAdvice);
-        verify(allPatients).update(patient, USER_NAME);
-    }
-
-    @Test
-    public void shouldReturnPatientReport(){
+    public void shouldReturnPatientReport() {
         String patientDocId = "patientDocId";
         LocalDate currentRegimenStartDate = DateUtil.today();
         LocalDate artStartDate = currentRegimenStartDate.minusDays(10);

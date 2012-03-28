@@ -2,9 +2,8 @@ package org.motechproject.tama.fourdayrecall.service;
 
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
-import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.patient.service.TreatmentAdviceService;
-import org.motechproject.tama.patient.strategy.CallPlan;
+import org.motechproject.tama.patient.service.CallPlan;
+import org.motechproject.tama.patient.service.registry.CallPlanRegistry;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +15,11 @@ public class FourDayRecallService implements CallPlan {
     private AllPatientEventLogs allPatientEventLogs;
 
     @Autowired
-    public FourDayRecallService(FourDayRecallSchedulerService fourDayRecallSchedulerService, PatientService patientService, TreatmentAdviceService treatmentAdviceService, AllPatientEventLogs allPatientEventLogs) {
+    public FourDayRecallService(FourDayRecallSchedulerService fourDayRecallSchedulerService,
+                                AllPatientEventLogs allPatientEventLogs, CallPlanRegistry callPlanRegistry) {
         this.fourDayRecallSchedulerService = fourDayRecallSchedulerService;
         this.allPatientEventLogs = allPatientEventLogs;
-        patientService.registerCallPlan(CallPreference.FourDayRecall, this);
-        treatmentAdviceService.registerCallPlan(CallPreference.FourDayRecall, this);
+        callPlanRegistry.registerCallPlan(CallPreference.FourDayRecall, this);
     }
 
     public void enroll(Patient patient, TreatmentAdvice treatmentAdvice) {

@@ -10,8 +10,8 @@ import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
-import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.patient.strategy.Outbox;
+import org.motechproject.tama.patient.service.Outbox;
+import org.motechproject.tama.patient.service.registry.OutboxRegistry;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +34,14 @@ public class OutboxService implements Outbox {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public OutboxService(AllPatients allPatients, @Qualifier("IVRCall") IVRCall ivrCall, VoiceOutboxService voiceOutboxService, OutboxSchedulerService outboxSchedulerService, PatientService patientService, OutboxEventHandler outboxEventHandler) {
+    public OutboxService(AllPatients allPatients, @Qualifier("IVRCall") IVRCall ivrCall, VoiceOutboxService voiceOutboxService,
+                         OutboxSchedulerService outboxSchedulerService, OutboxEventHandler outboxEventHandler, OutboxRegistry outboxRegistry) {
         this.allPatients = allPatients;
         this.ivrCall = ivrCall;
         this.voiceOutboxService = voiceOutboxService;
         this.outboxSchedulerService = outboxSchedulerService;
         this.outboxEventHandler = outboxEventHandler;
-        patientService.registerOutbox(this);
+        outboxRegistry.registerOutbox(this);
     }
 
     public void enroll(Patient patient) {

@@ -6,9 +6,8 @@ import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
-import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.patient.service.TreatmentAdviceService;
-import org.motechproject.tama.patient.strategy.CallPlan;
+import org.motechproject.tama.patient.service.CallPlan;
+import org.motechproject.tama.patient.service.registry.CallPlanRegistry;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,14 +22,13 @@ public class DailyPillReminderService implements CallPlan {
 
     @Autowired
     public DailyPillReminderService(PillReminderService pillReminderService, PillRegimenRequestMapper pillRegimenRequestMapper,
-                                    DailyPillReminderSchedulerService dailyPillReminderSchedulerService, PatientService patientService,
-                                    TreatmentAdviceService treatmentAdviceService, AllPatientEventLogs allPatientEventLogs) {
+                                    DailyPillReminderSchedulerService dailyPillReminderSchedulerService,
+                                    AllPatientEventLogs allPatientEventLogs, CallPlanRegistry callPlanRegistry) {
         this.pillReminderService = pillReminderService;
         this.pillRegimenRequestMapper = pillRegimenRequestMapper;
         this.dailyPillReminderSchedulerService = dailyPillReminderSchedulerService;
         this.allPatientEventLogs = allPatientEventLogs;
-        patientService.registerCallPlan(CallPreference.DailyPillReminder, this);
-        treatmentAdviceService.registerCallPlan(CallPreference.DailyPillReminder, this);
+        callPlanRegistry.registerCallPlan(CallPreference.DailyPillReminder, this);
     }
 
     public void enroll(Patient patient, TreatmentAdvice treatmentAdvice) {

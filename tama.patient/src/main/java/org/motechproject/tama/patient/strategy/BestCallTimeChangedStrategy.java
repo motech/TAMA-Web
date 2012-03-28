@@ -1,21 +1,26 @@
 package org.motechproject.tama.patient.strategy;
 
-import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.service.registry.CallPlanRegistry;
+import org.motechproject.tama.patient.service.registry.OutboxRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.util.Map;
+@Component
+public class BestCallTimeChangedStrategy extends PatientPreferenceChangedStrategy {
 
-public class BestCallTimeChangedStrategy extends ChangePatientPreferenceStrategy {
-    public BestCallTimeChangedStrategy(Map<CallPreference, CallPlan> callPlans, Outbox outbox) {
-        super(callPlans, outbox);
+    @Autowired
+    public BestCallTimeChangedStrategy(CallPlanRegistry callPlanRegistry, OutboxRegistry outboxRegistry) {
+        super(callPlanRegistry, outboxRegistry);
     }
 
     @Override
     public void execute(Patient dbPatient, Patient patient, TreatmentAdvice treatmentAdvice) {
         if (dbPatient.isOnWeeklyPillReminder() && patient.isOnWeeklyPillReminder()) {
-            callPlans.get(dbPatient.callPreference()).reEnroll(patient, treatmentAdvice);
+            callPlanRegistry.getCallPlan(dbPatient.callPreference()).reEnroll(patient, treatmentAdvice);
         }
-        outbox.reEnroll(dbPatient, patient);
+        outboxRegistry.getOutbox().reEnroll(dbPatient, patient);
     }
+
 }
