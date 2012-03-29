@@ -6,7 +6,7 @@
     <jsp:output omit-xml-declaration="yes"/>
 
     <util:panel id="vital_statistics_panel" title="Vital Statistics" openPane="true">
-        <spring:url value="/vital_statistics/update" var="edit_url">
+        <spring:url value="/vitalstatistics/update" var="edit_url">
             <spring:param name="form"/>
             <spring:param name="clinicVisitId" value="${clinicVisitId}" />
             <spring:param name="patientId" value="${patientId}" />

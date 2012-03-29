@@ -30,7 +30,7 @@
             <jsp:param name="clinicVisitId" value="${clinicVisit.id}" />
         </jsp:include>
         <jsp:include page="../labresults/show.jspx" />
-        <jsp:include page="../vital_statistics/show.jspx" />
+        <jsp:include page="../vitalstatistics/show.jspx" />
         <jsp:include page="../opportunistic_infections/show.jspx" />
     </util:panel>
 

@@ -80,12 +80,6 @@ public class ShowPatientPage extends Page {
     @FindBy(how = How.XPATH, using = "//li[@id='i_patient_list']/a")
     private WebElement listPatientsLink;
 
-    @FindBy(how = How.ID, using = "lab_results")
-    private WebElement labResultsLink;
-
-    @FindBy(how = How.ID, using = "vital_statistics")
-    private WebElement showOrCreateVitalStatisticsLink;
-
     public ShowPatientPage(WebDriver webDriver) {
         super(webDriver);
     }

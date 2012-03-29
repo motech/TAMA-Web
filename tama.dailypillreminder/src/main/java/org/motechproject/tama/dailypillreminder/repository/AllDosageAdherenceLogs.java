@@ -67,6 +67,7 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         List<DosageAdherenceLog> adherenceLogs = db.queryView(q, DosageAdherenceLog.class);
         return singleResult(adherenceLogs);
     }
+
     @View(name="getPillsTakenAndTotalCountPerWeek", file = "doseTakenSummaryPerWeekMapReduce.json")
     public List<AdherenceSummaryForAWeek> getDoseTakenSummaryPerWeek(String patientDocId) {
         final ComplexKey startKey = ComplexKey.of(patientDocId);

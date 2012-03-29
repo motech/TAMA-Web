@@ -6,12 +6,8 @@
              xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
-    <http auto-config="false" use-expressions="true"
-          entry-point-ref="ajaxAwareAuthenticationProcessingFilterEntryPoint">
-        <form-login login-processing-url="/security/j_spring_security_check"
-                    login-page="/login"
-                    authentication-failure-url="/login?login_error=t"
-                    authentication-success-handler-ref="loginSuccessHandler"/>
+    <http auto-config="false" use-expressions="true" entry-point-ref="ajaxAwareAuthenticationProcessingFilterEntryPoint">
+        <form-login login-processing-url="/security/j_spring_security_check" login-page="/login" authentication-failure-url="/login?login_error=t" authentication-success-handler-ref="loginSuccessHandler"/>
         <logout logout-url="/security/j_spring_security_logout" invalidate-session="false" success-handler-ref="logoutSuccessHandler"/>
 
         <!-- Only admin -->
@@ -23,30 +19,22 @@
         <intercept-url pattern="/reports/**" access="hasRole('ADMIN')" requires-channel="any"/>
 
         <!-- Only clinicians -->
-        <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
-                       requires-channel="any"/>
-        <intercept-url pattern="/patients" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" method="POST"
-                       requires-channel="any"/>
-        <intercept-url pattern="/clinicvisits/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
-                       requires-channel="any"/>
-        <intercept-url pattern="/treatmentadvices/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
-                       requires-channel="any"/>
-        <intercept-url pattern="/labresults/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
-                       requires-channel="any"/>
-        <intercept-url pattern="/vital_statistics/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
-                       requires-channel="any"/>
-        <intercept-url pattern="/alerts/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
-                       requires-channel="any"/>
+        <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/patients" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" method="POST" requires-channel="any"/>
+        <intercept-url pattern="/clinicvisits/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/treatmentadvices/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/labresults/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/vitalstatistics/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/opportunisticInfections/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/alerts/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/adherence/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/symptoms/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
 
         <!-- Both admin and clinicians -->
-        <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
-                       requires-channel="any"/>
-        <intercept-url pattern="/changePassword/**"
-                       access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
-        <intercept-url pattern="/passwordReset/**"
-                       access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
-        <intercept-url pattern="/callsummary/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')"
-                       requires-channel="any"/>
+        <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/changePassword/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/passwordReset/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/callsummary/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
 
         <!-- None -->
         <intercept-url pattern="/patients/**" method="DELETE" access="denyAll" requires-channel="any"/>
@@ -71,5 +59,4 @@
         <beans:property name="loginFormUrl" value="/login"/>
         <beans:property name="forceHttps" value="false"/>
     </beans:bean>
-
 </beans:beans>

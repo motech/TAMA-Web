@@ -18,7 +18,7 @@
 
     <util:panel id="vital_statistics_panel" title="Create Vital Statistics" openPane="true">
 
-        <spring:url value="/vital_statistics/create" var="form_url"/>
+        <spring:url value="/vitalstatistics/create" var="form_url"/>
         <c:if test='${_method == "put"}'>
             <field:hidden path="vitalStatistics.id" value="${vitalStatistics.id}"/>
         </c:if>

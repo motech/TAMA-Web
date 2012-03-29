@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 
-@RequestMapping("/vital_statistics")
+@RequestMapping("/vitalstatistics")
 @Controller
 public class VitalStatisticsController extends BaseController {
 
-    private static final String UPDATE_FORM = "vital_statistics/update";
+    private static final String UPDATE_FORM = "vitalstatistics/update";
     public static final String REDIRECT_AND_SHOW_CLINIC_VISIT = "redirect:/clinicvisits/";
 
     private final AllVitalStatistics allVitalStatistics;

@@ -21,7 +21,7 @@
     <util:panel id="vital_statistics_panel" title="Update Vital Statistics" openPane="true">
 
         <formfield:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
-        <spring:url value="/vital_statistics/update" var="form_url"/>
+        <spring:url value="/vitalstatistics/update" var="form_url"/>
         <springform:form action="${form_url}" modelAttribute="vitalStatisticsUIModel" method="${_method}" id="vital_statistics_form">
 
         <input type="hidden" name="clinicVisitId" value="${vitalStatisticsUIModel.clinicVisitId}"/>

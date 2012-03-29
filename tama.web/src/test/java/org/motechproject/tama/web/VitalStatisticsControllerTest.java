@@ -139,7 +139,7 @@ public class VitalStatisticsControllerTest {
         when(allClinicVisits.get(PATIENT_ID, "clinicVisitId")).thenReturn(clinicVisit);
         when(allVitalStatistics.get(vitalStatistics.getId())).thenReturn(vitalStatistics);
 
-        assertEquals("vital_statistics/update", vitalStatisticsController.updateForm(PATIENT_ID, "clinicVisitId", uiModel));
+        assertEquals("vitalstatistics/update", vitalStatisticsController.updateForm(PATIENT_ID, "clinicVisitId", uiModel));
 
         final VitalStatisticsUIModel vitalStatisticsUIModel = (VitalStatisticsUIModel) uiModel.asMap().get("vitalStatisticsUIModel");
         assertEquals(100, vitalStatisticsUIModel.getVitalStatistics().getPulse().intValue());
@@ -154,7 +154,7 @@ public class VitalStatisticsControllerTest {
         final ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().withVitalStatisticsId(null).build();
         when(allClinicVisits.get(PATIENT_ID, "clinicVisitId")).thenReturn(clinicVisit);
 
-        assertEquals("vital_statistics/update", vitalStatisticsController.updateForm(PATIENT_ID, "clinicVisitId", uiModel));
+        assertEquals("vitalstatistics/update", vitalStatisticsController.updateForm(PATIENT_ID, "clinicVisitId", uiModel));
 
         final VitalStatisticsUIModel vitalStatisticsUIModel = ((VitalStatisticsUIModel) uiModel.asMap().get("vitalStatisticsUIModel"));
         assertNull(vitalStatisticsUIModel.getVitalStatistics().getPulse());
