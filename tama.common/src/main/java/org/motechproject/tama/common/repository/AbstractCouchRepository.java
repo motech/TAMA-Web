@@ -21,4 +21,10 @@ public abstract class AbstractCouchRepository<T extends MotechBaseDataObject> ex
     protected T lastResult(List<T> resultSet) {
         return (resultSet == null || resultSet.isEmpty()) ? null : resultSet.get(resultSet.size() - 1);
     }
+
+    public void addAll(List<T> list) {
+        for (T t : list) {
+            add(t);
+        }
+    }
 }

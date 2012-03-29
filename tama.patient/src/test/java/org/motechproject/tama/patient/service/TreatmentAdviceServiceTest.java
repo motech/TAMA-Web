@@ -29,15 +29,13 @@ public class TreatmentAdviceServiceTest {
     @Mock
     private CallTimeSlotService callTimeSlotService;
 
-    private CallPlanRegistry callPlanRegistry;
-
     private TreatmentAdviceService treatmentAdviceService;
     private static final String USER_NAME = "userName";
 
     @Before
     public void setUp() {
         initMocks(this);
-        callPlanRegistry = new CallPlanRegistry();
+        CallPlanRegistry callPlanRegistry = new CallPlanRegistry();
         callPlanRegistry.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
         callPlanRegistry.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
         treatmentAdviceService = new TreatmentAdviceService(allPatients, allTreatmentAdvices, callTimeSlotService, callPlanRegistry);

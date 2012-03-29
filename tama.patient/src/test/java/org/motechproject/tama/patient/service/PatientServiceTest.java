@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -26,12 +27,17 @@ import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
+import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientServiceTest extends BaseUnitTest {
+
+    public static final String PATIENT_DOC_ID = "patientDocId";
+    final private String USER_NAME = "userName";
 
     @Mock
     private AllPatients allPatients;
@@ -53,7 +59,6 @@ public class PatientServiceTest extends BaseUnitTest {
     private OutboxRegistry outboxRegistry;
 
     private PatientService patientService;
-    final private String USER_NAME = "userName";
 
     @Before
     public void setUp() {
@@ -66,13 +71,40 @@ public class PatientServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldCreatePatient() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+    public void shouldCreatePatientOnDaily() {
+        DateTime now = new DateTime(2011, 10, 10, 10, 10);
+        mockCurrentDate(now);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_DOC_ID).withCallPreference(CallPreference.DailyPillReminder).build();
 
         patientService.create(patient, "clinicId", USER_NAME);
 
         verify(allPatients).addToClinic(patient, "clinicId", USER_NAME);
         verify(outbox).enroll(patient);
+        final ArgumentCaptor<List> eventLogsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(allPatientEventLogs).addAll(eventLogsCaptor.capture());
+        final List<PatientEventLog> eventLogs = eventLogsCaptor.getValue();
+        assertEquals(1, eventLogs.size());
+        assertPatientEventLog(eventLogs.get(0), PatientEvent.Call_Plan_Changed, patient.getPatientPreferences().getCallPreference().name(), now);
+    }
+
+    @Test
+    public void shouldCreatePatientOnWeekly() {
+        DateTime now = new DateTime(2011, 10, 10, 10, 10);
+        mockCurrentDate(now);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_DOC_ID).withCallPreference(CallPreference.FourDayRecall).
+                withBestCallTime(new TimeOfDay(10, 10, TimeMeridiem.AM)).withDayOfWeeklyCall(DayOfWeek.Saturday).build();
+
+        patientService.create(patient, "clinicId", USER_NAME);
+
+        verify(allPatients).addToClinic(patient, "clinicId", USER_NAME);
+        verify(outbox).enroll(patient);
+        final ArgumentCaptor<List> eventLogsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(allPatientEventLogs).addAll(eventLogsCaptor.capture());
+        final List<PatientEventLog> eventLogs = eventLogsCaptor.getValue();
+        assertEquals(3, eventLogs.size());
+        assertPatientEventLog(eventLogs.get(0), PatientEvent.Call_Plan_Changed, patient.getPatientPreferences().getCallPreference().name(), now);
+        assertPatientEventLog(eventLogs.get(1), PatientEvent.Day_Of_Weekly_Call_Changed, patient.getPatientPreferences().getDayOfWeeklyCall().name(), now);
+        assertPatientEventLog(eventLogs.get(2), PatientEvent.Best_Call_Time_Changed, patient.getPatientPreferences().getBestCallTime().toString(), now);
     }
 
     @Test
@@ -140,18 +172,19 @@ public class PatientServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void patientUpdates_ButNotChangeHisCallPlan() {
+    public void patientChangesHisPreferences() {
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withPasscode("9999").build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
         TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
 
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
+        when(preferenceChangedStrategyFactory.getStrategy(Matchers.<ChangedPatientPreferenceContext>any())).thenReturn(callPlanChangedStrategy);
+
         patientService.update(patient, USER_NAME);
 
-        assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
+        verify(callPlanChangedStrategy).execute(dbPatient, patient, currentTreatmentAdvice);
         verify(allPatients).update(patient, USER_NAME);
-        verifyZeroInteractions(preferenceChangedStrategyFactory);
     }
 
     @Test
@@ -175,9 +208,26 @@ public class PatientServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void patientChangesHisPreferences() {
+    public void patientUpdates_ButDoesNotChangeHisPreferences() {
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
-        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
+        TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+
+        when(allPatients.get(patient.getId())).thenReturn(dbPatient);
+        when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(currentTreatmentAdvice);
+        patientService.update(patient, USER_NAME);
+
+        assertNull(patient.getPatientPreferences().getCallPreferenceTransitionDate());
+        verify(allPatients).update(patient, USER_NAME);
+        verifyZeroInteractions(preferenceChangedStrategyFactory);
+    }
+
+    @Test
+    public void updatesOnPatientShouldResultInEventLogs() {
+        final DateTime now = new DateTime(2011, 10, 10, 10, 10);
+        mockCurrentDate(now);
+        Patient dbPatient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_DOC_ID).withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(new TimeOfDay(10, 10, TimeMeridiem.AM)).withDayOfWeeklyCall(DayOfWeek.Saturday).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_DOC_ID).withCallPreference(CallPreference.FourDayRecall).withBestCallTime(new TimeOfDay(12, 10, TimeMeridiem.AM)).withDayOfWeeklyCall(DayOfWeek.Sunday).build();
         TreatmentAdvice currentTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
 
         when(allPatients.get(patient.getId())).thenReturn(dbPatient);
@@ -186,8 +236,14 @@ public class PatientServiceTest extends BaseUnitTest {
 
         patientService.update(patient, USER_NAME);
 
-        verify(callPlanChangedStrategy).execute(dbPatient, patient, currentTreatmentAdvice);
         verify(allPatients).update(patient, USER_NAME);
+        final ArgumentCaptor<List> eventLogsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(allPatientEventLogs).addAll(eventLogsCaptor.capture());
+        final List<PatientEventLog> eventLogs = eventLogsCaptor.getValue();
+        assertEquals(3, eventLogs.size());
+        assertPatientEventLog(eventLogs.get(0), PatientEvent.Call_Plan_Changed, patient.getPatientPreferences().getCallPreference().name(), now);
+        assertPatientEventLog(eventLogs.get(1), PatientEvent.Day_Of_Weekly_Call_Changed, patient.getPatientPreferences().getDayOfWeeklyCall().name(), now);
+        assertPatientEventLog(eventLogs.get(2), PatientEvent.Best_Call_Time_Changed, patient.getPatientPreferences().getBestCallTime().toString(), now);
     }
 
     @Test
@@ -211,6 +267,13 @@ public class PatientServiceTest extends BaseUnitTest {
         assertEquals(patient, patientReport.getPatient());
         assertEquals(artStartDate.toDate(), patientReport.getARTStartedOn());
         assertEquals(currentRegimenStartDate.toDate(), patientReport.getCurrentRegimenStartDate());
+    }
+
+    private void assertPatientEventLog(PatientEventLog patientEventLog, PatientEvent patientEvent, String newValue, DateTime now) {
+        assertEquals(patientEvent, patientEventLog.getEvent());
+        assertEquals(now, patientEventLog.getDate());
+        assertEquals(PATIENT_DOC_ID, patientEventLog.getPatientId());
+        assertEquals(newValue, patientEventLog.getNewValue());
     }
 
 }

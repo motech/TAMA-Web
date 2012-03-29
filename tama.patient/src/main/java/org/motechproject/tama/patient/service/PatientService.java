@@ -28,7 +28,8 @@ public class PatientService {
                           AllTreatmentAdvices allTreatmentAdvices,
                           AllRegimens allRegimens,
                           AllPatientEventLogs allPatientEventLogs,
-                          PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory, OutboxRegistry outboxRegistry) {
+                          PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory,
+                          OutboxRegistry outboxRegistry) {
 
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
@@ -41,6 +42,7 @@ public class PatientService {
     public void create(Patient patient, String clinicId, String userName) {
         allPatients.addToClinic(patient, clinicId, userName);
         outboxRegistry.getOutbox().enroll(patient);
+        allPatientEventLogs.addAll(new ChangedPatientPreferenceContext(null, patient).getEventLogs());
     }
 
     public void update(Patient patient, String userName) {
@@ -55,6 +57,7 @@ public class PatientService {
         final ChangedPatientPreferenceContext changedPatientPreferenceContext = new ChangedPatientPreferenceContext(dbPatient, patient);
         if (changedPatientPreferenceContext.patientPreferenceHasChanged()) {
             preferenceChangedStrategyFactory.getStrategy(changedPatientPreferenceContext).execute(dbPatient, patient, allTreatmentAdvices.currentTreatmentAdvice(patient.getId()));
+            allPatientEventLogs.addAll(changedPatientPreferenceContext.getEventLogs());
         }
     }
 

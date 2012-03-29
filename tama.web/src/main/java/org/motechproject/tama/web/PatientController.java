@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
@@ -124,7 +123,7 @@ public class PatientController extends BaseController {
         try {
             patientService.deactivate(id, status, loggedInUserId(request));
         } catch (RuntimeException e) {
-            request.setAttribute("flash.flashError", "Error occured while deactivating patient: " + e.getMessage());
+            request.setAttribute("flash.flashError", "Error occurred while deactivating patient: " + e.getMessage());
         }
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
@@ -132,6 +131,9 @@ public class PatientController extends BaseController {
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(Model uiModel) {
         Patient patient = new Patient();
+        final PatientPreferences patientPreferences = new PatientPreferences();
+        patientPreferences.setCallPreference(CallPreference.DailyPillReminder);
+        patient.setPatientPreferences(patientPreferences);
         initUIModel(uiModel, patient);
         return CREATE_VIEW;
     }

@@ -59,6 +59,7 @@ public class TimeOfDay extends BaseEntity {
     }
 
     public Time toTime() {
+        if (hour == null || minute == null || timeMeridiem == null) return null;
         Integer hour = getHour();
         if (hour == 12 && timeMeridiem.equals(TimeMeridiem.AM))
             hour = 0;

@@ -23,7 +23,7 @@ public class PatientPreferences extends BaseEntity {
 
     private String ivrLanguageId;
 
-    private CallPreference callPreference = CallPreference.DailyPillReminder;
+    private CallPreference callPreference;
 
     private DayOfWeek dayOfWeeklyCall;
 

@@ -2,7 +2,7 @@ package org.motechproject.tama.patient.domain;
 
 public enum PatientEvent {
 
-    Suspension, Activation, Temporary_Deactivation, Switched_To_Daily_Pill_Reminder, Switched_To_Weekly_Adherence;
+    Suspension, Activation, Temporary_Deactivation, Call_Plan_Changed, Day_Of_Weekly_Call_Changed, Best_Call_Time_Changed;
 
     @Override
     public String toString() {

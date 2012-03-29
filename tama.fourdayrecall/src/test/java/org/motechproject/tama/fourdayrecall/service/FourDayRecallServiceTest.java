@@ -3,17 +3,15 @@ package org.motechproject.tama.fourdayrecall.service;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.patient.repository.AllPatientEventLogs;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.service.registry.CallPlanRegistry;
 import org.motechproject.testing.utils.BaseUnitTest;
-import org.motechproject.util.DateUtil;
 
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -21,8 +19,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class FourDayRecallServiceTest extends BaseUnitTest {
     @Mock
     protected FourDayRecallSchedulerService fourDayRecallSchedulerService;
-    @Mock
-    private AllPatientEventLogs allPatientEventLogs;
     @Mock
     private CallPlanRegistry callPlanRegistry;
 
@@ -32,17 +28,17 @@ public class FourDayRecallServiceTest extends BaseUnitTest {
     public void setUp() {
         initMocks(this);
         mockCurrentDate(new DateTime(1983, 1, 30, 10, 0));
-        fourDayRecallService = new FourDayRecallService(fourDayRecallSchedulerService, allPatientEventLogs, callPlanRegistry);
+        fourDayRecallService = new FourDayRecallService(fourDayRecallSchedulerService, callPlanRegistry);
     }
 
     @Test
     public void newPatient_WithoutATreatmentAdviceEnrolls() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        fourDayRecallService.enroll(patient, null);
+        TreatmentAdvice treatmentAdvice = null;
+        fourDayRecallService.enroll(patient, treatmentAdvice);
 
         verify(callPlanRegistry).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
-        verify(fourDayRecallSchedulerService, never()).scheduleFourDayRecallJobs(patient, null);
-        assertPatientEventLog(patient);
+        verify(fourDayRecallSchedulerService, never()).scheduleFourDayRecallJobs(patient, treatmentAdvice);
     }
 
     @Test
@@ -53,13 +49,13 @@ public class FourDayRecallServiceTest extends BaseUnitTest {
 
         verify(callPlanRegistry).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService).scheduleFourDayRecallJobs(patient, treatmentAdvice);
-        assertPatientEventLog(patient);
     }
 
     @Test
     public void existingPatient_WithoutATreatmentAdviceDisEnrolls() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        fourDayRecallService.disEnroll(patient, null);
+        TreatmentAdvice treatmentAdvice = null;
+        fourDayRecallService.disEnroll(patient, treatmentAdvice);
 
         verify(callPlanRegistry).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService, never()).unscheduleFourDayRecallJobs(patient);
@@ -74,14 +70,6 @@ public class FourDayRecallServiceTest extends BaseUnitTest {
         verify(callPlanRegistry).registerCallPlan(CallPreference.FourDayRecall, fourDayRecallService);
         verify(fourDayRecallSchedulerService).unscheduleFourDayRecallJobs(patient);
         verify(fourDayRecallSchedulerService).scheduleFourDayRecallJobs(patient, treatmentAdvice);
-        assertPatientEventLog(patient);
     }
 
-    private void assertPatientEventLog(Patient patient) {
-        ArgumentCaptor<PatientEventLog> eventLogArgumentCaptor = ArgumentCaptor.forClass(PatientEventLog.class);
-        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture());
-        assertEquals(PatientEvent.Switched_To_Weekly_Adherence, eventLogArgumentCaptor.getValue().getEvent());
-        assertEquals(patient.getId(), eventLogArgumentCaptor.getValue().getPatientId());
-        assertEquals(DateUtil.now(), eventLogArgumentCaptor.getValue().getDate());
-    }
 }
