@@ -31,6 +31,8 @@ public class CallLogReportBuilder extends BatchReportBuilder {
     private AllPatients allPatients;
     private AllIVRLanguagesCache allIVRLanguages;
 
+    private LocalDate startDate;
+    private LocalDate endDate;
     private DateTime startKey;
     private DateTime endKey;
     private String startDocId;
@@ -40,6 +42,8 @@ public class CallLogReportBuilder extends BatchReportBuilder {
         this.allCallLogs = allCallLogs;
         this.allPatients = allPatients;
         this.allIVRLanguages = allIVRLanguages;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.startKey = DateUtil.newDateTime(startDate);
         this.endKey = DateUtil.newDateTime(endDate, 23, 59, 59);
     }
@@ -168,7 +172,7 @@ public class CallLogReportBuilder extends BatchReportBuilder {
     @Override
     protected void buildSummary(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
-        buildSummaryRow(worksheet, cellStyles, "Report Start Date", startKey.toString(TAMAConstants.DATE_FORMAT));
-        buildSummaryRow(worksheet, cellStyles, "Report End Date", endKey.toString(TAMAConstants.DATE_FORMAT));
+        buildSummaryRow(worksheet, cellStyles, "Report Start Date", startDate.toString(TAMAConstants.DATE_FORMAT));
+        buildSummaryRow(worksheet, cellStyles, "Report End Date", endDate.toString(TAMAConstants.DATE_FORMAT));
     }
 }
