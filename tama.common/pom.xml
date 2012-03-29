@@ -19,6 +19,11 @@
             <artifactId>motech-platform-common</artifactId>
             <version>${motech.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.ldriscoll</groupId>
+            <artifactId>ektorplucene</artifactId>
+            <version>0.1.4-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

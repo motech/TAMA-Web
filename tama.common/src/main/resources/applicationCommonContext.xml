@@ -37,4 +37,8 @@
         <constructor-arg ref="tamaCouchDbInstance"/>
     </bean>
 
+    <bean id="luceneAwareAlertsDbConnector" class="com.github.ldriscoll.ektorplucene.LuceneAwareCouchDbConnector">
+        <constructor-arg value="motech-alert"/>
+        <constructor-arg ref="tamaCouchDbInstance"/>
+    </bean>
 </beans>
