@@ -55,7 +55,6 @@ public class PatientService {
         final ChangedPatientPreferenceContext changedPatientPreferenceContext = new ChangedPatientPreferenceContext(dbPatient, patient);
         if (changedPatientPreferenceContext.patientPreferenceHasChanged()) {
             preferenceChangedStrategyFactory.getStrategy(changedPatientPreferenceContext).execute(dbPatient, patient, allTreatmentAdvices.currentTreatmentAdvice(patient.getId()));
-//            logPatientPreferenceChanges(changedPatientPreferenceContext);
         }
     }
 
