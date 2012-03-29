@@ -231,7 +231,7 @@ public class PatientControllerTest {
             String nextPage = controller.deactivate(id, Status.Patient_Withdraws_Consent, request);
 
             assertEquals("redirect:/patients/patient_id", nextPage);
-            verify(request).setAttribute("flash.flashError", "Error occured while deactivating patient: Some exception");
+            verify(request).setAttribute("flash.flashError", "Error occurred while deactivating patient: Some exception");
         }
     }
 

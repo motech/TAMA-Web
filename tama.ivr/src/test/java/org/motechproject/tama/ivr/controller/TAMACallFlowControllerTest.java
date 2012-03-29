@@ -143,7 +143,7 @@ public class TAMACallFlowControllerTest {
     @Test
     public void shouldReturnMenuTreeWhenPatientIsSuspendedAndIsOnDailyPillReminder() {
         tamaIVRContext.callState(CallState.AUTHENTICATED);
-        when(allPatients.get(null)).thenReturn(PatientBuilder.startRecording().withDefaults().withStatus(Status.Suspended).build());
+        when(allPatients.get(null)).thenReturn(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withStatus(Status.Suspended).build());
         tamaIVRContext.callDirection(CallDirection.Inbound);
 
         assertEquals(TAMATreeRegistry.MENU_TREE, tamaCallFlowController.decisionTreeName(kooKooIVRContext));

@@ -124,7 +124,7 @@ public class SymptomReportingAlertServiceTest {
     @Test
     public void shouldCreateSymptomsReportingAlert() {
         String patientDocId = "patientDocId";
-        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocId).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientDocId).withCallPreference(CallPreference.DailyPillReminder).build();
         when(allPatients.get(patientDocId)).thenReturn(patient);
 
         symptomReportingAlertService.createSymptomsReportingAlert(patientDocId);
