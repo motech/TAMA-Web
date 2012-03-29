@@ -544,6 +544,16 @@ fieldset th {
     margin-bottom: 5px;
 }
 
+.info {
+    height: 15px;
+    background-color: GREY;
+    color: WHITE;
+    padding: 5px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
 .errorBanner {
     height: 15px;
     background-color: RED;
