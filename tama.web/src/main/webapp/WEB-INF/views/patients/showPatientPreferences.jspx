@@ -8,8 +8,8 @@
         <c:if test="${not empty patient.patientPreferences.dayOfWeeklyCall}">
             <field:display field="dayOfWeeklyCall" id="patientPreferencesDayOfWeeklyCall" object="${patient.patientPreferences}" label="Day of Week for Weekly Adherence Call"/>
         </c:if>
-        <c:if test="${not empty patient.patientPreferences.bestCallTime.timeOfDayAsString}">
-            <field:display field="" id="bestCallTime" object="${patient.patientPreferences.bestCallTime.timeOfDayAsString} ${patient.patientPreferences.bestCallTime.timeMeridiem}" label="Best Call Time"/>
+        <c:if test="${not empty patient.patientPreferences.bestCallTime}">
+            <field:display field="" id="bestCallTime" object="${patient.patientPreferences.bestCallTime}" label="Best Call Time"/>
         </c:if>
         <field:display field="receiveOTCAdvice" isBoolean="true" id="receiveOTCAdvice" object="${patient.patientPreferences}" label="Wish to receive OTC advice via SMS"/>
         <field:display field="activateAppointmentReminders" isBoolean="true" id="activateAppointmentReminders" object="${patient.patientPreferences}" label="Activate Appointment Reminder"/>

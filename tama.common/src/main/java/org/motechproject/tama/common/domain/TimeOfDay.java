@@ -89,4 +89,10 @@ public class TimeOfDay extends BaseEntity {
         result = 31 * result + (timeMeridiem != null ? timeMeridiem.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        if (getTimeOfDayAsString() == null) return "";
+        return String.format("%s %s", getTimeOfDayAsString(), getTimeMeridiem());
+    }
 }

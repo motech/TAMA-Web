@@ -14,6 +14,12 @@ public class TimeOfDayTest {
     }
 
     @Test
+    public void assertToString() {
+        assertEquals("05:09 AM", new TimeOfDay(5, 9, TimeMeridiem.AM).toString());
+        assertEquals("", new TimeOfDay().toString());
+    }
+
+    @Test
     public void setTimeOfDayAsString_ShouldReadDisplayTime() {
         TimeOfDay timeOfDay = new TimeOfDay();
         timeOfDay.setTimeMeridiem(TimeMeridiem.AM);
