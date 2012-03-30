@@ -494,7 +494,7 @@
                                         </property>
                                     </systemProperties>
                                     <runOrder>reversealphabetical</runOrder>
-                                    <parallel>both</parallel>
+                                    <parallel>classes</parallel>
                                     <threadCount>4</threadCount>
                                     <perCoreThreadCount>false</perCoreThreadCount>
                                     <includes>
@@ -569,7 +569,7 @@
                                         </property>
                                     </systemProperties>
                                     <runOrder>reversealphabetical</runOrder>
-                                    <parallel>both</parallel>
+                                    <parallel>classes</parallel>
                                     <threadCount>4</threadCount>
                                     <perCoreThreadCount>false</perCoreThreadCount>
                                     <includes>
