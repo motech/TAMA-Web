@@ -1,7 +1,7 @@
 package org.motechproject.tama.clinicvisits.builder.servicecontract;
 
 import org.joda.time.LocalDate;
-import org.motechproject.appointments.api.contract.RescheduleAppointmentRequest;
+import org.motechproject.appointments.api.service.contract.RescheduleAppointmentRequest;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

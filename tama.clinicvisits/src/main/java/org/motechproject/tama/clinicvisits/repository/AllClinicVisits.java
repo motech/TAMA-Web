@@ -2,8 +2,8 @@ package org.motechproject.tama.clinicvisits.repository;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.appointments.api.contract.*;
 import org.motechproject.appointments.api.service.AppointmentService;
+import org.motechproject.appointments.api.service.contract.*;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.AppointmentCalendarRequestBuilder;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.ConfirmAppointmentRequestBuilder;
 import org.motechproject.tama.clinicvisits.builder.servicecontract.CreateVisitRequestBuilder;

@@ -2,7 +2,7 @@ package org.motechproject.tama.clinicvisits.builder.servicecontract;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.motechproject.appointments.api.contract.CreateVisitRequest;
+import org.motechproject.appointments.api.service.contract.CreateVisitRequest;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.util.DateUtil;

@@ -4,11 +4,11 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.appointments.api.contract.ConfirmAppointmentRequest;
-import org.motechproject.appointments.api.contract.ReminderConfiguration;
+import org.motechproject.appointments.api.service.contract.ConfirmAppointmentRequest;
+import org.motechproject.appointments.api.service.contract.ReminderConfiguration;
 import org.motechproject.util.DateUtil;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 

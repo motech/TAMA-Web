@@ -3,7 +3,7 @@ package org.motechproject.tama.clinicvisits.builder;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.appointments.api.contract.VisitResponse;
+import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.model.OutboundVoiceMessage;

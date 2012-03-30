@@ -1,8 +1,8 @@
 package org.motechproject.tama.clinicvisits.builder.servicecontract;
 
 import org.joda.time.DateTime;
-import org.motechproject.appointments.api.contract.ConfirmAppointmentRequest;
-import org.motechproject.appointments.api.contract.ReminderConfiguration;
+import org.motechproject.appointments.api.service.contract.ConfirmAppointmentRequest;
+import org.motechproject.appointments.api.service.contract.ReminderConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

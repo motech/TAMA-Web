@@ -1,7 +1,7 @@
 package org.motechproject.tama.clinicvisits.builder;
 
 import org.joda.time.DateTime;
-import org.motechproject.appointments.api.contract.VisitResponse;
+import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.util.DateUtil;

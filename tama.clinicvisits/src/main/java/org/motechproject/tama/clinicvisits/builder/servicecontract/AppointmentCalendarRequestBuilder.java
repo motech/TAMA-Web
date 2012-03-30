@@ -1,7 +1,7 @@
 package org.motechproject.tama.clinicvisits.builder.servicecontract;
 
-import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
-import org.motechproject.appointments.api.contract.CreateVisitRequest;
+import org.motechproject.appointments.api.service.contract.AppointmentCalendarRequest;
+import org.motechproject.appointments.api.service.contract.CreateVisitRequest;
 import org.motechproject.tama.clinicvisits.domain.ListOfWeeks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

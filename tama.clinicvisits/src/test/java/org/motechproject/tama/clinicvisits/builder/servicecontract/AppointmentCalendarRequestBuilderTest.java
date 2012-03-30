@@ -2,7 +2,7 @@ package org.motechproject.tama.clinicvisits.builder.servicecontract;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.motechproject.appointments.api.contract.AppointmentCalendarRequest;
+import org.motechproject.appointments.api.service.contract.AppointmentCalendarRequest;
 
 import java.util.Properties;
 
