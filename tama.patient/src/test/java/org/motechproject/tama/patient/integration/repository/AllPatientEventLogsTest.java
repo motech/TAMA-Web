@@ -18,7 +18,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml")
@@ -38,8 +37,7 @@ public class AllPatientEventLogsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldFindByPatientId() throws Exception {
-        DateTime activityDate = DateUtil.now();
-        PatientEventLog patientEventLog = new PatientEventLog(patient.getId(), PatientEvent.Suspension, activityDate);
+        PatientEventLog patientEventLog = new PatientEventLog(patient.getId(), PatientEvent.Suspension);
         allPatientEventLogs.add(patientEventLog);
         markForDeletion(patientEventLog);
 
@@ -48,8 +46,6 @@ public class AllPatientEventLogsTest extends SpringIntegrationTest {
         PatientEventLog actualPatientEventLog = eventLogs.get(0);
         assertEquals(patientId, actualPatientEventLog.getPatientId());
         assertEquals(PatientEvent.Suspension, actualPatientEventLog.getEvent());
-        assertTrue(activityDate.equals(actualPatientEventLog.getDate()));
-
-
+        assertEquals(DateUtil.today(), actualPatientEventLog.getDate().toLocalDate());
     }
 }

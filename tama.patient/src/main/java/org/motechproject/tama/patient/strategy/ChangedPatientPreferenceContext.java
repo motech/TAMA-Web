@@ -6,7 +6,6 @@ import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientEvent;
 import org.motechproject.tama.patient.domain.PatientEventLog;
-import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,17 +47,17 @@ public class ChangedPatientPreferenceContext {
         if (callPlanHasChanged()) {
             final CallPreference callPreference = newPatient.getPatientPreferences().getCallPreference();
             String newValue = callPreference == null ? "Value was unset" : callPreference.name();
-            patientEventLogs.add(new PatientEventLog(newPatient.getId(), PatientEvent.Call_Plan_Changed, DateUtil.now(), newValue));
+            patientEventLogs.add(new PatientEventLog(newPatient.getId(), PatientEvent.Call_Plan_Changed, newValue));
         }
         if (dayOfCallHasChanged()) {
             final DayOfWeek dayOfCall = newPatient.getPatientPreferences().getDayOfWeeklyCall();
             String newValue = dayOfCall == null ? "Value was unset" : dayOfCall.name();
-            patientEventLogs.add(new PatientEventLog(newPatient.getId(), PatientEvent.Day_Of_Weekly_Call_Changed, DateUtil.now(), newValue));
+            patientEventLogs.add(new PatientEventLog(newPatient.getId(), PatientEvent.Day_Of_Weekly_Call_Changed, newValue));
         }
         if (bestCallTimeHasChanged()) {
             final TimeOfDay bestCallTime = newPatient.getPatientPreferences().getBestCallTime();
             String newValue = (bestCallTime == null || bestCallTime.toTime() == null) ? "Value was unset" : bestCallTime.toString();
-            patientEventLogs.add(new PatientEventLog(newPatient.getId(), PatientEvent.Best_Call_Time_Changed, DateUtil.now(), newValue));
+            patientEventLogs.add(new PatientEventLog(newPatient.getId(), PatientEvent.Best_Call_Time_Changed, newValue));
         }
         return patientEventLogs;
     }

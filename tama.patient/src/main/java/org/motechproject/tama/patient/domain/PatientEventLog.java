@@ -24,16 +24,14 @@ public class PatientEventLog extends CouchEntity {
     public PatientEventLog() {
     }
 
-    public PatientEventLog(String patientDocId, PatientEvent event, DateTime date) {
+    public PatientEventLog(String patientDocId, PatientEvent event) {
         this.patientId = patientDocId;
         this.event = event;
-        this.date = date;
+        this.date = DateUtil.now();
     }
 
-    public PatientEventLog(String patientId, PatientEvent event, DateTime date, String newValue) {
-        this.patientId = patientId;
-        this.event = event;
-        this.date = date;
+    public PatientEventLog(String patientDocId, PatientEvent event, String newValue) {
+        this(patientDocId, event);
         this.newValue = newValue;
     }
 

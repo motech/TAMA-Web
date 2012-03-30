@@ -9,7 +9,6 @@ import org.motechproject.tama.patient.strategy.ChangedPatientPreferenceContext;
 import org.motechproject.tama.patient.strategy.PatientPreferenceChangedStrategyFactory;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.repository.AllRegimens;
-import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +64,7 @@ public class PatientService {
         Patient patient = allPatients.get(id);
         patient.activate();
         allPatients.update(patient, userName);
-        allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Activation, DateUtil.now()));
+        allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Activation));
     }
 
     public void deactivate(String id, Status deactivationStatus, String userName) {
@@ -73,7 +72,7 @@ public class PatientService {
         patient.deactivate(deactivationStatus);
         allPatients.update(patient, userName);
         if (deactivationStatus.isTemporarilyDeactivated()) {
-            allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Temporary_Deactivation, DateUtil.now()));
+            allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Temporary_Deactivation));
         }
     }
 
@@ -81,7 +80,7 @@ public class PatientService {
         Patient patient = allPatients.get(patientId);
         patient.suspend();
         allPatients.update(patient, userName);
-        allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension, DateUtil.now()));
+        allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension));
     }
 
     public Regimen currentRegimen(Patient patient) {

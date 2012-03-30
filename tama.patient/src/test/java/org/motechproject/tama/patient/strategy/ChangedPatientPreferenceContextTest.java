@@ -166,7 +166,6 @@ public class ChangedPatientPreferenceContextTest extends BaseUnitTest {
         assertPatientEventLog(eventLogs.get(2), PatientEvent.Best_Call_Time_Changed, patient.getPatientPreferences().getBestCallTime().toString(), now);
     }
 
-
     private void assertPatientEventLog(PatientEventLog patientEventLog, PatientEvent patientEvent, String newValue, DateTime now) {
         assertEquals(patientEvent, patientEventLog.getEvent());
         assertEquals(now, patientEventLog.getDate());
