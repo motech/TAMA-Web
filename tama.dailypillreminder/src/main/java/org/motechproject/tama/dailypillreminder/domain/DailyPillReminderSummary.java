@@ -16,13 +16,13 @@ public class DailyPillReminderSummary {
     public DailyPillReminderSummary(DosageAdherenceLogPerDay dosageAdherenceLogPerDay) {
         this.date = dosageAdherenceLogPerDay.getDate();
         for (DosageAdherenceLogSummary dosageAdherenceLogSummary : dosageAdherenceLogPerDay.getLogs()) {
-            if (dosageAdherenceLogSummary.getDosageTime().le(NOON_TIME)) {
-                setMorningDoseTime(dosageAdherenceLogSummary.getDosageTime());
-                setMorningDoseStatus(dosageAdherenceLogSummary.getDosageStatus());
-            }
-            else {
+            if (dosageAdherenceLogSummary.getDosageTime().ge(NOON_TIME)) {
                 setEveningDoseTime(dosageAdherenceLogSummary.getDosageTime());
                 setEveningDoseStatus(dosageAdherenceLogSummary.getDosageStatus());
+            }
+            else {
+                setMorningDoseTime(dosageAdherenceLogSummary.getDosageTime());
+                setMorningDoseStatus(dosageAdherenceLogSummary.getDosageStatus());
             }
         }
     }

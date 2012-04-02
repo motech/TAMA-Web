@@ -25,6 +25,18 @@ public class DailyPillReminderSummaryTest {
     }
 
     @Test
+    public void shouldSetEveningTimeAndStatus_whenDosageAdherenceLogSummaryTimeIs_Noon(){
+        ArrayList<DosageAdherenceLogSummary> dosageAdherenceLogSummaries = new ArrayList<DosageAdherenceLogSummary>();
+        dosageAdherenceLogSummaries.add(new DosageAdherenceLogSummary().setDosageStatus(DosageStatus.TAKEN).setDosageTime(new Time(12, 0)));
+        DosageAdherenceLogPerDay dosageAdherenceLogPerDay = new DosageAdherenceLogPerDay().setLogs(dosageAdherenceLogSummaries);
+        DailyPillReminderSummary dailyPillReminderSummary = new DailyPillReminderSummary(dosageAdherenceLogPerDay);
+
+        assertEquals("TAKEN", dailyPillReminderSummary.getEveningDoseStatus());
+        assertEquals("12:00", dailyPillReminderSummary.getEveningDoseTime());
+        assertNull(dailyPillReminderSummary.getMorningDoseTime());
+    }
+
+    @Test
     public void shouldSetEveningTimeAndStatus_whenDosageAdherenceLogSummaryTimeIsGreaterThan_12_Noon(){
         ArrayList<DosageAdherenceLogSummary> dosageAdherenceLogSummaries = new ArrayList<DosageAdherenceLogSummary>();
         dosageAdherenceLogSummaries.add(new DosageAdherenceLogSummary().setDosageStatus(DosageStatus.TAKEN).setDosageTime(new Time(15, 25)));
