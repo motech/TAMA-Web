@@ -6,6 +6,7 @@ import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +60,7 @@ public class SymptomReport extends CouchEntity {
     }
 
     public DateTime getReportedAt() {
-        return reportedAt;
+        return DateUtil.setTimeZone(reportedAt);
     }
 
     public void setReportedAt(DateTime reportedAt) {
