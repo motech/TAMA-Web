@@ -46,14 +46,14 @@ public class SymptomReportingChartController {
             SymptomReport report = symptomReports.get(i);
         	for (String symptomId : report.getSymptomIds()) {
 	            JSONObject event = new JSONObject();
-	            event.put("start", report.getReportedAt());
+	            event.put("start", report.getReportedAt().toLocalDateTime());
 	            if (lastReportedAtMap.get(symptomId) == null || report.getReportedAt().isBefore(lastReportedAtMap.get(symptomId).minusDays(7)))
                     event.put("title", symptomReportingProperties.symptomLabel(symptomId));
 	            event.put("durationEvent", false);
 	            event.put("trackNum", trackNumberGenerator.trackNumberFor(symptomId));
 	            event.put("description", symptomReportingProperties.symptomDescription(symptomId));
 	            events.put(event);
-                lastReportedAtMap.put(symptomId,report.getReportedAt());
+                lastReportedAtMap.put(symptomId, report.getReportedAt());
         	}
         }
         JSONObject result = new JSONObject();
