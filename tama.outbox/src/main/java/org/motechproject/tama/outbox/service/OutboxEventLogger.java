@@ -2,7 +2,7 @@ package org.motechproject.tama.outbox.service;
 
 import org.joda.time.LocalDate;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
-import org.motechproject.outbox.api.model.OutboundVoiceMessage;
+import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.motechproject.tama.outbox.domain.OutboxMessageLog;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxLogs;
 import org.motechproject.util.DateUtil;

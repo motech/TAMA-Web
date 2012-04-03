@@ -2,7 +2,7 @@ package org.motechproject.tama.outbox.factory;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
-import org.motechproject.outbox.api.model.OutboundVoiceMessage;
+import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.motechproject.tama.outbox.context.OutboxContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

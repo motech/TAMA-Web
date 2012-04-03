@@ -2,8 +2,8 @@ package org.motechproject.tama.fourdayrecall.factory;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
-import org.motechproject.outbox.api.model.OutboundVoiceMessage;
-import org.motechproject.outbox.api.model.VoiceMessageType;
+import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
+import org.motechproject.outbox.api.domain.VoiceMessageType;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.outbox.context.OutboxContext;
 import org.motechproject.tama.outbox.factory.OutboxMessageBuilder;

@@ -7,7 +7,7 @@ import org.junit.runners.Suite;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
-import org.motechproject.outbox.api.model.OutboundVoiceMessage;
+import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.motechproject.tama.outbox.OutboxContextForTest;
 
 import java.util.LinkedHashSet;

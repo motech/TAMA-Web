@@ -1,10 +1,10 @@
 package org.motechproject.tama.outbox.service;
 
 import org.motechproject.model.MotechEvent;
-import org.motechproject.outbox.api.VoiceOutboxService;
-import org.motechproject.outbox.api.model.MessagePriority;
-import org.motechproject.outbox.api.model.OutboundVoiceMessage;
-import org.motechproject.outbox.api.model.VoiceMessageType;
+import org.motechproject.outbox.api.domain.MessagePriority;
+import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
+import org.motechproject.outbox.api.domain.VoiceMessageType;
+import org.motechproject.outbox.api.service.VoiceOutboxService;
 import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.call.IVRCall;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
