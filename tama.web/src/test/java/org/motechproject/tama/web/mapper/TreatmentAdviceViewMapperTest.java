@@ -13,6 +13,7 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.DrugCompositionGroup;
 import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
 
@@ -27,13 +28,13 @@ public class TreatmentAdviceViewMapperTest {
 
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
-    private AllRegimens allRegimens;
+    private AllRegimensCache allRegimens;
 
     @Before
     public void setUp() {
         allTreatmentAdvices = mock(AllTreatmentAdvices.class);
         allPatients = mock(AllPatients.class);
-        allRegimens = mock(AllRegimens.class);
+        allRegimens = mock(AllRegimensCache.class);
     }
 
     @Test
@@ -50,7 +51,7 @@ public class TreatmentAdviceViewMapperTest {
                 .build();
         when(allTreatmentAdvices.get("treatmentAdviceId")).thenReturn(treatmentAdvice);
         when(allPatients.get(patient.getId())).thenReturn(patient);
-        when(allRegimens.get(regimen.getId())).thenReturn(regimen);
+        when(allRegimens.getBy(regimen.getId())).thenReturn(regimen);
 
         TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceViewMapper(allTreatmentAdvices, allPatients, allRegimens, null, null, null).map("treatmentAdviceId");
 

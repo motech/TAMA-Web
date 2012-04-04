@@ -8,7 +8,7 @@ import org.motechproject.tama.patient.service.registry.OutboxRegistry;
 import org.motechproject.tama.patient.strategy.ChangedPatientPreferenceContext;
 import org.motechproject.tama.patient.strategy.PatientPreferenceChangedStrategyFactory;
 import org.motechproject.tama.refdata.domain.Regimen;
-import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class PatientService {
 
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
-    private AllRegimens allRegimens;
+    private AllRegimensCache allRegimens;
     private AllPatientEventLogs allPatientEventLogs;
     private PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory;
     private OutboxRegistry outboxRegistry;
@@ -25,7 +25,7 @@ public class PatientService {
     @Autowired
     public PatientService(AllPatients allPatients,
                           AllTreatmentAdvices allTreatmentAdvices,
-                          AllRegimens allRegimens,
+                          AllRegimensCache allRegimens,
                           AllPatientEventLogs allPatientEventLogs,
                           PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory,
                           OutboxRegistry outboxRegistry) {
@@ -85,7 +85,7 @@ public class PatientService {
 
     public Regimen currentRegimen(Patient patient) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
-        return treatmentAdvice == null ? null : allRegimens.get(treatmentAdvice.getRegimenId());
+        return treatmentAdvice == null ? null : allRegimens.getBy(treatmentAdvice.getRegimenId());
     }
 
     public PatientReport getPatientReport(String patientDocId) {

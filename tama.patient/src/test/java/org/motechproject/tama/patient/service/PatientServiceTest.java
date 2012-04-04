@@ -23,7 +23,7 @@ import org.motechproject.tama.patient.strategy.ChangedPatientPreferenceContext;
 import org.motechproject.tama.patient.strategy.PatientPreferenceChangedStrategyFactory;
 import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.Regimen;
-import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -44,7 +44,7 @@ public class PatientServiceTest extends BaseUnitTest {
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
-    private AllRegimens allRegimens;
+    private AllRegimensCache allRegimens;
     @Mock
     private AllUniquePatientFields allUniquePatientFields;
     @Mock
@@ -260,7 +260,7 @@ public class PatientServiceTest extends BaseUnitTest {
         when(allPatients.get(patientDocId)).thenReturn(patient);
         when(allTreatmentAdvices.currentTreatmentAdvice(patientDocId)).thenReturn(currentTreatmentAdvice);
         when(allTreatmentAdvices.earliestTreatmentAdvice(patientDocId)).thenReturn(earliestTreatmentAdvice);
-        when(allRegimens.get("regimenId")).thenReturn(regimen);
+        when(allRegimens.getBy("regimenId")).thenReturn(regimen);
 
         PatientReport patientReport = patientService.getPatientReport(patientDocId);
 

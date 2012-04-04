@@ -2,6 +2,7 @@ package org.motechproject.tama.web.view;
 
 
 import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 
 import java.util.Collections;
@@ -10,9 +11,9 @@ import java.util.List;
 
 public class RegimensView {
 
-    private final AllRegimens allRegimens;
+    private final AllRegimensCache allRegimens;
 
-    public RegimensView(AllRegimens allRegimens) {
+    public RegimensView(AllRegimensCache allRegimens) {
         this.allRegimens = allRegimens;
     }
 

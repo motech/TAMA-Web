@@ -10,6 +10,7 @@ import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.objectcache.AllDrugsCache;
 import org.motechproject.tama.refdata.objectcache.AllMealAdviceTypesCache;
+import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TreatmentAdviceViewMapper {
 
-    private AllRegimens allRegimens;
+    private AllRegimensCache allRegimens;
     private AllDrugsCache allDrugs;
     private AllDosageTypesCache allDosageTypes;
     private AllMealAdviceTypesCache allMealAdviceTypes;
@@ -26,7 +27,7 @@ public class TreatmentAdviceViewMapper {
     private AllPatients allPatients;
 
     @Autowired
-    public TreatmentAdviceViewMapper(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugsCache allDrugs, AllDosageTypesCache allDosageTypes, AllMealAdviceTypesCache allMealAdviceTypes) {
+    public TreatmentAdviceViewMapper(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimensCache allRegimens, AllDrugsCache allDrugs, AllDosageTypesCache allDosageTypes, AllMealAdviceTypesCache allMealAdviceTypes) {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
@@ -38,7 +39,7 @@ public class TreatmentAdviceViewMapper {
     public TreatmentAdviceView map(String treatmentAdviceId) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.get(treatmentAdviceId);
         Patient patient = allPatients.get(treatmentAdvice.getPatientId());
-        Regimen regimen = allRegimens.get(treatmentAdvice.getRegimenId());
+        Regimen regimen = allRegimens.getBy(treatmentAdvice.getRegimenId());
         DrugCompositionGroup drugCompositionGroup = regimen.getDrugCompositionGroupFor(treatmentAdvice.getDrugCompositionGroupId());
 
         TreatmentAdviceView treatmentAdviceView = new TreatmentAdviceView();

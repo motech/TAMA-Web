@@ -13,7 +13,7 @@ import org.motechproject.tama.refdata.domain.MealAdviceType;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.objectcache.AllMealAdviceTypesCache;
-import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
 import org.motechproject.tama.web.view.DosageTypesView;
@@ -36,7 +36,7 @@ public class TreatmentAdviceController extends BaseController {
 
     private AllMealAdviceTypesCache allMealAdviceTypes;
     private AllDosageTypesCache allDosageTypes;
-    private AllRegimens allRegimens;
+    private AllRegimensCache allRegimens;
     private AllPatients allPatients;
     private TreatmentAdviceService treatmentAdviceService;
     private AllClinicVisits allClinicVisits;
@@ -44,7 +44,7 @@ public class TreatmentAdviceController extends BaseController {
     private CallTimeSlotService callTimeSlotService;
 
     @Autowired
-    public TreatmentAdviceController(AllPatients allPatients, AllRegimens allRegimens, AllDosageTypesCache allDosageTypes, AllMealAdviceTypesCache allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, AllClinicVisits allClinicVisits, CallTimeSlotService callTimeSlotService) {
+    public TreatmentAdviceController(AllPatients allPatients, AllRegimensCache allRegimens, AllDosageTypesCache allDosageTypes, AllMealAdviceTypesCache allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, AllClinicVisits allClinicVisits, CallTimeSlotService callTimeSlotService) {
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
         this.allDosageTypes = allDosageTypes;

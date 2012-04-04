@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.Regimen;
-import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ public class RegimensViewTest {
     private RegimensView regimensView;
 
     @Mock
-    private AllRegimens regimens;
+    private AllRegimensCache regimens;
 
     @Before
     public void setUp() {

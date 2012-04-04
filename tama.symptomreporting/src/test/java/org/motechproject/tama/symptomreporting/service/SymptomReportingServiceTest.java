@@ -25,7 +25,7 @@ import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.domain.Regimen;
-import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
 import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
 import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
@@ -46,7 +46,7 @@ public class SymptomReportingServiceTest {
     @Mock
     private AllLabResults allLabResults;
     @Mock
-    private AllRegimens allRegimens;
+    private AllRegimensCache allRegimens;
     @Mock
     private AllVitalStatistics allVitalStatistics;
     @Mock
@@ -92,7 +92,7 @@ public class SymptomReportingServiceTest {
 
         String regimenName = "Regimen Name";
         Regimen regimen = RegimenBuilder.startRecording().withDefaults().withId(regimenId).withName(regimenName).build();
-        when(allRegimens.get(regimenId)).thenReturn(regimen);
+        when(allRegimens.getBy(regimenId)).thenReturn(regimen);
 
         MedicalCondition medicalCondition = symptomReportingService.getPatientMedicalConditions(patientId);
 
@@ -135,7 +135,7 @@ public class SymptomReportingServiceTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withRegimenId("regimenId").build();
         when(allTreatmentAdvices.currentTreatmentAdvice(patientDocId)).thenReturn(treatmentAdvice);
         Regimen regimen = mock(Regimen.class);
-        when(allRegimens.get(Matchers.<String>any())).thenReturn(regimen);
+        when(allRegimens.getBy(Matchers.<String>any())).thenReturn(regimen);
 
         KookooCallDetailRecord callDetailRecord = new KookooCallDetailRecord(null, "callId");
         when(kookooCallDetailRecordsService.get("callId")).thenReturn(callDetailRecord);

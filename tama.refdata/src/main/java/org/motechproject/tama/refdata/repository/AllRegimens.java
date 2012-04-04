@@ -28,17 +28,10 @@ public class AllRegimens extends AbstractCouchRepository<Regimen> {
     @Override
     public List<Regimen> getAll() {
         List<Regimen> all = super.getAll();
-        Collections.sort(all, new Comparator<Regimen>() {
-            @Override
-            public int compare(Regimen regimen1, Regimen regimen2) {
-                return regimen1.getDisplayName().compareTo(regimen2.getDisplayName());
-            }
-        });
         for (Regimen regimen : all) {
             loadDependencies(regimen);
         }
         return all;
-
     }
 
     private void loadDependencies(Regimen regimen) {

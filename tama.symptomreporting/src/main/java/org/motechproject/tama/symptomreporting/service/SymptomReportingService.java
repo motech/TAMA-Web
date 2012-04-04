@@ -14,6 +14,7 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
 import org.motechproject.tama.symptomreporting.mapper.MedicalConditionsMapper;
@@ -31,7 +32,7 @@ public class SymptomReportingService {
     private AllVitalStatistics allVitalStatistics;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllLabResults allLabResults;
-    private AllRegimens allRegimens;
+    private AllRegimensCache allRegimens;
     private Properties clinicianSMSProperties;
     private Properties symptomReportingProperties;
     private AllSymptomReports allSymptomReports;
@@ -40,7 +41,7 @@ public class SymptomReportingService {
 
     @Autowired
     public SymptomReportingService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
-                                   AllLabResults allLabResults, AllRegimens allRegimens,
+                                   AllLabResults allLabResults, AllRegimensCache allRegimens,
                                    AllVitalStatistics allVitalStatistics,
                                    AllSymptomReports allSymptomReports, KookooCallDetailRecordsService kookooCallDetailRecordsService,
                                    SendSMSService sendSMSService,
@@ -64,7 +65,7 @@ public class SymptomReportingService {
         VitalStatistics vitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(patientId);
         TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientId);
         TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
-        Regimen currentRegimen = allRegimens.get(currentTreatmentAdvice.getRegimenId());
+        Regimen currentRegimen = allRegimens.getBy(currentTreatmentAdvice.getRegimenId());
 
         return new MedicalConditionsMapper(patient, labResults, vitalStatistics, earliestTreatmentAdvice, currentRegimen).map();
     }
@@ -73,7 +74,7 @@ public class SymptomReportingService {
         KookooCallDetailRecord kookooCallDetailRecord = kookooCallDetailRecordsService.get(callLogDocId);
         SymptomReport symptomReport = allSymptomReports.findByCallId(kookooCallDetailRecord.getVendorCallId());
         Patient patient = allPatients.get(patientDocId);
-        Regimen regimen = allRegimens.get(allTreatmentAdvices.currentTreatmentAdvice(patientDocId).getRegimenId());
+        Regimen regimen = allRegimens.getBy(allTreatmentAdvices.currentTreatmentAdvice(patientDocId).getRegimenId());
         List<String> cliniciansMobileNumbers = new ArrayList<String>();
         for (Clinic.ClinicianContact clinicianContact : patient.getClinic().getClinicianContacts()) {
             cliniciansMobileNumbers.add(clinicianContact.getPhoneNumber());
