@@ -10,6 +10,7 @@ import org.motechproject.tama.common.util.TimeUtil;
 import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.refdata.objectcache.AllDrugsCache;
 import org.motechproject.tama.refdata.repository.AllDrugs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +25,7 @@ import static ch.lambdaj.Lambda.convert;
 public class PillRegimenRequestMapper {
 
     @Autowired
-    private AllDrugs allDrugs;
+    private AllDrugsCache allDrugs;
 
     @Value("#{dailyPillReminderProperties['pill.window.hrs']}")
     private Integer pillWindow;
@@ -35,7 +36,7 @@ public class PillRegimenRequestMapper {
     @Value("#{dailyPillReminderProperties['reminder.lag.mins']}")
     private Integer reminderLag;
 
-    public PillRegimenRequestMapper(AllDrugs allDrugs, Integer pillWindow, Integer retryInterval, Integer reminderLag) {
+    public PillRegimenRequestMapper(AllDrugsCache allDrugs, Integer pillWindow, Integer retryInterval, Integer reminderLag) {
         this.allDrugs = allDrugs;
         this.pillWindow = pillWindow;
         this.retryInterval = retryInterval;
@@ -71,7 +72,7 @@ public class PillRegimenRequestMapper {
         @Override
         public MedicineRequest convert(DrugDosage drugDosage) {
             LocalDate startDate = isMorningDose ? drugDosage.morningDoseTrackingStartDate(patient) : drugDosage.eveningDoseTrackingStartDate(patient);
-            return new MedicineRequest(allDrugs.get(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()), startDate, drugDosage.getEndDate());
+            return new MedicineRequest(allDrugs.getBy(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()), startDate, drugDosage.getEndDate());
         }
     }
 

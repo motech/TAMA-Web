@@ -15,7 +15,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.refdata.builder.DrugBuilder;
 import org.motechproject.tama.refdata.domain.Drug;
-import org.motechproject.tama.refdata.repository.AllDrugs;
+import org.motechproject.tama.refdata.objectcache.AllDrugsCache;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class PillRegimenRequestMapperTest {
 
     @Mock
-    private AllDrugs allDrugs;
+    private AllDrugsCache allDrugs;
 
     @Mock
     private Properties properties;
@@ -44,8 +44,8 @@ public class PillRegimenRequestMapperTest {
     public void shouldMapTreatmentAdvicesToPillRegimenRequest() {
         final int reminderLag = 5;
         PillRegimenRequestMapper pillRegimenRequestMapper = new PillRegimenRequestMapper(allDrugs, 10, 10, reminderLag);
-        when(allDrugs.get("Drug1Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug1").build());
-        when(allDrugs.get("Drug2Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug2").build());
+        when(allDrugs.getBy("Drug1Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug1").build());
+        when(allDrugs.getBy("Drug2Id")).thenReturn(DrugBuilder.startRecording().withDefaults().withName("Drug2").build());
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         TreatmentAdvice treatmentAdvice = new TreatmentAdvice() {{
             setPatientId("123");
@@ -84,7 +84,7 @@ public class PillRegimenRequestMapperTest {
         final int offsetDays = 15;
         final String testBrandName = "testBrand";
 
-        when(allDrugs.get(Matchers.<String>any())).thenReturn(new Drug() {
+        when(allDrugs.getBy(Matchers.<String>any())).thenReturn(new Drug() {
             @Override
             public String fullName(String brandId) {
                 return testBrandName;
@@ -103,7 +103,7 @@ public class PillRegimenRequestMapperTest {
         int offsetDays = 15;
         final String testBrandName = "testBrand";
 
-        when(allDrugs.get(Matchers.<String>any())).thenReturn(new Drug() {
+        when(allDrugs.getBy(Matchers.<String>any())).thenReturn(new Drug() {
             @Override
             public String fullName(String brandId) {
                 return testBrandName;
