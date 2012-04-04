@@ -4,15 +4,13 @@ import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.tama.patient.builder.CallTimeSlotBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.patient.domain.CallTimeSlot;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllCallTimeSlots;
+import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -82,35 +80,46 @@ public class CallTimeSlotServiceTest {
 
     @Test
     public void shouldGetAllMorningTimeSlots() {
-        when(allCallTimeSlots.countOfPatientsAllottedForSlot(Matchers.<LocalTime>any(), Matchers.<LocalTime>any())).thenReturn(2);
+        when(allCallTimeSlots.getAllottedSlots()).thenReturn(new AllottedSlots());
         final List<String> morningTimeSlots = callTimeSlotService.availableMorningSlots();
         assertEquals(48, morningTimeSlots.size());
     }
 
     @Test
     public void shouldGetAllEveningTimeSlots() {
-        when(allCallTimeSlots.countOfPatientsAllottedForSlot(Matchers.<LocalTime>any(), Matchers.<LocalTime>any())).thenReturn(2);
+        when(allCallTimeSlots.getAllottedSlots()).thenReturn(new AllottedSlots());
         final List<String> eveningTimeSlots = callTimeSlotService.availableEveningSlots();
         assertEquals(48, eveningTimeSlots.size());
     }
 
     @Test
     public void shouldGetAllAvailableMorningTimeSlots() {
-        when(allCallTimeSlots.countOfPatientsAllottedForSlot(Matchers.<LocalTime>any(), Matchers.<LocalTime>any())).thenReturn(2, 10, 10, 10, 10, 2, 10, 10, 2, 10);
+        AllottedSlot fullMidnightSlot = new AllottedSlot(DateUtil.now().withTime(0, 0, 0, 0), 10);
+        AllottedSlot full1AMSlot = new AllottedSlot(DateUtil.now().withTime(1, 0, 0, 0), 10);
+        AllottedSlots allottedSlots = new AllottedSlots(Arrays.asList(fullMidnightSlot, full1AMSlot));
+        when(allCallTimeSlots.getAllottedSlots()).thenReturn(allottedSlots);
+
         final List<String> timeSlots = callTimeSlotService.availableMorningSlots();
-        assertEquals(3, timeSlots.size());
-        assertEquals("12:00", timeSlots.get(0));
-        assertEquals("01:15", timeSlots.get(1));
-        assertEquals("02:00", timeSlots.get(2));
+        assertEquals(46, timeSlots.size());
+        assertEquals("12:15", timeSlots.get(0));
+        assertEquals("12:30", timeSlots.get(1));
+        assertEquals("12:45", timeSlots.get(2));
+        assertEquals("01:15", timeSlots.get(3));
     }
 
     @Test
     public void shouldGetAllAvailableEveningTimeSlots() {
-        when(allCallTimeSlots.countOfPatientsAllottedForSlot(Matchers.<LocalTime>any(), Matchers.<LocalTime>any())).thenReturn(2, 10, 10, 10, 10, 2, 10, 10, 2, 10);
+        AllottedSlot fullNoonSlot = new AllottedSlot(DateUtil.now().withTime(12, 0, 0, 0), 10);
+        AllottedSlot almostFull1230PMSlot = new AllottedSlot(DateUtil.now().withTime(12, 30, 0, 0), 9);
+        AllottedSlot full1245PMSlot = new AllottedSlot(DateUtil.now().withTime(12, 45, 0, 0), 10);
+        AllottedSlots allottedSlots = new AllottedSlots(Arrays.asList(fullNoonSlot, almostFull1230PMSlot, full1245PMSlot));
+        when(allCallTimeSlots.getAllottedSlots()).thenReturn(allottedSlots);
+
         final List<String> timeSlots = callTimeSlotService.availableEveningSlots();
-        assertEquals(3, timeSlots.size());
-        assertEquals("12:00", timeSlots.get(0));
-        assertEquals("01:15", timeSlots.get(1));
-        assertEquals("02:00", timeSlots.get(2));
+        assertEquals(46, timeSlots.size());
+        assertEquals("12:15", timeSlots.get(0));
+        assertEquals("12:30", timeSlots.get(1));
+        assertEquals("01:00", timeSlots.get(2));
+        assertEquals("01:15", timeSlots.get(3));
     }
 }

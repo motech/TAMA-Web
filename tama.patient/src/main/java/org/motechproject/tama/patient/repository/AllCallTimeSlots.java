@@ -3,11 +3,12 @@ package org.motechproject.tama.patient.repository;
 import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.ViewQuery;
-import org.ektorp.ViewResult;
 import org.ektorp.support.View;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
+import org.motechproject.tama.patient.domain.AllottedSlot;
+import org.motechproject.tama.patient.domain.AllottedSlots;
 import org.motechproject.tama.patient.domain.CallTimeSlot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,13 +24,12 @@ public class AllCallTimeSlots extends AbstractCouchRepository<CallTimeSlot> {
         super(CallTimeSlot.class, db);
     }
 
-    @View(name = "find_by_slot_time_range", map = "function(doc) {if (doc.documentType =='CallTimeSlot' && doc.callTime) {emit(doc.callTime, doc.patientDocumentId);}}", reduce = "_count")
-    public int countOfPatientsAllottedForSlot(LocalTime slotStartTime, LocalTime slotEndTime) {
-        DateTime startKey = new DateTime(0).withTime(slotStartTime.getHourOfDay(), slotStartTime.getMinuteOfHour(), 0, 0);
-        DateTime endKey = new DateTime(0).withTime(slotEndTime.getHourOfDay(), slotEndTime.getMinuteOfHour(), 0, 0);
-        ViewQuery q = createQuery("find_by_slot_time_range").startKey(startKey).endKey(endKey).reduce(true);
-        final ViewResult viewResult = db.queryView(q);
-        return rowCount(viewResult);
+    @View(name = "get_allotted_slots",
+          map = "function(doc) { if(doc.documentType == 'CallTimeSlot') {emit(doc.callTime, {\"callTime\":doc.callTime}) }}",
+          reduce = "function (key, values) { return {\"slotTime\" : values[0].callTime, \"allottedCount\": values.length};}")
+    public AllottedSlots getAllottedSlots() {
+        ViewQuery q = createQuery("get_allotted_slots").reduce(true).inclusiveEnd(true).group(true);
+        return new AllottedSlots(db.queryView(q, AllottedSlot.class));
     }
 
     @View(name = "find_by_slot_time_and_patient_id", map = "function(doc) {if (doc.documentType =='CallTimeSlot' && doc.callTime) {emit([doc.callTime, doc.patientDocumentId], doc._id);}}")

@@ -3,10 +3,7 @@ package org.motechproject.tama.patient.service;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.motechproject.tama.common.util.TimeUtil;
-import org.motechproject.tama.patient.domain.CallTimeSlot;
-import org.motechproject.tama.patient.domain.DrugDosage;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllCallTimeSlots;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -77,11 +74,12 @@ public class CallTimeSlotService {
     }
 
     private List<String> timeSlots(DateTime startDate, DateTime endDate) {
+        final AllottedSlots allottedSlots = allCallTimeSlots.getAllottedSlots();
         final List<String> allTimeSlots = new ArrayList<String>();
         while (startDate.isBefore(endDate)) {
             LocalTime slotStartTime = startDate.toLocalTime();
             LocalTime slotEndTime = startDate.toLocalTime().plusMinutes(slot_duration_in_mins).minusMinutes(1);
-            int allottedCount = allCallTimeSlots.countOfPatientsAllottedForSlot(slotStartTime, slotEndTime);
+            int allottedCount = allottedSlots.numberOfPatientsAllottedPerSlot(slotStartTime, slotEndTime);
             if (allottedCount < max_patients_per_slot) {
                 allTimeSlots.add(slotStartTime.toString("hh:mm"));
             }
