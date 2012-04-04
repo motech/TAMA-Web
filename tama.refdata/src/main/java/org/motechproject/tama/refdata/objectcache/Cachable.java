@@ -2,6 +2,7 @@ package org.motechproject.tama.refdata.objectcache;
 
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,12 +27,16 @@ public abstract class Cachable<T> {
     }
 
     public List<T> getAll() {
-        return repository.getAll();
+        return new ArrayList<T>(objectMap.values());
     }
 
     private void populateObjectMap() {
-         for (T t : getAll()) {
+         for (T t : getAllFromRepository()) {
              this.objectMap.put(getKey(t), t);
          }
      }
+
+    private List<T> getAllFromRepository() {
+        return repository.getAll();
+    }
 }
