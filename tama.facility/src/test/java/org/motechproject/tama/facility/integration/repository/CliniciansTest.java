@@ -11,6 +11,7 @@ import org.motechproject.tama.facility.repository.AllClinicianIds;
 import org.motechproject.tama.facility.repository.AllClinicians;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.refdata.domain.City;
+import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.refdata.repository.AllCities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.ExpectedException;
@@ -33,6 +34,9 @@ public class CliniciansTest extends SpringIntegrationTest {
 
     @Autowired
     private AllCities allCities;
+
+    @Autowired
+    private AllCitiesCache allCitiesCache;
 
     @Test
     public void testShouldPersistClinician() {
@@ -82,6 +86,9 @@ public class CliniciansTest extends SpringIntegrationTest {
     public void shouldFindByUserNameAndPassword() {
         City city = City.newCity("Test");
         allCities.add(city);
+
+        allCitiesCache.refresh();
+
         Clinic testClinic = ClinicBuilder.startRecording().withName("testClinic").withCity(city).build();
         allClinics.add(testClinic, "admin");
         Clinician testClinician = ClinicianBuilder.startRecording().withName("testName").
@@ -97,6 +104,9 @@ public class CliniciansTest extends SpringIntegrationTest {
     public void shouldLoadCorrespondingClinicWhenQueryingClinician() {
         City city = City.newCity("Test");
         allCities.add(city);
+
+        allCitiesCache.refresh();
+
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
         allClinics.add(clinic, "admin");
         String clinicianId = unique("foo");
@@ -114,6 +124,9 @@ public class CliniciansTest extends SpringIntegrationTest {
     public void shouldUpdateClinicianPassword() {
         City city = City.newCity("Test");
         allCities.add(city);
+
+        allCitiesCache.refresh();
+
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
         allClinics.add(clinic, "admin");
         String clinicianId = unique("foo");

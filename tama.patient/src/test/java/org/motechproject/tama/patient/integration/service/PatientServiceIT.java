@@ -17,6 +17,7 @@ import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,9 @@ public class PatientServiceIT extends SpringIntegrationTest {
     private AllRegimens allRegimens;
 
     @Autowired
+    private AllRegimensCache allRegimensCache;
+
+    @Autowired
     private AllClinics allClinics;
 
     @Autowired
@@ -54,7 +58,6 @@ public class PatientServiceIT extends SpringIntegrationTest {
     @After
     public void after() {
         markForDeletion(allUniquePatientFields.getAll());
-        //markForDeletion(allPatients.getAll());
         super.after();
     }
 
@@ -144,6 +147,8 @@ public class PatientServiceIT extends SpringIntegrationTest {
     public void shouldReturnCurrentRegimen() {
         Regimen regimen = RegimenBuilder.startRecording().withDefaults().build();
         allRegimens.add(regimen);
+
+        allRegimensCache.refresh();
 
         Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
         allClinics.add(clinic, "admin");

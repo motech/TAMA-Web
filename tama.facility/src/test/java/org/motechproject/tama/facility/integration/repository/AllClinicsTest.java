@@ -9,6 +9,7 @@ import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.refdata.domain.City;
+import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.refdata.repository.AllCities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,6 +23,8 @@ public class AllClinicsTest extends SpringIntegrationTest {
     private AllClinics allClinics;
     @Autowired
     private AllCities allCities;
+    @Autowired
+    private AllCitiesCache allCitiesCache;
 
     @Before
     public void before() {
@@ -43,6 +46,8 @@ public class AllClinicsTest extends SpringIntegrationTest {
         City city = City.newCity("Pune");
         allCities.add(city);
 
+        allCitiesCache.refresh();
+
         Clinic clinic = ClinicBuilder.startRecording().withCity(city).build();
         allClinics.add(clinic, "admin");
 
@@ -63,6 +68,8 @@ public class AllClinicsTest extends SpringIntegrationTest {
 
         City anotherCity = City.newCity("Chennai");
         allCities.add(anotherCity);
+
+        allCitiesCache.refresh();
 
         Clinic clinic = ClinicBuilder.startRecording().withCity(city).build();
         allClinics.add(clinic, "admin");

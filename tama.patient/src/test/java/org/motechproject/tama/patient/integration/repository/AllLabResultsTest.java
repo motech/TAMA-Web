@@ -86,6 +86,8 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         allLabTests.add(labTest2);
         markForDeletion(labTest2);
 
+        allLabTestsCache.refresh();
+
         LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTest(labTest1).withPatientId(patientId).build();
         LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTest(labTest2).withPatientId(patientId).build();
         allLabResults.add(labResult1, USER_NAME);
@@ -110,6 +112,8 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         LabTest labTest1 = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId3_byPatient").build();
         allLabTests.add(labTest1);
         markForDeletion(labTest1);
+
+        allLabTestsCache.refresh();
 
         LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withResult("1").withTestDate(DateUtil.today().minusDays(1)).withLabTest(labTest1).withPatientId(patientId).build();
         LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withResult("2").withTestDate(DateUtil.today()).withLabTest(labTest1).withPatientId(patientId).build();
@@ -166,6 +170,8 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         allLabTests.add(labTest);
         markForDeletion(labTest);
 
+        allLabTestsCache.refresh();
+
         LabResults labResultsForPatient = allLabResults.findLatestLabResultsByPatientId(patientId);
 
         assertEquals(0, labResultsForPatient.size());
@@ -212,6 +218,9 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         String patientId = "patientId";
         LabTest pvlLabTest = LabTestBuilder.startRecording().withDefaults().withType(TAMAConstants.LabTestType.PVL).withId("pvlTestId").build();
         allLabTests.add(pvlLabTest);
+
+        allLabTestsCache.refresh();
+
         String resultId = allLabResults.upsert(LabResultBuilder.startRecording().withDefaults().withPatientId(patientId).withLabTest(pvlLabTest).build(), USER_NAME);
         markForDeletion(allLabResults.get(resultId));
         int rangeInMonths = 3;
