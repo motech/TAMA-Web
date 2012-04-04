@@ -7,6 +7,7 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.refdata.domain.DrugCompositionGroup;
 import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.repository.AllDosageTypes;
 import org.motechproject.tama.refdata.repository.AllDrugs;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
@@ -20,13 +21,13 @@ public class TreatmentAdviceViewMapper {
 
     private AllRegimens allRegimens;
     private AllDrugs allDrugs;
-    private AllDosageTypes allDosageTypes;
+    private AllDosageTypesCache allDosageTypes;
     private AllMealAdviceTypes allMealAdviceTypes;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
 
     @Autowired
-    public TreatmentAdviceViewMapper(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes) {
+    public TreatmentAdviceViewMapper(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugs allDrugs, AllDosageTypesCache allDosageTypes, AllMealAdviceTypes allMealAdviceTypes) {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;

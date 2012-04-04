@@ -8,6 +8,7 @@ import org.motechproject.tama.refdata.builder.DrugBuilder;
 import org.motechproject.tama.refdata.domain.DosageType;
 import org.motechproject.tama.refdata.domain.Drug;
 import org.motechproject.tama.refdata.domain.MealAdviceType;
+import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.repository.AllDosageTypes;
 import org.motechproject.tama.refdata.repository.AllDrugs;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
@@ -19,14 +20,14 @@ import static org.mockito.Mockito.when;
 public class DrugDosageViewMapperTest {
 
     private AllDrugs allDrugs;
-    private AllDosageTypes allDosageTypes;
+    private AllDosageTypesCache allDosageTypes;
     private AllMealAdviceTypes allMealAdviceTypes;
     private DrugDosage drugDosage;
 
     @Before
     public void setUp() {
         allDrugs = mock(AllDrugs.class);
-        allDosageTypes = mock(AllDosageTypes.class);
+        allDosageTypes = mock(AllDosageTypesCache.class);
         allMealAdviceTypes = mock(AllMealAdviceTypes.class);
         drugDosage = getDrugDosage();
     }
@@ -37,7 +38,7 @@ public class DrugDosageViewMapperTest {
         when(allDrugs.get("drugId")).thenReturn(drug);
 
         DosageType dosageType = new DosageType("Once");
-        when(allDosageTypes.get("dosageTypeId")).thenReturn(dosageType);
+        when(allDosageTypes.getBy("dosageTypeId")).thenReturn(dosageType);
 
         MealAdviceType mealAdviceType = new MealAdviceType("After Meal");
         when(allMealAdviceTypes.get("mealAdviceTypeId")).thenReturn(mealAdviceType);

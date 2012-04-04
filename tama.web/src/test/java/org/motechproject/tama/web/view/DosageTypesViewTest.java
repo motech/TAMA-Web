@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.refdata.domain.DosageType;
+import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.repository.AllDosageTypes;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class DosageTypesViewTest {
     private DosageTypesView dosageTypesView;
 
     @Mock
-    private AllDosageTypes allDosageTypes;
+    private AllDosageTypesCache allDosageTypes;
 
     @Before
     public void setUp() {

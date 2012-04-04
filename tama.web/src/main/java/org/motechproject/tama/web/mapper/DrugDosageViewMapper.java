@@ -5,6 +5,7 @@ import org.motechproject.tama.refdata.domain.Brand;
 import org.motechproject.tama.refdata.domain.DosageType;
 import org.motechproject.tama.refdata.domain.Drug;
 import org.motechproject.tama.refdata.domain.MealAdviceType;
+import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.repository.AllDosageTypes;
 import org.motechproject.tama.refdata.repository.AllDrugs;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
@@ -13,10 +14,10 @@ import org.motechproject.tama.web.model.DrugDosageView;
 public class DrugDosageViewMapper {
 
     private AllDrugs allDrugs;
-    private AllDosageTypes allDosageTypes;
+    private AllDosageTypesCache allDosageTypes;
     private AllMealAdviceTypes allMealAdviceTypes;
 
-    public DrugDosageViewMapper(AllDrugs allDrugs, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes) {
+    public DrugDosageViewMapper(AllDrugs allDrugs, AllDosageTypesCache allDosageTypes, AllMealAdviceTypes allMealAdviceTypes) {
         this.allDrugs = allDrugs;
         this.allDosageTypes = allDosageTypes;
         this.allMealAdviceTypes = allMealAdviceTypes;
@@ -25,7 +26,7 @@ public class DrugDosageViewMapper {
     public DrugDosageView map(final DrugDosage drugDosage) {
         final Drug drug = allDrugs.get(drugDosage.getDrugId());
         final Brand brand = drug.getBrand(drugDosage.getBrandId());
-        final DosageType dosageType = allDosageTypes.get(drugDosage.getDosageTypeId());
+        final DosageType dosageType = allDosageTypes.getBy(drugDosage.getDosageTypeId());
         final MealAdviceType mealAdviceType = allMealAdviceTypes.get(drugDosage.getMealAdviceId());
 
         return new DrugDosageView() {{

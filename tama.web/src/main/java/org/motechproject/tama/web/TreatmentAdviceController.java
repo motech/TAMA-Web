@@ -11,7 +11,7 @@ import org.motechproject.tama.patient.service.TreatmentAdviceService;
 import org.motechproject.tama.refdata.domain.DosageType;
 import org.motechproject.tama.refdata.domain.MealAdviceType;
 import org.motechproject.tama.refdata.domain.Regimen;
-import org.motechproject.tama.refdata.repository.AllDosageTypes;
+import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
@@ -35,7 +35,7 @@ import java.util.List;
 public class TreatmentAdviceController extends BaseController {
 
     private AllMealAdviceTypes allMealAdviceTypes;
-    private AllDosageTypes allDosageTypes;
+    private AllDosageTypesCache allDosageTypes;
     private AllRegimens allRegimens;
     private AllPatients allPatients;
     private TreatmentAdviceService treatmentAdviceService;
@@ -44,7 +44,7 @@ public class TreatmentAdviceController extends BaseController {
     private CallTimeSlotService callTimeSlotService;
 
     @Autowired
-    public TreatmentAdviceController(AllPatients allPatients, AllRegimens allRegimens, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, AllClinicVisits allClinicVisits, CallTimeSlotService callTimeSlotService) {
+    public TreatmentAdviceController(AllPatients allPatients, AllRegimens allRegimens, AllDosageTypesCache allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, AllClinicVisits allClinicVisits, CallTimeSlotService callTimeSlotService) {
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
         this.allDosageTypes = allDosageTypes;
