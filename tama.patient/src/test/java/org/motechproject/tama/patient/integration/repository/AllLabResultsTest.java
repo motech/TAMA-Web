@@ -15,6 +15,7 @@ import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.domain.LabTest;
+import org.motechproject.tama.refdata.objectcache.AllLabTestsCache;
 import org.motechproject.tama.refdata.repository.AllLabTests;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,9 @@ public class AllLabResultsTest extends SpringIntegrationTest {
     private AllLabTests allLabTests;
 
     @Autowired
+    private AllLabTestsCache allLabTestsCache;
+
+    @Autowired
     private AllAuditRecords allAuditRecords;
 
     LabTest cd4LabTest;
@@ -50,7 +54,9 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         cd4LabTest = LabTestBuilder.startRecording().withDefaults().withId("someLabTestId").build();
         allLabTests.add(cd4LabTest);
 
-        allLabResults = new AllLabResults(couchDbConnector, allLabTests, allAuditRecords);
+        allLabTestsCache.refresh();
+
+        allLabResults = new AllLabResults(couchDbConnector, allLabTestsCache, allAuditRecords);
     }
 
     @After

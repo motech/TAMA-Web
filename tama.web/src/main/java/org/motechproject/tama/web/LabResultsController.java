@@ -6,7 +6,7 @@ import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.refdata.domain.LabTest;
-import org.motechproject.tama.refdata.repository.AllLabTests;
+import org.motechproject.tama.refdata.objectcache.AllLabTestsCache;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +31,10 @@ public class LabResultsController extends BaseController {
 
     private final AllLabResults allLabResults;
     private final AllClinicVisits allClinicVisits;
-    private final AllLabTests allLabTests;
+    private final AllLabTestsCache allLabTests;
 
     @Autowired
-    public LabResultsController(AllLabResults allLabResults, AllLabTests allLabTests, AllClinicVisits allClinicVisits) {
+    public LabResultsController(AllLabResults allLabResults, AllLabTestsCache allLabTests, AllClinicVisits allClinicVisits) {
         this.allLabResults = allLabResults;
         this.allLabTests = allLabTests;
         this.allClinicVisits = allClinicVisits;

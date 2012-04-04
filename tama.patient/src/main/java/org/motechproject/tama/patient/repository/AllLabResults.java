@@ -11,7 +11,7 @@ import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.refdata.domain.LabTest;
-import org.motechproject.tama.refdata.repository.AllLabTests;
+import org.motechproject.tama.refdata.objectcache.AllLabTestsCache;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,10 +23,10 @@ import java.util.List;
 @Repository
 public class AllLabResults extends AuditableCouchRepository<LabResult> {
 
-    private AllLabTests allLabTests;
+    private AllLabTestsCache allLabTests;
 
     @Autowired
-    public AllLabResults(@Qualifier("tamaDbConnector") CouchDbConnector db, AllLabTests allLabTests, AllAuditRecords allAuditRecords) {
+    public AllLabResults(@Qualifier("tamaDbConnector") CouchDbConnector db, AllLabTestsCache allLabTests, AllAuditRecords allAuditRecords) {
         super(LabResult.class, db, allAuditRecords);
         this.allLabTests = allLabTests;
         initStandardDesignDocument();
@@ -62,7 +62,7 @@ public class AllLabResults extends AuditableCouchRepository<LabResult> {
     }
 
     private void loadDependencies(LabResult labResult) {
-        labResult.setLabTest(allLabTests.get(labResult.getLabTest_id()));
+        labResult.setLabTest(allLabTests.getBy(labResult.getLabTest_id()));
     }
 
     public String upsert(LabResult labResult, String userName) {
@@ -96,7 +96,7 @@ public class AllLabResults extends AuditableCouchRepository<LabResult> {
     private List<LabResult> findAllByLabTestFor(TAMAConstants.LabTestType labTestType, String patientId, int rangeInMonths) {
         LocalDate today = DateUtil.today();
         LocalDate startDate = today.minusMonths(rangeInMonths);
-        LabTest labTest = allLabTests.findByName(labTestType);
+        LabTest labTest = allLabTests.getByName(labTestType.getName());
 
         ViewQuery query = createQuery("find_by_patientId_and_labTest_id_and_testDate").
                 startKey(ComplexKey.of(patientId, labTest.getId(), startDate)).

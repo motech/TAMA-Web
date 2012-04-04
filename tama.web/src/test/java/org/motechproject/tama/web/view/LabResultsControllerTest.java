@@ -15,7 +15,7 @@ import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.domain.LabTest;
-import org.motechproject.tama.refdata.repository.AllLabTests;
+import org.motechproject.tama.refdata.objectcache.AllLabTestsCache;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.LabResultsController;
@@ -45,7 +45,7 @@ public class LabResultsControllerTest {
     @Mock
     private AllLabResults allLabResults;
     @Mock
-    private AllLabTests allLabTests;
+    private AllLabTestsCache allLabTests;
     @Mock
     private AllClinicVisits allClinicVisits;
     @Mock
