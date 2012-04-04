@@ -5,7 +5,10 @@ import org.motechproject.tama.refdata.repository.AllLabTests;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 @Component
 public class AllLabTestsCache extends Cachable<LabTest> {
@@ -31,6 +34,18 @@ public class AllLabTestsCache extends Cachable<LabTest> {
     @Override
     protected String getKey(LabTest labTest) {
         return labTest.getId();
+    }
+
+    @Override
+    public List<LabTest> getAll() {
+        List<LabTest> all = super.getAll();
+        Collections.sort(all, new Comparator<LabTest>() {
+            @Override
+            public int compare(LabTest labTest1, LabTest labTest2) {
+                return labTest1.getName().compareTo(labTest2.getName());
+            }
+        });
+        return all;
     }
 
     private void populateNameObjectMap() {
