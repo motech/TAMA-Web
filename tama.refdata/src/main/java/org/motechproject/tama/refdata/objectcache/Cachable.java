@@ -2,9 +2,7 @@ package org.motechproject.tama.refdata.objectcache;
 
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public abstract class Cachable<T> {
     protected HashMap<String, T> objectMap = new HashMap<String, T>();
@@ -27,8 +25,17 @@ public abstract class Cachable<T> {
     }
 
     public List<T> getAll() {
-        return new ArrayList<T>(objectMap.values());
+        List<T> all = new ArrayList<T>(objectMap.values());
+        Collections.sort(all, new Comparator<T>() {
+            @Override
+            public int compare(T t1, T t2) {
+                return compareTo(t1, t2);
+            }
+        });
+        return all;
     }
+
+    protected abstract int compareTo(T t1, T t2);
 
     private void populateObjectMap() {
          for (T t : getAllFromRepository()) {

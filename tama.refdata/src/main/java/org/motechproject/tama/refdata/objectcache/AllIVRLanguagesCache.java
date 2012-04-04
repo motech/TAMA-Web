@@ -33,6 +33,11 @@ public class AllIVRLanguagesCache extends Cachable<IVRLanguage>{
         return ivrLanguage.getId();
     }
 
+    @Override
+    protected int compareTo(IVRLanguage t1, IVRLanguage t2) {
+        return t1.getName().compareTo(t2.getName());
+    }
+
     private void populateCodeObjectMap() {
         for (IVRLanguage ivrLanguage : getAll()) {
             codeObjectMap.put(ivrLanguage.getCode(), ivrLanguage);

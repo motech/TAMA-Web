@@ -16,9 +16,6 @@ import org.motechproject.tama.refdata.objectcache.AllMealAdviceTypesCache;
 import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
-import org.motechproject.tama.web.view.DosageTypesView;
-import org.motechproject.tama.web.view.MealAdviceTypesView;
-import org.motechproject.tama.web.view.RegimensView;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -122,7 +119,7 @@ public class TreatmentAdviceController extends BaseController {
     }
 
     public List<ComboBoxView> regimens() {
-        List<Regimen> allRegimens = new RegimensView(this.allRegimens).getAll();
+        List<Regimen> allRegimens = this.allRegimens.getAll();
         List<ComboBoxView> comboBoxViews = new ArrayList<ComboBoxView>();
         for (Regimen regimen : allRegimens) {
             comboBoxViews.add(new ComboBoxView(regimen.getId(), regimen.getDisplayName()));
@@ -144,12 +141,12 @@ public class TreatmentAdviceController extends BaseController {
 
     @ModelAttribute("mealAdviceTypes")
     public List<MealAdviceType> mealAdviceTypes() {
-        return new MealAdviceTypesView(allMealAdviceTypes).getAll();
+        return allMealAdviceTypes.getAll();
     }
 
     @ModelAttribute("dosageTypes")
     public List<DosageType> dosageTypes() {
-        return new DosageTypesView(allDosageTypes).getAll();
+        return allDosageTypes.getAll();
     }
 
     private void populateModel(Model uiModel, TreatmentAdvice treatmentAdvice) {

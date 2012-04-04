@@ -17,4 +17,9 @@ public class AllHIVTestReasonsCache extends Cachable<HIVTestReason>{
     protected String getKey(HIVTestReason hivTestReason) {
         return hivTestReason.getId();
     }
+
+    @Override
+    protected int compareTo(HIVTestReason t1, HIVTestReason t2) {
+        return t1.getName().compareTo(t2.getName());
+    }
 }

@@ -25,9 +25,6 @@ import org.motechproject.tama.web.model.DoseStatus;
 import org.motechproject.tama.web.model.IncompletePatientDataWarning;
 import org.motechproject.tama.web.model.ListPatientViewModel;
 import org.motechproject.tama.web.model.PatientSummary;
-import org.motechproject.tama.web.view.HIVTestReasonsView;
-import org.motechproject.tama.web.view.IVRLanguagesView;
-import org.motechproject.tama.web.view.ModesOfTransmissionView;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -317,13 +314,13 @@ public class PatientController extends BaseController {
     }
 
     private void populateModel(Model uiModel) {
-        uiModel.addAttribute("ivrlanguages", new IVRLanguagesView(allIVRLanguages).getAll());
+        uiModel.addAttribute("ivrlanguages", allIVRLanguages.getAll());
         uiModel.addAttribute("daysInAMonth", TAMAConstants.Time.MAX_DAYS_IN_A_MONTH.list());
         uiModel.addAttribute("hoursInADay", TAMAConstants.Time.MAX_HOURS_IN_A_DAY.list());
         uiModel.addAttribute("minutesInAnHour", TAMAConstants.Time.MAX_MINUTES_IN_AN_HOUR.list());
         uiModel.addAttribute("genders", allGenders.getAll());
-        uiModel.addAttribute("testReasons", new HIVTestReasonsView(allTestReasons).getAll());
-        uiModel.addAttribute("modesOfTransmission", new ModesOfTransmissionView(allModesOfTransmission).getAll());
+        uiModel.addAttribute("testReasons", allTestReasons.getAll());
+        uiModel.addAttribute("modesOfTransmission", allModesOfTransmission.getAll());
         uiModel.addAttribute("drugAllergies", TAMAConstants.DrugAllergy.values());
         uiModel.addAttribute("nnrtiRashes", TAMAConstants.NNRTIRash.values());
         uiModel.addAttribute("systemCategories", SystemCategoryDefinition.all());

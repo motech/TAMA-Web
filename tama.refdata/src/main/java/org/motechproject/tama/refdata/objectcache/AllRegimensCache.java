@@ -5,12 +5,8 @@ import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 @Component
-public class AllRegimensCache extends Cachable<Regimen>{
+public class AllRegimensCache extends Cachable<Regimen> {
 
     @Autowired
     public AllRegimensCache(AllRegimens allRegimens) {
@@ -23,14 +19,7 @@ public class AllRegimensCache extends Cachable<Regimen>{
     }
 
     @Override
-    public List<Regimen> getAll() {
-        List<Regimen> all = super.getAll();
-        Collections.sort(all, new Comparator<Regimen>() {
-            @Override
-            public int compare(Regimen regimen1, Regimen regimen2) {
-                return regimen1.getDisplayName().compareTo(regimen2.getDisplayName());
-            }
-        });
-        return all;
+    protected int compareTo(Regimen t1, Regimen t2) {
+        return t1.getDisplayName().compareTo(t2.getDisplayName());
     }
 }

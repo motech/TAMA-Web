@@ -7,7 +7,6 @@ import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.refdata.seed.MD5Checksum;
 import org.motechproject.tama.web.model.FileUploadFormBean;
-import org.motechproject.tama.web.view.IVRLanguagesView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,7 +39,7 @@ public class FileUploadController {
     @RequestMapping(method = RequestMethod.GET)
     public String fileUploadView(Model uiModel) {
         FileUploadFormBean fileUploadFormBean = new FileUploadFormBean();
-        fileUploadFormBean.setIvrLanguages(new IVRLanguagesView(allIVRLanguages).getAll());
+        fileUploadFormBean.setIvrLanguages(allIVRLanguages.getAll());
         uiModel.addAttribute("model", fileUploadFormBean);
         return FILE_UPLOAD_VIEW;
     }

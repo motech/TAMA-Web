@@ -17,4 +17,9 @@ public class AllCitiesCache extends Cachable<City> {
     protected String getKey(City city) {
         return city.getId();
     }
+
+    @Override
+    protected int compareTo(City t1, City t2) {
+        return t1.getName().compareTo(t2.getName());
+    }
 }

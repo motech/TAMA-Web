@@ -5,10 +5,6 @@ import org.motechproject.tama.refdata.repository.AllDosageTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 @Component
 public class AllDosageTypesCache extends Cachable<DosageType> {
 
@@ -23,14 +19,7 @@ public class AllDosageTypesCache extends Cachable<DosageType> {
     }
 
     @Override
-    public List<DosageType> getAll() {
-        List<DosageType> all = super.getAll();
-        Collections.sort(all, new Comparator<DosageType>() {
-            @Override
-            public int compare(DosageType dosageType1, DosageType dosageType2) {
-                return dosageType1.getType().compareTo(dosageType2.getType());
-            }
-        });
-        return all;
+    protected int compareTo(DosageType t1, DosageType t2) {
+        return t1.getType().compareTo(t2.getType());
     }
 }

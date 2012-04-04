@@ -17,4 +17,9 @@ public class AllModesOfTransmissionCache extends Cachable<ModeOfTransmission>{
     protected String getKey(ModeOfTransmission modeOfTransmission) {
         return modeOfTransmission.getId();
     }
+
+    @Override
+    protected int compareTo(ModeOfTransmission t1, ModeOfTransmission t2) {
+        return t1.getType().compareTo(t2.getType());
+    }
 }

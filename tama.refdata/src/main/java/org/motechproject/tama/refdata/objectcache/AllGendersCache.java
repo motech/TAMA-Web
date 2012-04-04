@@ -17,4 +17,9 @@ public class AllGendersCache extends Cachable<Gender> {
     protected String getKey(Gender gender) {
         return gender.getId();
     }
+
+    @Override
+    protected int compareTo(Gender t1, Gender t2) {
+        return t1.getType().compareTo(t2.getType());
+    }
 }

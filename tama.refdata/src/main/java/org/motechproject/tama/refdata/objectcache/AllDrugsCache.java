@@ -17,4 +17,9 @@ public class AllDrugsCache extends Cachable<Drug> {
     protected String getKey(Drug drug) {
         return drug.getId();
     }
+
+    @Override
+    protected int compareTo(Drug t1, Drug t2) {
+        return t1.getName().compareTo(t2.getName());
+    }
 }

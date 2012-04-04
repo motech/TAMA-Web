@@ -17,4 +17,9 @@ public class AllMealAdviceTypesCache extends Cachable<MealAdviceType> {
     protected String getKey(MealAdviceType mealAdviceType) {
         return mealAdviceType.getId();
     }
+
+    @Override
+    protected int compareTo(MealAdviceType t1, MealAdviceType t2) {
+        return t1.getType().compareTo(t2.getType());
+    }
 }

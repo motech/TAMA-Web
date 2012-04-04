@@ -35,7 +35,6 @@ public class IVRLanguage extends CouchEntity {
         this.name = name;
     }
 
-
     public String getCode() {
         return code;
     }
