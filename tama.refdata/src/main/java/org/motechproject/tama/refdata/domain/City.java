@@ -17,7 +17,6 @@ public class City extends CouchEntity implements Comparable<City> {
     public City(String id) {
         super();
         this.setId(id);
-        this.name = name;
     }
 
     @Override

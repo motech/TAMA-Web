@@ -3,6 +3,7 @@ package org.motechproject.tama.web;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.refdata.domain.City;
+import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.refdata.repository.AllCities;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,10 @@ import java.util.List;
 @Controller
 public class ClinicController extends BaseController {
     private AllClinics allClinics;
-    private AllCities allCities;
+    private AllCitiesCache allCities;
 
     @Autowired
-    public ClinicController(AllClinics allClinics, AllCities allCities) {
+    public ClinicController(AllClinics allClinics, AllCitiesCache allCities) {
         this.allClinics = allClinics;
         this.allCities = allCities;
     }
@@ -80,7 +81,7 @@ public class ClinicController extends BaseController {
 
     @ModelAttribute("cities")
     public Collection<City> populateCities() {
-        List<City> allCities = this.allCities.getAllCities();
+        List<City> allCities = this.allCities.getAll();
         Collections.sort(allCities);
         return allCities;
     }

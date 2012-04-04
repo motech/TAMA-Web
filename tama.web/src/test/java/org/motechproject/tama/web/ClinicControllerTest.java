@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.refdata.domain.City;
+import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.refdata.repository.AllCities;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,7 +25,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class ClinicControllerTest {
 
     @Mock
-    private AllCities allCities;
+    private AllCitiesCache allCities;
 
     @Mock
     private AllClinics allClinics;
@@ -47,7 +48,7 @@ public class ClinicControllerTest {
     public void shouldSortCitiesInAlphabeticalOrderCaseInsensitive() {
         List<City> cityList = Arrays.asList(City.newCity("Pune"), City.newCity("Chennai"), City.newCity("Hyderabad"), City.newCity("chirala"));
 
-        Mockito.when(allCities.getAllCities()).thenReturn(cityList);
+        Mockito.when(allCities.getAll()).thenReturn(cityList);
 
         Collection<City> sortedCities = clinicController.populateCities();
         Assert.assertEquals(4, sortedCities.size());
