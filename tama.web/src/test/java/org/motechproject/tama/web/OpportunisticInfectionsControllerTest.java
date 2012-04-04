@@ -14,7 +14,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.ReportedOpportunisticInfections;
 import org.motechproject.tama.patient.repository.AllReportedOpportunisticInfections;
 import org.motechproject.tama.refdata.domain.OpportunisticInfection;
-import org.motechproject.tama.refdata.repository.AllOpportunisticInfections;
+import org.motechproject.tama.refdata.objectcache.AllOpportunisticInfectionsCache;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.model.OIStatus;
@@ -56,7 +56,7 @@ public class OpportunisticInfectionsControllerTest {
         public static final String INFECTION_ID = "infectionId";
 
         @Mock
-        protected AllOpportunisticInfections allOpportunisticInfections;
+        protected AllOpportunisticInfectionsCache allOpportunisticInfections;
         @Mock
         protected AllReportedOpportunisticInfections allReportedOpportunisticInfections;
         @Mock

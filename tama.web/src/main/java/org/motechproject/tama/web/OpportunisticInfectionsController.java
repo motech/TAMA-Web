@@ -7,7 +7,7 @@ import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.domain.ReportedOpportunisticInfections;
 import org.motechproject.tama.patient.repository.AllReportedOpportunisticInfections;
 import org.motechproject.tama.refdata.domain.OpportunisticInfection;
-import org.motechproject.tama.refdata.repository.AllOpportunisticInfections;
+import org.motechproject.tama.refdata.objectcache.AllOpportunisticInfectionsCache;
 import org.motechproject.tama.web.model.OIStatus;
 import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
 import org.motechproject.util.DateUtil;
@@ -34,11 +34,11 @@ public class OpportunisticInfectionsController extends BaseController {
 
     private AllClinicVisits allClinicVisits;
     private AllReportedOpportunisticInfections allReportedOpportunisticInfections;
-    private AllOpportunisticInfections allOpportunisticInfections;
+    private AllOpportunisticInfectionsCache allOpportunisticInfections;
 
     @Autowired
     public OpportunisticInfectionsController(AllClinicVisits allClinicVisits, AllReportedOpportunisticInfections allReportedOpportunisticInfections,
-                                             AllOpportunisticInfections allOpportunisticInfections) {
+                                             AllOpportunisticInfectionsCache allOpportunisticInfections) {
         this.allClinicVisits = allClinicVisits;
         this.allReportedOpportunisticInfections = allReportedOpportunisticInfections;
         this.allOpportunisticInfections = allOpportunisticInfections;
