@@ -2,6 +2,7 @@ package org.motechproject.tama.web.view;
 
 
 import org.motechproject.tama.refdata.domain.MealAdviceType;
+import org.motechproject.tama.refdata.objectcache.AllMealAdviceTypesCache;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 
 import java.util.Collections;
@@ -10,9 +11,9 @@ import java.util.List;
 
 public class MealAdviceTypesView {
 
-    private final AllMealAdviceTypes mealAdviceTypes;
+    private final AllMealAdviceTypesCache mealAdviceTypes;
 
-    public MealAdviceTypesView(AllMealAdviceTypes mealAdviceTypes) {
+    public MealAdviceTypesView(AllMealAdviceTypesCache mealAdviceTypes) {
         this.mealAdviceTypes = mealAdviceTypes;
     }
 

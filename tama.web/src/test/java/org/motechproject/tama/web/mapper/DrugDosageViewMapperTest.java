@@ -10,6 +10,7 @@ import org.motechproject.tama.refdata.domain.Drug;
 import org.motechproject.tama.refdata.domain.MealAdviceType;
 import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.objectcache.AllDrugsCache;
+import org.motechproject.tama.refdata.objectcache.AllMealAdviceTypesCache;
 import org.motechproject.tama.refdata.repository.AllDrugs;
 import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 import org.motechproject.tama.web.model.DrugDosageView;
@@ -21,14 +22,14 @@ public class DrugDosageViewMapperTest {
 
     private AllDrugsCache allDrugs;
     private AllDosageTypesCache allDosageTypes;
-    private AllMealAdviceTypes allMealAdviceTypes;
+    private AllMealAdviceTypesCache allMealAdviceTypes;
     private DrugDosage drugDosage;
 
     @Before
     public void setUp() {
         allDrugs = mock(AllDrugsCache.class);
         allDosageTypes = mock(AllDosageTypesCache.class);
-        allMealAdviceTypes = mock(AllMealAdviceTypes.class);
+        allMealAdviceTypes = mock(AllMealAdviceTypesCache.class);
         drugDosage = getDrugDosage();
     }
 
@@ -41,7 +42,7 @@ public class DrugDosageViewMapperTest {
         when(allDosageTypes.getBy("dosageTypeId")).thenReturn(dosageType);
 
         MealAdviceType mealAdviceType = new MealAdviceType("After Meal");
-        when(allMealAdviceTypes.get("mealAdviceTypeId")).thenReturn(mealAdviceType);
+        when(allMealAdviceTypes.getBy("mealAdviceTypeId")).thenReturn(mealAdviceType);
 
         DrugDosageView drugDosageView = new DrugDosageViewMapper(allDrugs, allDosageTypes, allMealAdviceTypes).map(drugDosage);
 

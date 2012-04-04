@@ -9,7 +9,7 @@ import org.motechproject.tama.refdata.domain.DrugCompositionGroup;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.objectcache.AllDrugsCache;
-import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
+import org.motechproject.tama.refdata.objectcache.AllMealAdviceTypesCache;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ public class TreatmentAdviceViewMapper {
     private AllRegimens allRegimens;
     private AllDrugsCache allDrugs;
     private AllDosageTypesCache allDosageTypes;
-    private AllMealAdviceTypes allMealAdviceTypes;
+    private AllMealAdviceTypesCache allMealAdviceTypes;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllPatients allPatients;
 
     @Autowired
-    public TreatmentAdviceViewMapper(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugsCache allDrugs, AllDosageTypesCache allDosageTypes, AllMealAdviceTypes allMealAdviceTypes) {
+    public TreatmentAdviceViewMapper(AllTreatmentAdvices allTreatmentAdvices, AllPatients allPatients, AllRegimens allRegimens, AllDrugsCache allDrugs, AllDosageTypesCache allDosageTypes, AllMealAdviceTypesCache allMealAdviceTypes) {
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;

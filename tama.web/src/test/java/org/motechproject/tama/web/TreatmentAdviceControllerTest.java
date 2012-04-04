@@ -19,7 +19,7 @@ import org.motechproject.tama.refdata.domain.DosageType;
 import org.motechproject.tama.refdata.domain.MealAdviceType;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
-import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
+import org.motechproject.tama.refdata.objectcache.AllMealAdviceTypesCache;
 import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
@@ -60,7 +60,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     @Mock
     private AllDosageTypesCache allDosageTypes;
     @Mock
-    private AllMealAdviceTypes allMealAdviceTypes;
+    private AllMealAdviceTypesCache allMealAdviceTypes;
     @Mock
     private TreatmentAdviceService treatmentAdviceService;
     @Mock
