@@ -86,6 +86,13 @@ public class TamaIVRMessageTest {
     }
 
     @Test
+    public void shouldSuffixDateMessageForDays11Through19() {
+        for (int i=11; i<=19; i++) {
+            assertTrue(new TamaIVRMessage.DateMessage(i).value().endsWith("th"));
+        }
+    }
+
+    @Test
     public void shouldSuffixDateMessageForDaysWithDefaultSuffix() {
         assertTrue(new TamaIVRMessage.DateMessage(4).value().endsWith("th"));
     }

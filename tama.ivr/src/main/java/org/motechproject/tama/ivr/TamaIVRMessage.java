@@ -220,7 +220,9 @@ public class TamaIVRMessage implements IVRMessage {
         }
 
         private String suffix() {
-            if (dayOfMonth % 10 == 1) {
+            if (dayOfMonth >= 11 && dayOfMonth <= 19) {
+                return "th";
+            } else if (dayOfMonth % 10 == 1) {
                 return "st";
             } else if (dayOfMonth % 10 == 2) {
                 return "nd";
