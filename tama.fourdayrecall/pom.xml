@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tama-all</artifactId>
         <groupId>org.motechproject.tama</groupId>
-        <version>0.6-SNAPSHOT</version>
+        <version>0.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tama.fourdayrecall</artifactId>
@@ -22,22 +22,22 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.ivr</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.outbox</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.7-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.facility</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.7-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
@@ -53,7 +53,7 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.patient</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.7-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
@@ -61,7 +61,7 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.ivr</artifactId>
-            <version>0.6-SNAPSHOT</version>
+            <version>0.7-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
