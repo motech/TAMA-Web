@@ -14,5 +14,5 @@
     version = prop.getProperty("Hudson-Build-Number");
  }
 %>
-Version: 5.0.<% out.println(version); %>
+Version: 5.1.<% out.println(version); %>
 
