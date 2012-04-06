@@ -54,6 +54,12 @@ public class DialController extends SafeIVRController {
     }
 
     @Override
+    public String hangup(KooKooIVRContext kooKooIVRContext) {
+        dial(kooKooIVRContext);
+        return super.hangup(kooKooIVRContext);
+    }
+
+    @Override
     public KookooIVRResponseBuilder dial(KooKooIVRContext kooKooIVRContext) {
         SymptomsReportingContext symptomsReportingContext = contextFactory.create(kooKooIVRContext);
         Patient patient = allPatients.get(symptomsReportingContext.patientDocumentId());
