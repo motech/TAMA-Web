@@ -38,6 +38,12 @@ public class TimeConstructBuilderTest {
     }
 
     @Test
+    public void constructKannadaTimeConstructBuilder() {
+        SlotBasedTimeConstructBuilder builder = new TimeConstructBuilder().builder(IVRLanguage.KANNADA_CODE);
+        assertEquals(KannadaTimeConstructBuilder.class, builder.getClass());
+    }
+
+    @Test
     public void constructTimeConstructBuilder_ForNotSupportedLanguage() {
         try {
             new TimeConstructBuilder().builder("unknown");

@@ -18,6 +18,7 @@ public class TimeConstructBuilder {
         languageBasedTimeConstructMap.put(IVRLanguage.MARATHI_CODE, new MarathiTimeConstructBuilder());
         languageBasedTimeConstructMap.put(IVRLanguage.TAMIL_CODE, new TamilTimeConstructBuilder());
         languageBasedTimeConstructMap.put(IVRLanguage.TELUGU_CODE, new TeluguTimeConstructBuilder());
+        languageBasedTimeConstructMap.put(IVRLanguage.KANNADA_CODE, new KannadaTimeConstructBuilder());
     }
 
     public SlotBasedTimeConstructBuilder builder(String preferredLanguage) {
