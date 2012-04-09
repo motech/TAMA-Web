@@ -4,12 +4,11 @@ import org.joda.time.LocalTime;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 
 public class KannadaTimeConstructBuilder extends SlotBasedTimeConstructBuilder {
-
     private final LocalTime MIDNIGHT_START = new LocalTime(0, 0, 0);
     private final LocalTime EARLY_MORNING_START = new LocalTime(3, 45, 0);
-    private final LocalTime MORNING_START = new LocalTime(5, 30, 0);
+    private final LocalTime MORNING_START = new LocalTime(6, 0, 0);
     private final LocalTime NOON_START = new LocalTime(12, 0, 0);
-    private final LocalTime EVENING_START = new LocalTime(16, 0, 0);
+    private final LocalTime EVENING_START = new LocalTime(16, 45, 0);
     private final LocalTime NIGHT_START = new LocalTime(19, 45, 0);
     private final LocalTime NIGHT_END = new LocalTime(23, 59, 59, 999);
 
