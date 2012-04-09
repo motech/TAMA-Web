@@ -8,7 +8,8 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 
 public class KannadaTimeConstructBuilderTest {
- @Test
+ 
+    @Test
     // 0:0:0 - Midnight Start
     public void shouldCreateTimeConstruct_AtMidnight_Start() {
         LocalTime midnight = new LocalTime(0, 0, 0);
