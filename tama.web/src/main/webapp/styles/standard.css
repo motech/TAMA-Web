@@ -3,7 +3,7 @@
 body,div,td {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 12px;
-	color: #666;
+	color: #000;
 }
 
 body {
@@ -81,7 +81,7 @@ body {
 }
 
 #menu a {
-	color: #666666;
+	color: #000000;
 	background: #efefef;
 	text-decoration: none;
 	padding: 2px 12px;
@@ -364,7 +364,7 @@ fieldset th {
 
 .submit input {
 	border: 1px solid #BBBBBB;
-	color:#777777;
+	color:#555555;
 	padding:2px 7px;
 	font-size:11px;
 	text-transform:uppercase;
@@ -421,7 +421,7 @@ fieldset th {
 }
 
 .logged_in_clinic{
-    color: #666666;
+    color: #000000;
     font-size: 13px;
     text-align: right;
     margin-top: 5px;
