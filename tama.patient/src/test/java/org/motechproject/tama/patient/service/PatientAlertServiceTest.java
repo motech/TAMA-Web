@@ -6,11 +6,11 @@ import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.server.alerts.contract.AlertService;
 import org.motechproject.server.alerts.contract.UpdateCriteria;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
-import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.common.repository.AllAuditEvents;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -314,7 +314,7 @@ public class PatientAlertServiceTest {
         @Override
         public boolean matches(Object argument) {
             UpdateCriteria other = (UpdateCriteria) argument;
-            return updateCriteria.getAll().equals(other.getAll());
+            return updateCriteria.toString().equals(other.toString());
         }
     }
 }
