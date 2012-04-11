@@ -1,18 +1,19 @@
 package org.motechproject.tama.dailypillreminder.domain;
 
+import org.joda.time.LocalDate;
 import org.motechproject.model.Time;
 
 public class DosageAdherenceLogSummary {
-    private String id;
+    private LocalDate dosageDate;
     private DosageStatus dosageStatus;
     private Time dosageTime;
 
-    public String getId() {
-        return id;
+    public LocalDate getDosageDate() {
+        return dosageDate;
     }
 
-    public DosageAdherenceLogSummary setId(String id) {
-        this.id = id;
+    public DosageAdherenceLogSummary setDosageDate(LocalDate dosageDate) {
+        this.dosageDate = dosageDate;
         return this;
     }
 
