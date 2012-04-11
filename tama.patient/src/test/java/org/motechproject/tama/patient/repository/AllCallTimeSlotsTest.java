@@ -63,6 +63,17 @@ public class AllCallTimeSlotsTest extends SpringIntegrationTest {
         assertAllottedTimeSlot(allottedSlots.get(3), new LocalTime(12, 10), 1);
     }
 
+    @Test
+    // test - rereduce of calltimeslots
+    public void shouldReturnListOfAllottedTimeSlots_WhenAMoreNumberOfPatientsAreAllottedPerSlot() {
+        for (int i = 0; i < 30; i++) {
+            allDoseTimeSlots.add(CallTimeSlotBuilder.startRecording().withCallTime(new LocalTime(11, 55)).withPatientDocumentId("patientId" + i).build());
+        }
+        AllottedSlots allottedSlots = allDoseTimeSlots.getAllottedSlots();
+        assertEquals(allottedSlots.size(), 1);
+        assertAllottedTimeSlot(allottedSlots.get(0), new LocalTime(11, 55), 30);
+    }
+
     @After
     public void tearDown() {
         markForDeletion(allDoseTimeSlots.getAll().toArray());
