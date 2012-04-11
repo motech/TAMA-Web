@@ -68,11 +68,11 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return singleResult(adherenceLogs);
     }
 
-    @View(name="getPillsTakenAndTotalCountPerWeek", file = "doseTakenSummaryPerWeekMapReduce.json")
+    @View(name="getPillsTakenAndTotalCountPerWeek_v1", file = "doseTakenSummaryPerWeekMapReduce.json")
     public List<AdherenceSummaryForAWeek> getDoseTakenSummaryPerWeek(String patientDocId) {
         final ComplexKey startKey = ComplexKey.of(patientDocId);
         final ComplexKey endKey = ComplexKey.of(patientDocId, ComplexKey.emptyObject());
-        ViewQuery q = createQuery("getPillsTakenAndTotalCountPerWeek").startKey(startKey).endKey(endKey).reduce(true).inclusiveEnd(true).group(true);
+        ViewQuery q = createQuery("getPillsTakenAndTotalCountPerWeek_v1").startKey(startKey).endKey(endKey).reduce(true).inclusiveEnd(true).group(true);
         return db.queryView(q, AdherenceSummaryForAWeek.class);
     }
 

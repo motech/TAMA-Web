@@ -215,6 +215,23 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
     }
 
     @Test
+    // test - rereduce of getPillsTakenAndTotalCountPerWeek
+    public void shouldGetCountOfDoseTakenAndTotalDosePerWeek_GivenThatThereAreMoreThan2LogsPerDay() throws Exception {
+        LocalDate monday = DateUtil.newDate(2012, 1, 2);
+        for (int i = 0; i < 30; i++) {
+            DosageAdherenceLog log1_week1 = createLog(monday, DosageStatus.TAKEN);
+            DosageAdherenceLog log2_week1 = createLog(monday.plusDays(2), DosageStatus.NOT_TAKEN);
+            DosageAdherenceLog log3_week1 = createLog(monday.plusDays(4), DosageStatus.NOT_RECORDED);
+        }
+
+        List<AdherenceSummaryForAWeek> data = allDosageAdherenceLogs.getDoseTakenSummaryPerWeek(PATIENT_ID);
+
+        assertEquals(monday, data.get(0).getWeekStartDate().toLocalDate());
+        assertEquals(30, data.get(0).getTaken());
+        assertEquals(90, data.get(0).getTotal());
+    }
+
+    @Test
     public void shouldGetDALGroupedByDate_ScopedByGivenDateRange(){
         LocalDate day1 = DateUtil.newDate(2012, 1, 2);
         LocalDate day2 = DateUtil.newDate(2012, 1, 9);
