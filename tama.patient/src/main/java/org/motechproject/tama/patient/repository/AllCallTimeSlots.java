@@ -24,11 +24,11 @@ public class AllCallTimeSlots extends AbstractCouchRepository<CallTimeSlot> {
         super(CallTimeSlot.class, db);
     }
 
-    @View(name = "get_allotted_slots",
+    @View(name = "get_allotted_slots_v1",
           map = "function(doc) { if(doc.documentType == 'CallTimeSlot') {emit(doc.callTime, {\"callTime\":doc.callTime}) }}",
-          reduce = "function (key, values) { return {\"slotTime\" : values[0].callTime, \"allottedCount\": values.length};}")
+          reduce = "function (key, values, rereduce) { var slotTime = ''; var allottedCount = 0; if (!rereduce) { slotTime = values[0].callTime; allottedCount = values.length; } else { slotTime = values[0].slotTime; for(var i in values) { allottedCount = allottedCount + values[i].allottedCount; } } return {\"slotTime\":slotTime, \"allottedCount\":allottedCount}; }")
     public AllottedSlots getAllottedSlots() {
-        ViewQuery q = createQuery("get_allotted_slots").reduce(true).inclusiveEnd(true).group(true);
+        ViewQuery q = createQuery("get_allotted_slots_v1").reduce(true).inclusiveEnd(true).group(true);
         return new AllottedSlots(db.queryView(q, AllottedSlot.class));
     }
 
