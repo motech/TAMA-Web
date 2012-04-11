@@ -8,9 +8,8 @@ import org.ektorp.support.View;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
-import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
-import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLogPerDay;
-import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
+import org.motechproject.tama.dailypillreminder.domain.*;
+import org.motechproject.tama.dailypillreminder.mapper.DosageAdherenceLogPerDayMapper;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -76,11 +75,11 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return db.queryView(q, AdherenceSummaryForAWeek.class);
     }
 
-    @View(name="find_all_logs_by_patient_id_per_day", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.patientId && doc.dosageDate) {emit([doc.patientId, doc.dosageDate], doc);}}", reduce = "function(key, values) { return {'date': values[0].dosageDate, 'logs': values.map(function(elt) { return {id: elt._id, dosageStatus: elt.dosageStatus, dosageTime: elt.dosageTime}})}}")
+    @View(name="find_all_logs_by_patient_id_per_day_v1", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.patientId && doc.dosageDate) {emit([doc.patientId, doc.dosageDate], {dosageDate: doc.dosageDate, dosageStatus: doc.dosageStatus, dosageTime: doc.dosageTime});}}")
     public List<DosageAdherenceLogPerDay> getLogsPerDay(String patientDocId, LocalDate startDate, LocalDate endDate) {
         final ComplexKey startKey = ComplexKey.of(patientDocId, startDate);
         final ComplexKey endKey = ComplexKey.of(patientDocId, endDate);
-        ViewQuery q = createQuery("find_all_logs_by_patient_id_per_day").startKey(startKey).endKey(endKey).reduce(true).inclusiveEnd(true).group(true);
-        return db.queryView(q, DosageAdherenceLogPerDay.class);
+        ViewQuery q = createQuery("find_all_logs_by_patient_id_per_day_v1").startKey(startKey).endKey(endKey);
+        return new DosageAdherenceLogPerDayMapper().map(db.queryView(q, DosageAdherenceLogSummary.class));
     }
 }

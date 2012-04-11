@@ -14,7 +14,7 @@ public class DailyPillReminderSummaryTest {
     @Test
     public void shouldSetMorningTimeAndMorningStatus_whenDosageAdherenceLogSummaryTimeIsLessThan_12_Noon(){
         ArrayList<DosageAdherenceLogSummary> dosageAdherenceLogSummaries = new ArrayList<DosageAdherenceLogSummary>();
-        dosageAdherenceLogSummaries.add(new DosageAdherenceLogSummary().setDosageStatus(DosageStatus.TAKEN).setDosageTime(new Time(11, 45)));
+        dosageAdherenceLogSummaries.add(new DosageAdherenceLogSummary().setDosageStatus(DosageStatus.TAKEN).setDosageTime(new Time(11, 45)).setDosageDate(DateUtil.newDate(2010, 9, 23)));
         DosageAdherenceLogPerDay dosageAdherenceLogPerDay = new DosageAdherenceLogPerDay().setLogs(dosageAdherenceLogSummaries).setDate(DateUtil.newDate(2010, 9, 23));
         DailyPillReminderSummary dailyPillReminderSummary = new DailyPillReminderSummary(dosageAdherenceLogPerDay);
 
