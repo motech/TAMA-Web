@@ -251,11 +251,11 @@ public class AllDosageAdherenceLogsTest extends SpringIntegrationTest {
         List<DosageAdherenceLogPerDay> dosageAdherenceLogsPerDay = allDosageAdherenceLogs.getLogsPerDay(PATIENT_ID, startDate, endDate);
 
         assertEquals(2, dosageAdherenceLogsPerDay.size());
-        assertEquals(day1, dosageAdherenceLogsPerDay.get(0).getDate());
-        assertEquals(day2, dosageAdherenceLogsPerDay.get(1).getDate());
+        assertEquals(day2, dosageAdherenceLogsPerDay.get(0).getDate());
+        assertEquals(day1, dosageAdherenceLogsPerDay.get(1).getDate());
 
-        assertEquals(2, dosageAdherenceLogsPerDay.get(0).getLogs().size());
-        assertEquals(1, dosageAdherenceLogsPerDay.get(1).getLogs().size());
+        assertEquals(1, dosageAdherenceLogsPerDay.get(0).getLogs().size());
+        assertEquals(2, dosageAdherenceLogsPerDay.get(1).getLogs().size());
 
         assertEquals(new Time(10, 45), dosageAdherenceLogsPerDay.get(0).getLogs().get(0).getDosageTime());
     }
