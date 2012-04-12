@@ -4,7 +4,7 @@ import org.joda.time.LocalDate;
 
 import java.util.List;
 
-public class DosageAdherenceLogPerDay {
+public class DosageAdherenceLogPerDay implements Comparable<DosageAdherenceLogPerDay> {
 
     List<DosageAdherenceLogSummary> logs;
     LocalDate date;
@@ -25,5 +25,10 @@ public class DosageAdherenceLogPerDay {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    @Override
+    public int compareTo(DosageAdherenceLogPerDay dosageAdherenceLogPerDay) {
+        return dosageAdherenceLogPerDay.date.compareTo(date);
     }
 }

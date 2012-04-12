@@ -63,8 +63,8 @@ public class DosageAdherenceLogPerDayMapperTest {
     public void convertALogADayAcross2Days() {
         LocalDate today = DateUtil.today();
         LocalDate yesterday = today.minusDays(1);
-        DosageAdherenceLogSummary summary1 = new DosageAdherenceLogSummary().setDosageDate(today).setDosageStatus(DosageStatus.TAKEN).setDosageTime(new Time(10, 10));
-        DosageAdherenceLogSummary summary2 = new DosageAdherenceLogSummary().setDosageDate(yesterday).setDosageStatus(DosageStatus.NOT_RECORDED).setDosageTime(new Time(20, 10));
+        DosageAdherenceLogSummary summary1 = new DosageAdherenceLogSummary().setDosageDate(yesterday).setDosageStatus(DosageStatus.NOT_RECORDED).setDosageTime(new Time(20, 10));
+        DosageAdherenceLogSummary summary2 = new DosageAdherenceLogSummary().setDosageDate(today).setDosageStatus(DosageStatus.TAKEN).setDosageTime(new Time(10, 10));
 
         List<DosageAdherenceLogPerDay> list = new DosageAdherenceLogPerDayMapper().map(Arrays.asList(summary1, summary2));
         assertEquals(2, list.size());

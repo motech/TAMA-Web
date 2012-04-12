@@ -5,6 +5,7 @@ import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLogPerDay;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLogSummary;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class DosageAdherenceLogPerDayMapper {
         for (LocalDate date : map.keySet()) {
             list.add(new DosageAdherenceLogPerDay().setDate(date).setLogs(map.get(date)));
         }
+        Collections.sort(list);
         return list;
     }
 
