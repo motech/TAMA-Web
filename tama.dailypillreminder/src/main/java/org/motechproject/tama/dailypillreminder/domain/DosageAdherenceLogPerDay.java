@@ -29,6 +29,6 @@ public class DosageAdherenceLogPerDay implements Comparable<DosageAdherenceLogPe
 
     @Override
     public int compareTo(DosageAdherenceLogPerDay dosageAdherenceLogPerDay) {
-        return dosageAdherenceLogPerDay.date.compareTo(date);
+        return date.compareTo(dosageAdherenceLogPerDay.date);
     }
 }
