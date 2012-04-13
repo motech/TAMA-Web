@@ -88,7 +88,7 @@ public class CallLogView {
     public List<CallFlowGroupView> getCallFlowGroupViews() {
         List<CallFlowGroupView> views = new ArrayList<CallFlowGroupView>();
         for (CallFlowGroupView callFlowGroupView : callFlowGroupViews) {
-            if (callFlowGroupView.getFlowDuration() == 0) continue;
+            if (!missed && callFlowGroupView.getFlowDuration() == 0) continue;
             views.add(callFlowGroupView);
         }
         return views;
