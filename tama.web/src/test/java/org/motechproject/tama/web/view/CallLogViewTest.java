@@ -16,6 +16,7 @@ import org.motechproject.util.DateUtil;
 import java.util.ArrayList;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -126,6 +127,7 @@ public class CallLogViewTest {
         }});
 
         callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
+        assertTrue(callLogView.isMissedCall());
         assertEquals(1, callLogView.getCallFlowGroupViews().size());
         assertEquals("Missed 4 Day Recall", callLogView.getFlows());
     }

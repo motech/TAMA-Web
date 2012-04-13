@@ -22,7 +22,7 @@ public class CallFlowDetailMap {
     }
 
     public void populateFlowDetails(List<CallLogView> callLogViews) {
-        if (callLogViews.isEmpty()) return;
+        if (callLogViews.isEmpty() || callLogViews.get(0).isMissedCall()) return;
         List<CallFlowGroupView> callFlowGroupViews = callLogViews.get(0).getCallFlowGroupViews();
         for (CallFlowGroupView callFlowGroupView : callFlowGroupViews) {
             callFlowDetailsMap.get(callFlowGroupView.getFlow()).flowAccessed(callFlowGroupView.getFlowDuration());

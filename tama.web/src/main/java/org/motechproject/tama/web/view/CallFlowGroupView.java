@@ -3,6 +3,7 @@ package org.motechproject.tama.web.view;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
+import org.motechproject.tama.common.CallTypeConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,7 @@ public class CallFlowGroupView {
 
     @Override
     public String toString() {
+        if (CallTypeConstants.MISSED.equals(flow)) return String.format("%s %s", flow, missedCallType());
         return flow;
     }
 }
