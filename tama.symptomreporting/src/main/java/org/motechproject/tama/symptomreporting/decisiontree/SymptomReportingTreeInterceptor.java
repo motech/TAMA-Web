@@ -104,8 +104,8 @@ public class SymptomReportingTreeInterceptor {
 
     private void setRecordSymptomReportTreeCommand(Node priorityNode, String symptomId, String userSelectedOption) {
         Transition yesTransition = priorityNode.getTransitions().get(userSelectedOption);
-        Node yesNode = yesTransition.getDestinationNode();
-        if (yesNode != null) {
+        if (yesTransition != null && yesTransition.getDestinationNode() != null) {
+            Node yesNode = yesTransition.getDestinationNode();
             yesNode.setTreeCommands(new RecordSymptomCommand(symptomRecordingService, symptomReportingAlertService, symptomId));
         }
     }
