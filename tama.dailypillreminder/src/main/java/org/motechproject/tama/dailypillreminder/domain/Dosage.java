@@ -3,7 +3,7 @@ package org.motechproject.tama.dailypillreminder.domain;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.motechproject.server.pillreminder.contract.DosageResponse;
+import org.motechproject.server.pillreminder.api.contract.DosageResponse;
 import org.motechproject.util.DateUtil;
 
 public class Dosage {

@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.api.contract.PillRegimenResponse;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.util.EmptyMapMatcher;

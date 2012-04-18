@@ -2,7 +2,7 @@ package org.motechproject.tama.dailypillreminder.listener;
 
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.event.annotations.MotechListener;
-import org.motechproject.server.pillreminder.EventKeys;
+import org.motechproject.server.pillreminder.api.EventKeys;
 import org.motechproject.tama.dailypillreminder.call.PillReminderCall;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

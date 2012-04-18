@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.server.pillreminder.EventKeys;
+import org.motechproject.server.pillreminder.api.EventKeys;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;

@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.model.Time;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.api.contract.PillRegimenResponse;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.builder.PillRegimenResponseBuilder;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;

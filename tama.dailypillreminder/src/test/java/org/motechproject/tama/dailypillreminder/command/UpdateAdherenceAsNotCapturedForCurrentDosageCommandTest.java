@@ -1,5 +1,6 @@
 
 package org.motechproject.tama.dailypillreminder.command;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -8,9 +9,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.model.Time;
-import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.server.pillreminder.contract.MedicineResponse;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.api.contract.DosageResponse;
+import org.motechproject.server.pillreminder.api.contract.MedicineResponse;
+import org.motechproject.server.pillreminder.api.contract.PillRegimenResponse;
 import org.motechproject.tama.dailypillreminder.DailyPillReminderContextForTest;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.tama.dailypillreminder.domain.Dose;

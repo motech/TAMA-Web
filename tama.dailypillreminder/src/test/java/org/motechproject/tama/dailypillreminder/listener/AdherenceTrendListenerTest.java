@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
+import org.motechproject.server.pillreminder.api.builder.SchedulerPayloadBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
 import org.motechproject.tama.outbox.service.OutboxService;

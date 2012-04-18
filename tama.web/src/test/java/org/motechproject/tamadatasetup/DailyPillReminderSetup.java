@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.model.Time;
-import org.motechproject.server.pillreminder.ReminderEventHandler;
+import org.motechproject.server.pillreminder.api.ReminderEventHandler;
 import org.motechproject.tama.dailypillreminder.listener.AdherenceTrendListener;
 import org.motechproject.tama.outbox.listener.OutboxCallListener;
 import org.motechproject.tamadatasetup.domain.DailyPatientEvents;

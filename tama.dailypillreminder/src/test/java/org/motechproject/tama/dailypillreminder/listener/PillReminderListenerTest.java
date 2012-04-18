@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
-import org.motechproject.server.pillreminder.EventKeys;
+import org.motechproject.server.pillreminder.api.EventKeys;
 import org.motechproject.tama.dailypillreminder.call.PillReminderCall;
 
 import java.util.HashMap;

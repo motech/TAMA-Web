@@ -31,7 +31,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.server.pillreminder.EventKeys.EXTERNAL_ID_KEY;
+import static org.motechproject.server.pillreminder.api.EventKeys.EXTERNAL_ID_KEY;
 import static org.powermock.api.mockito.PowerMockito.verifyZeroInteractions;
 import static org.powermock.api.mockito.PowerMockito.when;
 

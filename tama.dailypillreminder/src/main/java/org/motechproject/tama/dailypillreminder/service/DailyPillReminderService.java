@@ -1,7 +1,7 @@
 package org.motechproject.tama.dailypillreminder.service;
 
 import org.joda.time.LocalDate;
-import org.motechproject.server.pillreminder.service.PillReminderService;
+import org.motechproject.server.pillreminder.api.service.PillReminderService;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.mapper.PillRegimenRequestMapper;
 import org.motechproject.tama.patient.domain.CallPreference;
