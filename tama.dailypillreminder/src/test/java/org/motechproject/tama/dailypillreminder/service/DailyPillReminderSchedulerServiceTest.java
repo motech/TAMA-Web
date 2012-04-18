@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.motechproject.model.CronSchedulableJob;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.scheduler.MotechSchedulerService;
-import org.motechproject.server.pillreminder.EventKeys;
+import org.motechproject.server.pillreminder.api.EventKeys;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;

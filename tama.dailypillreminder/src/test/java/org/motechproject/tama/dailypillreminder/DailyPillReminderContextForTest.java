@@ -2,7 +2,7 @@ package org.motechproject.tama.dailypillreminder;
 
 import org.joda.time.DateTime;
 import org.motechproject.ivr.model.CallDirection;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.api.contract.PillRegimenResponse;
 import org.motechproject.tama.dailypillreminder.context.DailyPillReminderContext;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;

@@ -9,7 +9,7 @@ import org.motechproject.model.Time;
 import org.motechproject.scheduler.MotechSchedulerService;
 import org.motechproject.scheduler.builder.CronJobSimpleExpressionBuilder;
 import org.motechproject.scheduler.builder.WeeklyCronJobExpressionBuilder;
-import org.motechproject.server.pillreminder.builder.SchedulerPayloadBuilder;
+import org.motechproject.server.pillreminder.api.builder.SchedulerPayloadBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;

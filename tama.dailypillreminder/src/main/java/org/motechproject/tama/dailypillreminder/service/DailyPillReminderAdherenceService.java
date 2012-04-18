@@ -2,7 +2,7 @@ package org.motechproject.tama.dailypillreminder.service;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.server.pillreminder.contract.DosageResponse;
+import org.motechproject.server.pillreminder.api.contract.DosageResponse;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;

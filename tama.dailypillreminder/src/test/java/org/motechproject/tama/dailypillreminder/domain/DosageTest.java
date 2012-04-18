@@ -3,7 +3,7 @@ package org.motechproject.tama.dailypillreminder.domain;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.motechproject.model.Time;
-import org.motechproject.server.pillreminder.contract.DosageResponse;
+import org.motechproject.server.pillreminder.api.contract.DosageResponse;
 
 import static junit.framework.Assert.assertEquals;
 

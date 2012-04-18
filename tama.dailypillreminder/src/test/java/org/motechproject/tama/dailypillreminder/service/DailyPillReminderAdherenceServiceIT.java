@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.server.pillreminder.contract.PillRegimenResponse;
+import org.motechproject.server.pillreminder.api.contract.PillRegimenResponse;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.dailypillreminder.builder.DosageAdherenceLogBuilder;
 import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;

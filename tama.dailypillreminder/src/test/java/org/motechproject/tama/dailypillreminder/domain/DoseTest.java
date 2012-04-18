@@ -4,8 +4,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.motechproject.model.Time;
-import org.motechproject.server.pillreminder.contract.DosageResponse;
-import org.motechproject.server.pillreminder.contract.MedicineResponse;
+import org.motechproject.server.pillreminder.api.contract.DosageResponse;
+import org.motechproject.server.pillreminder.api.contract.MedicineResponse;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
