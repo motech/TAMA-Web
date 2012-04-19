@@ -191,7 +191,7 @@ public class SymptomReportingAlertServiceTest {
         @Override
         public boolean matches(Object argument) {
             UpdateCriteria other = (UpdateCriteria) argument;
-            return updateCriteria.toString().equals(other.toString());
+            return updateCriteria.getAll().equals(other.getAll());
         }
     }
 }
