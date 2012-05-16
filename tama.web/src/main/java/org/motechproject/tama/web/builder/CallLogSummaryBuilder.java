@@ -3,7 +3,7 @@ package org.motechproject.tama.web.builder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.motechproject.ivr.model.CallDirection;
+import org.motechproject.ivr.domain.CallDirection;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Patients;

@@ -1,12 +1,12 @@
 package org.motechproject.tama.symptomreporting.controller;
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.ivr.domain.IVRMessage;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.SafeIVRController;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
-import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.common.util.StringUtil;
 import org.motechproject.tama.facility.domain.Clinic;

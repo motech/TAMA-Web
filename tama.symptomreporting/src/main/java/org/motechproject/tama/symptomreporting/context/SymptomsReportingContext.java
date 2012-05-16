@@ -16,21 +16,21 @@ public class SymptomsReportingContext extends TAMAIVRContext {
     }
 
     public void startCall() {
-        cookies().add(TAMAIVRContext.SWITCH_TO_DIAL_STATE, String.valueOf(true));
+        kooKooIVRContext.addToCallSession(TAMAIVRContext.SWITCH_TO_DIAL_STATE, String.valueOf(true));
     }
 
     public void endCall() {
-        cookies().add(TAMAIVRContext.SWITCH_TO_DIAL_STATE, String.valueOf(false));
+        kooKooIVRContext.addToCallSession(TAMAIVRContext.SWITCH_TO_DIAL_STATE, String.valueOf(false));
     }
 
     public int numberOfCliniciansCalled() {
-        String value = cookies().getValue(NUMBER_OF_CLINICIANS_CALLED);
+        String value = kooKooIVRContext.getFromCallSession(NUMBER_OF_CLINICIANS_CALLED);
         return StringUtils.isEmpty(value) ? 0 : Integer.valueOf(value);
     }
 
     public int anotherClinicianCalled() {
         int numberOfCliniciansCalled = numberOfCliniciansCalled() + 1;
-        cookies().add(NUMBER_OF_CLINICIANS_CALLED, String.valueOf(numberOfCliniciansCalled));
+        kooKooIVRContext.addToCallSession(NUMBER_OF_CLINICIANS_CALLED, String.valueOf(numberOfCliniciansCalled));
         return numberOfCliniciansCalled;
     }
 }

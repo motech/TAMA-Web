@@ -25,7 +25,7 @@ public class WeeklyOutboxMessageBuilder implements OutboxMessageBuilder {
     public boolean canHandle(OutboundVoiceMessage voiceMessage) {
         VoiceMessageType voiceMessageType = voiceMessage.getVoiceMessageType();
 
-        if (!allPatients.get(voiceMessage.getPartyId()).isOnWeeklyPillReminder()) {
+        if (!allPatients.get(voiceMessage.getExternalId()).isOnWeeklyPillReminder()) {
             return false;
         }
         return voiceMessageType != null && TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO.equals(voiceMessageType.getVoiceMessageTypeName());

@@ -16,7 +16,6 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.outbox.OutboxContextForTest;
 import org.motechproject.tama.outbox.factory.VoiceMessageResponseFactory;
 import org.motechproject.tama.outbox.service.OutboxEventLogger;
-import org.motechproject.util.Cookies;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
@@ -34,8 +33,6 @@ public class OutboxControllerTest {
     private TamaIVRMessage tamaIvrMessage;
     @Mock
     private TAMAIVRContext tamaivrContext;
-    @Mock
-    private Cookies cookies;
     @Mock
     private VoiceMessageResponseFactory messageResponseFactory;
     @Mock

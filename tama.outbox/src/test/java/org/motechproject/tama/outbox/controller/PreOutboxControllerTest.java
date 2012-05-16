@@ -2,10 +2,10 @@ package org.motechproject.tama.outbox.controller;
 
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.ivr.domain.IVRMessage;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
-import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;

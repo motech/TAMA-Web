@@ -8,7 +8,6 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.tama.ivr.domain.CallState;
-import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,8 +28,6 @@ public class TAMAIVRContextTest {
     @Mock
     private KookooRequest kookooRequest;
     @Mock
-    private Cookies cookies;
-    @Mock
     private KooKooIVRContext kooKooIVRContext;
     @Mock
     private HttpSession httpSession;
@@ -41,7 +38,6 @@ public class TAMAIVRContextTest {
     public void setUp() {
         initMocks(this);
         when(kooKooIVRContext.httpRequest()).thenReturn(request);
-        when(kooKooIVRContext.cookies()).thenReturn(cookies);
         when(request.getSession()).thenReturn(httpSession);
     }
 
@@ -51,7 +47,7 @@ public class TAMAIVRContextTest {
 
         when(kookooRequest.getCid()).thenReturn(callerId);
 
-        tamaivrContext = new TAMAIVRContext(kookooRequest, request, cookies);
+        tamaivrContext = new TAMAIVRContext(kookooRequest, request);
         tamaivrContext.initialize();
 
         verify(httpSession).setAttribute(TAMAIVRContext.NUMBER_OF_ATTEMPTS, "0");
@@ -63,7 +59,7 @@ public class TAMAIVRContextTest {
         tamaivrContext = new TAMAIVRContext(kooKooIVRContext);
         tamaivrContext.resetForMenuRepeat();
 
-        verify(cookies).add("LastCompletedTree", null);
+        verify(kooKooIVRContext).addToCallSession("LastCompletedTree", null);
         verify(kooKooIVRContext).currentDecisionTreePath("");
         verify(httpSession).setAttribute("PillRegimen", null);
         verify(httpSession).setAttribute("call_state", CallState.AUTHENTICATED.toString());

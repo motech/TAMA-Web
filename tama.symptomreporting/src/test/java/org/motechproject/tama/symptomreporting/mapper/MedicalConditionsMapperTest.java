@@ -1,7 +1,9 @@
 package org.motechproject.tama.symptomreporting.mapper;
 
 import junit.framework.Assert;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.patient.builder.LabResultBuilder;
@@ -62,7 +64,8 @@ public class MedicalConditionsMapperTest {
         MedicalCondition medicalCondition = mapper.map();
 
         Assert.assertEquals("Male", medicalCondition.gender());
-        Assert.assertEquals(40, medicalCondition.age());
+        Assert.assertEquals(new Period(patient.getDateOfBirth(), DateTime.now().toLocalDate()).getYears(),
+                medicalCondition.age());
         Assert.assertEquals(60, medicalCondition.cd4Count());
         Assert.assertEquals("Regimen I", medicalCondition.regimenName());
     }

@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.ivr.model.CallDirection;
+import org.motechproject.ivr.domain.CallDirection;
 import org.motechproject.model.Time;
 import org.motechproject.server.pillreminder.api.contract.DosageResponse;
 import org.motechproject.server.pillreminder.api.contract.PillRegimenResponse;
