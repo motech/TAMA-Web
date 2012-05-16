@@ -1,6 +1,6 @@
 package org.motechproject.tama.ivr;
 
-import org.motechproject.ivr.domain.IVRMessage;
+import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tama.common.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

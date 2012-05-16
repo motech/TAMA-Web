@@ -1,25 +1,28 @@
 package org.motechproject.tama.outbox.context;
 
-import org.motechproject.ivr.kookoo.IvrContext;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
 
 // This class is created instead of using TAMAIVRContext because we might want to move Outbox IVR to platform
 public class OutboxContext {
+    private Cookies cookies;
+
     private static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
     private static final String OUTBOX_COMPLETED = "outboxCompleted";
-    private IvrContext kooKooIVRContext;
+    private KooKooIVRContext kooKooIVRContext;
     private HttpServletRequest request;
 
     protected OutboxContext() {
     }
 
-    public OutboxContext(IvrContext kooKooIVRContext) {
+    public OutboxContext(KooKooIVRContext kooKooIVRContext) {
         this.kooKooIVRContext = kooKooIVRContext;
+        this.cookies = kooKooIVRContext.cookies();
         this.request = kooKooIVRContext.httpRequest();
-        kooKooIVRContext.addToCallSession(OUTBOX_COMPLETED, Boolean.toString(false));
+        cookies.add(OUTBOX_COMPLETED, Boolean.toString(false));
     }
 
     public String partyId() {
@@ -27,11 +30,11 @@ public class OutboxContext {
     }
 
     public String lastPlayedMessageId() {
-        return kooKooIVRContext.getFromCallSession(LAST_PLAYED_VOICE_MESSAGE_ID);
+        return cookies.getValue(LAST_PLAYED_VOICE_MESSAGE_ID);
     }
 
     public void lastPlayedMessageId(String messageId) {
-        kooKooIVRContext.addToCallSession(LAST_PLAYED_VOICE_MESSAGE_ID, messageId);
+        cookies.add(LAST_PLAYED_VOICE_MESSAGE_ID, messageId);
     }
 
     public String preferredLanguage() {
@@ -43,10 +46,10 @@ public class OutboxContext {
     }
 
     public boolean hasOutboxCompleted() {
-        return kooKooIVRContext.<Boolean>getFromCallSession(OUTBOX_COMPLETED);
+        return Boolean.parseBoolean(cookies.getValue(OUTBOX_COMPLETED));
     }
 
     public void outboxCompleted() {
-        kooKooIVRContext.addToCallSession(OUTBOX_COMPLETED, Boolean.toString(true));
+        cookies.add(OUTBOX_COMPLETED, Boolean.toString(true));
     }
 }

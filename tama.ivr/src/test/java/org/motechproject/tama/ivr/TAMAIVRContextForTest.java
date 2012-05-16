@@ -1,7 +1,7 @@
 package org.motechproject.tama.ivr;
 
 import org.joda.time.DateTime;
-import org.motechproject.ivr.domain.CallDirection;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.domain.IVRAuthenticationStatus;

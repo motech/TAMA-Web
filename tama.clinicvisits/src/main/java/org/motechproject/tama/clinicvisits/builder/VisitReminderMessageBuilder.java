@@ -40,7 +40,7 @@ public class VisitReminderMessageBuilder implements OutboxMessageBuilder {
 
     @Override
     public void buildVoiceMessageResponse(KooKooIVRContext kooKooIVRContext, OutboxContext outboxContext, OutboundVoiceMessage outboundVoiceMessage, KookooIVRResponseBuilder ivrResponseBuilder) {
-        Patient patient = allPatients.get(outboundVoiceMessage.getExternalId());
+        Patient patient = allPatients.get(outboundVoiceMessage.getPartyId());
         DateTime visitDate = getVisit(outboundVoiceMessage).getConfirmedAppointmentDate();
 
         List<String> message = constructMessage(visitDate, patient);
@@ -77,7 +77,7 @@ public class VisitReminderMessageBuilder implements OutboxMessageBuilder {
     }
 
     private ClinicVisit getVisit(OutboundVoiceMessage outboundVoiceMessage) {
-        String externalId = outboundVoiceMessage.getExternalId();
+        String externalId = outboundVoiceMessage.getPartyId();
         String visitName = (String) outboundVoiceMessage.getParameters().get(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME);
         return allClinicVisits.get(externalId, visitName);
     }

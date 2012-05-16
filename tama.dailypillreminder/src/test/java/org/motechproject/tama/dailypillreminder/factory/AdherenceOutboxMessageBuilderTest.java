@@ -49,7 +49,7 @@ public class AdherenceOutboxMessageBuilderTest {
         public void setUp() {
             initMocks(this);
             when(outboxContext.partyId()).thenReturn(PARTY_ID);
-            when(outboundVoiceMessage.getExternalId()).thenReturn(PARTY_ID);
+            when(outboundVoiceMessage.getPartyId()).thenReturn(PARTY_ID);
             adherenceOutboxMessageBuilder = new AdherenceOutboxMessageBuilder(playAdherenceTrendFeedbackCommand, allPatients);
         }
     }

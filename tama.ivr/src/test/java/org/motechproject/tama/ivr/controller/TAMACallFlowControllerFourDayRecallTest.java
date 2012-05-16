@@ -3,7 +3,7 @@ package org.motechproject.tama.ivr.controller;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.ivr.domain.CallDirection;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;

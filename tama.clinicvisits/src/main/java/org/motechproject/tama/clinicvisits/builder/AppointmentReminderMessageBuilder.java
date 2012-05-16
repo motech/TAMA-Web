@@ -32,7 +32,7 @@ public class AppointmentReminderMessageBuilder implements OutboxMessageBuilder {
 
     @Override
     public void buildVoiceMessageResponse(KooKooIVRContext kooKooIVRContext, OutboxContext outboxContext, OutboundVoiceMessage outboundVoiceMessage, KookooIVRResponseBuilder ivrResponseBuilder) {
-        String clinicPhoneNumber = allPatients.get(outboundVoiceMessage.getExternalId()).getClinic().getPhone();
+        String clinicPhoneNumber = allPatients.get(outboundVoiceMessage.getPartyId()).getClinic().getPhone();
         List<String> allNumberFileNames = TamaIVRMessage.getAllNumberFileNames("0" + clinicPhoneNumber);
 
         ivrResponseBuilder.withPlayAudios(TamaIVRMessage.NEXT_CLINIC_VISIT_IS_DUE_PART1);

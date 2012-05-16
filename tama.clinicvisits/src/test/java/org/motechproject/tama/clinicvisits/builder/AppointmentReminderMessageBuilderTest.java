@@ -69,7 +69,7 @@ public class AppointmentReminderMessageBuilderTest {
         }
 
         private void initOutboundVoiceMessage() {
-            when(outboundVoiceMessage.getExternalId()).thenReturn(PARTY_ID);
+            when(outboundVoiceMessage.getPartyId()).thenReturn(PARTY_ID);
         }
 
         private void initOutboxContext() {

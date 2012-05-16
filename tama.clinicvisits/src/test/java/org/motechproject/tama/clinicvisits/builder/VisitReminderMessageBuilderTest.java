@@ -82,7 +82,7 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
         VoiceMessageType voiceMessageType = voiceMessageTypeIsVisitReminder();
         visitReminderVoiceMessage = new OutboundVoiceMessage();
         visitReminderVoiceMessage.setVoiceMessageType(voiceMessageType);
-        visitReminderVoiceMessage.setExternalId("patientId");
+        visitReminderVoiceMessage.setPartyId("patientId");
         setupParametersWithVisitName();
     }
 

@@ -3,13 +3,13 @@ package org.motechproject.tama.ivr.context;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
-import org.motechproject.ivr.kookoo.IvrContext;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
-import org.motechproject.ivr.domain.CallDirection;
+import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.domain.IVRAuthenticationStatus;
+import org.motechproject.util.Cookies;
 import org.motechproject.util.DateUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,27 +31,29 @@ public class TAMAIVRContext {
 
     protected KookooRequest kookooRequest;
     protected HttpServletRequest httpRequest;
-    protected IvrContext kooKooIVRContext;
+    private Cookies cookies;
+    private KooKooIVRContext kooKooIVRContext;
 
     protected TAMAIVRContext() {
     }
 
-    public TAMAIVRContext(IvrContext kooKooIVRContext) {
-        this(kooKooIVRContext.kooKooRequest(), kooKooIVRContext.httpRequest());
+    public TAMAIVRContext(KooKooIVRContext kooKooIVRContext) {
+        this(kooKooIVRContext.kooKooRequest(), kooKooIVRContext.httpRequest(), kooKooIVRContext.cookies());
         this.kooKooIVRContext = kooKooIVRContext;
     }
 
     public TAMAIVRContext(TAMAIVRContext tamaivrContext) {
-        this(tamaivrContext.kookooRequest, tamaivrContext.httpRequest);
+        this(tamaivrContext.kookooRequest, tamaivrContext.httpRequest, tamaivrContext.cookies);
         this.kooKooIVRContext = tamaivrContext.kooKooIVRContext;
     }
 
-    TAMAIVRContext(KookooRequest kookooRequest, HttpServletRequest httpRequest) {
+    TAMAIVRContext(KookooRequest kookooRequest, HttpServletRequest httpRequest, Cookies cookies) {
         this.kookooRequest = kookooRequest;
         this.httpRequest = httpRequest;
+        this.cookies = cookies;
     }
 
-    public IvrContext getKooKooIVRContext() {
+    public KooKooIVRContext getKooKooIVRContext() {
         return kooKooIVRContext;
     }
 
@@ -162,12 +164,12 @@ public class TAMAIVRContext {
     }
 
     public void lastCompletedTree(String treeName) {
-        kooKooIVRContext.addToCallSession(LAST_COMPLETED_TREE, treeName);
+        cookies.add(LAST_COMPLETED_TREE, treeName);
         addLastCompletedTreeToListOfCompletedTrees(treeName);
     }
 
     public String lastCompletedTree() {
-        return kooKooIVRContext.getFromCallSession(LAST_COMPLETED_TREE);
+        return cookies.getValue(LAST_COMPLETED_TREE);
     }
 
     public String requestedCallerId() {
@@ -175,7 +177,7 @@ public class TAMAIVRContext {
     }
 
     public boolean isDialState() {
-        return kooKooIVRContext.<Boolean>getFromCallSession(SWITCH_TO_DIAL_STATE);
+        return Boolean.valueOf(cookies.getValue(SWITCH_TO_DIAL_STATE));
     }
 
     public String preferredLanguage() {
@@ -202,20 +204,20 @@ public class TAMAIVRContext {
     }
 
     public void setPlayedHealthTipsCount(int count) {
-        this.kooKooIVRContext.addToCallSession(HEALTH_TIPS_PLAYED_COUNT, String.valueOf(count));
+        this.cookies.add(HEALTH_TIPS_PLAYED_COUNT, String.valueOf(count));
     }
 
     public int getPlayedHealthTipsCount() {
-        String value = kooKooIVRContext.getFromCallSession(HEALTH_TIPS_PLAYED_COUNT);
+        String value = this.cookies.getValue(HEALTH_TIPS_PLAYED_COUNT);
         return value == null ? 0 : Integer.valueOf(value);
     }
 
     public void setLastPlayedHealthTip(String message) {
-        kooKooIVRContext.addToCallSession(LAST_PLAYED_HEALTH_TIP, message);
+        this.cookies.add(LAST_PLAYED_HEALTH_TIP, message);
     }
 
     public String getLastPlayedHealthTip() {
-        return kooKooIVRContext.getFromCallSession(LAST_PLAYED_HEALTH_TIP);
+        return this.cookies.getValue(LAST_PLAYED_HEALTH_TIP);
     }
 
     public void setDataToLog(HashMap<String, String> map) {
@@ -225,4 +227,9 @@ public class TAMAIVRContext {
     public boolean isAnswered() {
         return kooKooIVRContext.isAnswered();
     }
+
+    protected Cookies cookies() {
+        return cookies;
+    }
+
 }

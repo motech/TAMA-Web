@@ -33,7 +33,7 @@ public class AdherenceOutboxMessageBuilder implements OutboxMessageBuilder {
     }
 
     private boolean patientIsNotOnDailyPillReminder(OutboundVoiceMessage voiceMessage) {
-        return !allPatients.get(voiceMessage.getExternalId()).callPreference().isDaily();
+        return !allPatients.get(voiceMessage.getPartyId()).callPreference().isDaily();
     }
 
     @Override

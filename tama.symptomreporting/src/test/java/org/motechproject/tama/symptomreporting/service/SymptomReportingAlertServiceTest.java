@@ -9,7 +9,7 @@ import org.motechproject.server.alerts.contract.UpdateCriteria;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
-import org.motechproject.server.alerts.contract.AlertService;
+import org.motechproject.server.alerts.service.AlertService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.repository.AllAuditEvents;
 import org.motechproject.tama.patient.builder.PatientBuilder;

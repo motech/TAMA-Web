@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
-import org.motechproject.outbox.api.domain.OutboundVoiceMessageStatus;
 import org.motechproject.outbox.api.service.VoiceOutboxService;
 import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.common.TAMAConstants;
@@ -129,14 +128,14 @@ public class OutboxServiceTest {
         ArgumentCaptor<OutboundVoiceMessage> messageCaptor = ArgumentCaptor.forClass(OutboundVoiceMessage.class);
         verify(voiceOutboxService).addMessage(messageCaptor.capture());
 
-        assertEquals(patientId, messageCaptor.getValue().getExternalId());
+        assertEquals(patientId, messageCaptor.getValue().getPartyId());
         assertEquals(voiceMessageTypeName, messageCaptor.getValue().getVoiceMessageType().getVoiceMessageTypeName());
     }
 
     @Test
     public void hasPendingOutboxMessages() {
         final String patientDocId = "patientId";
-        when(voiceOutboxService.getNumberOfMessages(patientDocId, OutboundVoiceMessageStatus.PENDING)).thenReturn(0);
+        when(voiceOutboxService.getNumberPendingMessages(patientDocId)).thenReturn(0);
         assertFalse(outboxService.hasPendingOutboxMessages(patientDocId));
     }
 
@@ -200,7 +199,7 @@ public class OutboxServiceTest {
 
         ArgumentCaptor<OutboundVoiceMessage> messageCaptor = ArgumentCaptor.forClass(OutboundVoiceMessage.class);
         verify(outboxEventHandler).onCreate(messageCaptor.capture());
-        assertEquals(PATIENT_ID, messageCaptor.getValue().getExternalId());
+        assertEquals(PATIENT_ID, messageCaptor.getValue().getPartyId());
     }
 
     public void setUpEventWithExternalId() {
@@ -216,6 +215,6 @@ public class OutboxServiceTest {
     }
 
     private void setUpOutboxWithAtLeastOneUnreadMessage() {
-        when(voiceOutboxService.getNumberOfMessages("patientDocId", OutboundVoiceMessageStatus.PENDING)).thenReturn(1);
+        when(voiceOutboxService.getNumberPendingMessages("patientDocId")).thenReturn(1);
     }
 }

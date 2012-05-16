@@ -1,8 +1,8 @@
 package org.motechproject.tama.outbox.service;
 
 import org.motechproject.model.MotechEvent;
+import org.motechproject.outbox.api.domain.MessagePriority;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
-import org.motechproject.outbox.api.domain.OutboundVoiceMessageStatus;
 import org.motechproject.outbox.api.domain.VoiceMessageType;
 import org.motechproject.outbox.api.service.VoiceOutboxService;
 import org.motechproject.tama.common.CallTypeConstants;
@@ -62,11 +62,11 @@ public class OutboxService implements Outbox {
     }
 
     public boolean hasPendingOutboxMessages(String patientDocumentId) {
-        return voiceOutboxService.getNumberOfMessages(patientDocumentId, OutboundVoiceMessageStatus.PENDING) != 0;
+        return voiceOutboxService.getNumberPendingMessages(patientDocumentId) != 0;
     }
 
     public boolean hasPendingOutboxMessages(String patientDocumentId, String voiceMessageTypeName) {
-        return voiceOutboxService.getNumberOfMessages(patientDocumentId, OutboundVoiceMessageStatus.PENDING, voiceMessageTypeName) != 0;
+        return voiceOutboxService.getNumberPendingMessages(patientDocumentId, voiceMessageTypeName) != 0;
     }
 
     public String addMessage(String patientId, String voiceMessageTypeName) {
@@ -75,10 +75,11 @@ public class OutboxService implements Outbox {
 
     public String addMessage(String patientId, String voiceMessageTypeName, Map<String, Object> parameterMap) {
         OutboundVoiceMessage voiceMessage = new OutboundVoiceMessage();
-        voiceMessage.setExternalId(patientId);
+        voiceMessage.setPartyId(patientId);
         voiceMessage.setParameters(parameterMap);
         voiceMessage.setExpirationDate(DateUtil.today().plusWeeks(1).toDate());
         VoiceMessageType voiceMessageType = new VoiceMessageType();
+        voiceMessageType.setPriority(MessagePriority.MEDIUM);
         voiceMessageType.setVoiceMessageTypeName(voiceMessageTypeName);
         voiceMessage.setVoiceMessageType(voiceMessageType);
         voiceOutboxService.addMessage(voiceMessage);

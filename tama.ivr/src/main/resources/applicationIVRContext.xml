@@ -23,7 +23,6 @@
     <import resource="classpath:applicationPillReminderAPI.xml"/>
     <import resource="classpath:inboundEventChannelAdapter.xml"/>
     <import resource="classpath:applicationDecisionTree.xml"/>
-    <import resource="classpath:applicationPlatformIVR.xml"/>
     <import resource="classpath:applicationIvrKookoo.xml"/>
     <import resource="classpath:applicationPlatformScheduler.xml"/>
     <import resource="classpath:applicationSmsAPI.xml"/>

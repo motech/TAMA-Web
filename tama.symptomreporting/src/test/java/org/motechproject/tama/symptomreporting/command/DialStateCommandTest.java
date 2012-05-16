@@ -9,6 +9,7 @@ import org.motechproject.tama.symptomreporting.SymptomReportingContextForTest;
 import org.motechproject.tama.symptomreporting.factory.SymptomReportingContextFactory;
 import org.motechproject.tama.symptomreporting.service.SymptomReportingAlertService;
 import org.motechproject.tama.symptomreporting.service.SymptomReportingService;
+import org.motechproject.util.Cookies;
 
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -19,6 +20,8 @@ public class DialStateCommandTest {
 
     public static final String CALL_LOG_ID = "callLogId";
     public static final String PATIENT_DOC_ID = "patientDocId";
+    @Mock
+    private Cookies cookies;
     @Mock
     private KooKooIVRContext kooKooIVRContext;
     @Mock
@@ -35,6 +38,7 @@ public class DialStateCommandTest {
         initMocks(this);
         symptomReportingContext = new SymptomReportingContextForTest().patientDocumentId(PATIENT_DOC_ID).callDetailRecordId(CALL_LOG_ID);
         when(symptomReportingContextFactory.create(kooKooIVRContext)).thenReturn(symptomReportingContext);
+        when(kooKooIVRContext.cookies()).thenReturn(cookies);
     }
 
     @Test
