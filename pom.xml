@@ -67,6 +67,7 @@
         <spring-security.version>3.0.5.RELEASE</spring-security.version>
         <build.dir>build</build.dir>
         <motech.version>0.9.1-SNAPSHOT</motech.version>
+        <powermock.version>1.4.9</powermock.version>
     </properties>
     <dependencies>
         <dependency>
@@ -77,7 +78,7 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
-            <version>1.4.9</version>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -89,13 +90,13 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4-rule-agent</artifactId>
-            <version>1.4.9</version>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
-            <version>1.4.9</version>
+            <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -172,7 +173,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>4.9</version>
             <scope>test</scope>
         </dependency>
         <!-- Spring dependencies -->
@@ -281,7 +282,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.9</version>
                 <configuration>
-                    <argLine>-XX:MaxPermSize=1024M -ea</argLine>
+                    <argLine>-XX:MaxPermSize=1024M -ea
+                        -javaagent:${user.home}/.m2/repository/org/powermock/powermock-module-javaagent/${powermock.version}/powermock-module-javaagent-${powermock.version}.jar
+                    </argLine>
                     <printSummary>true</printSummary>
                     <includes>
                         <include>**/*Test*.java</include>
