@@ -182,7 +182,7 @@ public class HealthTipRuleServiceTest {
         assertEquals("3", healthTips.get("HT020a"));
     }
 
-    //  rule "Less than 12 months but more than 2 months into ART and date of last CD4 test more than two and half months ago"
+    //  rule "Less than 12 months but more than 2 months into ART and date of baseline CD4 test more than two and half months ago"
     @Test
     public void shouldReturnRelevantPriority1HealthTipsWhenPatientIsLessThan12Months_AndMoreThan2MonthsIntoART_AndLastCD4TestWasMoreThanTwoAndHalfMonthsAgo() {
         setupLabResults(DateUtil.today().minusMonths(3), "300", DateUtil.today().minusMonths(5), "450");
@@ -192,7 +192,7 @@ public class HealthTipRuleServiceTest {
         assertEquals("1", healthTips.get("HT009a"));
     }
 
-    //  rule "Less than 12 months but more than 2 months into ART and date of last CD4 test less than two and half months ago"
+    //  rule "Less than 12 months but more than 2 months into ART and date of baseline CD4 test less than two and half months ago"
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientIsLessThan12Months_AndMoreThan2MonthsIntoART_AndLastCD4TestWasLessThanTwoAndHalfMonthsAgo() {
         setupLabResults(DateUtil.today().minusMonths(1), "300", DateUtil.today().minusMonths(2), "450");
@@ -203,7 +203,7 @@ public class HealthTipRuleServiceTest {
     }
 
 
-    //  rule "Greater than 12 months into ART, last CD4 count < 350 and date of last CD4 test more than two and half months ago but less than five and a half months ago"
+    //  rule "Greater than 12 months into ART, baseline CD4 count < 350 and date of baseline CD4 test more than two and half months ago but less than five and a half months ago"
     @Test
     public void shouldReturnRelevantPriority1HealthTipsWhenPatientIsMoreThan12MonthsIntoART_AndLatestCD4LessThan350_AndLastCD4TestWasMoreThanTwoAndHalfMonthsAgo_AndLessThanFiveAndHalfMonths() {
         setupLabResults(DateUtil.today().minusMonths(3), "300", DateUtil.today().minusMonths(4), "325");
@@ -212,7 +212,7 @@ public class HealthTipRuleServiceTest {
         assertEquals("1", healthTips.get("HT010a"));
     }
 
-    //  rule "Greater than 12 months into ART, last CD4 count < 350 and date of last CD4 test less than two and half months ago"
+    //  rule "Greater than 12 months into ART, baseline CD4 count < 350 and date of baseline CD4 test less than two and half months ago"
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientIsMoreThan12MonthsIntoART_AndLatestCD4LessThan350_AndLastCD4TestWasLessThanTwoAndHalfMonthsAgo() {
         setupLabResults(DateUtil.today().minusMonths(2), "300", DateUtil.today().minusMonths(1), "300");
@@ -221,19 +221,19 @@ public class HealthTipRuleServiceTest {
         assertEquals("3", healthTips.get("HT010a"));
     }
 
-    //  rule "Greater than 12 months into ART, last CD4 count > 350 and date of last CD4 test more than five and a half months ago"
+    //  rule "Greater than 12 months into ART, baseline CD4 count > 350 and date of baseline CD4 test more than five and a half months ago"
     @Test
     public void shouldReturnRelevantPriority1HealthTipsWhenPatientIsMoreThan12MonthsIntoART_AndLatestCD4MoreThan350_AndLastCD4TestWasMoreThanFiveAndHalfMonthsAgo() {
-        setupLabResults(DateUtil.today().minusMonths(9), "700", DateUtil.today().minusMonths(10), "150");
+        setupLabResults(DateUtil.today().minusMonths(9), "150", DateUtil.today().minusMonths(10), "700");
         when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(15), patient);
         assertEquals("1", healthTips.get("HT010a"));
     }
 
-    //  rule "Greater than 12 months into ART, last CD4 count > 350 and date of last CD4 test less than less than five and a half months ago but more than two and a half months ago"
+    //  rule "Greater than 12 months into ART, baseline CD4 count > 350 and date of baseline CD4 test less than less than five and a half months ago but more than two and a half months ago"
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientIsMoreThan12MonthsIntoART_AndLatestCD4MoreThan350_AndLastCD4TestWasLessThanFiveAndHalfMonthsAgo_AndMoreThanTwoAndHalfMonthsAgo() {
-        setupLabResults(DateUtil.today().minusMonths(3), "500", DateUtil.today().minusMonths(4), "150");
+        setupLabResults(DateUtil.today().minusMonths(3), "150", DateUtil.today().minusMonths(4), "500");
         when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(15), patient);
         assertEquals("3", healthTips.get("HT010a"));

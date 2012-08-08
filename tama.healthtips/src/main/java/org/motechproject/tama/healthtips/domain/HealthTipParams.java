@@ -49,4 +49,8 @@ public class HealthTipParams {
     public int lastCD4Count() {
         return labResults.latestCD4Count();
     }
+
+    public int baselineCD4Count() {
+        return labResults.getBaseLineCD4Count();
+    }
 }
