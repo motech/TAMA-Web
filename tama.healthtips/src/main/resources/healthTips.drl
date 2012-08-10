@@ -176,7 +176,7 @@ end
 rule "Greater than 12 months into ART, last CD4 count < 350 and date of last CD4 test more than two and half months ago but less than five and a half months ago"
     when
         HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
-        HealthTipParams(baselineCD4Count < 350)
+        HealthTipParams(lastCD4Count < 350)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest < 22)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest >= 10)
     then
@@ -188,7 +188,7 @@ end
 rule "Greater than 12 months into ART, last CD4 count < 350 and date of last CD4 test less than two and half months ago"
     when
         HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
-        HealthTipParams(baselineCD4Count < 350)
+        HealthTipParams(lastCD4Count < 350)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest < 10)
     then
         for (String file : Arrays.asList("HT010a")) {
@@ -199,7 +199,7 @@ end
 rule "Greater than 12 months into ART, last CD4 count > 350 and date of last CD4 test more than five and a half months ago"
     when
         HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
-        HealthTipParams(baselineCD4Count > 350)
+        HealthTipParams(lastCD4Count > 350)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest >= 22)
     then
         for (String file : Arrays.asList("HT010a")) {
@@ -210,7 +210,7 @@ end
 rule "Greater than 12 months into ART, last CD4 count > 350 and date of last CD4 test less than less than five and a half months ago but more than two and a half months ago"
     when
         HealthTipParams(numberOfMonthsSinceTreatmentStarted >= 12)
-        HealthTipParams(baselineCD4Count > 350)
+        HealthTipParams(lastCD4Count > 350)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest < 22)
         HealthTipParams(numberOfWeeksSinceLastCD4LabTest >= 10)
     then

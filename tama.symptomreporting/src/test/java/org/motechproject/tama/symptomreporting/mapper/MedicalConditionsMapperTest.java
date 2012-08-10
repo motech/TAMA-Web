@@ -15,12 +15,11 @@ import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
-import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 
-public class MedicalConditionsMapperTest extends BaseUnitTest {
+public class MedicalConditionsMapperTest {
 
     private Patient patient;
     private LabResult labResult;
@@ -59,7 +58,6 @@ public class MedicalConditionsMapperTest extends BaseUnitTest {
 
     @Test
     public void mapPatientDetails() {
-        mockCurrentDate(new LocalDate(2011, 5, 3));
         MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
