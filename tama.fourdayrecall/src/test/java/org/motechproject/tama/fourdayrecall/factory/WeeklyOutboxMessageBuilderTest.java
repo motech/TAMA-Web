@@ -42,7 +42,7 @@ public class WeeklyOutboxMessageBuilderTest {
         @Before
         public void setup() {
             initMocks(this);
-            when(outboundVoiceMessage.getPartyId()).thenReturn(PARTY_ID);
+            when(outboundVoiceMessage.getExternalId()).thenReturn(PARTY_ID);
             ivrResponseBuilder = new KookooIVRResponseBuilder();
             weeklyOutboxMessageFactory = new WeeklyOutboxMessageBuilder(allPatients);
         }
