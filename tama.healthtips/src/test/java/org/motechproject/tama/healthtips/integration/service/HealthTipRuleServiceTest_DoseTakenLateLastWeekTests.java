@@ -55,7 +55,7 @@ public class HealthTipRuleServiceTest_DoseTakenLateLastWeekTests {
                 LabResultBuilder.startRecording().withDefaults().withTestDate(DateUtil.today().minusMonths(3)).withResult("300").withLabTest(labTest).build(),
                 LabResultBuilder.startRecording().withDefaults().withTestDate(DateUtil.today().minusMonths(5)).withResult("400").withLabTest(labTest).build());
         labResults = new LabResults(labResultsForPatient);
-        when(allLabResults.findLatestLabResultsByPatientId("pid")).thenReturn(labResults);
+        when(allLabResults.allLabResults("pid")).thenReturn(labResults);
     }
 
     @Before

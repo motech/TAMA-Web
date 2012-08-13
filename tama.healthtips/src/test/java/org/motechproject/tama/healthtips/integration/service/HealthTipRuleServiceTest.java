@@ -66,7 +66,7 @@ public class HealthTipRuleServiceTest {
 
     @Test
     public void shouldReturnRelevantPriority2HealthTipsWhenPatientIsLessThan1MonthIntoART() {
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
         assertEquals("2", healthTips.get("HT002a"));
         assertEquals("2", healthTips.get("HT001a"));
@@ -82,7 +82,7 @@ public class HealthTipRuleServiceTest {
 
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientIsLessThan1MonthIntoART() {
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
         assertEquals("3", healthTips.get("HT033a"));
         assertEquals("3", healthTips.get("HT034a"));
@@ -96,7 +96,7 @@ public class HealthTipRuleServiceTest {
 
     @Test
     public void shouldReturnRelevantPriority2HealthTipsWhenPatientIsOnDailyPillReminder_AndLessThan1MonthIntoART() {
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
         assertEquals("2", healthTips.get("HT014a"));
         assertEquals("2", healthTips.get("HT019a"));
@@ -106,7 +106,7 @@ public class HealthTipRuleServiceTest {
     @Test
     public void shouldReturnRelevantPriority2HealthTipsWhenPatientIsNotOnDailyPillReminder_AndLessThan1MonthIntoART() {
         patient = PatientBuilder.startRecording().withCallPreference(CallPreference.FourDayRecall).withId("patientDocId").build();
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(10), patient);
         assertEquals("2", healthTips.get("HT015a"));
         assertEquals("2", healthTips.get("HT020a"));
@@ -117,7 +117,7 @@ public class HealthTipRuleServiceTest {
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientIsMoreThan1MonthIntoART_AndOnDailyPillReminder() {
         setupLabResults(DateUtil.today().minusMonths(3), "300", DateUtil.today().minusMonths(5), "450");
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(31), patient);
         assertEquals("3", healthTips.get("HT021a"));
         assertEquals("3", healthTips.get("HT014a"));
@@ -130,7 +130,7 @@ public class HealthTipRuleServiceTest {
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientIsMoreThan1MonthIntoART_AndNotOnDailyPillReminder() {
         setupLabResults(DateUtil.today().minusMonths(3), "300", DateUtil.today().minusMonths(5), "450");
         patient = PatientBuilder.startRecording().withCallPreference(CallPreference.FourDayRecall).withId("patientDocId").build();
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusDays(40), patient);
         assertEquals("3", healthTips.get("HT022a"));
         assertEquals("3", healthTips.get("HT015a"));
@@ -146,7 +146,7 @@ public class HealthTipRuleServiceTest {
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientMoreThanTwoMonthsIntoART() {
         setupLabResults(DateUtil.today().minusMonths(1), "300", DateUtil.today().minusMonths(2), "450");
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(4), patient);
         assertOnPriority3HealthTipsForPatientMoreThanTwoMonthsIntoART(healthTips);
     }
@@ -155,7 +155,7 @@ public class HealthTipRuleServiceTest {
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientMoreThan8WeeksAndLessThan3MonthsIntoART() {
         setupLabResults(DateUtil.today().minusMonths(1), "300", DateUtil.today().minusMonths(2), "450");
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(2).minusWeeks(1), patient);
         assertOnPriority3HealthTipsForPatientMoreThanTwoMonthsIntoART(healthTips);
     }
@@ -163,7 +163,7 @@ public class HealthTipRuleServiceTest {
     //  rule "Greater than 2 months into ART and patient on Daily Pill Reminder"
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientMoreThanTwoMonthsIntoART_AndPatientOnDailyPillReminder() {
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         patient = PatientBuilder.startRecording().withCallPreference(CallPreference.DailyPillReminder).withId("patientDocId").build();
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(4), patient);
         assertEquals("3", healthTips.get("HT021a"));
@@ -174,7 +174,7 @@ public class HealthTipRuleServiceTest {
     //  rule "Greater than 2 months into ART and patient not on Daily Pill Reminder"
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientMoreThanTwoMonthsIntoART_AndPatientNotOnPillReminder() {
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         patient = PatientBuilder.startRecording().withCallPreference(CallPreference.FourDayRecall).withId("patientDocId").build();
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(4), patient);
         assertEquals("3", healthTips.get("HT022a"));
@@ -186,7 +186,7 @@ public class HealthTipRuleServiceTest {
     @Test
     public void shouldReturnRelevantPriority1HealthTipsWhenPatientIsLessThan12Months_AndMoreThan2MonthsIntoART_AndLastCD4TestWasMoreThanTwoAndHalfMonthsAgo() {
         setupLabResults(DateUtil.today().minusMonths(3), "300", DateUtil.today().minusMonths(5), "450");
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(6), patient);
         assertEquals("1", healthTips.get("HT008a"));
         assertEquals("1", healthTips.get("HT009a"));
@@ -196,7 +196,7 @@ public class HealthTipRuleServiceTest {
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientIsLessThan12Months_AndMoreThan2MonthsIntoART_AndLastCD4TestWasLessThanTwoAndHalfMonthsAgo() {
         setupLabResults(DateUtil.today().minusMonths(1), "300", DateUtil.today().minusMonths(2), "450");
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(3), patient);
         assertEquals("3", healthTips.get("HT008a"));
         assertEquals("3", healthTips.get("HT009a"));
@@ -207,7 +207,7 @@ public class HealthTipRuleServiceTest {
     @Test
     public void shouldReturnRelevantPriority1HealthTipsWhenPatientIsMoreThan12MonthsIntoART_AndLatestCD4LessThan350_AndLastCD4TestWasMoreThanTwoAndHalfMonthsAgo_AndLessThanFiveAndHalfMonths() {
         setupLabResults(DateUtil.today().minusMonths(3), "300", DateUtil.today().minusMonths(4), "325");
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(15), patient);
         assertEquals("1", healthTips.get("HT010a"));
     }
@@ -216,7 +216,7 @@ public class HealthTipRuleServiceTest {
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientIsMoreThan12MonthsIntoART_AndLatestCD4LessThan350_AndLastCD4TestWasLessThanTwoAndHalfMonthsAgo() {
         setupLabResults(DateUtil.today().minusMonths(2), "300", DateUtil.today().minusMonths(1), "300");
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(15), patient);
         assertEquals("3", healthTips.get("HT010a"));
     }
@@ -225,7 +225,7 @@ public class HealthTipRuleServiceTest {
     @Test
     public void shouldReturnRelevantPriority1HealthTipsWhenPatientIsMoreThan12MonthsIntoART_AndLatestCD4MoreThan350_AndLastCD4TestWasMoreThanFiveAndHalfMonthsAgo() {
         setupLabResults(DateUtil.today().minusMonths(9), "700", DateUtil.today().minusMonths(10), "150");
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(15), patient);
         assertEquals("1", healthTips.get("HT010a"));
     }
@@ -234,7 +234,7 @@ public class HealthTipRuleServiceTest {
     @Test
     public void shouldReturnRelevantPriority3HealthTipsWhenPatientIsMoreThan12MonthsIntoART_AndLatestCD4MoreThan350_AndLastCD4TestWasLessThanFiveAndHalfMonthsAgo_AndMoreThanTwoAndHalfMonthsAgo() {
         setupLabResults(DateUtil.today().minusMonths(3), "500", DateUtil.today().minusMonths(4), "150");
-        when(allLabResults.findLatestLabResultsByPatientId("patientDocId")).thenReturn(labResults);
+        when(allLabResults.allLabResults("patientDocId")).thenReturn(labResults);
         Map<String, String> healthTips = healthTipRuleService.getHealthTipsFromRuleEngine(DateUtil.today().minusMonths(15), patient);
         assertEquals("3", healthTips.get("HT010a"));
     }

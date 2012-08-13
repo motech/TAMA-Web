@@ -40,7 +40,7 @@ public class AllLabResults extends AuditableCouchRepository<LabResult> {
     }
 
     @View(name = "find_by_patientId_and_labTest_id", map = "function(doc) {if (doc.documentType =='LabResult' && doc.patientId && doc.labTest_id) {emit([doc.patientId, doc.labTest_id], doc._id);}}")
-    public LabResults findLatestLabResultsByPatientId(String patientId) {
+    public LabResults allLabResults(String patientId) {
         LabResults latestLabResults = new LabResults();
 
         for (LabTest labTest : allLabTests.getAll()) {

@@ -15,7 +15,6 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
-import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
 import org.motechproject.tama.symptomreporting.mapper.MedicalConditionsMapper;
 import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
@@ -61,7 +60,7 @@ public class SymptomReportingService {
 
     public MedicalCondition getPatientMedicalConditions(String patientId) {
         Patient patient = allPatients.get(patientId);
-        LabResults labResults = allLabResults.findLatestLabResultsByPatientId(patientId);
+        LabResults labResults = allLabResults.allLabResults(patientId);
         VitalStatistics vitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(patientId);
         TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientId);
         TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);

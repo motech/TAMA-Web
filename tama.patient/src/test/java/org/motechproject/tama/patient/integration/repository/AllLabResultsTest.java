@@ -95,7 +95,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         allLabResults.add(labResult2, USER_NAME);
         markForDeletion(labResult2);
 
-        LabResults results = allLabResults.findLatestLabResultsByPatientId(patientId);
+        LabResults results = allLabResults.allLabResults(patientId);
 
         assertEquals(2, results.size());
 
@@ -122,7 +122,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
         allLabResults.add(labResult2, USER_NAME);
         markForDeletion(labResult2);
 
-        LabResults results = allLabResults.findLatestLabResultsByPatientId(patientId);
+        LabResults results = allLabResults.allLabResults(patientId);
 
         assertEquals(1, results.size());
 
@@ -172,7 +172,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
 
         allLabTestsCache.refresh();
 
-        LabResults labResultsForPatient = allLabResults.findLatestLabResultsByPatientId(patientId);
+        LabResults labResultsForPatient = allLabResults.allLabResults(patientId);
 
         assertEquals(0, labResultsForPatient.size());
 
@@ -180,7 +180,7 @@ public class AllLabResultsTest extends SpringIntegrationTest {
 
         allLabResults.upsert(labResultFromUI, USER_NAME);
 
-        labResultsForPatient = allLabResults.findLatestLabResultsByPatientId(patientId);
+        labResultsForPatient = allLabResults.allLabResults(patientId);
 
         assertEquals(1, labResultsForPatient.size());
         assertLabResult("2", labResultsForPatient.get(0));

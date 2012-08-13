@@ -315,7 +315,7 @@ public class PatientControllerTest {
             when(allPatients.findByIdAndClinicId(PATIENT_ID, patient.getClinic_id())).thenReturn(patient);
             when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
-            when(allLabResults.findLatestLabResultsByPatientId(PATIENT_ID)).thenReturn(new LabResults());
+            when(allLabResults.allLabResults(PATIENT_ID)).thenReturn(new LabResults());
 
             String returnPage = controller.show(PATIENT_ID, uiModel, request);
 
@@ -351,7 +351,7 @@ public class PatientControllerTest {
             when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.earliestTreatmentAdvice(PATIENT_ID)).thenReturn(null);
-            when(allLabResults.findLatestLabResultsByPatientId(PATIENT_ID)).thenReturn(new LabResults());
+            when(allLabResults.allLabResults(PATIENT_ID)).thenReturn(new LabResults());
             when(allPatients.findByIdAndClinicId(PATIENT_ID, CLINIC_ID)).thenReturn(patient);
 
             ModelAndView modelAndView = controller.showSummary(PATIENT_ID, uiModel, request);

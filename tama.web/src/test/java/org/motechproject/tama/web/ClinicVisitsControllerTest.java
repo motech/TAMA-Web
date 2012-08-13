@@ -107,7 +107,7 @@ public class ClinicVisitsControllerTest {
             clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, allVitalStatistics, allLabResults, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits, patientService);
             when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
-            when(allLabResults.findLatestLabResultsByPatientId(PATIENT_ID)).thenReturn(new LabResults());
+            when(allLabResults.allLabResults(PATIENT_ID)).thenReturn(new LabResults());
             when(user.getUsername()).thenReturn(USER_NAME);
             when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
             when(request.getSession()).thenReturn(session);

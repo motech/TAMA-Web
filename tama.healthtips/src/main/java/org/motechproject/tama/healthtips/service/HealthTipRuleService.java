@@ -34,7 +34,7 @@ public class HealthTipRuleService {
         StatelessKnowledgeSession statelessKnowledgeSession = healthTipsKnowledgeBase.newStatelessKnowledgeSession();
         HealthTipList healthTipList = new HealthTipList();
         statelessKnowledgeSession.setGlobal("healthTips", healthTipList);
-        LabResults labResults = allLabResults.findLatestLabResultsByPatientId(patient.getId());
+        LabResults labResults = allLabResults.allLabResults(patient.getId());
         final AdherenceComplianceReport report = adherenceService.lastWeekAdherence(patient);
         statelessKnowledgeSession.execute(new HealthTipParams(patient, report, labResults, treatmentStartDate));
         return healthTipList.getHealthTips();

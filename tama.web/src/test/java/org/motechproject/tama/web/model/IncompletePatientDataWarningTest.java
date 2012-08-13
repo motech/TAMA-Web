@@ -36,7 +36,7 @@ public class IncompletePatientDataWarningTest {
     public void shouldShowWarningIfPatientIsInActive() {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
-        when(allLabResults.findLatestLabResultsByPatientId("patientId")).thenReturn(new LabResults());
+        when(allLabResults.allLabResults("patientId")).thenReturn(new LabResults());
 
         patient.setStatus(Status.Inactive);
 
@@ -47,7 +47,7 @@ public class IncompletePatientDataWarningTest {
     public void shouldWarnAboutMissingVitalStats() {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(null);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
-        when(allLabResults.findLatestLabResultsByPatientId("patientId")).thenReturn(mock(LabResults.class));
+        when(allLabResults.allLabResults("patientId")).thenReturn(mock(LabResults.class));
         assertEquals("The Vital Statistics need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
     }
 
@@ -55,7 +55,7 @@ public class IncompletePatientDataWarningTest {
     public void shouldWarnAboutMissingLabTestResults() {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
-        when(allLabResults.findLatestLabResultsByPatientId("patientId")).thenReturn(new LabResults());
+        when(allLabResults.allLabResults("patientId")).thenReturn(new LabResults());
         assertEquals("The Lab Results need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
     }
 
@@ -63,7 +63,7 @@ public class IncompletePatientDataWarningTest {
     public void shouldWarnAboutMissingTreatmentAdviceAndLabResults() {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(null);
-        when(allLabResults.findLatestLabResultsByPatientId("patientId")).thenReturn(new LabResults());
+        when(allLabResults.allLabResults("patientId")).thenReturn(new LabResults());
         assertEquals("The Regimen details, Lab Results need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
     }
 
@@ -71,7 +71,7 @@ public class IncompletePatientDataWarningTest {
     public void shouldWarnAboutMissingVitalStatisticsAndTreatmentAdviceAndLabTestResults() {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(null);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(null);
-        when(allLabResults.findLatestLabResultsByPatientId("patientId")).thenReturn(new LabResults());
+        when(allLabResults.allLabResults("patientId")).thenReturn(new LabResults());
         assertEquals("The Vital Statistics, Regimen details, Lab Results need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
     }
 
@@ -79,7 +79,7 @@ public class IncompletePatientDataWarningTest {
     public void shouldNotWarnAboutAnythingIfVitalStatisticsAndTreatmentAdviceAndLabTestResultsArePresent() {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
-        when(allLabResults.findLatestLabResultsByPatientId("patientId")).thenReturn(mock(LabResults.class));
+        when(allLabResults.allLabResults("patientId")).thenReturn(mock(LabResults.class));
         assertEquals(null, incompletePatientDataWarning.toString());
     }
 
