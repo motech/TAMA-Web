@@ -66,10 +66,10 @@ public class LabResultTest {
         labResults.add(labResult2);
         labResults.add(labResult3);
 
-        Collections.sort(labResults, new LabResult.LabResultComparator());
-        assertEquals(labResult2, labResults.get(0));
-        assertEquals(labResult3, labResults.get(1));
-        assertEquals(labResult1, labResults.get(2));
+        Collections.sort(labResults, new LabResult.LabResultComparator(false));
+        assertEquals(labResult2.getResult(), labResults.get(0).getResult());
+        assertEquals(labResult3.getResult(), labResults.get(1).getResult());
+        assertEquals(labResult1.getResult(), labResults.get(2).getResult());
     }
 
     @Test

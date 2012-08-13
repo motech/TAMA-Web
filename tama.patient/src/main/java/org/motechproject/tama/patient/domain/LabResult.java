@@ -103,9 +103,20 @@ public class LabResult extends CouchEntity {
     }
 
     public static class LabResultComparator implements Comparator<LabResult> {
+
+        private boolean earliestToLatest;
+
+        public LabResultComparator(boolean earliestToLatest) {
+            this.earliestToLatest = earliestToLatest;
+        }
+
         @Override
         public int compare(LabResult o1, LabResult o2) {
-            return o2.getTestDate().compareTo(o1.getTestDate());
+            if (earliestToLatest) {
+                return o1.getTestDate().compareTo(o2.getTestDate());
+            } else {
+                return o2.getTestDate().compareTo(o1.getTestDate());
+            }
         }
     }
 }

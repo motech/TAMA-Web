@@ -28,7 +28,7 @@ public class MedicalConditionsMapper {
         medicalCondition.regimenName(currentRegimen.getName());
         medicalCondition.gender(patient.getGender().getType());
         medicalCondition.age(patient.getAge());
-        medicalCondition.cd4Count(labResults.latestCD4Count());
+        medicalCondition.cd4Count(labResults.baselineCD4Count());
         medicalCondition.diabetic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Diabetes));
         medicalCondition.hyperTensic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Hypertension));
         medicalCondition.nephrotoxic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Nephrotoxicity));

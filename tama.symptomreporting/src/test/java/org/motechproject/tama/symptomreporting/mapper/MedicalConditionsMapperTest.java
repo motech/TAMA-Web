@@ -15,14 +15,16 @@ import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
 
-public class MedicalConditionsMapperTest {
+public class MedicalConditionsMapperTest extends BaseUnitTest {
 
     private Patient patient;
-    private LabResult labResult;
+    private LabResult earlierResult;
+    private LabResult laterResult;
     private VitalStatistics vitalStatistics;
     private TreatmentAdvice treatmentAdvice;
     private Regimen regimen;
@@ -36,8 +38,11 @@ public class MedicalConditionsMapperTest {
         String labTestId = "labTestId";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
 
-        labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
-        labResult.setLabTest(labTest);
+        earlierResult = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
+        earlierResult.setLabTest(labTest);
+
+        laterResult = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 6, 21)).withResult("70").build();
+        laterResult.setLabTest(labTest);
 
         String regimenName = "Regimen I";
         String regimenId = "regimenId";
@@ -58,7 +63,8 @@ public class MedicalConditionsMapperTest {
 
     @Test
     public void mapPatientDetails() {
-        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), vitalStatistics, treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(earlierResult, laterResult)), vitalStatistics, treatmentAdvice, regimen);
+        mockCurrentDate(new LocalDate(2011, 5, 21));
         MedicalCondition medicalCondition = mapper.map();
 
         Assert.assertEquals("Male", medicalCondition.gender());
@@ -77,7 +83,7 @@ public class MedicalConditionsMapperTest {
         MedicalHistoryQuestion baselineHBQuestion = patient.getMedicalHistory().getNonHivMedicalHistory().getQuestions().get(1);
         baselineHBQuestion.setHistoryPresent(true);
 
-        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), vitalStatistics, treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(earlierResult)), vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
         Assert.assertTrue(medicalCondition.isDiabetic());
@@ -91,7 +97,7 @@ public class MedicalConditionsMapperTest {
 
     @Test
     public void mapTreatmentAdviceDuration() {
-        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), vitalStatistics, treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(earlierResult)), vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
         Assert.assertEquals(4, medicalCondition.numberOfMonthsSinceTreatmentStarted());
@@ -99,7 +105,7 @@ public class MedicalConditionsMapperTest {
 
     @Test
     public void mapBMIOnVitalStatistics() {
-        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(labResult)), vitalStatistics, treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(earlierResult)), vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
         Assert.assertEquals(24.44, medicalCondition.bmi());

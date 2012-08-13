@@ -55,7 +55,7 @@ public class AllLabResults extends AuditableCouchRepository<LabResult> {
     }
 
     private LabResult getLatestLabResult(List<LabResult> labResults) {
-        Collections.sort(labResults, new LabResult.LabResultComparator());
+        Collections.sort(labResults, new LabResult.LabResultComparator(false));
         LabResult latestLabResult = labResults.get(0);
         loadDependencies(latestLabResult);
         return latestLabResult;
