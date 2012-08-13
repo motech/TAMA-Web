@@ -107,7 +107,6 @@ public class SymptomReportingControllerTest {
         when(continueToSymptomsTreeCriteria.shouldContinue(patientId)).thenReturn(false);
 
         KookooIVRResponseBuilder result = symptomReportingController.gotDTMF(kookooIvrContext);
-        assertEquals(CallState.END_OF_FLOW, tamaivrContext.callState());
         assertTrue(result.isEmpty());
     }
 }
