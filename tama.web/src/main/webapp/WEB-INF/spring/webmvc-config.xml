@@ -8,6 +8,9 @@
     <context:component-scan base-package="org.motechproject.tama" use-default-filters="false">
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
+    <context:component-scan base-package="org.motechproject.tama.web.exception" use-default-filters="false">
+        <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+    </context:component-scan>
     <context:component-scan base-package="org.motechproject.tama.ivr" use-default-filters="false">
         <context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
@@ -63,8 +66,6 @@
     <mvc:view-controller path="/changePassword"/>
     <mvc:view-controller path="/setClinicianPassword"/>
     <mvc:view-controller path="/passwordReset"/>
-    <!--<mvc:view-controller path="/" view-name="/patients/list"/>-->
-    <mvc:view-controller path="/uncaughtException"/>
     <mvc:view-controller path="/resourceNotFound"/>
     <mvc:view-controller path="/dataAccessFailure"/>
     <mvc:view-controller path="/authorizationFailure"/>
@@ -88,8 +89,7 @@
     <!-- This bean resolves specific types of exceptions to corresponding logical - view names for error views.
           The default behaviour of DispatcherServlet - is to propagate all exceptions to the servlet container:
           this will happen - here with all other types of exceptions. -->
-    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"
-          p:defaultErrorView="uncaughtException">
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
         <property name="exceptionMappings">
             <props>
                 <prop key=".DataAccessException">dataAccessFailure</prop>

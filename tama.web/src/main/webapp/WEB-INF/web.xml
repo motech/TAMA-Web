@@ -104,7 +104,7 @@
 
     <error-page>
         <exception-type>java.lang.Exception</exception-type>
-        <location>/uncaughtException</location>
+        <location>/uncaughtException/handle</location>
     </error-page>
 
     <error-page>
