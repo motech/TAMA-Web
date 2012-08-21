@@ -45,9 +45,11 @@
         <level value="warn"/>
     </logger>
     <logger name="org.motechproject">
-        <level value="info"/>
+        <level value="error"/>
+        <appender-ref ref="email"/>
+        <appender-ref ref="production"/>
+        <appender-ref ref="production-console"/>
     </logger>
-
     <logger name="org.motechproject.tamafunctional">
         <level value="info"/>
         <appender-ref ref="functionaltest"/>
