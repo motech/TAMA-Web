@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
     <appender name="production" class="org.apache.log4j.RollingFileAppender">
         <param value="logs/tama.log" name="File"/>
         <param name="Append" value="true"/>
@@ -11,6 +12,7 @@
             <param name="ConversionPattern" value="[%d{ISO8601}] [%c] [%p] [ThreadId:%t] - %m%n"/>
         </layout>
     </appender>
+
     <appender name="functionaltest" class="org.apache.log4j.RollingFileAppender">
         <param value="logs/tamafunctional.log" name="File"/>
         <param name="Append" value="true"/>
@@ -20,12 +22,14 @@
             <param name="ConversionPattern" value="[%d{ISO8601}] - %m%n"/>
         </layout>
     </appender>
+
     <appender name="production-console" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[%d{ISO8601}] [%c] [%p] [ThreadId:%t] - %m%n"/>
         </layout>
     </appender>
+
     <appender name="functionaltest-console" class="org.apache.log4j.ConsoleAppender">
         <param name="Target" value="System.out"/>
         <layout class="org.apache.log4j.PatternLayout">
@@ -38,33 +42,40 @@
     <logger name="org.springframework">
         <level value="warn"/>
     </logger>
+
     <logger name="org.springframework.jms.listener">
-        <level value="fatal"/>
+        <level value="error"/>
     </logger>
+
     <logger name="org.ektorp">
         <level value="warn"/>
     </logger>
+
     <logger name="org.motechproject">
-        <level value="error"/>
+        <level value="info"/>
         <appender-ref ref="email"/>
         <appender-ref ref="production"/>
         <appender-ref ref="production-console"/>
     </logger>
+
     <logger name="org.motechproject.tamafunctional">
         <level value="info"/>
         <appender-ref ref="functionaltest"/>
         <appender-ref ref="functionaltest-console"/>
     </logger>
+
     <logger name="org.motechproject.tamaperformance">
         <level value="info"/>
         <appender-ref ref="functionaltest"/>
         <appender-ref ref="functionaltest-console"/>
     </logger>
+
     <logger name="org.motechproject.tamadatasetup">
         <level value="info"/>
         <appender-ref ref="functionaltest"/>
         <appender-ref ref="functionaltest-console"/>
     </logger>
+
     <logger name="com.gargoylesoftware">
         <level value="fatal"/>
         <appender-ref ref="functionaltest"/>
@@ -75,4 +86,5 @@
         <appender-ref ref="production"/>
         <appender-ref ref="production-console"/>
     </root>
+
 </log4j:configuration>
