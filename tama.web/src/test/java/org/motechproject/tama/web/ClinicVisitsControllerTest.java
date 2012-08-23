@@ -263,8 +263,10 @@ public class ClinicVisitsControllerTest {
         @Test
         public void shouldListAllClinicVisitsForPatient() {
             Model uiModel = mock(Model.class);
-            final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().withId("visit1").build();
-            final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().withId("visit2").build();
+            DateTime visit1Date = DateUtil.now().plusDays(1);
+            DateTime visit2Date = DateUtil.now().plusDays(2);
+            final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().withId("visit1").withAppointmentDueDate(visit1Date).withAppointmentAdjustedDate(visit1Date).build();
+            final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().withId("visit2").withAppointmentDueDate(visit2Date).withAppointmentAdjustedDate(visit2Date).build();
 
             visit1.getPatient().setStatus(Status.Active);
 

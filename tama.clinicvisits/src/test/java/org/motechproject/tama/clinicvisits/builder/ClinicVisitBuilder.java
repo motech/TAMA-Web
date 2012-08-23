@@ -1,5 +1,6 @@
 package org.motechproject.tama.clinicvisits.builder;
 
+import org.drools.reteoo.builder.ReteooComponentBuilder;
 import org.joda.time.DateTime;
 import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
@@ -71,5 +72,4 @@ public class ClinicVisitBuilder {
         visitResponse.setName(id);
         return this;
     }
-
 }
