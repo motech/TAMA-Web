@@ -26,6 +26,11 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.clinicvisits</artifactId>
+            <version>0.7-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
             <version>0.7-SNAPSHOT</version>
         </dependency>
@@ -62,12 +67,12 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.ivr</artifactId>
-            <version>0.7-SNAPSHOT</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
+        <groupId>org.motechproject.tama</groupId>
+        <artifactId>tama.ivr</artifactId>
+        <version>0.7-SNAPSHOT</version>
+        <classifier>tests</classifier>
+        <scope>test</scope>
+        <type>jar</type>
+    </dependency>
     </dependencies>
 </project>

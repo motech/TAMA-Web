@@ -26,6 +26,11 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.clinicvisits</artifactId>
+            <version>0.7-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
             <version>0.7-SNAPSHOT</version>
             <classifier>tests</classifier>

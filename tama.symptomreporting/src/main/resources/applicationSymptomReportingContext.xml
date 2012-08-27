@@ -15,4 +15,5 @@
     <context:spring-configured/>
     <import resource="classpath:applicationCommonContext.xml"/>
     <import resource="classpath:applicationContextSymptomReporting.xml"/>
+    <import resource="classpath*:applicationClinicVisitsContext.xml"/>
 </beans>
