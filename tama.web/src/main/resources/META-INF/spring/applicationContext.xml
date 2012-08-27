@@ -11,6 +11,7 @@
     <import resource="classpath:applicationSymptomReportingContext.xml"/>
     <import resource="classpath:applicationHealthTipsContext.xml"/>
     <import resource="classpath:applicationClinicVisitsContext.xml"/>
+    <import resource="classpath:applicationContext-Diagnostics.xml"/>
     <import resource="classpath:/placeholderPluginContext.xml"/>
 
     <context:annotation-config/>

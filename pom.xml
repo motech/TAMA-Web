@@ -67,6 +67,7 @@
         <spring-security.version>3.0.5.RELEASE</spring-security.version>
         <build.dir>build</build.dir>
         <motech.version>0.10</motech.version>
+        <motech.contrib.version>0.10-SNAPSHOT</motech.contrib.version>
         <powermock.version>1.4.9</powermock.version>
     </properties>
     <dependencies>
@@ -80,6 +81,11 @@
             <artifactId>powermock-module-junit4</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -289,7 +295,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12</version>
                 <configuration>
-                    <argLine>-XX:MaxPermSize=256M -ea -javaagent:${user.home}/.m2/repository/org/powermock/powermock-module-javaagent/${powermock.version}/powermock-module-javaagent-${powermock.version}.jar  -XX:-UseSplitVerifier</argLine>
+                    <argLine>-XX:MaxPermSize=256M -ea
+                        -javaagent:${user.home}/.m2/repository/org/powermock/powermock-module-javaagent/${powermock.version}/powermock-module-javaagent-${powermock.version}.jar
+                        -XX:-UseSplitVerifier
+                    </argLine>
                     <printSummary>true</printSummary>
                     <includes>
                         <include>**/*Test*.java</include>
