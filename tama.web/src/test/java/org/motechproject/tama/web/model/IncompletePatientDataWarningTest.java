@@ -3,8 +3,15 @@ package org.motechproject.tama.web.model;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.patient.builder.LabResultBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.builder.VitalStatisticsBuilder;
+import org.motechproject.tama.patient.domain.LabResult;
+import org.motechproject.tama.patient.domain.LabResults;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
@@ -34,8 +41,8 @@ public class IncompletePatientDataWarningTest {
 
     @Test
     public void shouldShowWarningIfPatientIsInActive() {
-        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
-        when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(validVitalStatistics());
+        when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
         when(allLabResults.allLabResults("patientId")).thenReturn(new LabResults());
 
         patient.setStatus(Status.Inactive);
@@ -46,25 +53,38 @@ public class IncompletePatientDataWarningTest {
     @Test
     public void shouldWarnAboutMissingVitalStats() {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(null);
-        when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
-        when(allLabResults.allLabResults("patientId")).thenReturn(mock(LabResults.class));
-        assertEquals("The Vital Statistics need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
+        when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
+        when(allLabResults.allLabResults("patientId")).thenReturn(validLabResults());
+        assertEquals("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
     }
 
     @Test
-    public void shouldWarnAboutMissingLabTestResults() {
-        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
-        when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
-        when(allLabResults.allLabResults("patientId")).thenReturn(new LabResults());
-        assertEquals("The Lab Results need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
+    public void shouldWarnAboutMissingVitalStats_ifWeightAndHeightIsMissing() {
+        VitalStatistics vitalStatsWithoutWeightAndHeight = new VitalStatistics();
+        vitalStatsWithoutWeightAndHeight.setPulse(80);
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(vitalStatsWithoutWeightAndHeight);
+        when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
+        when(allLabResults.allLabResults("patientId")).thenReturn(validLabResults());
+        assertEquals("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
+    }
+
+    @Test
+    public void shouldWarnAboutMissingLabTestResults_IfCd4CountNotAvailable() {
+        LabResult pvlLabResult = LabResultBuilder.defaultPVLResult().build();
+        LabResults labResultsWithoutCd4Result = new LabResults();
+        labResultsWithoutCd4Result.add(pvlLabResult);
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(validVitalStatistics());
+        when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
+        when(allLabResults.allLabResults("patientId")).thenReturn(labResultsWithoutCd4Result);
+        assertEquals("The Lab Results(CD4 count) need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
     }
 
     @Test
     public void shouldWarnAboutMissingTreatmentAdviceAndLabResults() {
-        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(validVitalStatistics());
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(null);
         when(allLabResults.allLabResults("patientId")).thenReturn(new LabResults());
-        assertEquals("The Regimen details, Lab Results need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
+        assertEquals("The Regimen details, Lab Results(CD4 count) need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
     }
 
     @Test
@@ -72,15 +92,28 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(null);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(null);
         when(allLabResults.allLabResults("patientId")).thenReturn(new LabResults());
-        assertEquals("The Vital Statistics, Regimen details, Lab Results need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
+        assertEquals("The Vital Statistics(Height, Weight), Regimen details, Lab Results(CD4 count) need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
     }
 
     @Test
     public void shouldNotWarnAboutAnythingIfVitalStatisticsAndTreatmentAdviceAndLabTestResultsArePresent() {
-        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(mock(VitalStatistics.class));
-        when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(mock(TreatmentAdvice.class));
-        when(allLabResults.allLabResults("patientId")).thenReturn(mock(LabResults.class));
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(validVitalStatistics());
+        when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
+        when(allLabResults.allLabResults("patientId")).thenReturn(validLabResults());
         assertEquals(null, incompletePatientDataWarning.toString());
     }
 
+    private TreatmentAdvice validTreatmentAdvice() {
+        return mock(TreatmentAdvice.class);
+    }
+
+    private LabResults validLabResults() {
+        LabResults labResults = new LabResults();
+        labResults.add(LabResultBuilder.defaultCD4Result().build());
+        return labResults;
+    }
+
+    private VitalStatistics validVitalStatistics() {
+        return VitalStatisticsBuilder.startRecording().withDefaults().build();
+    }
 }

@@ -1,6 +1,7 @@
 package org.motechproject.tama.web.model;
 
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -37,15 +38,10 @@ public class IncompletePatientDataWarning {
     }
 
     private void findAllRequiredInfo(){
-        VitalStatistics vitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(patient.getId());
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
-        LabResults labResults = allLabResults.allLabResults(patient.getId());
-        labResults = labResults.isEmpty() ? null: labResults;
-
         requiredPatientDetails = new ArrayList<RequiredPatientDetail>();
-        requiredPatientDetails.add(new RequiredPatientDetail(vitalStatistics, "Vital Statistics"));
-        requiredPatientDetails.add(new RequiredPatientDetail(treatmentAdvice, "Regimen details"));
-        requiredPatientDetails.add(new RequiredPatientDetail(labResults, "Lab Results"));
+        requiredPatientDetails.add(requiredVitalStatistics());
+        requiredPatientDetails.add(requiredTreatmentAdvice());
+        requiredPatientDetails.add(requiredLabResults());
     }
 
     @Override
@@ -63,5 +59,23 @@ public class IncompletePatientDataWarning {
         if (pendingPatientDetailsArray.isEmpty())
             return null;
         return "The " + StringUtils.join(pendingPatientDetailsArray, ", ") + " need to be filled so that the patient can access Symptoms Reporting and Health Tips";
+    }
+
+    private RequiredPatientDetail requiredLabResults() {
+        LabResults labResults = allLabResults.allLabResults(patient.getId());
+        boolean validBaselineCD4Count = labResults.baselineCD4Count() == LabResult.INVALID_CD4_COUNT;
+        labResults = validBaselineCD4Count ? null: labResults;
+        return new RequiredPatientDetail(labResults, "Lab Results(CD4 count)");
+    }
+
+    private RequiredPatientDetail requiredTreatmentAdvice() {
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        return new RequiredPatientDetail(treatmentAdvice, "Regimen details");
+    }
+
+    private RequiredPatientDetail requiredVitalStatistics() {
+        VitalStatistics vitalStats = allVitalStatistics.findLatestVitalStatisticByPatientId(patient.getId());
+        vitalStats = (vitalStats != null && (vitalStats.getWeightInKg() != null && vitalStats.getHeightInCm() != null)) ? vitalStats : null;
+        return new RequiredPatientDetail(vitalStats, "Vital Statistics(Height, Weight)");
     }
 }
