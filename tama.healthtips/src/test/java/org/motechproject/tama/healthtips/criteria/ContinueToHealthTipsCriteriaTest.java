@@ -14,8 +14,10 @@ import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.refdata.domain.LabTest;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -41,16 +43,24 @@ public class ContinueToHealthTipsCriteriaTest {
 
     @Test
     public void shouldNotContinueToSymptomsFlowWhenLabResultsAreEmpty() {
-        when(allLabResults.allLabResults(PATIENT_ID)).thenReturn(new LabResults());
+        ClinicVisit clinicVisit = mock(ClinicVisit.class);
+        when(clinicVisit.getLabResultIds()).thenReturn(Collections.<String>emptyList());
+        when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
         assertFalse(continueToHealthTipsCriteria.shouldContinue(PATIENT_ID));
     }
 
     @Test
-    public void shouldNotContinueToSymptomsFlowWhenVitalStatisticsAreEmpty() {
-        when(allLabResults.allLabResults(PATIENT_ID)).thenReturn(new LabResults());
-        when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
+    public void shouldContinueToHealthTipsEvenWhenOnlyCD4CountAvailable() {
+        final ClinicVisit clinicVisit = mock(ClinicVisit.class);
+        when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
+        when(clinicVisit.getLabResultIds()).thenReturn(Arrays.asList("test1", "test2"));
+        final LabResult labResult = new LabResult();
+        labResult.setId("test1");
+        labResult.setLabTest(LabTest.newLabTest(TAMAConstants.LabTestType.CD4, "500"));
+        labResult.setResult("100");
+        when(allLabResults.get("test1")).thenReturn(labResult);
 
-        assertFalse(continueToHealthTipsCriteria.shouldContinue(PATIENT_ID));
+        assertTrue(continueToHealthTipsCriteria.shouldContinue(PATIENT_ID));
     }
 
     @Test
