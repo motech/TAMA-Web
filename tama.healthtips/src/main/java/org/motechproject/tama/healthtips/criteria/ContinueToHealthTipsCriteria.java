@@ -27,15 +27,12 @@ public class ContinueToHealthTipsCriteria {
     }
 
     public boolean shouldContinue(String patientId) {
-        VitalStatistics vitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(patientId);
-        if (vitalStatistics != null) {
-            final ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patientId);
-            final List<String> labResultIds =  baselineVisit.getLabResultIds();
-            for (String key : labResultIds) {
-                final LabResult labResult = allLabResults.get(key);
-                if (labResult != null && labResult.isCD4()) {
-                    return true;
-                }
+        final ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patientId);
+        final List<String> labResultIds =  baselineVisit.getLabResultIds();
+        for (String key : labResultIds) {
+            final LabResult labResult = allLabResults.get(key);
+            if (labResult != null && labResult.isCD4()) {
+                return true;
             }
         }
         return false;
