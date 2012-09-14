@@ -11,6 +11,9 @@ import javax.validation.constraints.NotNull;
 @TypeDiscriminator("doc.documentType == 'VitalStatistics'")
 public class VitalStatistics extends CouchEntity implements Comparable<VitalStatistics> {
 
+    private static final int INVALID_HEIGHT = 0;
+    private static final int INVALID_WEIGHT = 0;
+
     private Double weightInKg;
 
     private Double heightInCm;
@@ -124,6 +127,16 @@ public class VitalStatistics extends CouchEntity implements Comparable<VitalStat
     @Override
     public int compareTo(VitalStatistics vitalStatistics) {
         return vitalStatistics.getCaptureDate().compareTo(getCaptureDate());
+    }
+
+    @JsonIgnore
+    public boolean hasHeight() {
+        return heightInCm != null && heightInCm > INVALID_HEIGHT;
+    }
+
+    @JsonIgnore
+    public boolean hasWeight() {
+        return weightInKg != null && weightInKg > INVALID_WEIGHT;
     }
 
     @Override

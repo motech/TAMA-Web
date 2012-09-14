@@ -1,7 +1,5 @@
 package org.motechproject.tama.symptomreporting.criteria;
 
-import org.motechproject.appointments.api.service.AppointmentService;
-import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.domain.LabResult;
@@ -28,15 +26,21 @@ public class ContinueToSymptomsTreeCriteria {
     }
 
     public boolean shouldContinue(String patientId) {
+        return mandatoryVitalStatisticsPresent(patientId) && baselineCD4Present(patientId);
+    }
+
+    private boolean mandatoryVitalStatisticsPresent(String patientId) {
         VitalStatistics vitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(patientId);
-        if (vitalStatistics != null) {
-            final ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patientId);
-            final List<String> labResultIds =  baselineVisit.getLabResultIds();
-            for (String key : labResultIds) {
-                final LabResult labResult = allLabResults.get(key);
-                if (labResult != null && labResult.isCD4()) {
-                    return true;
-                }
+        return vitalStatistics != null && vitalStatistics.hasHeight() && vitalStatistics.hasWeight();
+    }
+
+    private boolean baselineCD4Present(String patientId) {
+        final ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patientId);
+        final List<String> labResultIds = baselineVisit.getLabResultIds();
+        for (String key : labResultIds) {
+            final LabResult labResult = allLabResults.get(key);
+            if (labResult != null && labResult.isCD4()) {
+                return true;
             }
         }
         return false;

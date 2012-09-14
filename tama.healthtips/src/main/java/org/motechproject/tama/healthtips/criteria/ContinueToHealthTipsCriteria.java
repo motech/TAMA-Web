@@ -1,16 +1,12 @@
 package org.motechproject.tama.healthtips.criteria;
 
-import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
-import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class ContinueToHealthTipsCriteria {
@@ -27,14 +23,12 @@ public class ContinueToHealthTipsCriteria {
     }
 
     public boolean shouldContinue(String patientId) {
-        final ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patientId);
-        final List<String> labResultIds =  baselineVisit.getLabResultIds();
-        for (String key : labResultIds) {
-            final LabResult labResult = allLabResults.get(key);
-            if (labResult != null && labResult.isCD4()) {
-                return true;
-            }
-        }
-        return false;
+        LabResults results = allLabResults.allLabResults(patientId);
+        boolean isResultsEmpty = !(results == null || results.isEmpty());
+        return isResultsEmpty && hasCD4Result(results);
+    }
+
+    private boolean hasCD4Result(LabResults results) {
+        return results.latestCD4Count() != LabResult.INVALID_CD4_COUNT;
     }
 }

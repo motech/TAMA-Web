@@ -3,8 +3,6 @@ package org.motechproject.tama.symptomreporting.criteria;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.motechproject.appointments.api.service.AppointmentService;
-import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
@@ -57,17 +55,54 @@ public class ContinueToSymptomsTreeCriteriaTest {
     }
 
     @Test
-    public void shouldContinueToSymptomsFlowWhenVitalStatisticsAndBaselineCD4CountArePresent() {
+    public void shouldNotContinueToSymptomsFlowWhenHeightIsNotPresent() {
+        setupLabResults();
+
+        vitalStatistics(false);
+        baselineVisit();
+        assertFalse(continueToSymptomsTreeCriteria.shouldContinue(PATIENT_ID));
+    }
+
+    @Test
+    public void shouldNotContinueToSymptomsFlowWhenWeightIsNotPresent() {
+        setupLabResults();
+        vitalStatistics(false);
+        baselineVisit();
+        assertFalse(continueToSymptomsTreeCriteria.shouldContinue(PATIENT_ID));
+    }
+
+    @Test
+    public void shouldContinueToSymptomsFlowWhenMandatoryVitalStatisticsAndBaselineCD4CountArePresent() {
+        setupLabResults();
+        vitalStatistics(true, 1d, 1d);
+        baselineVisit();
+        assertTrue(continueToSymptomsTreeCriteria.shouldContinue(PATIENT_ID));
+    }
+
+    private void setupLabResults() {
+        final LabResult labResult = labResult();
+        when(allLabResults.get(anyString())).thenReturn(labResult);
+    }
+
+    private void vitalStatistics(boolean heightAndWeightPresent, Double... heightAndWeight) {
+        VitalStatistics vitalStatistics = new VitalStatistics();
+        if (heightAndWeightPresent) {
+            vitalStatistics.setHeightInCm(heightAndWeight[0]);
+            vitalStatistics.setWeightInKg(heightAndWeight[1]);
+        }
+        when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(vitalStatistics);
+    }
+
+    private LabResult labResult() {
         final LabResult labResult = new LabResult();
         labResult.setLabTest(LabTest.newLabTest(TAMAConstants.LabTestType.CD4, "500"));
         labResult.setResult("100");
+        return labResult;
+    }
 
-        when(allLabResults.get(anyString())).thenReturn(labResult);
-        when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(new VitalStatistics());
+    private void baselineVisit() {
         ClinicVisit clinicVisit = mock(ClinicVisit.class);
         when(clinicVisit.getLabResultIds()).thenReturn(Arrays.asList("labResultId"));
         when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
-
-        assertTrue(continueToSymptomsTreeCriteria.shouldContinue(PATIENT_ID));
     }
 }
