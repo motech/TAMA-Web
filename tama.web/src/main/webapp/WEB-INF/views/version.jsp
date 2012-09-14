@@ -11,7 +11,7 @@
  Object resourceAsStream = getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF");
  if (resourceAsStream != null) {
     prop.load(getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF"));
-    version = prop.getProperty("Implementation-Version");
+    version = prop.getProperty("Implementation-Build");
  }
 %>
 Version: 5.1.<% out.println(version); %>
