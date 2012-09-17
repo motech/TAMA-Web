@@ -55,7 +55,7 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(null);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
         when(allLabResults.allLabResults("patientId")).thenReturn(validLabResults());
-        assertEquals("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
+        assertEquals("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting", incompletePatientDataWarning.toString());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(vitalStatsWithoutWeightAndHeight);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
         when(allLabResults.allLabResults("patientId")).thenReturn(validLabResults());
-        assertEquals("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
+        assertEquals("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting", incompletePatientDataWarning.toString());
     }
 
     @Test
