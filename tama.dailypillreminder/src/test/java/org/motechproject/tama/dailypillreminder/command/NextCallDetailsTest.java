@@ -28,7 +28,7 @@ public class NextCallDetailsTest {
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
         context = new DailyPillReminderContextForTest(new TAMAIVRContextForTest()).pillRegimen(pillRegimenResponse).callStartTime(new DateTime(2010, 10, 10, 16, 0, 0));
         context.preferredLanguage("en");
-        DateTimeSourceUtil.SourceInstance = new FixedDateTimeSource(DateUtil.newDateTime(new LocalDate(2010, 10, 10), 0, 0, 0));
+        DateTimeSourceUtil.sourceinstance = new FixedDateTimeSource(DateUtil.newDateTime(new LocalDate(2010, 10, 10), 0, 0, 0));
     }
 
     @Test
@@ -55,6 +55,6 @@ public class NextCallDetailsTest {
 
     @After
     public void tearDown() {
-        DateTimeSourceUtil.SourceInstance = new DefaultDateTimeSource();
+        DateTimeSourceUtil.sourceinstance = new DefaultDateTimeSource();
     }
 }
