@@ -1,19 +1,14 @@
 package org.motechproject.tama.web.model;
 
 import org.apache.commons.lang.StringUtils;
-import org.motechproject.tama.patient.domain.LabResult;
-import org.motechproject.tama.patient.domain.LabResults;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
-import org.motechproject.tama.patient.domain.VitalStatistics;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
+import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class IncompletePatientDataWarning {
 
@@ -33,19 +28,27 @@ public class IncompletePatientDataWarning {
     private AllVitalStatistics allVitalStatistics;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllLabResults allLabResults;
+    private AllClinicVisits allClinicVisits;
     private ArrayList<RequiredPatientDetail> requiredPatientDetails = new ArrayList<RequiredPatientDetail>();
 
-    public IncompletePatientDataWarning(Patient patient, AllVitalStatistics allVitalStatistics, AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults) {
+    public IncompletePatientDataWarning(Patient patient,
+                                        AllVitalStatistics allVitalStatistics,
+                                        AllTreatmentAdvices allTreatmentAdvices,
+                                        AllLabResults allLabResults,
+                                        AllClinicVisits allClinicVisits) {
         this.patient = patient;
         this.allVitalStatistics = allVitalStatistics;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allLabResults = allLabResults;
+        this.allClinicVisits = allClinicVisits;
     }
 
     private void findAllRequiredInfo() {
-        findRequiredVitalStatistics();
-        findRequiredTreatmentAdvice();
-        findRequiredLabResults();
+        if (patient.getStatus().isActive()) {
+            findRequiredVitalStatistics();
+            findRequiredTreatmentAdvice();
+            findRequiredLabResults();
+        }
     }
 
     @Override
@@ -70,11 +73,16 @@ public class IncompletePatientDataWarning {
     }
 
     private void findRequiredLabResults() {
-        LabResults labResults = allLabResults.allLabResults(patient.getId());
-        boolean validBaselineCD4Count = labResults.baselineCD4Count() == LabResult.INVALID_CD4_COUNT;
-        labResults = validBaselineCD4Count ? null : labResults;
+        ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patient.getId());
         HashSet<String> requiredFor = new HashSet<String>(Arrays.asList("Symptoms Reporting", "Health Tips"));
-        requiredPatientDetails.add(new RequiredPatientDetail(labResults, "Lab Results(CD4 count)", requiredFor));
+        LabResult cd4Result = null;
+        if (baselineVisit != null) {
+            List<LabResult> labResults = allLabResults.withIds(baselineVisit.getLabResultIds());
+            cd4Result = new LabResults(labResults).latestCD4Result();
+        } else {
+            cd4Result = null;
+        }
+        requiredPatientDetails.add(new RequiredPatientDetail(cd4Result, "Lab Results(CD4 count)", requiredFor));
     }
 
     private void findRequiredTreatmentAdvice() {

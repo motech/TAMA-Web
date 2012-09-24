@@ -16,14 +16,19 @@ public class LabResults extends ArrayList<LabResult> {
     }
 
     public int latestCD4Count() {
+        LabResult labResult = latestCD4Result();
+        return labResult == null ? LabResult.INVALID_CD4_COUNT : Integer.parseInt(labResult.getResult());
+    }
+
+    public LabResult latestCD4Result() {
         ArrayList<LabResult> results = new ArrayList<LabResult>(this);
         Collections.sort(results, new LabResult.LabResultComparator(false));
         for (LabResult result : results) {
             if (result.isCD4()) {
-                return Integer.parseInt(result.getResult());
+                return result;
             }
         }
-        return LabResult.INVALID_CD4_COUNT;
+        return null;
     }
 
     public LocalDate latestLabTestDate() {

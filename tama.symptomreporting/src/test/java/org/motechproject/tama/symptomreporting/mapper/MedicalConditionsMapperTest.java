@@ -24,7 +24,6 @@ public class MedicalConditionsMapperTest extends BaseUnitTest {
 
     private Patient patient;
     private LabResult earlierResult;
-    private LabResult laterResult;
     private VitalStatistics vitalStatistics;
     private TreatmentAdvice treatmentAdvice;
     private Regimen regimen;
@@ -40,9 +39,6 @@ public class MedicalConditionsMapperTest extends BaseUnitTest {
 
         earlierResult = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
         earlierResult.setLabTest(labTest);
-
-        laterResult = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 6, 21)).withResult("70").build();
-        laterResult.setLabTest(labTest);
 
         String regimenName = "Regimen I";
         String regimenId = "regimenId";
@@ -63,7 +59,7 @@ public class MedicalConditionsMapperTest extends BaseUnitTest {
 
     @Test
     public void mapPatientDetails() {
-        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(earlierResult, laterResult)), vitalStatistics, treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, earlierResult, vitalStatistics, treatmentAdvice, regimen);
         mockCurrentDate(new LocalDate(2011, 5, 21));
         MedicalCondition medicalCondition = mapper.map();
 
@@ -83,7 +79,7 @@ public class MedicalConditionsMapperTest extends BaseUnitTest {
         MedicalHistoryQuestion baselineHBQuestion = patient.getMedicalHistory().getNonHivMedicalHistory().getQuestions().get(1);
         baselineHBQuestion.setHistoryPresent(true);
 
-        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(earlierResult)), vitalStatistics, treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, earlierResult, vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
         Assert.assertTrue(medicalCondition.isDiabetic());
@@ -97,7 +93,7 @@ public class MedicalConditionsMapperTest extends BaseUnitTest {
 
     @Test
     public void mapTreatmentAdviceDuration() {
-        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(earlierResult)), vitalStatistics, treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, earlierResult, vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
         Assert.assertEquals(4, medicalCondition.numberOfMonthsSinceTreatmentStarted());
@@ -105,7 +101,7 @@ public class MedicalConditionsMapperTest extends BaseUnitTest {
 
     @Test
     public void mapBMIOnVitalStatistics() {
-        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, new LabResults(Arrays.asList(earlierResult)), vitalStatistics, treatmentAdvice, regimen);
+        MedicalConditionsMapper mapper = new MedicalConditionsMapper(patient, earlierResult, vitalStatistics, treatmentAdvice, regimen);
         MedicalCondition medicalCondition = mapper.map();
 
         Assert.assertEquals(24.44, medicalCondition.bmi());

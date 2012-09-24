@@ -6,8 +6,11 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
@@ -32,13 +35,18 @@ import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondi
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class SymptomReportingServiceTest {
+
+    public static final String LAB_RESULT_ID = "labResultId";
+
     @Mock
     private AllPatients allPatients;
     @Mock
@@ -59,29 +67,39 @@ public class SymptomReportingServiceTest {
     private AllSymptomReports allSymptomReports;
     @Mock
     private KookooCallDetailRecordsService kookooCallDetailRecordsService;
+    @Mock
+    private AllClinicVisits allClinicVisits;
 
     private final String patientId = "patientId";
+    private final String patientDocId = "patientDocId";
 
     private SymptomReportingService symptomReportingService;
 
     @Before
     public void setUp() {
         initMocks(this);
+        setupVisits();
         when(clinicianSMSProperties.get("additional_sms_numbers")).thenReturn("0000000000, 1111111111, ");
-        symptomReportingService = new SymptomReportingService(allPatients, allTreatmentAdvices, allLabResults, allRegimens, allVitalStatistics, allSymptomReports, kookooCallDetailRecordsService, sendSMSService, clinicianSMSProperties, symptomReportingProperties);
+        symptomReportingService = new SymptomReportingService(allPatients, allTreatmentAdvices, allLabResults, allRegimens, allVitalStatistics, allSymptomReports, kookooCallDetailRecordsService, sendSMSService, clinicianSMSProperties, symptomReportingProperties, allClinicVisits);
+    }
+
+    private void setupVisits() {
+        ClinicVisit clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().withId(patientDocId).build(), new VisitResponse());
+        clinicVisit.setLabResultIds(asList(LAB_RESULT_ID));
+
+        when(allClinicVisits.getBaselineVisit(patientDocId)).thenReturn(clinicVisit);
     }
 
     @Test
     public void shouldReturnPatientMedicalConditions() {
-
-        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(Gender.newGender("Male")).withPatientId(patientId).withDateOfBirth(new LocalDate(2000, 10, 1)).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(Gender.newGender("Male")).withId(patientDocId).withPatientId(patientId).withDateOfBirth(new LocalDate(2000, 10, 1)).build();
         when(allPatients.get(patientId)).thenReturn(patient);
 
         String labTestId = "labTestId";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).build();
-        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withPatientId(patientId).withLabTestId(labTestId).withResult("60").build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withId(LAB_RESULT_ID).withPatientId(patientId).withLabTestId(labTestId).withResult("60").build();
         labResult.setLabTest(labTest);
-        when(allLabResults.allLabResults(patientId)).thenReturn(new LabResults(Arrays.asList(labResult)));
+        when(allLabResults.withIds(any(List.class))).thenReturn(asList(labResult));
 
         when(allVitalStatistics.findLatestVitalStatisticByPatientId(patientId)).thenReturn(new VitalStatistics(74.00, 174.00, 10, 10, 10.00, 10, patientId));
 
@@ -106,7 +124,7 @@ public class SymptomReportingServiceTest {
     @Test
     public void shouldSendSMSToNotifyCliniciansAboutOTCAdvice() {
         Clinic clinic = ClinicBuilder.startRecording().withName("pujari").build();
-        Patient patient = PatientBuilder.startRecording().withClinic(clinic).withMobileNumber("1234567890").withPatientId(patientId).build();
+        Patient patient = PatientBuilder.startRecording().withId(patientDocId).withClinic(clinic).withMobileNumber("1234567890").withPatientId(patientId).build();
         Regimen regimen = mock(Regimen.class);
         SymptomReport symptomReport = mock(SymptomReport.class);
         when(regimen.getDisplayName()).thenReturn("D4T+EFV+NVP");
@@ -129,7 +147,6 @@ public class SymptomReportingServiceTest {
                 new Clinic.ClinicianContact("name1", "ph1"),
                 new Clinic.ClinicianContact("name2", "ph2")));
 
-        String patientDocId = "patientDocId";
         Patient patient = PatientBuilder.startRecording().withMobileNumber("1234567890").withId(patientDocId).withPatientId(patientId).withClinic(clinic).build();
         when(allPatients.get(patientDocId)).thenReturn(patient);
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withRegimenId("regimenId").build();

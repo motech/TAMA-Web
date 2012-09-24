@@ -3,12 +3,11 @@ package org.motechproject.tama.symptomreporting.service;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.service.SendSMSService;
-import org.motechproject.tama.patient.domain.LabResults;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
-import org.motechproject.tama.patient.domain.VitalStatistics;
+import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -35,6 +34,7 @@ public class SymptomReportingService {
     private Properties clinicianSMSProperties;
     private Properties symptomReportingProperties;
     private AllSymptomReports allSymptomReports;
+    private AllClinicVisits allClinicVisits;
     private SendSMSService sendSMSService;
     private KookooCallDetailRecordsService kookooCallDetailRecordsService;
 
@@ -45,7 +45,8 @@ public class SymptomReportingService {
                                    AllSymptomReports allSymptomReports, KookooCallDetailRecordsService kookooCallDetailRecordsService,
                                    SendSMSService sendSMSService,
                                    @Qualifier("clinicianSMSProperties") Properties clinicianSMSProperties,
-                                   @Qualifier("symptomProperties") Properties symptomReportingProperties) {
+                                   @Qualifier("symptomProperties") Properties symptomReportingProperties,
+                                   AllClinicVisits allClinicVisits) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allLabResults = allLabResults;
@@ -56,17 +57,23 @@ public class SymptomReportingService {
         this.sendSMSService = sendSMSService;
         this.clinicianSMSProperties = clinicianSMSProperties;
         this.symptomReportingProperties = symptomReportingProperties;
+        this.allClinicVisits = allClinicVisits;
     }
 
     public MedicalCondition getPatientMedicalConditions(String patientId) {
         Patient patient = allPatients.get(patientId);
-        LabResults labResults = allLabResults.allLabResults(patientId);
         VitalStatistics vitalStatistics = allVitalStatistics.findLatestVitalStatisticByPatientId(patientId);
         TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientId);
         TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientId);
         Regimen currentRegimen = allRegimens.getBy(currentTreatmentAdvice.getRegimenId());
 
-        return new MedicalConditionsMapper(patient, labResults, vitalStatistics, earliestTreatmentAdvice, currentRegimen).map();
+        return new MedicalConditionsMapper(patient, baselineCD4Count(patient), vitalStatistics, earliestTreatmentAdvice, currentRegimen).map();
+    }
+
+    private LabResult baselineCD4Count(Patient patient) {
+        ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patient.getId());
+        LabResults results = new LabResults(allLabResults.withIds(baselineVisit.getLabResultIds()));
+        return results.latestCD4Result();
     }
 
     public void smsOTCAdviceToAllClinicians(String patientDocId, String callLogDocId) {

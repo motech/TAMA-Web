@@ -104,7 +104,7 @@ public class ClinicVisitsController extends BaseController {
         } else {
             treatmentAdviceController.createForm(patientDocId, uiModel);
         }
-        String warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
+        String warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).toString();
         uiModel.addAttribute("patientId", patientDocId);
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
         uiModel.addAttribute(PatientController.WARNING, warning);
@@ -160,7 +160,7 @@ public class ClinicVisitsController extends BaseController {
         labResultsController.show(patientDocId, clinicVisit.getId(), clinicVisit.getLabResultIds(), uiModel);
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
         opportunisticInfectionsController.show(clinicVisit, uiModel);
-        String warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
+        String warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).toString();
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
         uiModel.addAttribute(PatientController.WARNING, warning);
         return "clinicvisits/show";
@@ -170,7 +170,7 @@ public class ClinicVisitsController extends BaseController {
     public String list(@RequestParam(value = "patientId", required = true) String patientDocId, Model uiModel) {
         List<ClinicVisitUIModel> clinicVisitUIModels = allClinicVisits(patientDocId);
         Patient patient = clinicVisitUIModels.get(0).getPatient();
-        String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
+        String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).toString();
         uiModel.addAttribute("clinicVisits", clinicVisitUIModels);
         uiModel.addAttribute("patient", patient);
         uiModel.addAttribute(PatientController.WARNING, warning);

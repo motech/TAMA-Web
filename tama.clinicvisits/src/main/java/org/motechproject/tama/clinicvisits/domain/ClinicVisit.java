@@ -66,6 +66,11 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
         return labResultIds == null ? Collections.<String>emptyList() : labResultIds;
     }
 
+    public void setLabResultIds(List<String> ids) {
+        if (null != visit)
+            visit.addVisitData(LAB_RESULTS, ids);
+    }
+
     public String getVitalStatisticsId() {
         return (String) visit.getVisitData().get(VITAL_STATISTICS);
     }
@@ -84,7 +89,7 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
 
     public LocalDate getAdjustedDueDate() {
         if (visit.getOriginalAppointmentDueDate() == null) return null;
-        return visit.getOriginalAppointmentDueDate().equals(visit.getAppointmentDueDate()) ? null :  DateUtil.newDate(visit.getAppointmentDueDate());
+        return visit.getOriginalAppointmentDueDate().equals(visit.getAppointmentDueDate()) ? null : DateUtil.newDate(visit.getAppointmentDueDate());
     }
 
     public DateTime getConfirmedAppointmentDate() {

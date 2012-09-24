@@ -92,6 +92,19 @@ public class AllLabResults extends AuditableCouchRepository<LabResult> {
         return findAllByLabTestFor(TAMAConstants.LabTestType.PVL, patientId, rangeInMonths);
     }
 
+    @View(name = "by_id", map = "function(doc) {if (doc.documentType =='LabResult') {emit(doc._id, doc._id);}}")
+    public List<LabResult> withIds(List<String> labResultIds) {
+        if (null == labResultIds) {
+            return Collections.emptyList();
+        }
+        ViewQuery query = createQuery("by_id").keys(labResultIds).includeDocs(true);
+        List<LabResult> results = db.queryView(query, LabResult.class);
+        for (LabResult result : results) {
+            loadDependencies(result);
+        }
+        return (null == results) ? Collections.<LabResult>emptyList() : results;
+    }
+
     @View(name = "find_by_patientId_and_labTest_id_and_testDate", map = "function(doc) {if (doc.documentType =='LabResult' && doc.patientId && doc.labTest_id) {emit([doc.patientId, doc.labTest_id, doc.testDate], doc._id);}}")
     private List<LabResult> findAllByLabTestFor(TAMAConstants.LabTestType labTestType, String patientId, int rangeInMonths) {
         LocalDate today = DateUtil.today();

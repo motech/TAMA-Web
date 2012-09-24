@@ -9,14 +9,14 @@ import java.util.List;
 
 public class MedicalConditionsMapper {
     private Patient patient;
-    private LabResults labResults;
+    private LabResult baselineCD4Count;
     private VitalStatistics vitalStatistics;
     private TreatmentAdvice earliestTreatmentAdvice;
     private Regimen currentRegimen;
 
-    public MedicalConditionsMapper(Patient patient, LabResults labResults, VitalStatistics vitalStatistics, TreatmentAdvice earliestTreatmentAdvice, Regimen currentRegimen) {
+    public MedicalConditionsMapper(Patient patient, LabResult labResult, VitalStatistics vitalStatistics, TreatmentAdvice earliestTreatmentAdvice, Regimen currentRegimen) {
         this.patient = patient;
-        this.labResults = labResults;
+        this.baselineCD4Count = labResult;
         this.vitalStatistics = vitalStatistics;
         this.earliestTreatmentAdvice = earliestTreatmentAdvice;
         this.currentRegimen = currentRegimen;
@@ -28,7 +28,7 @@ public class MedicalConditionsMapper {
         medicalCondition.regimenName(currentRegimen.getName());
         medicalCondition.gender(patient.getGender().getType());
         medicalCondition.age(patient.getAge());
-        medicalCondition.cd4Count(labResults.baselineCD4Count());
+        medicalCondition.cd4Count(Integer.parseInt(baselineCD4Count.getResult()));
         medicalCondition.diabetic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Diabetes));
         medicalCondition.hyperTensic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Hypertension));
         medicalCondition.nephrotoxic(hasHistoryOfOtherSystemCategoryAilment(AilmentDefinition.Nephrotoxicity));

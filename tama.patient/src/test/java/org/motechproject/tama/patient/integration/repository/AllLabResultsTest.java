@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static junit.framework.Assert.*;
@@ -229,6 +230,16 @@ public class AllLabResultsTest extends SpringIntegrationTest {
 
         assertEquals(1, labResults.size());
         assertEquals(TAMAConstants.LabTestType.PVL.getName(), labResults.get(0).getLabTest().getName());
+    }
+
+    @Test
+    public void shouldReturnEmptyResultsOnNullIds() {
+        assertTrue(allLabResults.withIds(null).isEmpty());
+    }
+
+    @Test
+    public void shouldReturnEmptyResultsOnEmptyIds() {
+        assertTrue(allLabResults.withIds(Collections.<String>emptyList()).isEmpty());
     }
 
     private void assertCD4LabResult(LabResult labResult) {

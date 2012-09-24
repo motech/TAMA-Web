@@ -170,7 +170,7 @@ public class PatientController extends BaseController {
         addDateTimeFormat(uiModel);
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         if (patient == null) return "authorizationFailure";
-        String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
+        String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).toString();
         uiModel.addAttribute(PATIENT, patient);
         uiModel.addAttribute(ITEM_ID, id);  // TODO: is this even used?
         uiModel.addAttribute(DEACTIVATION_STATUSES, Status.deactivationStatuses());
@@ -189,7 +189,7 @@ public class PatientController extends BaseController {
         TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(id);
         Regimen currentRegimen = patientService.currentRegimen(patient);
         ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patient.getId());
-        String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults).toString();
+        String warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).toString();
         PatientSummary patientSummary = new PatientSummary(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen, clinicVisits, warning);
         //Do not change name of form bean - currently used by graphs to get data.
         //TODO : Change <graph>.jspx partials to accept patient form bean name as parameter/variable.
