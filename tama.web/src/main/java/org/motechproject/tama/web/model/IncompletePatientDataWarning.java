@@ -74,7 +74,7 @@ public class IncompletePatientDataWarning {
 
     private void findRequiredLabResults() {
         ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patient.getId());
-        HashSet<String> requiredFor = new HashSet<String>(Arrays.asList("Symptoms Reporting", "Health Tips"));
+        HashSet<String> requiredFor = new HashSet<String>(Arrays.asList("Symptoms Reporting ( BaseLine CD4 )", "Health Tips ( Aleast one )"));
         LabResult cd4Result = null;
         if (baselineVisit != null) {
             List<LabResult> labResults = allLabResults.withIds(baselineVisit.getLabResultIds());
@@ -82,7 +82,7 @@ public class IncompletePatientDataWarning {
         } else {
             cd4Result = null;
         }
-        requiredPatientDetails.add(new RequiredPatientDetail(cd4Result, "Lab Results(CD4 count)", requiredFor));
+        requiredPatientDetails.add(new RequiredPatientDetail(cd4Result, "CD4 count", requiredFor));
     }
 
     private void findRequiredTreatmentAdvice() {
