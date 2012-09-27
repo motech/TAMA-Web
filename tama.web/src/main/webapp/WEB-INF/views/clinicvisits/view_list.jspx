@@ -7,7 +7,13 @@
      class="clinic-visit-list">
 
     <c:if test="${warning != null}">
-        <div class="warning"> <c:out value="${warning}"/> </div>
+        <div class="warning">
+            <ul>
+                <c:forEach items="${warning}" var="warningMessage">
+                    <li><c:out value="${warningMessage}"/></li>
+                </c:forEach>
+            </ul>
+        </div>
     </c:if>
 
     <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>

@@ -9,11 +9,11 @@
 
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/resources-${applicationVersion}/styles/show-patient.css" var="show_patient_css_url" />
+    <spring:url value="/resources-${applicationVersion}/styles/show-patient.css" var="show_patient_css_url"/>
     <link rel="stylesheet" type="text/css" media="screen" href="${show_patient_css_url}"></link>
 
     <script type="text/javascript">
-        dojo.addOnLoad(function() {
+        dojo.addOnLoad(function () {
             deactivationStatusesWidget = dijit.byId('_patient.status_id');
             if (deactivationStatusesWidget != null) {
                 deactivationStatusesWidget.setValue('');
@@ -23,21 +23,28 @@
     </script>
 
     <c:if test="${warning != null}">
-        <div class="warning"> <c:out value="${warning}"/> </div>
+        <div class="warning">
+            <ul>
+                <c:forEach items="${warning}" var="warningMessage">
+                    <li><c:out value="${warningMessage}"/></li>
+                </c:forEach>
+            </ul>
+        </div>
     </c:if>
 
     <c:if test="${flashError != null}">
-        <div class="error"> <c:out value="${flashError}"/> </div>
+        <div class="error"><c:out value="${flashError}"/></div>
     </c:if>
 
-    <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" create="false" list="false" delete="false" update="false" label="Patient Registration Details">
-        <jsp:include page="showBasicInformation.jspx" />
-        <jsp:include page="showMedicalHistory.jspx" />
-        <jsp:include page="showPatientPreferences.jspx" />
-        <jsp:include page="showTAMAStatus.jspx" />
+    <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" create="false"
+               list="false" delete="false" update="false" label="Patient Registration Details">
+        <jsp:include page="showBasicInformation.jspx"/>
+        <jsp:include page="showMedicalHistory.jspx"/>
+        <jsp:include page="showPatientPreferences.jspx"/>
+        <jsp:include page="showTAMAStatus.jspx"/>
         <jsp:include page="showPatientPageLinks.jspx">
-            <jsp:param name="patientId" value="${patient.id}" />
-            <jsp:param name="patientInactive" value="${patient.status.inactive}" />
+            <jsp:param name="patientId" value="${patient.id}"/>
+            <jsp:param name="patientInactive" value="${patient.status.inactive}"/>
         </jsp:include>
     </page:show>
 

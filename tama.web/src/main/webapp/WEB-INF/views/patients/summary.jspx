@@ -23,8 +23,15 @@
     <link rel="stylesheet" type="text/css" media="screen" href="${patient_summary_css}"></link>
 
     <c:if test="${patient.warning != null}">
-        <div class="warning"> <c:out value="${patient.warning}"/> </div>
+        <div class="warning">
+            <ul>
+            <c:forEach items="${patient.warning}" var="warningMessage">
+                <li><c:out value="${warningMessage}"/></li>
+            </c:forEach>
+            </ul>
+        </div>
     </c:if>
+
     <page:show id="ps_org_motechproject_tama_domain_patientSummary" object="${patient}" path="/patients" create="false" list="false" delete="false" update="false" label="Patient Dashboard">
         <util:panel id="fc_org_motechproject_tama_domain_patient_Patient_Summary" title="Patient Summary" openPane="true" update="false">
             <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>

@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
+import java.util.List;
 
 public class PatientSummary {
 
@@ -19,9 +20,9 @@ public class PatientSummary {
     private TreatmentAdvice earliestTreatmentAdvice, currentTreatmentAdvice;
     private Regimen currentRegimen;
     private ClinicVisits clinicVisits;
-    private String warning;
+    private List<String> warning;
 
-    public PatientSummary(Patient patient, TreatmentAdvice earliestTreatmentAdvice, TreatmentAdvice currentTreatmentAdvice, Regimen currentRegimen, ClinicVisits clinicVisits, String warning) {
+    public PatientSummary(Patient patient, TreatmentAdvice earliestTreatmentAdvice, TreatmentAdvice currentTreatmentAdvice, Regimen currentRegimen, ClinicVisits clinicVisits, List<String> warning) {
         this.patient = patient;
         this.earliestTreatmentAdvice = earliestTreatmentAdvice;
         this.currentTreatmentAdvice = currentTreatmentAdvice;
@@ -78,7 +79,7 @@ public class PatientSummary {
         return clinicVisits.nextConfirmedAppointmentDate();
     }
 
-    public String getWarning() {
+    public List<String> getWarning() {
         return warning;
     }
 

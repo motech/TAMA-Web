@@ -8,7 +8,10 @@ import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 
@@ -54,19 +57,18 @@ public class IncompletePatientDataWarning {
         }
     }
 
-    @Override
-    public String toString() {
+    public List<String> value() {
         findAllRequiredInfo();
         if (patient.getStatus().isInactive())
-            return "Patient has not been Activated";
+            return asList("Patient has not been Activated");
 
-        String message = "";
+        List<String> message = new ArrayList<String>();
         for (RequiredPatientDetail detail : this.requiredPatientDetails) {
-            if(detail.container == null)
-                message += "The " + detail.containerName + " need to be filled so that the patient can access " + StringUtils.join(detail.requiredFor, " and ") + "\n";
+            if (detail.container == null)
+                message.add("The " + detail.containerName + " need to be filled so that the patient can access " + StringUtils.join(detail.requiredFor, " and "));
         }
 
-        return StringUtils.isBlank(message) ? null : message;
+        return message.isEmpty() ? null : message;
     }
 
     private void findBaseLineLabResults() {
@@ -86,7 +88,7 @@ public class IncompletePatientDataWarning {
         HashSet<String> requiredFor = new HashSet<String>(asList("Health Tips"));
         int cd4Result = allLabResults.allLabResults(patient.getId()).latestCD4Count();
         if (cd4Result == LabResult.INVALID_CD4_COUNT) {
-            requiredPatientDetails.add(new RequiredPatientDetail(cd4Result == 0 ? null : cd4Result, "Latest CD4 count", requiredFor));
+            requiredPatientDetails.add(new RequiredPatientDetail(cd4Result == LabResult.INVALID_CD4_COUNT ? null : cd4Result, "Latest CD4 count", requiredFor));
         }
     }
 
