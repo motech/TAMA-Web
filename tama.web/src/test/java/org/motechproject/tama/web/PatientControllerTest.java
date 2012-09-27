@@ -149,7 +149,7 @@ public class PatientControllerTest {
         }
 
         @Test
-        public void shouldRedirectToPatientViewPage_AddErrorMessageToUiModel_onError(){
+        public void shouldRedirectToPatientViewPage_AddErrorMessageToUiModel_onError() {
             Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
             ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
             when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
@@ -197,7 +197,7 @@ public class PatientControllerTest {
         }
 
         @Test
-        public void shouldRedirectToPatientListPage_AddErrorMessageToUiModel_onError(){
+        public void shouldRedirectToPatientListPage_AddErrorMessageToUiModel_onError() {
             Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).build();
             ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withDefaults().build();
             when(allClinicVisits.getBaselineVisit(PATIENT_ID)).thenReturn(clinicVisit);
@@ -270,7 +270,7 @@ public class PatientControllerTest {
         }
 
         @Test
-        public void shouldActivatePatientAndRedirectToShowPage(){
+        public void shouldActivatePatientAndRedirectToShowPage() {
             Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withCallPreference(CallPreference.FourDayRecall).withLastSuspendedDate(DateUtil.now().minusDays(2)).build();
             when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
@@ -325,7 +325,7 @@ public class PatientControllerTest {
             verify(uiModel).addAttribute(PatientController.PATIENT, patient);
             verify(uiModel).addAttribute(PatientController.ITEM_ID, PATIENT_ID);
             verify(uiModel).addAttribute(PatientController.DEACTIVATION_STATUSES, Status.deactivationStatuses());
-            verify(uiModel).addAttribute(PatientController.WARNING, "The Vital Statistics(Height, Weight), Regimen details, Lab Results(CD4 count) need to be filled so that the patient can access Symptoms Reporting and Health Tips");
+            verify(uiModel).addAttribute(eq(PatientController.WARNING), anyString());
         }
 
         @Test
@@ -341,7 +341,7 @@ public class PatientControllerTest {
 
     public static class ShowSummary extends SubjectUnderTest {
         @Test
-        public void shouldGoToPatientSummaryPage_WhenPatientViewedFromListPatientPage(){
+        public void shouldGoToPatientSummaryPage_WhenPatientViewedFromListPatientPage() {
             Patient patient = mock(Patient.class);
 
             when(request.getSession()).thenReturn(session);

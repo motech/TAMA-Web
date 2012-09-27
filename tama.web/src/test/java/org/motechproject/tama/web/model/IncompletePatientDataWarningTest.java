@@ -19,6 +19,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -50,6 +51,7 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(validVitalStatistics());
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
         when(allLabResults.withIds(any(List.class))).thenReturn(Collections.<LabResult>emptyList());
+        when(allLabResults.allLabResults(patient.getId())).thenReturn(new LabResults());
         when(allClinicVisits.getBaselineVisit(patient.getId())).thenReturn(clinicVisit(false));
 
         patient.setStatus(Status.Inactive);
@@ -63,7 +65,7 @@ public class IncompletePatientDataWarningTest {
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
         setupValidResult();
 
-        assertEquals("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting", incompletePatientDataWarning.toString());
+        assertTrue(incompletePatientDataWarning.toString().contains("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting"));
     }
 
     @Test
@@ -74,7 +76,7 @@ public class IncompletePatientDataWarningTest {
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
         setupValidResult();
 
-        assertEquals("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting", incompletePatientDataWarning.toString());
+        assertTrue(incompletePatientDataWarning.toString().contains("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting"));
     }
 
     @Test
@@ -84,11 +86,11 @@ public class IncompletePatientDataWarningTest {
 
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(validVitalStatistics());
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(validTreatmentAdvice());
-
+        when(allLabResults.allLabResults(patient.getId())).thenReturn(new LabResults());
         when(allClinicVisits.getBaselineVisit(patient.getId())).thenReturn(clinicVisit);
         when(allLabResults.withIds(asList(pvlLabResult.getId()))).thenReturn(asList(pvlLabResult));
 
-        assertEquals("The Lab Results(CD4 count) need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
+        assertTrue(incompletePatientDataWarning.toString().contains("Baseline CD4 count need to be filled so that the patient can access Symptoms Reporting"));
     }
 
     @Test
@@ -96,9 +98,11 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(validVitalStatistics());
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(null);
         when(allLabResults.withIds(any(List.class))).thenReturn(Collections.<LabResult>emptyList());
+        when(allLabResults.allLabResults(patient.getId())).thenReturn(new LabResults());
         when(allClinicVisits.getBaselineVisit(patient.getId())).thenReturn(clinicVisit(false));
 
-        assertEquals("The Regimen details, Lab Results(CD4 count) need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
+        assertTrue(incompletePatientDataWarning.toString().contains("The Regimen details need to be filled so that the patient can access Symptoms Reporting and Health Tips"));
+        assertTrue(incompletePatientDataWarning.toString().contains("Baseline CD4 count need to be filled so that the patient can access Symptoms Reporting"));
     }
 
     @Test
@@ -106,9 +110,12 @@ public class IncompletePatientDataWarningTest {
         when(allVitalStatistics.findLatestVitalStatisticByPatientId("patientId")).thenReturn(null);
         when(allTreatmentAdvices.currentTreatmentAdvice("patientId")).thenReturn(null);
         when(allLabResults.withIds(any(List.class))).thenReturn(Collections.<LabResult>emptyList());
+        when(allLabResults.allLabResults(patient.getId())).thenReturn(new LabResults());
         when(allClinicVisits.getBaselineVisit(patient.getId())).thenReturn(clinicVisit(false));
 
-        assertEquals("The Vital Statistics(Height, Weight), Regimen details, Lab Results(CD4 count) need to be filled so that the patient can access Symptoms Reporting and Health Tips", incompletePatientDataWarning.toString());
+        assertTrue(incompletePatientDataWarning.toString().contains("The Regimen details need to be filled so that the patient can access Symptoms Reporting and Health Tips"));
+        assertTrue(incompletePatientDataWarning.toString().contains("Baseline CD4 count need to be filled so that the patient can access Symptoms Reporting"));
+        assertTrue(incompletePatientDataWarning.toString().contains("The Vital Statistics(Height, Weight) need to be filled so that the patient can access Symptoms Reporting"));
     }
 
     @Test
@@ -126,6 +133,7 @@ public class IncompletePatientDataWarningTest {
         LabResult labResult = LabResultBuilder.defaultCD4Result().withId(CD4_RESULT_ID).build();
         when(allLabResults.withIds(any(List.class))).thenReturn(asList(labResult));
         when(allClinicVisits.getBaselineVisit(patient.getId())).thenReturn(clinicVisit);
+        when(allLabResults.allLabResults(patient.getId())).thenReturn(new LabResults(asList(labResult)));
     }
 
     private ClinicVisit clinicVisit(boolean hasCD4Result) {

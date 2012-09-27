@@ -10,6 +10,8 @@ import org.motechproject.tama.patient.repository.AllVitalStatistics;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
+
 public class IncompletePatientDataWarning {
 
     private class RequiredPatientDetail {
@@ -47,7 +49,8 @@ public class IncompletePatientDataWarning {
         if (patient.getStatus().isActive()) {
             findRequiredVitalStatistics();
             findRequiredTreatmentAdvice();
-            findRequiredLabResults();
+            findBaseLineLabResults();
+            findLatestLabResults();
         }
     }
 
@@ -56,25 +59,19 @@ public class IncompletePatientDataWarning {
         findAllRequiredInfo();
         if (patient.getStatus().isInactive())
             return "Patient has not been Activated";
-        ArrayList<String> pendingPatientDetailsArray = new ArrayList<String>();
-        Set<String> pendingDetailsRequiredFor = new HashSet<String>();
 
+        String message = "";
         for (RequiredPatientDetail detail : this.requiredPatientDetails) {
-            if (detail.container == null) {
-                pendingPatientDetailsArray.add(detail.containerName);
-                pendingDetailsRequiredFor.addAll(detail.requiredFor);
-            }
+            if(detail.container == null)
+                message += "The " + detail.containerName + " need to be filled so that the patient can access " + StringUtils.join(detail.requiredFor, " and ") + "\n";
         }
 
-        if (pendingPatientDetailsArray.isEmpty())
-            return null;
-        return "The " + StringUtils.join(pendingPatientDetailsArray, ", ") + " need to be filled so that the patient can access "
-                + StringUtils.join(pendingDetailsRequiredFor.toArray(), " and ");
+        return StringUtils.isBlank(message) ? null : message;
     }
 
-    private void findRequiredLabResults() {
+    private void findBaseLineLabResults() {
         ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patient.getId());
-        HashSet<String> requiredFor = new HashSet<String>(Arrays.asList("Symptoms Reporting ( BaseLine CD4 )", "Health Tips ( Aleast one )"));
+        HashSet<String> requiredFor = new HashSet<String>(asList("Symptoms Reporting"));
         LabResult cd4Result = null;
         if (baselineVisit != null) {
             List<LabResult> labResults = allLabResults.withIds(baselineVisit.getLabResultIds());
@@ -82,19 +79,27 @@ public class IncompletePatientDataWarning {
         } else {
             cd4Result = null;
         }
-        requiredPatientDetails.add(new RequiredPatientDetail(cd4Result, "CD4 count", requiredFor));
+        requiredPatientDetails.add(new RequiredPatientDetail(cd4Result, "Baseline CD4 count", requiredFor));
+    }
+
+    private void findLatestLabResults() {
+        HashSet<String> requiredFor = new HashSet<String>(asList("Health Tips"));
+        int cd4Result = allLabResults.allLabResults(patient.getId()).latestCD4Count();
+        if (cd4Result == LabResult.INVALID_CD4_COUNT) {
+            requiredPatientDetails.add(new RequiredPatientDetail(cd4Result == 0 ? null : cd4Result, "Latest CD4 count", requiredFor));
+        }
     }
 
     private void findRequiredTreatmentAdvice() {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
-        HashSet<String> requiredFor = new HashSet<String>(Arrays.asList("Symptoms Reporting", "Health Tips"));
+        HashSet<String> requiredFor = new HashSet<String>(asList("Symptoms Reporting", "Health Tips"));
         requiredPatientDetails.add(new RequiredPatientDetail(treatmentAdvice, "Regimen details", requiredFor));
     }
 
     private void findRequiredVitalStatistics() {
         VitalStatistics vitalStats = allVitalStatistics.findLatestVitalStatisticByPatientId(patient.getId());
         vitalStats = (vitalStats != null && (vitalStats.getWeightInKg() != null && vitalStats.getHeightInCm() != null)) ? vitalStats : null;
-        HashSet<String> requiredFor = new HashSet<String>(Arrays.asList("Symptoms Reporting"));
+        HashSet<String> requiredFor = new HashSet<String>(asList("Symptoms Reporting"));
         requiredPatientDetails.add(new RequiredPatientDetail(vitalStats, "Vital Statistics(Height, Weight)", requiredFor));
     }
 }
