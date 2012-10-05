@@ -24,7 +24,7 @@ public class SymptomReportingChartControllerIT extends SpringIntegrationTest {
 
     @Autowired
     private SymptomReportingChartController controller;
-    
+
     @Autowired
     private SymptomRecordingService recordingService;
 
@@ -36,6 +36,13 @@ public class SymptomReportingChartControllerIT extends SpringIntegrationTest {
 
         recordSymptomAt(today.minusDays(1), "1", "fever");
         recordSymptomAt(today.minusDays(2), "1", "depression");
+    }
+
+    @Test
+    public void shouldPassTimeZoneWithStartDateTimeString() throws JSONException {
+        JSONObject dataObject = new JSONObject(controller.list(patientDocId, 1));
+        String startTime = dataObject.getJSONArray("events").getJSONObject(0).getString("start");
+        assertTrue(startTime.contains("+05:30"));
     }
 
     @Test

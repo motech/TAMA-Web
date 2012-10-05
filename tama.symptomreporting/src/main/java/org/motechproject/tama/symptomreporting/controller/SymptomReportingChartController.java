@@ -46,7 +46,7 @@ public class SymptomReportingChartController {
             SymptomReport report = symptomReports.get(i);
         	for (String symptomId : report.getSymptomIds()) {
 	            JSONObject event = new JSONObject();
-	            event.put("start", String.format("%sZ", report.getReportedAt().toLocalDateTime()));
+	            event.put("start", String.format("%s", report.getReportedAt()));
 	            if (lastReportedAtMap.get(symptomId) == null || report.getReportedAt().isBefore(lastReportedAtMap.get(symptomId).minusDays(7)))
                     event.put("title", symptomReportingProperties.symptomLabel(symptomId));
 	            event.put("durationEvent", false);
