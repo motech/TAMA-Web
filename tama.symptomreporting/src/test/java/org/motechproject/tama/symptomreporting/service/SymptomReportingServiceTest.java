@@ -18,7 +18,10 @@ import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.builder.LabResultBuilder;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.domain.LabResult;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -32,6 +35,7 @@ import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
 import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
 import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import java.util.Arrays;
@@ -43,7 +47,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class SymptomReportingServiceTest {
+public class SymptomReportingServiceTest extends BaseUnitTest {
 
     public static final String LAB_RESULT_ID = "labResultId";
 
@@ -93,6 +97,7 @@ public class SymptomReportingServiceTest {
     @Test
     public void shouldReturnPatientMedicalConditions() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withGender(Gender.newGender("Male")).withId(patientDocId).withPatientId(patientId).withDateOfBirth(new LocalDate(2000, 10, 1)).build();
+        mockCurrentDate(new LocalDate(2011, 11, 1));
         when(allPatients.get(patientId)).thenReturn(patient);
 
         String labTestId = "labTestId";

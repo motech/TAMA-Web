@@ -66,7 +66,11 @@ public class WeeklyAdherenceLogService {
 
         WeeklyAdherenceLog weeklyAdherenceLog = WeeklyAdherenceLog.create(patientId, treatmentAdviceDocId, startDateForCurrentWeek, TAMAConstants.DAYS_TO_RECALL_FOR_PATIENTS_ON_WEEKLY_ADHERENCE_CALL);
         weeklyAdherenceLog.setNotResponded(true);
-        allWeeklyAdherenceLogs.add(weeklyAdherenceLog);
+        upsertLog(findLogSimilarLog(weeklyAdherenceLog), weeklyAdherenceLog);
+    }
+
+    private WeeklyAdherenceLog findLogSimilarLog(WeeklyAdherenceLog log) {
+        return allWeeklyAdherenceLogs.findLogByWeekStartDate(log.getPatientId(), log.getTreatmentAdviceId(), log.getWeekStartDate());
     }
 
     private void upsertLog(WeeklyAdherenceLog currentLog, WeeklyAdherenceLog newLog) {

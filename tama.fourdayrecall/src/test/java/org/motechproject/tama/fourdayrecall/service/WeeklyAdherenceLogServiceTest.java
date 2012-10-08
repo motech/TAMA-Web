@@ -115,7 +115,7 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldNotModifyLogOnGivenWeekStartDateIfRespondedLogExistOnSameDate() {
-        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog(patient.getId(), treatmentAdvice.getId(), new LocalDate(2011, 1, 1), DateUtil.newDateTime(DateUtil.newDate(2011, 1, 1),  0, 0, 0), 0);
+        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog(patient.getId(), treatmentAdvice.getId(), new LocalDate(2011, 1, 1), DateUtil.newDateTime(DateUtil.newDate(2011, 1, 1), 0, 0, 0), 0);
         weeklyAdherenceLog.setNotResponded(false);
         when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weeklyAdherenceLog.getWeekStartDate())).thenReturn(weeklyAdherenceLog);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
@@ -127,7 +127,7 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldUpdateLogOnGivenWeekStartDateIfNotRespondedLogExistsOnSameDate() {
-        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog(patient.getId(), treatmentAdvice.getId(), new LocalDate(2011, 1, 1), DateUtil.newDateTime(DateUtil.newDate(2011, 1, 1),  0, 0, 0), 0);
+        WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog(patient.getId(), treatmentAdvice.getId(), new LocalDate(2011, 1, 1), DateUtil.newDateTime(DateUtil.newDate(2011, 1, 1), 0, 0, 0), 0);
         weeklyAdherenceLog.setNotResponded(true);
         when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weeklyAdherenceLog.getWeekStartDate())).thenReturn(weeklyAdherenceLog);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
@@ -156,14 +156,18 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
     public void shouldUpdateLogWithLogDateIfNotRespondedLogExistsOnSameWeekStartDate() {
         LocalDate weekStartDate = new LocalDate(2011, 1, 1);
         DateTime logDate = DateUtil.newDateTime(weekStartDate.plusDays(4), 0, 0, 0);
+        FourDayRecallDateService fourDayRecallDateService = mock(FourDayRecallDateService.class);
+        mockCurrentDate(logDate);
 
         WeeklyAdherenceLog weeklyAdherenceLog = new WeeklyAdherenceLog(patient.getId(), treatmentAdvice.getId(), weekStartDate, logDate, 0);
         weeklyAdherenceLog.setNotResponded(true);
 
+        when(fourDayRecallDateService.treatmentWeekStartDate(logDate.toLocalDate(), patient, treatmentAdvice)).thenReturn(weekStartDate);
+
         when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDate)).thenReturn(weeklyAdherenceLog);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
 
-        weeklyAdherenceLogsService.createLog(patient.getId(), weekStartDate, 0, logDate);
+        new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourDayRecallDateService).createNotRespondedLog(patient.getId());
         verify(allWeeklyAdherenceLogs).update(Matchers.<WeeklyAdherenceLog>any());
     }
 
