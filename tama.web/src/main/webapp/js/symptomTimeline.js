@@ -73,3 +73,9 @@ SymptomsReportingWidget.prototype = {
         return 200;
     }
 }
+
+//This is needed to fix the tooltip in timeline bubble. Timeline Bubble is drawn using UTC time and tooltip shows date as IST.
+//This method is trying to remove timezoneoffset.
+Timeline.GregorianDateLabeller.prototype.labelPrecise = function(date) {
+    return SimileAjax.DateTime.removeTimeZoneOffset(date, -5.3).toLocaleDateString();
+}
