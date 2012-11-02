@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.GrantedAuthorityImpl;
 public enum Role {
     CLINICIAN_DOCTOR,
     CLINICIAN_STUDY_NURSE,
+    ANALYST,
     ADMIN;
 
     public GrantedAuthority authority() {
