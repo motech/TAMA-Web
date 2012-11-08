@@ -37,6 +37,16 @@
         </if>
     </target>
 
+    <target name="load.increamental.seed.data">
+        <echo message="Loading Seed Data.."/>
+        <java fork="false" classname="${increamental.seed.main.class}">
+            <classpath>
+                <path location="../tama.web/target/tama-0.7-SNAPSHOT/WEB-INF/classes"/>
+                <path refid="lib.path"/>
+            </classpath>
+        </java>
+    </target>
+
     <target name="load.audio.seed">
         <echo message="Loading Audio Seed.."/>
         <java fork="false" classname="${audio.seed.loader.class}">

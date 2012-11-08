@@ -39,5 +39,14 @@
         </constructor-arg>
     </bean>
 
+    <!-- After a release, these increamental seeds should move to seedLoader list defined above -->
+    <bean id="increamentalSeedLoader" class="org.motechproject.tama.tools.seed.SeedLoader">
+        <constructor-arg>
+            <list>
+                <ref bean="analystSeed"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
     <bean id="couchDB" class="org.motechproject.tama.tools.CouchDB"/>
 </beans>
