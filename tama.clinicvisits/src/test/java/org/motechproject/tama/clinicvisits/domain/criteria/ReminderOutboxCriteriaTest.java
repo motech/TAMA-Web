@@ -89,6 +89,15 @@ public class ReminderOutboxCriteriaTest {
     }
 
     @Test
+    public void shouldReturnFalseForVisitRemindersIfVisitDateIsSet() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
+        ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withAppointmentConfirmedDate(DateTime.now().plusDays(2))
+                .withVisitDate(DateTime.now().minusHours(2))
+                .build();
+        assertFalse(reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, clinicVisit));
+    }
+
+    @Test
     public void shouldReturnTrueForVisitRemindersIfAllVisitOutboxMessageCriteriaSatisfied() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withAppointmentReminderPreference(true).build();
         ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withAppointmentConfirmedDate(DateTime.now().plusHours(2)).build();

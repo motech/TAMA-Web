@@ -29,6 +29,7 @@ public class ReminderOutboxCriteria {
         return (patient.getPatientPreferences().getActivateAppointmentReminders())
                 && (!outboxService.hasPendingOutboxMessages(patient.getId(), TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE))
                 && (clinicVisit.getConfirmedAppointmentDate() != null)
-                && (DateUtil.now().isBefore(clinicVisit.getConfirmedAppointmentDate()));
+                && (DateUtil.now().isBefore(clinicVisit.getConfirmedAppointmentDate())
+                && clinicVisit.getVisitDate() == null);
     }
 }
