@@ -13,7 +13,7 @@
             java.lang.reflect.Method m = java.lang.ClassLoader.class.getDeclaredMethod("loadLibrary", Class.class, String.class, Boolean.TYPE);
             m.setAccessible(true);
             m.invoke(null, java.lang.System.class, "jvmfaketime", false);
-            System.registerFakeCurrentTimeMillis();
+            System.startFakingTime();
 
 
             if (request.getMethod() == "POST") {
@@ -28,13 +28,12 @@
                     dateValue.setSeconds(timeValue.getSeconds());
                     System.out.println("Posted date " + time.substring(1, time.length() - 1));
 
-                    System.deregisterFakeCurrentTimeMillis();
+                    System.resetTime();
 
                     long diffValue = (dateValue.getTime() - System.currentTimeMillis());
 
-                    System.registerFakeCurrentTimeMillis();
                     System.out.println("offset calculated " + diffValue);
-                    System.setTimeOffset(diffValue);
+                    System.moveTimeBy(diffValue);
                     System.out.println("Date :" + new Date());
                 } catch (java.lang.Exception e) {
                     out.println("Error: " + e.getMessage());
