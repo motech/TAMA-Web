@@ -195,50 +195,11 @@
         </dependency>
     </dependencies>
     <build>
-
         <plugins>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.6</version>
                 <executions>
-                    <execution>
-                        <id>recreate-Db</id>
-                        <phase>pre-integration-test</phase>
-                        <configuration>
-                            <target unless="skipTests">
-                                <echo message="Recreating DB: START"/>
-                                <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                <java classname="org.motechproject.tama.tools.RecreateDB">
-                                    <classpath>
-                                        <pathelement path="${compile_classpath}"/>
-                                    </classpath>
-                                </java>
-                                <echo message="Recreating DB: END"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>load-seed-data-in-Db</id>
-                        <phase>pre-integration-test</phase>
-                        <configuration>
-                            <target unless="skipTests">
-                                <echo message="Seed data loading: START"/>
-                                <property name="compile_classpath" refid="maven.compile.classpath"/>
-                                <java classname="org.motechproject.tama.tools.seed.SetupSeedData">
-                                    <classpath>
-                                        <pathelement path="${compile_classpath}"/>
-                                    </classpath>
-                                </java>
-                                <echo message="Seed data loading: END"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
                     <execution>
                         <id>start-activemq</id>
                         <phase>pre-integration-test</phase>
@@ -259,7 +220,6 @@
                                            else="${activemq.windows.home}">
                                     <os family="unix"/>
                                 </condition>
-
                                 <echo message="Waiting for ActiveMQ to start on ${os.name}"/>
                                 <exec executable="${script.interpreter}" dir="${activemq.home}" spawn="true">
                                     <arg line="${script.switch} ${activemq.home}/bin/activemq.${script.suffix}"/>
@@ -599,7 +559,7 @@
                         <artifactId>maven-antrun-plugin</artifactId>
                         <version>1.6</version>
                         <configuration>
-                            <target name="load">
+                            <target name="load" unless="skipTests">
                                 <ant antfile="build.xml" target="drop.all.dbs" dir="${build.dir}"/>
                                 <echo message="Seed data loading: START"/>
                                 <property name="compile_classpath" refid="maven.compile.classpath"/>
