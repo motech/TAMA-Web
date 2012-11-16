@@ -3,6 +3,7 @@ package org.motechproject.tama.refdata.seed;
 import org.apache.log4j.Logger;
 
 public abstract class Seed {
+
     Logger LOG = Logger.getLogger(this.getClass());
 
     public void run() throws InterruptedException {

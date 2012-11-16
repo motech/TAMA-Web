@@ -1,17 +1,18 @@
 package org.motechproject.tama.refdata.seed;
 
+import org.motechproject.deliverytools.seed.Seed;
 import org.motechproject.tama.refdata.domain.OpportunisticInfection;
 import org.motechproject.tama.refdata.repository.AllOpportunisticInfections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class OpportunisticInfectionSeed extends Seed {
+public class OpportunisticInfectionSeed {
 
     @Autowired
     private AllOpportunisticInfections allOpportunisticInfections;
 
-    @Override
+    @Seed(version = "1.0", priority = 0)
     public void load() {
         allOpportunisticInfections.add(OpportunisticInfection.newOpportunisticInfection("Addison’s Disease"));
         allOpportunisticInfections.add(OpportunisticInfection.newOpportunisticInfection("Anemia"));

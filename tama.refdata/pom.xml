@@ -16,6 +16,10 @@
     <dependencies>
         <dependency>
             <groupId>org.motechproject</groupId>
+            <artifactId>motech-seed</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject</groupId>
             <artifactId>motech-cmslite-api</artifactId>
         </dependency>
         <dependency>

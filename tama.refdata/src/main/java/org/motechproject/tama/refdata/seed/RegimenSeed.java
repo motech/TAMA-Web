@@ -1,5 +1,6 @@
 package org.motechproject.tama.refdata.seed;
 
+import org.motechproject.deliverytools.seed.Seed;
 import org.motechproject.tama.refdata.domain.Drug;
 import org.motechproject.tama.refdata.domain.DrugComposition;
 import org.motechproject.tama.refdata.domain.DrugCompositionGroup;
@@ -11,14 +12,14 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class RegimenSeed extends Seed {
+public class RegimenSeed {
 
     @Autowired
     private AllRegimens allRegimens;
     @Autowired
     private DrugSeed drugSeed;
 
-    @Override
+    @Seed(version = "1.0", priority = 0)
     public void load() {
         Map<String, Drug> drugs = drugSeed.loadAll();
 

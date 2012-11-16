@@ -7,6 +7,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.log4j.Logger;
 import org.motechproject.cmslite.api.model.StreamContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
+import org.motechproject.deliverytools.seed.Seed;
 import org.motechproject.tama.common.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Component
-public class AudioSeed extends Seed {
+public class AudioSeed {
 
     private static final String WAV_FILES_LOCATION = "wav.files.location";
 
@@ -39,8 +40,8 @@ public class AudioSeed extends Seed {
         this.wavFilesLocation = (String) seedProperties.get(WAV_FILES_LOCATION);
     }
 
-    @Override
-    protected void load() {
+    @Seed(version = "1.0", priority = 0)
+    public void load() {
         File wavsDir = new File(wavFilesLocation);
         String[] languageDirs = wavsDir.list(new AndFileFilter(Arrays.asList(HiddenFileFilter.VISIBLE, DirectoryFileFilter.INSTANCE)));
 

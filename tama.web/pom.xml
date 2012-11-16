@@ -195,6 +195,7 @@
         </dependency>
     </dependencies>
     <build>
+
         <plugins>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -587,6 +588,48 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>load.seed.data</id>
+            <build>
+                <defaultGoal>antrun:run</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.6</version>
+                        <configuration>
+                            <target name="load">
+                                <ant antfile="build.xml" target="drop.all.dbs" dir="${build.dir}"/>
+                                <echo message="Seed data loading: START"/>
+                                <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                <java classname="org.motechproject.deliverytools.seed.SetupSeedData">
+                                    <classpath>
+                                        <pathelement path="${compile_classpath}"/>
+                                    </classpath>
+                                </java>
+                                <echo message="Seed data loading: END"/>
+                            </target>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>loadSeedDataInDb</id>
+                                <phase>process-test-classes</phase>
+                            </execution>
+                        </executions>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>ant-contrib</groupId>
+                    <artifactId>ant-contrib</artifactId>
+                    <version>1.0b2</version>
+                </dependency>
+            </dependencies>
         </profile>
     </profiles>
 </project>

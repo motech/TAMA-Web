@@ -378,6 +378,11 @@
             <!-- Platform and contrib -->
             <dependency>
                 <groupId>org.motechproject</groupId>
+                <artifactId>motech-seed</artifactId>
+                <version>0.12-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.motechproject</groupId>
                 <artifactId>motech-platform-common</artifactId>
                 <version>${motech.version}</version>
             </dependency>

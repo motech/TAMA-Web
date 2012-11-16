@@ -1,5 +1,6 @@
 package org.motechproject.tama.refdata.seed;
 
+import org.motechproject.deliverytools.seed.Seed;
 import org.motechproject.tama.refdata.domain.Brand;
 import org.motechproject.tama.refdata.domain.Company;
 import org.motechproject.tama.refdata.domain.Drug;
@@ -11,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class DrugSeed extends Seed {
+public class DrugSeed {
 
     @Autowired
     private AllDrugs drugs;
@@ -19,7 +20,7 @@ public class DrugSeed extends Seed {
     @Autowired
     private CompanySeed companySeed;
 
-    @Override
+    @Seed(version = "1.0", priority = 0)
     public void load() {
         Map<String, Company> allCompanies = companySeed.loadAllCompanies();
 

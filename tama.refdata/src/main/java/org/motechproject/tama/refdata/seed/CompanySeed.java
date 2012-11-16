@@ -1,5 +1,6 @@
 package org.motechproject.tama.refdata.seed;
 
+import org.motechproject.deliverytools.seed.Seed;
 import org.motechproject.tama.refdata.domain.Company;
 import org.motechproject.tama.refdata.repository.AllCompanies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class CompanySeed extends Seed {
+public class CompanySeed {
 
     @Autowired
     private AllCompanies allCompanies;
 
-    @Override
+    @Seed(version = "1.0", priority = 0)
     public void load() {
         allCompanies.add(new Company("Aurobindo"));
         allCompanies.add(new Company("Cipla"));

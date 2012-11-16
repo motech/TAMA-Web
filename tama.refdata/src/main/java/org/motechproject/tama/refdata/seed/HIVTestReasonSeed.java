@@ -1,17 +1,18 @@
 package org.motechproject.tama.refdata.seed;
 
+import org.motechproject.deliverytools.seed.Seed;
 import org.motechproject.tama.refdata.domain.HIVTestReason;
 import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class HIVTestReasonSeed extends Seed {
+public class HIVTestReasonSeed {
 
     @Autowired
     private AllHIVTestReasons allHIVTestReasons;
 
-    @Override
+    @Seed(version = "1.0", priority = 0)
     public void load() {
         allHIVTestReasons.add(HIVTestReason.newHIVTestReason("Preemployment"));
         allHIVTestReasons.add(HIVTestReason.newHIVTestReason("Pre-operative"));
