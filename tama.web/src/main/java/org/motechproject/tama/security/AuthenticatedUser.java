@@ -2,12 +2,14 @@ package org.motechproject.tama.security;
 
 import org.motechproject.tama.common.domain.TAMAUser;
 import org.motechproject.tama.refdata.domain.Administrator;
+import org.motechproject.tama.refdata.domain.Analyst;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.List;
 
 public class AuthenticatedUser extends User {
+
     private TAMAUser tamaUser;
 
     public AuthenticatedUser(List<GrantedAuthority> authorities, TAMAUser user) {
@@ -37,6 +39,10 @@ public class AuthenticatedUser extends User {
 
     public boolean isAdministrator() {
         return tamaUser instanceof Administrator;
+    }
+
+    public boolean isAnalyst() {
+        return tamaUser instanceof Analyst;
     }
 
     public void setPassword(String newPassword) {

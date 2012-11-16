@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AdminSecurityGroup extends AbstractSecurityGroup {
+
     @Autowired
     private AllAdministrators allAdministrators;
 

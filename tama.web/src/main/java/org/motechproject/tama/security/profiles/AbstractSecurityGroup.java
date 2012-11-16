@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractSecurityGroup implements SecurityGroup {
+
     protected List<Role> roles = new ArrayList<Role>();
 
     protected void add(Role... roles) {

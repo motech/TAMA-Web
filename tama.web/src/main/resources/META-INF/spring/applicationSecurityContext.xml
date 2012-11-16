@@ -31,10 +31,13 @@
         <intercept-url pattern="/symptoms/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
 
         <!-- Both admin and clinicians -->
-        <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR', 'ANALYST')" requires-channel="any"/>
         <intercept-url pattern="/changePassword/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
         <intercept-url pattern="/passwordReset/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
         <intercept-url pattern="/callsummary/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+
+        <!-- Only analysts -->
+        <intercept-url pattern="/analysisData/**" access="hasRole('ANALYST')" requires-channel="any"/>
 
         <!-- None -->
         <intercept-url pattern="/patients/**" method="DELETE" access="denyAll" requires-channel="any"/>
@@ -45,6 +48,7 @@
             <beans:list>
                 <beans:ref bean="clinicianSecurityGroup"/>
                 <beans:ref bean="adminSecurityGroup"/>
+                <beans:ref bean="analystSecurityGroup"/>
             </beans:list>
         </beans:constructor-arg>
         <beans:constructor-arg ref="allTAMAEvents"/>

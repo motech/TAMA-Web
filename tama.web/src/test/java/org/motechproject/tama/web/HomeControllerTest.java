@@ -22,20 +22,28 @@ public class HomeControllerTest {
 
     @Mock
     private AuthenticatedUser authenticatedUser;
+    private HomeController homeController;
 
     @Before
     public void setUp() {
         initMocks(this);
         when(httpServletRequest.getSession()).thenReturn(httpSession);
         when(httpSession.getAttribute("loggedInUser")).thenReturn(authenticatedUser);
+        homeController = new HomeController();
+    }
+
+    @Test
+    public void shouldRedirectToDataDashboardForAnAnalyst() {
+        when(authenticatedUser.isAnalyst()).thenReturn(true);
+        String page = homeController.homePage(httpServletRequest);
+        assertEquals("redirect:/analysisData", page);
     }
 
     @Test
     public void shouldRedirectToPatientsListingPage_ForAClinician() {
         when(authenticatedUser.isAdministrator()).thenReturn(false);
 
-        HomeController controller = new HomeController();
-        String page = controller.homePage(httpServletRequest);
+        String page = homeController.homePage(httpServletRequest);
         assertEquals("redirect:/patients", page);
     }
 
@@ -43,8 +51,7 @@ public class HomeControllerTest {
     public void shouldRedirectToClinicsListingPage_ForAnAdministrator() {
         when(authenticatedUser.isAdministrator()).thenReturn(true);
 
-        HomeController controller = new HomeController();
-        String page = controller.homePage(httpServletRequest);
+        String page = homeController.homePage(httpServletRequest);
         assertEquals("redirect:/clinics", page);
     }
 }

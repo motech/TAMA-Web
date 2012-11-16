@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import java.util.List;
 
 public class AuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
+
     public static final String PLEASE_ENTER_PASSWORD = "Please enter password";
     public static final String USER_NOT_FOUND = "The username or password you entered is incorrect";
     public static final String FAILURE = "Failure";
@@ -49,4 +50,5 @@ public class AuthenticationProvider extends AbstractUserDetailsAuthenticationPro
             allTAMAEvents.newLoginEvent(username, details.getRemoteAddress(), details.getSessionId(), status);
         }
     }
+
 }
