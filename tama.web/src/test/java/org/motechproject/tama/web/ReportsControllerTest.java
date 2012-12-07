@@ -18,7 +18,6 @@ import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.service.CallLogExcelReportService;
 import org.motechproject.util.DateUtil;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,8 +25,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -138,13 +135,14 @@ public class ReportsControllerTest {
 
     @Test
     public void shouldBuildCallLogsExcelReport() throws IOException {
+        boolean isAnalystReport = false;
         LocalDate startDate = new LocalDate(2011, 1, 1);
         LocalDate endDate = new LocalDate(2011, 1, 3);
         HttpServletResponse httpServletResponse = initializeServletResponse();
 
         reportsController.buildCallLogExcelReport(startDate, endDate, httpServletResponse);
 
-        verify(callLogExcelReportService).buildReport(eq(startDate), eq(endDate));
+        verify(callLogExcelReportService).buildReport(eq(startDate), eq(endDate), eq(isAnalystReport));
     }
 
     @Test

@@ -9,6 +9,7 @@
     <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
     <put-attribute name="clinicianMenu" value="/WEB-INF/views/clinicianMenu.jspx" />
     <put-attribute name="adminMenu" value="/WEB-INF/views/adminMenu.jspx" />
+    <put-attribute name="analystMenu" value="/WEB-INF/views/analystMenu.jspx" />
     <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
   </definition>
 

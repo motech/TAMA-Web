@@ -22,13 +22,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -109,14 +117,29 @@ public class ReportsController {
         writeExcelToResponse(response, createExcelReport(outboxReportBuilder), "OutboxReport.xls");
     }
 
+    @RequestMapping(value = "/analysisData/callLogReport.xls", method = RequestMethod.GET)
+    public void buildCallLogExcelAnalystReport(@DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                        @RequestParam LocalDate startDate,
+                                        @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                        @RequestParam LocalDate endDate,
+                                        HttpServletResponse response) {
+        HSSFWorkbook callLogReport = callLogExcelReportService.buildReport(startDate, endDate, true);
+        writeExcelToResponse(response, callLogReport, getReportNameWithDate("CallSummaryAnalystReport"));
+    }
+
+    private String getReportNameWithDate(String baseName) {
+        final String fileDateTag = new SimpleDateFormat("yyyy.MM.dd").format(new Date());
+        return baseName + "-" + fileDateTag + ".xls";
+    }
+
     @RequestMapping(value = "/reports/callLogReport.xls", method = RequestMethod.GET)
     public void buildCallLogExcelReport(@DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
                                         @RequestParam LocalDate startDate,
                                         @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
                                         @RequestParam LocalDate endDate,
                                         HttpServletResponse response) {
-        HSSFWorkbook callLogReport = callLogExcelReportService.buildReport(startDate, endDate);
-        writeExcelToResponse(response, callLogReport, "CallSummaryReport.xls");
+        HSSFWorkbook callLogReport = callLogExcelReportService.buildReport(startDate, endDate, false);
+        writeExcelToResponse(response, callLogReport, getReportNameWithDate("CallSummaryReport.xls"));
     }
 
     @RequestMapping(value = "/reports/smsReport.xls", method = RequestMethod.GET)
@@ -143,8 +166,9 @@ public class ReportsController {
         try {
             initializeExcelResponse(response, fileName);
             ServletOutputStream outputStream = response.getOutputStream();
-            if (null != excelWorkbook)
+            if (null != excelWorkbook) {
                 excelWorkbook.write(outputStream);
+            }
             outputStream.flush();
         } catch (IOException e) {
             logger.error("Error while writing excel report to response: " + e.getMessage());

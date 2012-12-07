@@ -33,17 +33,19 @@ public class CallLogReportBuilder extends BatchReportBuilder {
 
     private LocalDate startDate;
     private LocalDate endDate;
+    private boolean analystReport;
     private DateTime startKey;
     private DateTime endKey;
     private String startDocId;
 
-    public CallLogReportBuilder(AllCallLogs allCallLogs, AllPatients allPatients, AllIVRLanguagesCache allIVRLanguages, LocalDate startDate, LocalDate endDate) {
+    public CallLogReportBuilder(AllCallLogs allCallLogs, AllPatients allPatients, AllIVRLanguagesCache allIVRLanguages, LocalDate startDate, LocalDate endDate, boolean isAnalystReport) {
         super();
         this.allCallLogs = allCallLogs;
         this.allPatients = allPatients;
         this.allIVRLanguages = allIVRLanguages;
         this.startDate = startDate;
         this.endDate = endDate;
+        analystReport = isAnalystReport;
         this.startKey = DateUtil.newDateTime(startDate);
         this.endKey = DateUtil.newDateTime(endDate, 23, 59, 59);
     }
@@ -62,8 +64,12 @@ public class CallLogReportBuilder extends BatchReportBuilder {
     protected void initializeColumns() {
         columns = new LinkedList<ExcelColumn>();
         columns.add(new ExcelColumn("Patient ID", Cell.CELL_TYPE_STRING, 8000));
-        columns.add(new ExcelColumn("Source Phone Number", Cell.CELL_TYPE_STRING, 8000));
-        columns.add(new ExcelColumn("Destination Phone Number", Cell.CELL_TYPE_STRING, 8000));
+        if (analystReport) {
+            columns.add(new ExcelColumn("Call Direction", Cell.CELL_TYPE_STRING, 8000));
+        } else {
+            columns.add(new ExcelColumn("Source Phone Number", Cell.CELL_TYPE_STRING, 8000));
+            columns.add(new ExcelColumn("Destination Phone Number", Cell.CELL_TYPE_STRING, 8000));
+        }
         columns.add(new ExcelColumn("Clinic Name", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("TAMA Initiated Call At (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Call Started At (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 10000));
@@ -99,8 +105,13 @@ public class CallLogReportBuilder extends BatchReportBuilder {
         Map<String, CallFlowDetails> flowDetailsMap = callLogSummary.getFlowDetailsMap();
         List<Object> row = new LinkedList<Object>();
         row.add(callLogSummary.getPatientId());
-        row.add(callLogSummary.getSourcePhoneNumber());
-        row.add(callLogSummary.getDestinationPhoneNumber());
+        if (analystReport) {
+            final String sourcePhoneNumber = callLogSummary.getSourcePhoneNumber();
+            row.add("TAMA".equals(sourcePhoneNumber)?"Outgoing from TAMA":"Incoming to TAMA");
+        } else {
+            row.add(callLogSummary.getSourcePhoneNumber());
+            row.add(callLogSummary.getDestinationPhoneNumber());
+        }
         row.add(callLogSummary.getClinicName());
         row.add(callLogSummary.getInitiatedDateTime());
         row.add(callLogSummary.getStartDateTime());

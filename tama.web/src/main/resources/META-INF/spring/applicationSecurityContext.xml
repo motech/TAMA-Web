@@ -34,7 +34,7 @@
         <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR', 'ANALYST')" requires-channel="any"/>
         <intercept-url pattern="/changePassword/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
         <intercept-url pattern="/passwordReset/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
-        <intercept-url pattern="/callsummary/**" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+        <intercept-url pattern="/callsummary/**" access="hasAnyRole('ADMIN','ANALYST','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
 
         <!-- Only analysts -->
         <intercept-url pattern="/analysisData/**" access="hasRole('ANALYST')" requires-channel="any"/>

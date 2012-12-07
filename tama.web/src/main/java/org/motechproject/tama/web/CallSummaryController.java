@@ -90,7 +90,7 @@ public class CallSummaryController {
         DateTime endDate = DateUtil.newDateTime(filter.getCallLogEndDate()).plusHours(HOURS_OF_THE_DAY)
                 .plusMinutes(MINUTES_AND_SECONDS_TO_END_OF_DAY).plusSeconds(MINUTES_AND_SECONDS_TO_END_OF_DAY);
         return new CallLogSearch(startDate, endDate, CallLog.CallLogType.valueOf(filter.getCallType()), filter.getPatientId().toLowerCase(),
-                user.isAdministrator(), user.getClinicId());
+                user.isAdministrator() || user.isAnalyst(), user.getClinicId());
     }
 
     Integer getValidPageNumber(String pageNumber, Integer totalNumberOfPages) {

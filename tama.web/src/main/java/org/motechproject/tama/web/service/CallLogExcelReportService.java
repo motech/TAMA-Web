@@ -28,8 +28,8 @@ public class CallLogExcelReportService {
         this.allIVRLanguages = allIVRLanguages;
     }
 
-    public HSSFWorkbook buildReport(LocalDate startDate, LocalDate endDate) {
-        CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(allCallLogs, allPatients, allIVRLanguages, startDate, endDate);
+    public HSSFWorkbook buildReport(LocalDate startDate, LocalDate endDate, boolean isAnalystReport) {
+        CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(allCallLogs, allPatients, allIVRLanguages, startDate, endDate, isAnalystReport);
         return createExcelReport(callLogReportBuilder);
     }
 

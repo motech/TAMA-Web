@@ -4,10 +4,15 @@
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      xmlns:form="http://www.springframework.org/tags/form"
      xmlns:spring="http://www.springframework.org/tags"
-     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:sec="http://www.springframework.org/security/tags">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/reports/callLogReport.xls" var="calllog_download_url"/>
+    <sec:authorize access="hasRole('ADMIN')">
+        <spring:url value="/reports/callLogReport.xls" var="calllog_download_url"/>
+    </sec:authorize>
+    <sec:authorize access="hasRole('ANALYST')">
+        <spring:url value="/analysisData/callLogReport.xls" var="calllog_download_url"/>
+    </sec:authorize>
     <spring:url value="/reports/smsReport.xls" var="sms_download_url"/>
     <util:panel id="fc_org_motechproject_tama_DownloadReports" title="Download Reports" openPane="true">
         <util:panel id="fc_org_motechproject_tama_DownloadCallLogReport" title="Download Call Summary Report" openPane="true">
@@ -20,6 +25,7 @@
                 </span>
             </form>
         </util:panel>
+        <sec:authorize access="hasRole('ADMIN')">
         <util:panel id="fc_org_motechproject_tama_DownloadSMSReport" title="Download SMS Report" openPane="true">
             <form action="${sms_download_url}" method="GET" id="downloadSMSForm">
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="smsReport.startDate" id="c_org_motechproject_tama_sms_startDate" label="Starting From" required="true" />
@@ -30,6 +36,7 @@
                 </span>
             </form>
         </util:panel>
+        </sec:authorize>
     </util:panel>
     <script type="text/javascript">
         <![CDATA[

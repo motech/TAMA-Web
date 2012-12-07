@@ -4,8 +4,8 @@
       xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:spring="http://www.springframework.org/tags"
       xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-      xmlns:form="http://www.springframework.org/tags/form"
-      >
+      xmlns:form="http://www.springframework.org/tags/form" xmlns:sec="http://www.springframework.org/security/tags"
+        >
 
     <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
@@ -72,7 +72,12 @@
 
                <c:choose>
                    <c:when test="${empty sessionScope.loggedInUser.clinicName}">
+                       <sec:authorize access="hasRole('ADMIN')">
                        <tiles:insertAttribute name="adminMenu" ignore="true" />
+                       </sec:authorize>
+                       <sec:authorize access="hasRole('ANALYST')">
+                       <tiles:insertAttribute name="analystMenu" ignore="true" />
+                       </sec:authorize>
                    </c:when>
                    <c:otherwise>
                        <tiles:insertAttribute name="clinicianMenu" ignore="true" />
