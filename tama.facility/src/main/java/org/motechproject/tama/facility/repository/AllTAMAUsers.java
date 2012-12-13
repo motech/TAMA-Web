@@ -13,6 +13,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class AllTAMAUsers {
 
+    public static final String CLINICIAN = "clinician";
+    public static final String ANALYST = "analyst";
+
     AllClinicians allClinicians;
     AllAdministrators allAdministrators;
     AllAnalysts allAnalysts;
@@ -34,7 +37,12 @@ public class AllTAMAUsers {
         }
     }
 
-    public Clinician getClinician(String id) {
-        return allClinicians.get(id);
+    public TAMAUser getUser(String id, String userType) {
+        if (CLINICIAN.equalsIgnoreCase(userType)) {
+            return allClinicians.get(id);
+        } else if (ANALYST.equalsIgnoreCase(userType)) {
+            return allAnalysts.get(id);
+        }
+        return null;
     }
 }

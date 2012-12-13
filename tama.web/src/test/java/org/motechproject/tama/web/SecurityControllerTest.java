@@ -79,15 +79,15 @@ public class SecurityControllerTest {
     }
 
     @Test
-    public void shouldNotResetClinicianPassword_WhenNewPasswordAndConfirmPasswordMismatch(){
-        String viewName = securityController.resetClinicianPasswordPost("someClinicianId", "newPassword", "newPasswordConfirm", uiModel, request);
-        assertEquals("setClinicianPassword", viewName);
-        verify(uiModel).addAttribute("clinicianId", "someClinicianId");
+    public void shouldNotResetUserPassword_WhenNewPasswordAndConfirmPasswordMismatch() {
+        String viewName = securityController.changeUserPasswordPost("someClinicianId", "clinician", "newPassword", "newPasswordConfirm", uiModel, request);
+        assertEquals("changeUserPassword", viewName);
+        verify(uiModel).addAttribute("userId", "someClinicianId");
         verify(uiModel).addAttribute(eq("errors"), any());
     }
 
     @Test
-    public void shouldResetClinicianPassword_AndLogAsTAMAEvent(){
+    public void shouldResetUserPassword_AndLogAsTAMAEvent() {
         Clinician clinician = mock(Clinician.class);
         AuthenticatedUser authenticatedUser = mock(AuthenticatedUser.class);
 
@@ -99,10 +99,10 @@ public class SecurityControllerTest {
         when(clinician.getClinicName()).thenReturn("clinic0");
         when(clinician.getClinicId()).thenReturn("clinic_0_id");
 
-        when(allTAMAUsers.getClinician("someClinicianId")).thenReturn(clinician);
+        when(allTAMAUsers.getUser("someClinicianId", "clinician")).thenReturn(clinician);
 
-        String viewName = securityController.resetClinicianPasswordPost("someClinicianId", "newPassword", "newPassword", uiModel, request);
-        assertEquals("setClinicianPasswordSuccess", viewName);
+        String viewName = securityController.changeUserPasswordPost("someClinicianId", "clinician", "newPassword", "newPassword", uiModel, request);
+        assertEquals("setUserPasswordSuccess", viewName);
         verify(clinician).setPassword("newPassword");
         verify(allTAMAUsers).update(clinician, "admin");
         verify(allTAMAEvents, times(1)).newChangePasswordEvent("clinician0", "clinic0", "clinic_0_id", "admin");

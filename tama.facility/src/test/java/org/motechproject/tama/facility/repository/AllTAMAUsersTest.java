@@ -55,4 +55,15 @@ public class AllTAMAUsersTest {
         allTAMAUsers.update(analyst, analyst.getUsername());
         verify(allAnalysts).updatePassword(analyst);
     }
+
+    @Test
+    public void shouldFetchUerById() {
+        String userId = "userId";
+
+        allTAMAUsers.getUser(userId, AllTAMAUsers.CLINICIAN);
+        verify(allClinicians).get(userId);
+
+        allTAMAUsers.getUser(userId, AllTAMAUsers.ANALYST);
+        verify(allAnalysts).get(userId);
+    }
 }

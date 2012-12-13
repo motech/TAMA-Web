@@ -2,7 +2,7 @@ package org.motechproject.tama.web;
 
 
 import org.motechproject.tama.common.TAMAMessages;
-import org.motechproject.tama.facility.domain.Clinician;
+import org.motechproject.tama.common.domain.TAMAUser;
 import org.motechproject.tama.facility.repository.AllTAMAUsers;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
@@ -53,28 +53,32 @@ public class SecurityController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "resetClinicianPassword/{id}", method = RequestMethod.GET)
-    public String resetClinicianPassword(@PathVariable("id") String id, Model uiModel) {
-        uiModel.addAttribute("clinicianId", id);
-        return "setClinicianPassword";
+    @RequestMapping(value = "changeUserPassword/{userType}/{id}", method = RequestMethod.GET)
+    public String changeUserPassword(@PathVariable("id") String id, @PathVariable("userType") String userType, Model uiModel) {
+        uiModel.addAttribute("userId", id);
+        uiModel.addAttribute("userType", userType);
+        return "changeUserPassword";
     }
 
-    @RequestMapping(value = "resetClinicianPassword/{id}", method = RequestMethod.POST)
-    public String resetClinicianPasswordPost(@PathVariable("id") String id, @RequestParam(value = "j_newPassword", required = true) String newPassword,
-                                             @RequestParam(value = "j_newPasswordConfirm", required = true) String newPasswordConfirmation,
-                                             Model uiModel, HttpServletRequest request) {
+    @RequestMapping(value = "changeUserPassword/{userType}/{id}", method = RequestMethod.POST)
+    public String changeUserPasswordPost(@PathVariable("id") String id,
+                                         @PathVariable("userType") String userType,
+                                         @RequestParam(value = "j_newPassword", required = true) String newPassword,
+                                         @RequestParam(value = "j_newPasswordConfirm", required = true) String newPasswordConfirmation,
+                                         Model uiModel, HttpServletRequest request) {
+
         if (!newPassword.equals(newPasswordConfirmation)) {
             uiModel.addAttribute("errors", new FieldError("password", "j_newPasswordConfirm", TAMAMessages.NEW_PASSWORD_MISMATCH));
-            uiModel.addAttribute("clinicianId", id);
-            return "setClinicianPassword";
+            uiModel.addAttribute("userId", id);
+            uiModel.addAttribute("userType", userType);
+            return "changeUserPassword";
         }
         AuthenticatedUser user = (AuthenticatedUser) request.getSession().getAttribute(LoginSuccessHandler.LOGGED_IN_USER);
-        Clinician clinician = allTAMAUsers.getClinician(id);
-        clinician.setPassword(newPassword);
-        allTAMAUsers.update(clinician, loggedInUserId(request));
-        allTAMAEvents.newChangePasswordEvent(clinician.getName(), clinician.getClinicName(), clinician.getClinicId(), user.getUsername());
-
-        return "setClinicianPasswordSuccess";
+        TAMAUser tamaUser = allTAMAUsers.getUser(id, userType);
+        tamaUser.setPassword(newPassword);
+        allTAMAUsers.update(tamaUser, loggedInUserId(request));
+        allTAMAEvents.newChangePasswordEvent(tamaUser.getName(), tamaUser.getClinicName(), tamaUser.getClinicId(), user.getUsername());
+        return "setUserPasswordSuccess";
     }
 
     @RequestMapping(value = "passwordReset", method = RequestMethod.GET)
