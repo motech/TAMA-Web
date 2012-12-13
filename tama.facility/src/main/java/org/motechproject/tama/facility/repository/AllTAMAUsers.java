@@ -13,14 +13,16 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class AllTAMAUsers {
 
-    @Autowired
     AllClinicians allClinicians;
-
-    @Autowired
     AllAdministrators allAdministrators;
+    AllAnalysts allAnalysts;
 
     @Autowired
-    AllAnalysts allAnalysts;
+    public AllTAMAUsers(AllClinicians allClinicians, AllAdministrators allAdministrators, AllAnalysts allAnalysts) {
+        this.allClinicians = allClinicians;
+        this.allAdministrators = allAdministrators;
+        this.allAnalysts = allAnalysts;
+    }
 
     public void update(TAMAUser user, String userName) {
         if (user instanceof Clinician) {
