@@ -26,52 +26,61 @@
             </form>
         </util:panel>
         <sec:authorize access="hasRole('ADMIN')">
-        <util:panel id="fc_org_motechproject_tama_DownloadSMSReport" title="Download SMS Report" openPane="true">
-            <form action="${sms_download_url}" method="GET" id="downloadSMSForm">
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="smsReport.startDate" id="c_org_motechproject_tama_sms_startDate" label="Starting From" required="true" />
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="smsReport.endDate" id="c_org_motechproject_tama_sms_endDate" label="Till" required="true" />
-                <span class="submit" id="downloadSMSSpan">
-                    <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'downloadSMS', event:'onclick'}));</script>
-                    <input id="downloadSMS" type="submit" value="Download as Excel"/>
-                </span>
-            </form>
-        </util:panel>
+            <util:panel id="fc_org_motechproject_tama_DownloadSMSReport" title="Download SMS Report" openPane="true">
+                <form action="${sms_download_url}" method="GET" id="downloadSMSForm">
+                    <field:datetime dateTimePattern="dd/MM/yyyy" field="smsReport.startDate" id="c_org_motechproject_tama_sms_startDate" label="Starting From" required="true" />
+                    <field:datetime dateTimePattern="dd/MM/yyyy" field="smsReport.endDate" id="c_org_motechproject_tama_sms_endDate" label="Till" required="true" />
+                    <span class="submit" id="downloadSMSSpan">
+                        <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'downloadSMS', event:'onclick'}));</script>
+                        <input id="downloadSMS" type="submit" value="Download as Excel"/>
+                    </span>
+                </form>
+            </util:panel>
         </sec:authorize>
     </util:panel>
-    <script type="text/javascript">
-        <![CDATA[
-            dojo.addOnLoad(function() {
-                callLogStartDateObj = dijit.byId("_callLogReport.startDate_id");
-                callLogEndDateObj = dijit.byId("_callLogReport.endDate_id");
-                smsStartDateObj = dijit.byId("_smsReport.startDate_id");
-                smsEndDateObj = dijit.byId("_smsReport.endDate_id");
-                setConstraintOnEndDate(callLogStartDateObj, callLogEndDateObj);
-                setConstraintOnEndDate(smsStartDateObj, smsEndDateObj);
-
-                dojo.connect(dojo.byId("downloadCallLogs"), "onclick", function(event){
-                    event.preventDefault();
-                    Spring.decorations['_callLogReport.startDate_id'][0].validate();
-                    Spring.decorations['_callLogReport.endDate_id'][0].validate();
-                    if (callLogStartDateObj.isValid() && callLogEndDateObj.isValid()){
-                        dojo.byId('downloadCallLogsForm').submit();
-                    }
-                });
-                dojo.connect(dojo.byId("downloadSMS"), "onclick", function(event){
-                    event.preventDefault();
-                    Spring.decorations['_smsReport.startDate_id'][0].validate();
-                    Spring.decorations['_smsReport.endDate_id'][0].validate();
-                    if (smsStartDateObj.isValid() && smsEndDateObj.isValid()){
-                        dojo.byId('downloadSMSForm').submit();
-                    }
-                });
-
-                dojo.connect(callLogStartDateObj, "onChange", function() {
+    <sec:authorize access="hasAnyRole('ADMIN', 'ANALYST')">
+        <script type="text/javascript">
+            <![CDATA[
+                dojo.addOnLoad(function() {
+                    callLogStartDateObj = dijit.byId("_callLogReport.startDate_id");
+                    callLogEndDateObj = dijit.byId("_callLogReport.endDate_id");
                     setConstraintOnEndDate(callLogStartDateObj, callLogEndDateObj);
+                    dojo.connect(dojo.byId("downloadCallLogs"), "onclick", function(event){
+                        event.preventDefault();
+                        Spring.decorations['_callLogReport.startDate_id'][0].validate();
+                        Spring.decorations['_callLogReport.endDate_id'][0].validate();
+                        if (callLogStartDateObj.isValid() && callLogEndDateObj.isValid()){
+                            dojo.byId('downloadCallLogsForm').submit();
+                        }
+                    });
+                    dojo.connect(callLogStartDateObj, "onChange", function() {
+                        setConstraintOnEndDate(callLogStartDateObj, callLogEndDateObj);
+                    });
                 });
-                dojo.connect(smsStartDateObj, "onChange", function() {
+            ]]>
+        </script>
+    </sec:authorize>
+    <sec:authorize access="hasRole('ADMIN')">
+        <script type="text/javascript">
+            <![CDATA[
+                dojo.addOnLoad(function() {
+                    smsStartDateObj = dijit.byId("_smsReport.startDate_id");
+                    smsEndDateObj = dijit.byId("_smsReport.endDate_id");
                     setConstraintOnEndDate(smsStartDateObj, smsEndDateObj);
+
+                    dojo.connect(dojo.byId("downloadSMS"), "onclick", function(event){
+                        event.preventDefault();
+                        Spring.decorations['_smsReport.startDate_id'][0].validate();
+                        Spring.decorations['_smsReport.endDate_id'][0].validate();
+                        if (smsStartDateObj.isValid() && smsEndDateObj.isValid()){
+                            dojo.byId('downloadSMSForm').submit();
+                        }
+                    });
+                    dojo.connect(smsStartDateObj, "onChange", function() {
+                        setConstraintOnEndDate(smsStartDateObj, smsEndDateObj);
+                    });
                 });
-            });
-        ]]>
-    </script>
+            ]]>
+        </script>
+    </sec:authorize>
 </div>
