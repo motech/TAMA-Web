@@ -16,7 +16,7 @@ public class AnalysisDataControllerTest {
     }
 
     @Test
-    public void shouldShowDashboardAsLandingPage() throws Exception {
-        assertEquals("analysisData/show", analysisDataController.show());
+    public void shouldShowCallLogsFilterAsTheLandingPage() throws Exception {
+        assertEquals("redirect:/callsummary?form", analysisDataController.show());
     }
 }

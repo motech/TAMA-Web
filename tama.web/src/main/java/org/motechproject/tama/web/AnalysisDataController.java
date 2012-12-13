@@ -10,6 +10,6 @@ public class AnalysisDataController extends BaseController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String show() {
-        return "analysisData/show";
+        return "redirect:/callsummary?form";
     }
 }
