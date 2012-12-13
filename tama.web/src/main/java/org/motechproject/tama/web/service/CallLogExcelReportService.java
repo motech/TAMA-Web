@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
+import org.motechproject.tama.web.resportbuilder.AnalystCallLogReportBuilder;
 import org.motechproject.tama.web.resportbuilder.CallLogReportBuilder;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.ReportBuilder;
 import org.slf4j.Logger;
@@ -29,7 +30,12 @@ public class CallLogExcelReportService {
     }
 
     public HSSFWorkbook buildReport(LocalDate startDate, LocalDate endDate, boolean isAnalystReport) {
-        CallLogReportBuilder callLogReportBuilder = new CallLogReportBuilder(allCallLogs, allPatients, allIVRLanguages, startDate, endDate, isAnalystReport);
+        ReportBuilder callLogReportBuilder;
+        if (!isAnalystReport) {
+            callLogReportBuilder = new CallLogReportBuilder(allCallLogs, allPatients, allIVRLanguages, startDate, endDate);
+        } else {
+            callLogReportBuilder = new AnalystCallLogReportBuilder(allCallLogs, allPatients, allIVRLanguages, startDate, endDate);
+        }
         return createExcelReport(callLogReportBuilder);
     }
 
