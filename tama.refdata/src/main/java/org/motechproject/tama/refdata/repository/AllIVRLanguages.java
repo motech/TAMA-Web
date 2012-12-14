@@ -26,4 +26,11 @@ public class AllIVRLanguages extends AbstractCouchRepository<IVRLanguage> {
         List<IVRLanguage> ivrLanguages = db.queryView(q, IVRLanguage.class);
         return singleResult(ivrLanguages);
     }
+
+    public void removeByCode(String languageCode) {
+        IVRLanguage language = findByLanguageCode(languageCode);
+        if (null != language) {
+            remove(language);
+        }
+    }
 }
