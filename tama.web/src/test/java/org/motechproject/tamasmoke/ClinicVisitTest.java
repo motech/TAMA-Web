@@ -41,7 +41,7 @@ public class ClinicVisitTest extends BaseTest {
         patientDataService.registerAndActivate(treatmentAdvice, labResult, patient, clinician);
         ShowClinicVisitListPage showClinicVisitListPage = gotoShowClinicVisitPage();
 
-        assertEquals("Registered with TAMA", showClinicVisitListPage.getFirstVisitDescription());
+        assertEquals("Activated in TAMA", showClinicVisitListPage.getFirstVisitDescription());
         showClinicVisitListPage.logout();
 
         TestLabResult savedLabResult = patientDataService.getSavedLabResult(patient, clinician);
@@ -60,7 +60,7 @@ public class ClinicVisitTest extends BaseTest {
         patientDataService.registerAndActivate(treatmentAdvice, vitalStatistics, patient, clinician);
         ShowClinicVisitListPage showClinicVisitListPage = gotoShowClinicVisitPage();
 
-        assertEquals("Registered with TAMA", showClinicVisitListPage.getFirstVisitDescription());
+        assertEquals("Activated in TAMA", showClinicVisitListPage.getFirstVisitDescription());
         showClinicVisitListPage.logout();
 
         TestVitalStatistics savedVitalStatistics = patientDataService.getSavedVitalStatistics(patient, clinician);

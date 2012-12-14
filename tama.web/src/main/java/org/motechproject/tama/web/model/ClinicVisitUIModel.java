@@ -52,7 +52,7 @@ public class ClinicVisitUIModel {
 
     public String getTitle() {
         if (clinicVisit.isBaseline())
-            return "Registered with TAMA";
+            return "Activated in TAMA";
         else if (clinicVisit.weekNumber() != null)
             return clinicVisit.weekNumber() + " weeks Follow-up visit";
         else
