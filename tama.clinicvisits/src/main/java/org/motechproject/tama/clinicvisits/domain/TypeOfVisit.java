@@ -3,7 +3,8 @@ package org.motechproject.tama.clinicvisits.domain;
 public enum TypeOfVisit {
     Baseline,
     Scheduled,
-    Unscheduled;
+    Unscheduled,
+    UnscheduledWithAppointment;
 
     public String toLowerCase() {
         return toString().toLowerCase();
@@ -15,5 +16,9 @@ public enum TypeOfVisit {
 
     public boolean isScheduledVisit() {
         return this.equals(Scheduled);
+    }
+
+    public boolean isUnscheduledWithAppointment() {
+        return this.equals(UnscheduledWithAppointment);
     }
 }

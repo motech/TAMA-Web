@@ -32,6 +32,13 @@ public class ClinicVisitTest {
     }
 
     @Test
+    public void shouldBeUnscheduledWithAppointment() {
+        VisitResponse visitResponse = new VisitResponse().setTypeOfVisit(TypeOfVisit.UnscheduledWithAppointment.name());
+        ClinicVisit visit = new ClinicVisit(new Patient(), visitResponse);
+        assertTrue(visit.isUnscheduledWithAppointment());
+    }
+
+    @Test
     public void shouldReturnAdjustedDueDateWhenSetOnAppointment() {
         DateTime now = DateUtil.now();
         DateTime tomorrow = now.plusDays(1);

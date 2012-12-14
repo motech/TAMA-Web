@@ -75,6 +75,10 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
         return (String) visit.getVisitData().get(VITAL_STATISTICS);
     }
 
+    public boolean isUnscheduledWithAppointment() {
+        return TypeOfVisit.valueOf(visit.getTypeOfVisit()).isUnscheduledWithAppointment();
+    }
+
     public boolean isMissed() {
         return visit.isMissed();
     }

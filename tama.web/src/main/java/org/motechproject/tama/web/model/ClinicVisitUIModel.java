@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.util.DateUtil;
@@ -39,7 +40,11 @@ public class ClinicVisitUIModel {
     }
 
     public String getTypeOfVisit() {
-        return clinicVisit.getTypeOfVisit();
+        if (clinicVisit.isUnscheduledWithAppointment()) {
+            return TypeOfVisit.Unscheduled.name();
+        } else {
+            return clinicVisit.getTypeOfVisit();
+        }
     }
 
     public boolean isMissed() {
@@ -55,6 +60,8 @@ public class ClinicVisitUIModel {
             return "Activated in TAMA";
         else if (clinicVisit.weekNumber() != null)
             return clinicVisit.weekNumber() + " weeks Follow-up visit";
+        else if (clinicVisit.isUnscheduledWithAppointment())
+            return "Ad-hoc Visit by appointment";
         else
             return "Ad-hoc Visit";
     }
