@@ -1,5 +1,6 @@
 package org.motechproject.tama.patient.domain;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
 import org.motechproject.tama.common.domain.CouchEntity;
@@ -47,6 +48,7 @@ public class PatientEventLog extends CouchEntity {
         return event;
     }
 
+    @JsonIgnore
     public String getEventName() {
         return event.getDisplayName();
     }
