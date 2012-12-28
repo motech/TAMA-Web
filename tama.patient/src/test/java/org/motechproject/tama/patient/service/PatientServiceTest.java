@@ -12,7 +12,13 @@ import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientEvent;
+import org.motechproject.tama.patient.domain.PatientEventLog;
+import org.motechproject.tama.patient.domain.PatientReport;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -27,11 +33,16 @@ import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientServiceTest extends BaseUnitTest {
@@ -267,6 +278,23 @@ public class PatientServiceTest extends BaseUnitTest {
         assertEquals(patient, patientReport.getPatient());
         assertEquals(artStartDate.toDate(), patientReport.getARTStartedOn());
         assertEquals(currentRegimenStartDate.toDate(), patientReport.getCurrentRegimenStartDate());
+    }
+
+    @Test
+    public void shouldReturnPatientEventLogRelatedToStatusChange() throws Exception {
+        PatientEventLog activationEventLog = new PatientEventLog("patientDocId", PatientEvent.Activation);
+        PatientEventLog bestCallTimeChangedEventLog = new PatientEventLog("patientDocId", PatientEvent.Best_Call_Time_Changed);
+        PatientEventLog callPlanChangedEventLog = new PatientEventLog("patientDocId", PatientEvent.Call_Plan_Changed);
+        PatientEventLog suspensionEventLog = new PatientEventLog("patientDocId", PatientEvent.Suspension);
+        PatientEventLog tempDeactivationEventLog = new PatientEventLog("patientDocId", PatientEvent.Temporary_Deactivation);
+
+        when(allPatientEventLogs.findByPatientId("patientDocId")).thenReturn(Arrays.asList(activationEventLog, bestCallTimeChangedEventLog,
+                callPlanChangedEventLog, suspensionEventLog, tempDeactivationEventLog));
+
+        List<PatientEventLog> patientStatusHistory = patientService.getStatusChangeHistory("patientDocId");
+
+        assertEquals(3, patientStatusHistory.size());
+        assertArrayEquals(Arrays.asList(activationEventLog, suspensionEventLog, tempDeactivationEventLog).toArray(), patientStatusHistory.toArray());
     }
 
     private void assertPatientEventLog(PatientEventLog patientEventLog, PatientEvent patientEvent, String newValue, DateTime now) {

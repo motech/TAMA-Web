@@ -16,3 +16,23 @@
 .show_patient_summary label {
     width: 250px;
 }
+
+.patient-summary .basic-info {
+    float: left;
+    width: 48%;
+    border-right: 1px solid LIGHTGREY;
+}
+
+.patient-summary .extra-info {
+    display: inline-block;
+    float: right;
+    width: 48%;
+}
+
+.patient-summary .status-history {
+    padding-left: 5px;
+}
+
+.patient-summary .status-history li{
+    list-style-type:circle;
+}

@@ -191,6 +191,10 @@
             <artifactId>motech-datetime-simulator</artifactId>
         </dependency>
         <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time-jsptags</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-job-handler-invoker</artifactId>
         </dependency>

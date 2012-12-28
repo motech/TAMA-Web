@@ -1,6 +1,12 @@
 package org.motechproject.tama.patient.service;
 
-import org.motechproject.tama.patient.domain.*;
+import ch.lambdaj.function.matcher.Predicate;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientEvent;
+import org.motechproject.tama.patient.domain.PatientEventLog;
+import org.motechproject.tama.patient.domain.PatientReport;
+import org.motechproject.tama.patient.domain.Status;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -11,6 +17,11 @@ import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static ch.lambdaj.Lambda.filter;
 
 @Component
 public class PatientService {
@@ -93,5 +104,22 @@ public class PatientService {
         TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
         TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
         return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen(patient));
+    }
+
+    public List<PatientEventLog> getStatusChangeHistory(String patientDocId) {
+        List<PatientEventLog> allPatientEventLogs = this.allPatientEventLogs.findByPatientId(patientDocId);
+        return selectOnlyStatusChangeLogs(allPatientEventLogs);
+    }
+
+    private List<PatientEventLog> selectOnlyStatusChangeLogs(List<PatientEventLog> patientEventLogs) {
+        Predicate<PatientEventLog> onlyStatusChangeLogs = new Predicate<PatientEventLog>() {
+            @Override
+            public boolean apply(PatientEventLog log) {
+                List<PatientEvent> statusChangeEvents = Arrays.asList(PatientEvent.Activation, PatientEvent.Suspension, PatientEvent.Temporary_Deactivation);
+                return statusChangeEvents.contains(log.getEvent());
+            }
+        };
+
+        return filter(onlyStatusChangeLogs, patientEventLogs);
     }
 }

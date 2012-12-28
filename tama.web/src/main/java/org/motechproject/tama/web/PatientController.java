@@ -188,9 +188,10 @@ public class PatientController extends BaseController {
         TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(id);
         TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(id);
         Regimen currentRegimen = patientService.currentRegimen(patient);
+        List<PatientEventLog> patientStatusChangeHistory = patientService.getStatusChangeHistory(patient.getId());
         ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patient.getId());
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
-        PatientSummary patientSummary = new PatientSummary(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen, clinicVisits, warning);
+        PatientSummary patientSummary = new PatientSummary(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen, clinicVisits, patientStatusChangeHistory, warning);
         //Do not change name of form bean - currently used by graphs to get data.
         //TODO : Change <graph>.jspx partials to accept patient form bean name as parameter/variable.
         return new ModelAndView(SUMMARY_VIEW, "patient", patientSummary);
