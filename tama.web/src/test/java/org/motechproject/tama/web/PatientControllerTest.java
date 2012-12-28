@@ -17,6 +17,7 @@ import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
+import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
@@ -106,11 +107,13 @@ public class PatientControllerTest {
         ResumeFourDayRecallService resumeFourDayRecallService;
         @Mock
         AllClinicVisits allClinicVisits;
+        @Mock
+        AdherenceService adherenceService;
 
         @Before
         public void setUp() {
             initMocks(this);
-            controller = new PatientController(allPatients, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, 28, allClinicVisits);
+            controller = new PatientController(allPatients, allGenders, allIVRLanguages, allTestReasons, allModesOfTransmission, allTreatmentAdvices, allVitalStatistics, allLabResults, patientService, dailyPillReminderAdherenceService, resumeFourDayRecallService, adherenceService, 28, allClinicVisits);
             when(user.getUsername()).thenReturn(USER_NAME);
             when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
             when(request.getSession()).thenReturn(session);

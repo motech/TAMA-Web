@@ -106,4 +106,16 @@ public class FourDayRecallAdherenceService implements AdherenceServiceStrategy {
     public boolean wasAnyDoseTakenLateLastWeek(Patient patient) {
         return false;
     }
+
+    @Override
+    public double getRunningAdherencePercentage(Patient patient) {
+        try {
+            if(isAdherenceCapturedForCurrentWeek(patient)) {
+                return getAdherencePercentageForCurrentWeek(patient.getId());
+            }
+            return getAdherencePercentageForPreviousWeek(patient.getId());
+        } catch (NoAdherenceRecordedException e) {
+            return 0.0;
+        }
+    }
 }

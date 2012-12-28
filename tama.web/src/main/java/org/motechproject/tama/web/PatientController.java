@@ -10,6 +10,7 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
+import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -85,11 +86,13 @@ public class PatientController extends BaseController {
     private AllClinicVisits allClinicVisits;
     private ResumeFourDayRecallService resumeFourDayRecallService;
     private Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
+    private AdherenceService adherenceService;
 
     @Autowired
     public PatientController(AllPatients allPatients, AllGendersCache allGenders, AllIVRLanguagesCache allIVRLanguages, AllHIVTestReasonsCache allTestReasons, AllModesOfTransmissionCache allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
                              AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService,
-                             @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly, AllClinicVisits allClinicVisits) {
+                             AdherenceService adherenceService,  @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly,
+                             AllClinicVisits allClinicVisits) {
         this.allPatients = allPatients;
         this.allGenders = allGenders;
         this.allIVRLanguages = allIVRLanguages;
@@ -101,6 +104,7 @@ public class PatientController extends BaseController {
         this.patientService = patientService;
         this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
         this.resumeFourDayRecallService = resumeFourDayRecallService;
+        this.adherenceService = adherenceService;
         this.minNumberOfDaysOnDailyBeforeTransitioningToWeekly = minNumberOfDaysOnDailyBeforeTransitioningToWeekly;
         this.allClinicVisits = allClinicVisits;
     }
@@ -190,8 +194,10 @@ public class PatientController extends BaseController {
         Regimen currentRegimen = patientService.currentRegimen(patient);
         List<PatientEventLog> patientStatusChangeHistory = patientService.getStatusChangeHistory(patient.getId());
         ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patient.getId());
+        Double runningAdherencePercentage = adherenceService.getRunningAdherencePercentage(patient);
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
-        PatientSummary patientSummary = new PatientSummary(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen, clinicVisits, patientStatusChangeHistory, warning);
+        PatientSummary patientSummary = new PatientSummary(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen,
+                clinicVisits, patientStatusChangeHistory, runningAdherencePercentage, warning);
         //Do not change name of form bean - currently used by graphs to get data.
         //TODO : Change <graph>.jspx partials to accept patient form bean name as parameter/variable.
         return new ModelAndView(SUMMARY_VIEW, "patient", patientSummary);

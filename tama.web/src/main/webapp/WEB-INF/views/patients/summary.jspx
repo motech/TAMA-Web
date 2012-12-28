@@ -52,7 +52,7 @@
                 <div class="extra-info">
                     <field:display field="pillTimes" id="s_org_motechproject_tama_domain_patient_pillTimes" object="${patient}" z="2owGksPZDElszoBiYh73UJMcdf="/>
                     <field:display field="status" id="s_org_motechproject_tama_domain_patient_currentStatus" object="${patient}" z="rpssPZDElszoBiYh73UJMcdf="/>
-
+                    <field:display field="runningAdherencePercentage" id="s_org_motechproject_tama_domain_patient_adherencePercentage" object="${patient}" z="rpssPZDElkjkiYh73UJMcdf="/>
                     <div class="status-history">
                         <div> Status History : </div>
                         <div>

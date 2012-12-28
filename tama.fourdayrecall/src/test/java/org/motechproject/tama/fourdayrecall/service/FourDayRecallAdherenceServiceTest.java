@@ -181,6 +181,11 @@ public class FourDayRecallAdherenceServiceTest extends BaseUnitTest {
                 if (patientId.equals(testPatientId)) return 34;
                 return 0;
             }
+
+            @Override
+            public double getRunningAdherencePercentage(Patient patient) {
+                return 0;
+            }
         };
         assertTrue(fourDayRecallService.isAdherenceFalling(numberOfDaysMissed, testPatientId));
     }

@@ -25,4 +25,9 @@ public class AdherenceService {
 
         return new AdherenceComplianceReport(anyDoseTakenLateLastWeek, dosageMissedLastWeek);
     }
+
+    public double getRunningAdherencePercentage(Patient patient) {
+        AdherenceServiceStrategy adherenceServiceStrategy = adherenceServices.get(patient.callPreference());
+        return adherenceServiceStrategy.getRunningAdherencePercentage(patient);
+    }
 }

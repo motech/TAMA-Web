@@ -94,6 +94,15 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
         return allDosageAdherenceLogs.getDoseTakenLateCount(pillRegimenId, DateUtil.today().minusDays(6), true) > 0;
     }
 
+    @Override
+    public double getRunningAdherencePercentage(Patient patient) {
+        try {
+            return getAdherencePercentage(patient.getId(), DateUtil.now());
+        } catch (NoAdherenceRecordedException e) {
+            return 0.0;
+        }
+    }
+
     public void backFillAdherence(String patientId, DateTime startDate, DateTime endDate, boolean wasDoseTaken) {
         DosageStatus dosageStatus = wasDoseTaken ? DosageStatus.TAKEN : DosageStatus.NOT_TAKEN;
         backFillAdherence(patientId, startDate, endDate, dosageStatus);

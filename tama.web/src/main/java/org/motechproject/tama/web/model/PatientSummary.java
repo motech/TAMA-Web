@@ -26,13 +26,17 @@ public class PatientSummary {
     private ClinicVisits clinicVisits;
     private List<String> warning;
     private List<PatientEventLog> statusChangeHistory;
+    private Double runningAdherencePercentage;
 
-    public PatientSummary(Patient patient, TreatmentAdvice earliestTreatmentAdvice, TreatmentAdvice currentTreatmentAdvice, Regimen currentRegimen, ClinicVisits clinicVisits, List<PatientEventLog> statusChangeHistory, List<String> warning) {
+    public PatientSummary(Patient patient, TreatmentAdvice earliestTreatmentAdvice, TreatmentAdvice currentTreatmentAdvice,
+                          Regimen currentRegimen, ClinicVisits clinicVisits, List<PatientEventLog> statusChangeHistory,
+                          Double runningAdherencePercentage, List<String> warning) {
         this.patient = patient;
         this.earliestTreatmentAdvice = earliestTreatmentAdvice;
         this.currentTreatmentAdvice = currentTreatmentAdvice;
         this.currentRegimen = currentRegimen;
         this.clinicVisits = clinicVisits;
+        this.runningAdherencePercentage = runningAdherencePercentage;
         this.setStatusChangeHistory(statusChangeHistory);
         this.warning = warning;
     }
@@ -114,5 +118,9 @@ public class PatientSummary {
 
     public List<PatientEventLog> getStatusChangeHistory() {
         return statusChangeHistory;
+    }
+
+    public Double getRunningAdherencePercentage() {
+        return runningAdherencePercentage;
     }
 }
