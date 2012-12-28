@@ -57,7 +57,7 @@
                         <div> Status History : </div>
                         <div>
                             <c:forEach items="${patient.statusChangeHistory}" var="statusChangeEvent">
-                                <li><c:out value="${statusChangeEvent.event}"/> on <joda:format value="${statusChangeEvent.date}" style="MS"/></li>
+                                <li><c:out value="${statusChangeEvent.eventName}"/> on <joda:format value="${statusChangeEvent.date}" style="MS"/></li>
                             </c:forEach>
                         </div>
                     </div>

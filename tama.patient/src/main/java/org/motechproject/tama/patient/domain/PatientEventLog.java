@@ -47,6 +47,10 @@ public class PatientEventLog extends CouchEntity {
         return event;
     }
 
+    public String getEventName() {
+        return event.getDisplayName();
+    }
+
     public void setEvent(PatientEvent event) {
         this.event = event;
     }
