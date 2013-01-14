@@ -15,12 +15,13 @@ import org.motechproject.tama.common.repository.AllAuditEvents;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
 
-@Repository
+@Component
 public class AllClinicVisits {
 
     private AllPatients allPatients;

@@ -8,11 +8,12 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Component
 public class AllClinics extends AuditableCouchRepository<Clinic> {
 
     private AllCitiesCache allCities;

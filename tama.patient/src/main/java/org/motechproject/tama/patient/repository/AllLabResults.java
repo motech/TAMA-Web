@@ -15,12 +15,13 @@ import org.motechproject.tama.refdata.objectcache.AllLabTestsCache;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
 
-@Repository
+@Component
 public class AllLabResults extends AuditableCouchRepository<LabResult> {
 
     private AllLabTestsCache allLabTests;

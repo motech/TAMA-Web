@@ -8,9 +8,10 @@ import org.motechproject.tama.refdata.domain.Analyst;
 import org.motechproject.tama.refdata.repository.AllAdministrators;
 import org.motechproject.tama.refdata.repository.AllAnalysts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Component
 public class AllTAMAUsers {
 
     public static final String CLINICIAN = "clinician";

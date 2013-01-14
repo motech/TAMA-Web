@@ -9,12 +9,13 @@ import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
 
-@Repository
+@Component
 public class AllTreatmentAdvices extends AuditableCouchRepository<TreatmentAdvice> {
 
     @Autowired

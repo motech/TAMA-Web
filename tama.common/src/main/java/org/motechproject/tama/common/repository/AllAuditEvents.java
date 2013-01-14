@@ -5,9 +5,10 @@ import org.motechproject.tama.common.domain.AuditEvent;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Component
 public class AllAuditEvents extends AbstractCouchRepository<AuditEvent> {
 
     @Autowired

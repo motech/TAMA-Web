@@ -9,11 +9,12 @@ import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Component
 public class AllVitalStatistics extends AuditableCouchRepository<VitalStatistics> {
 
     @Autowired

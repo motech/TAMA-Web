@@ -25,6 +25,7 @@ import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Repository
+@Component
 public class AllPatients extends AuditableCouchRepository<Patient> {
 
     private AllClinics allClinics;

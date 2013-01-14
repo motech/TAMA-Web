@@ -6,9 +6,10 @@ import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tama.facility.domain.ClinicianId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Component
 public class AllClinicianIds extends AbstractCouchRepository<ClinicianId> {
 
     @Autowired

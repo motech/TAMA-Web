@@ -7,9 +7,10 @@ import org.motechproject.tama.security.domain.ChangePasswordEvent;
 import org.motechproject.tama.security.domain.TAMAEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Component
 public class AllTAMAEvents extends AbstractCouchRepository<TAMAEvent> {
 
     @Autowired

@@ -12,11 +12,12 @@ import org.motechproject.tama.patient.domain.AllottedSlots;
 import org.motechproject.tama.patient.domain.CallTimeSlot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Component
 public class AllCallTimeSlots extends AbstractCouchRepository<CallTimeSlot> {
 
     @Autowired
