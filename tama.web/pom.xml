@@ -218,36 +218,6 @@
                 <version>1.6</version>
                 <executions>
                     <execution>
-                        <id>start-activemq</id>
-                        <phase>pre-integration-test</phase>
-                        <configuration>
-                            <target name="start.activemq" unless="skipTests">
-                                <condition property="script.interpreter" value="bash" else="cmd">
-                                    <os family="unix"/>
-                                </condition>
-                                <condition property="script.switch" value="/c" else="">
-                                    <not>
-                                        <os family="unix"/>
-                                    </not>
-                                </condition>
-                                <condition property="script.suffix" value="sh" else="bat">
-                                    <os family="unix"/>
-                                </condition>
-                                <condition property="activemq.home" value="${activemq.unix.home}"
-                                           else="${activemq.windows.home}">
-                                    <os family="unix"/>
-                                </condition>
-                                <echo message="Waiting for ActiveMQ to start on ${os.name}"/>
-                                <exec executable="${script.interpreter}" dir="${activemq.home}" spawn="true">
-                                    <arg line="${script.switch} ${activemq.home}/bin/activemq.${script.suffix}"/>
-                                </exec>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>setup-quartz-schema</id>
                         <phase>pre-integration-test</phase>
                         <configuration>
@@ -419,6 +389,72 @@
             <id>smoke</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>start-activemq</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <target name="start.activemq" unless="skipTests">
+                                        <condition property="script.interpreter" value="bash" else="cmd">
+                                            <os family="unix"/>
+                                        </condition>
+                                        <condition property="script.switch" value="/c" else="">
+                                            <not>
+                                                <os family="unix"/>
+                                            </not>
+                                        </condition>
+                                        <condition property="script.suffix" value="sh" else="bat">
+                                            <os family="unix"/>
+                                        </condition>
+                                        <condition property="activemq.home" value="${activemq.unix.home}"
+                                                   else="${activemq.windows.home}">
+                                            <os family="unix"/>
+                                        </condition>
+                                        <echo message="Waiting for ActiveMQ to start on ${os.name}"/>
+                                        <exec executable="${script.interpreter}" dir="${activemq.home}" spawn="true">
+                                            <arg line="${script.switch} ${activemq.home}/bin/activemq.${script.suffix}"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>setup-quartz-schema</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <target unless="skipTests">
+                                        <echo message="Quartz schema loading: START"/>
+                                        <path id="dependencies">
+                                            <fileset file="${project.basedir}/../build/lib/mysql-connector-java-5.1.13.jar"/>
+                                        </path>
+                                        <sql driver="${mysql.driver}"
+                                             url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
+                                             userid="${mysql.user}"
+                                             classpathref="dependencies"
+                                             password="${mysql.password}">
+                                            drop database ${mysql.db};
+                                            create database ${mysql.db};
+                                        </sql>
+                                        <sql driver="${mysql.driver}"
+                                             url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
+                                             userid="${mysql.user}"
+                                             classpathref="dependencies"
+                                             password="${mysql.password}"
+                                             src="${project.basedir}/../build/sql/tables_mysql_innodb.sql"/>
+                                        <echo message="Quartz schema loading: END"/>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
