@@ -47,6 +47,10 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama.reports</groupId>
+            <artifactId>tama-reports-contract</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

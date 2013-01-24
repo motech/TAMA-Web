@@ -27,17 +27,6 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.patient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.patient</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>org.motechproject.tama.reports</groupId>
             <artifactId>tama-reports-contract</artifactId>
         </dependency>

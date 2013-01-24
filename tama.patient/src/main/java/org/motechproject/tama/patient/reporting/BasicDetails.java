@@ -1,4 +1,4 @@
-package org.motechproject.tama.reporting.mapper;
+package org.motechproject.tama.patient.reporting;
 
 import lombok.Data;
 import org.motechproject.tama.patient.domain.Patient;

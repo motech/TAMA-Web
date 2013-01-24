@@ -5,14 +5,9 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.http.client.service.HttpClientService;
-import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.reporting.mapper.PatientRequestMapper;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.reports.contract.PatientRequest;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -38,17 +33,8 @@ public class PatientReportingServiceTest {
 
     @Test
     public void shouldPublishPatientSave() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        patientReportingService.save(patient);
-        verify(httpClientService).post(eq(REPORTS_URL + "patient"), any(PatientRequest.class));
-    }
-
-    @Test
-    public void shouldMapPatientBeforePublishingSave() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        patientReportingService.save(patient);
-
-        verify(httpClientService).post(anyString(), requestCaptor.capture());
-        assertEquals(new PatientRequestMapper(patient).map(), requestCaptor.getValue());
+        PatientRequest request = new PatientRequest();
+        patientReportingService.save(request);
+        verify(httpClientService).post(REPORTS_URL + "patient", request);
     }
 }

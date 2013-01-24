@@ -1,4 +1,4 @@
-package org.motechproject.tama.reporting.mapper;
+package org.motechproject.tama.patient.reporting;
 
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.reports.contract.PatientRequest;

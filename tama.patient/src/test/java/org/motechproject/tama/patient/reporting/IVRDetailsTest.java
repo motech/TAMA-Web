@@ -1,4 +1,4 @@
-package org.motechproject.tama.reporting.mapper;
+package org.motechproject.tama.patient.reporting;
 
 import org.junit.Test;
 import org.motechproject.tama.common.domain.TimeMeridiem;
