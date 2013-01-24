@@ -12,13 +12,8 @@ import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
-import org.motechproject.tama.patient.domain.CallPreference;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.PatientEvent;
-import org.motechproject.tama.patient.domain.PatientEventLog;
-import org.motechproject.tama.patient.domain.PatientReport;
-import org.motechproject.tama.patient.domain.Status;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.reporting.PatientRequestMapper;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -30,6 +25,7 @@ import org.motechproject.tama.patient.strategy.PatientPreferenceChangedStrategyF
 import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
+import org.motechproject.tama.reporting.service.PatientReportingService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -39,10 +35,7 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientServiceTest extends BaseUnitTest {
@@ -68,6 +61,8 @@ public class PatientServiceTest extends BaseUnitTest {
     CallPlanChangedStrategy callPlanChangedStrategy;
     @Mock
     private OutboxRegistry outboxRegistry;
+    @Mock
+    private PatientReportingService patientReportingService;
 
     private PatientService patientService;
 
@@ -77,8 +72,15 @@ public class PatientServiceTest extends BaseUnitTest {
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(allPatients, allTreatmentAdvices, allRegimens, allPatientEventLogs, preferenceChangedStrategyFactory, outboxRegistry);
+        patientService = new PatientService(patientReportingService, allPatients, allTreatmentAdvices, allRegimens, allPatientEventLogs, preferenceChangedStrategyFactory, outboxRegistry);
         when(outboxRegistry.getOutbox()).thenReturn(outbox);
+    }
+
+    @Test
+    public void shouldReportPatientCreation() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        patientService.create(patient, "clinicId", "user");
+        verify(patientReportingService).save(new PatientRequestMapper(patient).map());
     }
 
     @Test

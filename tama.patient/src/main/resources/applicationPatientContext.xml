@@ -10,6 +10,7 @@
     <context:component-scan base-package="org.motechproject.tama.patient"/>
     <import resource="classpath:applicationCommonContext.xml"/>
     <import resource="classpath:applicationContextAlert.xml"/>
+    <import resource="classpath:applicationReportingContext.xml"/>
     <import resource="classpath:applicationFacilityContext.xml"/>
     <util:properties id="timeSlotProperties" location="classpath:/timeSlot.properties"/>
 

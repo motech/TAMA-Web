@@ -1,12 +1,8 @@
 package org.motechproject.tama.patient.service;
 
 import ch.lambdaj.function.matcher.Predicate;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.PatientEvent;
-import org.motechproject.tama.patient.domain.PatientEventLog;
-import org.motechproject.tama.patient.domain.PatientReport;
-import org.motechproject.tama.patient.domain.Status;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.reporting.PatientRequestMapper;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -15,6 +11,7 @@ import org.motechproject.tama.patient.strategy.ChangedPatientPreferenceContext;
 import org.motechproject.tama.patient.strategy.PatientPreferenceChangedStrategyFactory;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
+import org.motechproject.tama.reporting.service.PatientReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +23,7 @@ import static ch.lambdaj.Lambda.filter;
 @Component
 public class PatientService {
 
+    private PatientReportingService patientReportingService;
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllRegimensCache allRegimens;
@@ -34,13 +32,14 @@ public class PatientService {
     private OutboxRegistry outboxRegistry;
 
     @Autowired
-    public PatientService(AllPatients allPatients,
+    public PatientService(PatientReportingService patientReportingService,
+                          AllPatients allPatients,
                           AllTreatmentAdvices allTreatmentAdvices,
                           AllRegimensCache allRegimens,
                           AllPatientEventLogs allPatientEventLogs,
                           PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory,
                           OutboxRegistry outboxRegistry) {
-
+        this.patientReportingService = patientReportingService;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allRegimens = allRegimens;
@@ -53,6 +52,7 @@ public class PatientService {
         allPatients.addToClinic(patient, clinicId, userName);
         outboxRegistry.getOutbox().enroll(patient);
         allPatientEventLogs.addAll(new ChangedPatientPreferenceContext(null, patient).getEventLogs());
+        patientReportingService.save(new PatientRequestMapper(patient).map());
     }
 
     public void update(Patient patient, String userName) {
