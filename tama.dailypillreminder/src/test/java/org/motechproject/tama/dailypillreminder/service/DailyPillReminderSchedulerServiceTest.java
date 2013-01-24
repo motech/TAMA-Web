@@ -43,7 +43,7 @@ public class DailyPillReminderSchedulerServiceTest extends BaseUnitTest {
     MotechSchedulerService motechSchedulerService;
 
     public DailyPillReminderSchedulerServiceTest() {
-        mockCurrentDate(DateUtil.now());
+        mockCurrentDate(DateUtil.newDate(2013, 1, 1));
     }
 
     @Before
@@ -129,7 +129,7 @@ public class DailyPillReminderSchedulerServiceTest extends BaseUnitTest {
         DateTime actualTimeWhenTriggerWasActivated = DateUtil.newDateTime(jobScheduledWithParams.getStartTime());
         assertTrue("Since the advice has already started in past, we should schedule it starting now, which is after a time few milli seconds back.", timeFewMillisBack.isBefore(actualTimeWhenTriggerWasActivated));
         DateTime rightNow = DateUtil.now();
-        assertTrue("And the time when it was scheduled should be a bit in past.", rightNow.isAfter(actualTimeWhenTriggerWasActivated));
+        assertTrue(rightNow.isEqual(actualTimeWhenTriggerWasActivated));
 
         assertEquals(jobScheduledWithParams.getEndTime(), endDate.plusDays(1).toDate());
 

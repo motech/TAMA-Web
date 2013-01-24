@@ -20,6 +20,7 @@
         <module>tama.clinicvisits</module>
         <module>tama.tools</module>
         <module>tama.web</module>
+        <module>tama.reporting</module>
     </modules>
     <name>tama-all</name>
     <repositories>
@@ -67,6 +68,7 @@
         <spring-security.version>3.0.5.RELEASE</spring-security.version>
         <build.dir>build</build.dir>
         <motech.version>0.10.5-SNAPSHOT</motech.version>
+        <tama.reporting.version>1.0-SNAPSHOT</tama.reporting.version>
         <motech.contrib.version>0.10-SNAPSHOT</motech.contrib.version>
         <powermock.version>1.4.9</powermock.version>
     </properties>
@@ -316,6 +318,11 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
                 <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.motechproject.tama.reports</groupId>
+                <artifactId>tama-reports-contract</artifactId>
+                <version>${tama.reporting.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -613,6 +620,11 @@
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.symptomreporting</artifactId>
                 <version>0.7-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.motechproject.tama-motech-contrib</groupId>
+                <artifactId>motech-http-client</artifactId>
+                <version>${motech.contrib.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -114,10 +114,13 @@ public class PatientBuilder {
     }
 
     public PatientBuilder withDefaults() {
+        Gender gender = new Gender();
+        gender.setType("Female");
         return this.withPatientId("1234_" + DateUtil.now().getMillis()).
                 withDateOfBirth(DateUtil.newDate(1990, 5, 21)).
                 withMobileNumber(Long.toString(UniqueMobileNumber.generate())).
                 withPasscode("1234").
+                withGender(gender).
                 withClinic(Clinic.newClinic()).
                 withIVRLanguage(IVRLanguage.newIVRLanguage("English", "en")).
                 withTravelTimeToClinicInDays(1).
