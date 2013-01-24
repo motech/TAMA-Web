@@ -8,10 +8,17 @@
         <version>0.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <properties>
+        <build.dir>../build</build.dir>
+    </properties>
     <artifactId>tama.reporting</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.common</artifactId>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>

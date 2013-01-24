@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.http.client.service.HttpClientService;
+import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.reporting.mapper.PatientRequestMapper;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
@@ -37,14 +38,14 @@ public class PatientReportingServiceTest {
 
     @Test
     public void shouldPublishPatientSave() {
-        Patient patient = new Patient();
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
         patientReportingService.save(patient);
         verify(httpClientService).post(eq(REPORTS_URL + "patient"), any(PatientRequest.class));
     }
 
     @Test
     public void shouldMapPatientBeforePublishingSave() {
-        Patient patient = new Patient();
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
         patientReportingService.save(patient);
 
         verify(httpClientService).post(anyString(), requestCaptor.capture());

@@ -9,5 +9,7 @@
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.tama.reporting"/>
 
+    <import resource="classpath:applicationCommonContext.xml"/>
+    <import resource="classpath:applicationContextHttpClient.xml"/>
     <util:properties id="tamaReportsProperties" location="classpath:tamaReports.properties"/>
 </beans>

@@ -61,7 +61,7 @@
         </repository>
     </repositories>
     <properties>
-        <spring.version>3.0.5.RELEASE</spring.version>
+        <spring.version>3.1.2.RELEASE</spring.version>
         <slf4j.version>1.6.1</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -191,6 +191,11 @@
                 <groupId>javax.mail</groupId>
                 <artifactId>mail</artifactId>
                 <version>1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.2.2</version>
             </dependency>
             <dependency>
                 <groupId>commons-httpclient</groupId>
@@ -542,6 +547,11 @@
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.patient</artifactId>
+                <version>0.7-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.motechproject.tama</groupId>
+                <artifactId>tama.reporting</artifactId>
                 <version>0.7-SNAPSHOT</version>
             </dependency>
             <dependency>

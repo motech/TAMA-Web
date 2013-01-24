@@ -28,7 +28,15 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.reporting</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.healthtips</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
