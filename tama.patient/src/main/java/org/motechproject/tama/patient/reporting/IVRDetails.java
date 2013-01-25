@@ -14,14 +14,12 @@ import static org.motechproject.tama.patient.domain.CallPreference.FourDayRecall
 public class IVRDetails {
 
     private String ivrPassCode;
-    private String ivrLanguage;
     private String callPreference;
     private String bestCallTime;
     private Boolean receiveOTCAdvice;
     private Boolean receiveAppointmentReminder;
 
     public IVRDetails(Patient patient) {
-        ivrLanguage = patient.getLanguageCode();
         ivrPassCode = patient.getPatientPreferences().getPasscode();
         callPreference = callPreference(patient);
         bestCallTime = bestCallTime(patient);
@@ -30,7 +28,6 @@ public class IVRDetails {
     }
 
     public IVRDetails(PatientRequest request) {
-        ivrLanguage = request.getIvrLanguage();
         ivrPassCode = request.getIvrPassCode();
         callPreference = request.getCallPreference();
         bestCallTime = request.getBestCallTime();
@@ -38,8 +35,8 @@ public class IVRDetails {
         receiveAppointmentReminder = request.getReceiveAppointmentReminder();
     }
 
-    public void copyTo(PatientRequest request) {
-        request.setIvrLanguage(ivrLanguage);
+    public void copyTo(PatientRequest request, String ivrLanguageCode) {
+        request.setIvrLanguage(ivrLanguageCode);
         request.setIvrPassCode(ivrPassCode);
         request.setCallPreference(callPreference);
         request.setBestCallTime(bestCallTime);

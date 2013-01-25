@@ -16,7 +16,7 @@ public class IVRDetailsTest {
     public void shouldMapIVRLanguage() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         PatientRequest request = new PatientRequest();
-        new IVRDetails(patient).copyTo(request);
+        new IVRDetails(patient).copyTo(request, "en");
         assertEquals("en", request.getIvrLanguage());
     }
 
@@ -24,7 +24,7 @@ public class IVRDetailsTest {
     public void shouldMapIVRPassCode() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         PatientRequest request = new PatientRequest();
-        new IVRDetails(patient).copyTo(request);
+        new IVRDetails(patient).copyTo(request, "en");
         assertEquals("1234", request.getIvrPassCode());
     }
 
@@ -32,7 +32,7 @@ public class IVRDetailsTest {
     public void shouldMapBestCallTimeWhenBestCallTimeIsNull() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withBestCallTime(null).build();
         PatientRequest request = new PatientRequest();
-        new IVRDetails(patient).copyTo(request);
+        new IVRDetails(patient).copyTo(request, "en");
         assertEquals("", request.getBestCallTime());
     }
 
@@ -40,7 +40,7 @@ public class IVRDetailsTest {
     public void shouldMapBestCallTime() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(10, 10, TimeMeridiem.PM)).build();
         PatientRequest request = new PatientRequest();
-        new IVRDetails(patient).copyTo(request);
+        new IVRDetails(patient).copyTo(request, "en");
         assertEquals("10:10 PM", request.getBestCallTime());
     }
 
@@ -48,7 +48,7 @@ public class IVRDetailsTest {
     public void shouldMapCallPreferenceWhenCallPreferenceIsNull() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(null).build();
         PatientRequest request = new PatientRequest();
-        new IVRDetails(patient).copyTo(request);
+        new IVRDetails(patient).copyTo(request, "en");
         assertEquals("", request.getCallPreference());
     }
 
@@ -56,7 +56,7 @@ public class IVRDetailsTest {
     public void shouldMapCallPreferenceWhenCallPreference() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         PatientRequest request = new PatientRequest();
-        new IVRDetails(patient).copyTo(request);
+        new IVRDetails(patient).copyTo(request, "en");
         assertEquals("Daily", request.getCallPreference());
     }
 
@@ -64,7 +64,7 @@ public class IVRDetailsTest {
     public void shouldMapReceiveOTCAdvice() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withOTCPreference(true).build();
         PatientRequest request = new PatientRequest();
-        new IVRDetails(patient).copyTo(request);
+        new IVRDetails(patient).copyTo(request, "en");
         assertEquals(true, request.getReceiveOTCAdvice());
     }
 
@@ -72,7 +72,7 @@ public class IVRDetailsTest {
     public void shouldMapReceiveAppointmentReminder() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         PatientRequest request = new PatientRequest();
-        new IVRDetails(patient).copyTo(request);
+        new IVRDetails(patient).copyTo(request, "en");
         assertEquals(true, request.getReceiveAppointmentReminder());
     }
 }
