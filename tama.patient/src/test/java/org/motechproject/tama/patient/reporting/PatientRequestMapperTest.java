@@ -12,14 +12,14 @@ public class PatientRequestMapperTest {
     @Test
     public void shouldMapBasicDetails() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        PatientRequest patientRequest = new PatientRequestMapper(patient).map();
+        PatientRequest patientRequest = new PatientRequestMapper().map(patient);
         assertEquals(new BasicDetails(patient), new BasicDetails(patientRequest));
     }
 
     @Test
     public void shouldMapIVRDetails() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
-        PatientRequest patientRequest = new PatientRequestMapper(patient).map();
+        PatientRequest patientRequest = new PatientRequestMapper().map(patient);
         assertEquals(new IVRDetails(patient), new IVRDetails(patientRequest));
     }
 }

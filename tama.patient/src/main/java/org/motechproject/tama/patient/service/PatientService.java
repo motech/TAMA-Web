@@ -24,6 +24,7 @@ import static ch.lambdaj.Lambda.filter;
 public class PatientService {
 
     private PatientReportingService patientReportingService;
+    private PatientRequestMapper requestMapper;
     private AllPatients allPatients;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllRegimensCache allRegimens;
@@ -33,6 +34,7 @@ public class PatientService {
 
     @Autowired
     public PatientService(PatientReportingService patientReportingService,
+                          PatientRequestMapper requestMapper,
                           AllPatients allPatients,
                           AllTreatmentAdvices allTreatmentAdvices,
                           AllRegimensCache allRegimens,
@@ -40,6 +42,7 @@ public class PatientService {
                           PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory,
                           OutboxRegistry outboxRegistry) {
         this.patientReportingService = patientReportingService;
+        this.requestMapper = requestMapper;
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allRegimens = allRegimens;
@@ -52,7 +55,7 @@ public class PatientService {
         allPatients.addToClinic(patient, clinicId, userName);
         outboxRegistry.getOutbox().enroll(patient);
         allPatientEventLogs.addAll(new ChangedPatientPreferenceContext(null, patient).getEventLogs());
-        patientReportingService.save(new PatientRequestMapper(patient).map());
+        patientReportingService.save(requestMapper.map(patient));
     }
 
     public void update(Patient patient, String userName) {
@@ -63,7 +66,7 @@ public class PatientService {
         patient.setLastDeactivationDate(dbPatient.getLastDeactivationDate());
         patient.setLastSuspendedDate(dbPatient.getLastSuspendedDate());
         allPatients.update(patient, userName);
-        patientReportingService.update(new PatientRequestMapper(patient).map());
+        patientReportingService.update(requestMapper.map(patient));
 
         final ChangedPatientPreferenceContext changedPatientPreferenceContext = new ChangedPatientPreferenceContext(dbPatient, patient);
         if (changedPatientPreferenceContext.patientPreferenceHasChanged()) {

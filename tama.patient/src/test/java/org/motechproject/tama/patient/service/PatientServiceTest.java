@@ -26,6 +26,7 @@ import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.reporting.service.PatientReportingService;
+import org.motechproject.tama.reports.contract.PatientRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
@@ -56,6 +57,8 @@ public class PatientServiceTest extends BaseUnitTest {
     @Mock
     private Outbox outbox;
     @Mock
+    private PatientRequestMapper requestMapper;
+    @Mock
     private PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory;
     @Mock
     CallPlanChangedStrategy callPlanChangedStrategy;
@@ -72,24 +75,29 @@ public class PatientServiceTest extends BaseUnitTest {
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(patientReportingService, allPatients, allTreatmentAdvices, allRegimens, allPatientEventLogs, preferenceChangedStrategyFactory, outboxRegistry);
+        patientService = new PatientService(patientReportingService, requestMapper, allPatients, allTreatmentAdvices, allRegimens, allPatientEventLogs, preferenceChangedStrategyFactory, outboxRegistry);
         when(outboxRegistry.getOutbox()).thenReturn(outbox);
     }
 
     @Test
     public void shouldReportPatientCreation() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        PatientRequest request = new PatientRequest();
+
+        when(requestMapper.map(patient)).thenReturn(request);
         patientService.create(patient, "clinicId", "user");
-        verify(patientReportingService).save(new PatientRequestMapper(patient).map());
+        verify(patientReportingService).save(request);
     }
 
     @Test
     public void shouldReportPatientUpdate() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        PatientRequest request = new PatientRequest();
 
+        when(requestMapper.map(patient)).thenReturn(request);
         when(allPatients.get(anyString())).thenReturn(patient);
         patientService.update(patient, "user");
-        verify(patientReportingService).update(new PatientRequestMapper(patient).map());
+        verify(patientReportingService).update(request);
     }
 
     @Test
