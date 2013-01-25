@@ -37,12 +37,11 @@ public class BasicDetailsTest {
     @Test
     public void shouldMapClinic() {
         Clinic clinic = new Clinic("id");
-        clinic.setName("clinicName");
 
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).build();
         PatientRequest request = new PatientRequest();
         new BasicDetails(patient).copyTo(request);
-        assertEquals("clinicName", request.getClinic());
+        assertEquals("id", request.getClinicId());
     }
 
     @Test
