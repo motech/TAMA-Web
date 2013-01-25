@@ -17,6 +17,6 @@ public class ReportingPropertiesIT {
 
     @Test
     public void shouldGetReportingURL() {
-        assertEquals("http://localhost:9999/", reportingProperties.reportingURL());
+        assertEquals("http://localhost:9999/tama-reports/", reportingProperties.reportingURL());
     }
 }

@@ -14,7 +14,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientReportingServiceTest {
 
-    public static final String REPORTS_URL = "http://localhost:9999/";
+    public static final String REPORTS_URL = "http://localhost:9999/tama-reports";
 
     @Mock
     private HttpClientService httpClientService;
