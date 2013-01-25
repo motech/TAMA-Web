@@ -20,6 +20,10 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.reporting</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.common</artifactId>
         </dependency>
         <dependency>

@@ -17,7 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 
 @ContextConfiguration(locations = "classpath*:applicationFacilityContext.xml", inheritLocations = false)
-public class AllClinicsTest extends SpringIntegrationTest {
+public class AllClinicsIT extends SpringIntegrationTest {
 
     @Autowired
     private AllClinics allClinics;

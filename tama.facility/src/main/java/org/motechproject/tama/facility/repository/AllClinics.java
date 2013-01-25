@@ -5,11 +5,12 @@ import org.ektorp.CouchDbConnector;
 import org.motechproject.tama.common.repository.AllAuditRecords;
 import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.reporting.ClinicRequestMapper;
 import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
+import org.motechproject.tama.reporting.service.ClinicReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -17,12 +18,26 @@ import java.util.List;
 public class AllClinics extends AuditableCouchRepository<Clinic> {
 
     private AllCitiesCache allCities;
+    private ClinicReportingService clinicReportingService;
 
     @Autowired
-    public AllClinics(@Qualifier("tamaDbConnector") CouchDbConnector db, AllCitiesCache allCities, AllAuditRecords allAuditRecords) {
+    public AllClinics(@Qualifier("tamaDbConnector") CouchDbConnector db, AllCitiesCache allCities, AllAuditRecords allAuditRecords, ClinicReportingService clinicReportingService) {
         super(Clinic.class, db, allAuditRecords);
         this.allCities = allCities;
+        this.clinicReportingService = clinicReportingService;
         initStandardDesignDocument();
+    }
+
+    @Override
+    public void add(Clinic entity, String user) {
+        super.add(entity, user);
+        clinicReportingService.save(new ClinicRequestMapper(entity).map());
+    }
+
+    @Override
+    public void update(Clinic entity, String user) {
+        super.update(entity, user);
+        clinicReportingService.update(new ClinicRequestMapper(entity).map());
     }
 
     @Override
