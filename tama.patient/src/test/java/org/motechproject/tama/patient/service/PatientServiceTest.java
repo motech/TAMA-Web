@@ -84,6 +84,15 @@ public class PatientServiceTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldReportPatientUpdate() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+
+        when(allPatients.get(anyString())).thenReturn(patient);
+        patientService.update(patient, "user");
+        verify(patientReportingService).update(new PatientRequestMapper(patient).map());
+    }
+
+    @Test
     public void shouldCreatePatientOnDaily() {
         DateTime now = new DateTime(2011, 10, 10, 10, 10);
         mockCurrentDate(now);

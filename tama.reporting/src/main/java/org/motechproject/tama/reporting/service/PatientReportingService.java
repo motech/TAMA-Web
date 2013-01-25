@@ -20,7 +20,11 @@ public class PatientReportingService {
         this.reportingProperties = reportingProperties;
     }
 
-    public void save(PatientRequest patient) {
-        httpClientService.post(reportingProperties.reportingURL() + PATH_TO_PATIENT, patient);
+    public void save(PatientRequest patientRequest) {
+        httpClientService.post(reportingProperties.reportingURL() + PATH_TO_PATIENT, patientRequest);
+    }
+
+    public void update(PatientRequest patientRequest) {
+        httpClientService.post(reportingProperties.reportingURL() + PATH_TO_PATIENT + "/update", patientRequest);
     }
 }

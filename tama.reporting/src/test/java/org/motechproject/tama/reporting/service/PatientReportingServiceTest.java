@@ -37,4 +37,11 @@ public class PatientReportingServiceTest {
         patientReportingService.save(request);
         verify(httpClientService).post(REPORTS_URL + "patient", request);
     }
+
+    @Test
+    public void shouldPublishPatientUpdate(){
+        PatientRequest request = new PatientRequest();
+        patientReportingService.update(request);
+        verify(httpClientService).post(REPORTS_URL + "patient/update", request);
+    }
 }
