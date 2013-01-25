@@ -5,7 +5,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.refdata.domain.IVRLanguage;
+import org.motechproject.tama.refdata.objectcache.AllGendersCache;
 import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.reports.contract.PatientRequest;
 
@@ -17,13 +19,27 @@ public class PatientRequestMapperTest {
 
     @Mock
     private AllIVRLanguagesCache ivrLanguagesCache;
+    @Mock
+    private AllGendersCache gendersCache;
+
     private PatientRequestMapper mapper;
     private IVRLanguage ivrLanguage;
+    private Gender gender;
 
     @Before
     public void setUp() {
         initMocks(this);
-        mapper = new PatientRequestMapper(ivrLanguagesCache);
+        mapper = new PatientRequestMapper(ivrLanguagesCache, gendersCache);
+        setupIvrLanguage();
+        setupGender();
+    }
+
+    private void setupGender() {
+        gender = new Gender("genderId");
+        gender.setType("Female");
+    }
+
+    private void setupIvrLanguage() {
         ivrLanguage = new IVRLanguage("ivrLanguageId");
         ivrLanguage.setCode("ivrLanguageCode");
     }
@@ -32,8 +48,10 @@ public class PatientRequestMapperTest {
     public void shouldMapBasicDetails() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
 
+        when(gendersCache.getBy(patient.getGenderId())).thenReturn(gender);
         when(ivrLanguagesCache.getBy(patient.getPatientPreferences().getIvrLanguageId())).thenReturn(ivrLanguage);
         PatientRequest patientRequest = mapper.map(patient);
+
         assertEquals(new BasicDetails(patient), new BasicDetails(patientRequest));
         assertEquals("ivrLanguageCode", patientRequest.getIvrLanguage());
     }
@@ -42,6 +60,7 @@ public class PatientRequestMapperTest {
     public void shouldSetIVRLanguageCodeOnPatientRequest() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
 
+        when(gendersCache.getBy(patient.getGenderId())).thenReturn(gender);
         when(ivrLanguagesCache.getBy(patient.getPatientPreferences().getIvrLanguageId())).thenReturn(ivrLanguage);
         PatientRequest patientRequest = mapper.map(patient);
         assertEquals(new BasicDetails(patient), new BasicDetails(patientRequest));
@@ -51,8 +70,9 @@ public class PatientRequestMapperTest {
     public void shouldMapIVRDetails() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
 
+        when(gendersCache.getBy(patient.getGenderId())).thenReturn(gender);
         when(ivrLanguagesCache.getBy(patient.getPatientPreferences().getIvrLanguageId())).thenReturn(ivrLanguage);
         PatientRequest patientRequest = mapper.map(patient);
-        assertEquals(new IVRDetails(patient), new IVRDetails(patientRequest));
+        assertEquals(new IVRDetails(patient, ivrLanguage.getCode(), gender.getType()), new IVRDetails(patientRequest));
     }
 }

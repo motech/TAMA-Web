@@ -18,8 +18,12 @@ public class IVRDetails {
     private String bestCallTime;
     private Boolean receiveOTCAdvice;
     private Boolean receiveAppointmentReminder;
+    private String ivrLanguageCode;
+    private String gender;
 
-    public IVRDetails(Patient patient) {
+    public IVRDetails(Patient patient, String ivrLanguageCode, String gender) {
+        this.ivrLanguageCode = ivrLanguageCode;
+        this.gender = gender;
         ivrPassCode = patient.getPatientPreferences().getPasscode();
         callPreference = callPreference(patient);
         bestCallTime = bestCallTime(patient);
@@ -28,6 +32,8 @@ public class IVRDetails {
     }
 
     public IVRDetails(PatientRequest request) {
+        ivrLanguageCode = request.getIvrLanguage();
+        gender = request.getGender();
         ivrPassCode = request.getIvrPassCode();
         callPreference = request.getCallPreference();
         bestCallTime = request.getBestCallTime();
@@ -35,8 +41,9 @@ public class IVRDetails {
         receiveAppointmentReminder = request.getReceiveAppointmentReminder();
     }
 
-    public void copyTo(PatientRequest request, String ivrLanguageCode) {
+    public void copyTo(PatientRequest request) {
         request.setIvrLanguage(ivrLanguageCode);
+        request.setGender(gender);
         request.setIvrPassCode(ivrPassCode);
         request.setCallPreference(callPreference);
         request.setBestCallTime(bestCallTime);
