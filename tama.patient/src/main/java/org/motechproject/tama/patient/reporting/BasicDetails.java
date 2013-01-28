@@ -14,12 +14,18 @@ public class BasicDetails {
     private String gender;
     private String clinicId;
     private String travelTimeToClinic;
+    private Date registeredOn;
+    private String status;
+    private String notes;
 
     public BasicDetails(Patient patient) {
         patientId = patient.getPatientId();
         clinicId = patient.getClinic_id();
         dateOfBirth = patient.getDateOfBirthAsDate();
         gender = patient.getGender().getType();
+        registeredOn = patient.getRegistrationDateAsDate();
+        status = patient.getStatus().getDisplayName();
+        notes = patient.getNotes();
         travelTimeToClinic = travelTimeToClinic(patient.getTravelTimeToClinicInDays(), patient.getTravelTimeToClinicInHours(), patient.getTravelTimeToClinicInMinutes());
     }
 
@@ -28,7 +34,10 @@ public class BasicDetails {
         clinicId = patientRequest.getClinicId();
         dateOfBirth = patientRequest.getDateOfBirth();
         gender = patientRequest.getGender();
+        notes = patientRequest.getNotes();
         travelTimeToClinic = patientRequest.getTravelTimeToClinic();
+        registeredOn = patientRequest.getRegisteredOn();
+        status = patientRequest.getStatus();
     }
 
     public void copyTo(PatientRequest request) {
@@ -36,6 +45,9 @@ public class BasicDetails {
         request.setDateOfBirth(dateOfBirth);
         request.setClinicId(clinicId);
         request.setGender(gender);
+        request.setNotes(notes);
+        request.setRegisteredOn(registeredOn);
+        request.setStatus(status);
         request.setTravelTimeToClinic(travelTimeToClinic);
     }
 
