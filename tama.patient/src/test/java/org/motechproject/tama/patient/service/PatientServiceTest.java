@@ -13,6 +13,7 @@ import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.reporting.MedicalHistoryRequestMapper;
 import org.motechproject.tama.patient.reporting.PatientRequestMapper;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -67,6 +68,8 @@ public class PatientServiceTest extends BaseUnitTest {
     private OutboxRegistry outboxRegistry;
     @Mock
     private PatientReportingService patientReportingService;
+    @Mock
+    private MedicalHistoryRequestMapper medicalHistoryRequestMapper;
 
     private PatientService patientService;
 
@@ -76,7 +79,7 @@ public class PatientServiceTest extends BaseUnitTest {
         Patient dbPatient = PatientBuilder.startRecording().withDefaults().withId("patient_id").withRevision("revision").withCallPreference(CallPreference.DailyPillReminder)
                 .withBestCallTime(new TimeOfDay(11, 20, TimeMeridiem.PM)).build();
         when(allPatients.get(dbPatient.getId())).thenReturn(dbPatient);
-        patientService = new PatientService(patientReportingService, requestMapper, allPatients, allTreatmentAdvices, allRegimens, allPatientEventLogs, preferenceChangedStrategyFactory, outboxRegistry);
+        patientService = new PatientService(patientReportingService, requestMapper, allPatients, allTreatmentAdvices, allRegimens, allPatientEventLogs, preferenceChangedStrategyFactory, outboxRegistry, medicalHistoryRequestMapper);
         when(outboxRegistry.getOutbox()).thenReturn(outbox);
     }
 

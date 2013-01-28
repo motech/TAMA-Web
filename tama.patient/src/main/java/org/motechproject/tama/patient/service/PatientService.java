@@ -32,6 +32,7 @@ public class PatientService {
     private AllPatientEventLogs allPatientEventLogs;
     private PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory;
     private OutboxRegistry outboxRegistry;
+    private MedicalHistoryRequestMapper medicalHistoryRequestMapper;
 
     @Autowired
     public PatientService(PatientReportingService patientReportingService,
@@ -41,7 +42,7 @@ public class PatientService {
                           AllRegimensCache allRegimens,
                           AllPatientEventLogs allPatientEventLogs,
                           PatientPreferenceChangedStrategyFactory preferenceChangedStrategyFactory,
-                          OutboxRegistry outboxRegistry) {
+                          OutboxRegistry outboxRegistry, MedicalHistoryRequestMapper medicalHistoryRequestMapper) {
         this.patientReportingService = patientReportingService;
         this.requestMapper = requestMapper;
         this.allPatients = allPatients;
@@ -50,13 +51,14 @@ public class PatientService {
         this.allPatientEventLogs = allPatientEventLogs;
         this.preferenceChangedStrategyFactory = preferenceChangedStrategyFactory;
         this.outboxRegistry = outboxRegistry;
+        this.medicalHistoryRequestMapper = medicalHistoryRequestMapper;
     }
 
     public void create(Patient patient, String clinicId, String userName) {
         allPatients.addToClinic(patient, clinicId, userName);
         outboxRegistry.getOutbox().enroll(patient);
         allPatientEventLogs.addAll(new ChangedPatientPreferenceContext(null, patient).getEventLogs());
-        patientReportingService.save(requestMapper.map(patient), new MedicalHistoryRequestMapper().map(patient));
+        patientReportingService.save(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
     }
 
     public void update(Patient patient, String userName) {
