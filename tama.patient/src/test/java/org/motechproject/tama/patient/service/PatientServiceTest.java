@@ -101,7 +101,7 @@ public class PatientServiceTest extends BaseUnitTest {
         when(requestMapper.map(patient)).thenReturn(request);
         when(allPatients.get(anyString())).thenReturn(patient);
         patientService.update(patient, "user");
-        verify(patientReportingService).update(request);
+        verify(patientReportingService).update(eq(request), any(MedicalHistoryRequest.class));
     }
 
     @Test

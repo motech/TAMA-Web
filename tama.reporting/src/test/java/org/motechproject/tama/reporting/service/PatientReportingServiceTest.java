@@ -43,7 +43,9 @@ public class PatientReportingServiceTest {
     @Test
     public void shouldPublishPatientUpdate() {
         PatientRequest request = new PatientRequest();
-        patientReportingService.update(request);
+        MedicalHistoryRequest medicalHistoryRequest = new MedicalHistoryRequest();
+        patientReportingService.update(request, medicalHistoryRequest);
+        verify(medicalHistoryReportingService).update(medicalHistoryRequest);
         verify(httpClientService).post(REPORTS_URL + "patient/update", request);
     }
 }

@@ -28,7 +28,8 @@ public class PatientReportingService {
         medicalHistoryReportingService.save(medicalHistoryRequest);
     }
 
-    public void update(PatientRequest patientRequest) {
+    public void update(PatientRequest patientRequest, MedicalHistoryRequest medicalHistoryRequest) {
         httpClientService.post(reportingProperties.reportingURL() + PATH_TO_PATIENT + "/update", patientRequest);
+        medicalHistoryReportingService.update(medicalHistoryRequest);
     }
 }

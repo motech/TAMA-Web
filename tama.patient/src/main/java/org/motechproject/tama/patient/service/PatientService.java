@@ -69,7 +69,7 @@ public class PatientService {
         patient.setLastDeactivationDate(dbPatient.getLastDeactivationDate());
         patient.setLastSuspendedDate(dbPatient.getLastSuspendedDate());
         allPatients.update(patient, userName);
-        patientReportingService.update(requestMapper.map(patient));
+        patientReportingService.update(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
 
         final ChangedPatientPreferenceContext changedPatientPreferenceContext = new ChangedPatientPreferenceContext(dbPatient, patient);
         if (changedPatientPreferenceContext.patientPreferenceHasChanged()) {
