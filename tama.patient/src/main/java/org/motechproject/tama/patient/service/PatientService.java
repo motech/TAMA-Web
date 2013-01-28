@@ -2,6 +2,7 @@ package org.motechproject.tama.patient.service;
 
 import ch.lambdaj.function.matcher.Predicate;
 import org.motechproject.tama.patient.domain.*;
+import org.motechproject.tama.patient.reporting.MedicalHistoryRequestMapper;
 import org.motechproject.tama.patient.reporting.PatientRequestMapper;
 import org.motechproject.tama.patient.repository.AllPatientEventLogs;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -55,7 +56,7 @@ public class PatientService {
         allPatients.addToClinic(patient, clinicId, userName);
         outboxRegistry.getOutbox().enroll(patient);
         allPatientEventLogs.addAll(new ChangedPatientPreferenceContext(null, patient).getEventLogs());
-        patientReportingService.save(requestMapper.map(patient));
+        patientReportingService.save(requestMapper.map(patient), new MedicalHistoryRequestMapper().map(patient));
     }
 
     public void update(Patient patient, String userName) {

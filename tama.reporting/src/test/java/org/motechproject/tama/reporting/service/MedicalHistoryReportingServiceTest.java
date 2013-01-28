@@ -1,18 +1,18 @@
 package org.motechproject.tama.reporting.service;
 
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.http.client.service.HttpClientService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.reports.contract.MedicalHistoryRequest;
-import org.motechproject.tama.reports.contract.PatientRequest;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class PatientReportingServiceTest {
+public class MedicalHistoryReportingServiceTest {
 
     public static final String REPORTS_URL = "http://localhost:9999/tama-reports";
 
@@ -20,30 +20,26 @@ public class PatientReportingServiceTest {
     private HttpClientService httpClientService;
     @Mock
     private ReportingProperties reportingProperties;
-    @Mock
     private MedicalHistoryReportingService medicalHistoryReportingService;
-    private PatientReportingService patientReportingService;
 
     @Before
     public void setup() {
         initMocks(this);
         when(reportingProperties.reportingURL()).thenReturn(REPORTS_URL);
-        patientReportingService = new PatientReportingService(httpClientService, reportingProperties, medicalHistoryReportingService);
+        medicalHistoryReportingService = new MedicalHistoryReportingService(httpClientService, reportingProperties);
     }
 
     @Test
     public void shouldPublishPatientSave() {
-        PatientRequest request = new PatientRequest();
-        MedicalHistoryRequest medicalHistoryRequest = new MedicalHistoryRequest();
-        patientReportingService.save(request, medicalHistoryRequest);
-        verify(medicalHistoryReportingService).save(medicalHistoryRequest);
-        verify(httpClientService).post(REPORTS_URL + "patient", request);
+        MedicalHistoryRequest request = new MedicalHistoryRequest();
+        medicalHistoryReportingService.save(request);
+        verify(httpClientService).post(REPORTS_URL + "medicalHistory", request);
     }
 
     @Test
     public void shouldPublishPatientUpdate() {
-        PatientRequest request = new PatientRequest();
-        patientReportingService.update(request);
-        verify(httpClientService).post(REPORTS_URL + "patient/update", request);
+        MedicalHistoryRequest request = new MedicalHistoryRequest();
+        medicalHistoryReportingService.update(request);
+        verify(httpClientService).post(REPORTS_URL + "medicalHistory/update", request);
     }
 }

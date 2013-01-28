@@ -26,6 +26,7 @@ import org.motechproject.tama.refdata.builder.RegimenBuilder;
 import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.reporting.service.PatientReportingService;
+import org.motechproject.tama.reports.contract.MedicalHistoryRequest;
 import org.motechproject.tama.reports.contract.PatientRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -86,7 +87,7 @@ public class PatientServiceTest extends BaseUnitTest {
 
         when(requestMapper.map(patient)).thenReturn(request);
         patientService.create(patient, "clinicId", "user");
-        verify(patientReportingService).save(request);
+        verify(patientReportingService).save(eq(request), any(MedicalHistoryRequest.class));
     }
 
     @Test
