@@ -183,6 +183,10 @@
             <artifactId>jstl</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.jsos</groupId>
+            <artifactId>httpProxy</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
         </dependency>
@@ -430,7 +434,8 @@
                                     <target unless="skipTests">
                                         <echo message="Quartz schema loading: START"/>
                                         <path id="dependencies">
-                                            <fileset file="${project.basedir}/../build/lib/mysql-connector-java-5.1.13.jar"/>
+                                            <fileset
+                                                    file="${project.basedir}/../build/lib/mysql-connector-java-5.1.13.jar"/>
                                         </path>
                                         <sql driver="${mysql.driver}"
                                              url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"

@@ -33,6 +33,11 @@
             </snapshots>
         </repository>
         <repository>
+            <id>motech.nexus.public</id>
+            <name>Motech 3rd party Repository</name>
+            <url>http://nexus.motechproject.org/content/groups/public</url>
+        </repository>
+        <repository>
             <id>motech.nexus.snapshots</id>
             <name>Motech Snapshots Repository</name>
             <url>http://nexus.motechproject.org/content/repositories/snapshots</url>
@@ -258,6 +263,12 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>3.7</version>
+            </dependency>
+            <!-- Http proxy -->
+            <dependency>
+                <groupId>org.jsos</groupId>
+                <artifactId>httpProxy</artifactId>
+                <version>1.0</version>
             </dependency>
             <!-- Test libs -->
             <dependency>

@@ -88,6 +88,29 @@
         <servlet-class>org.motechproject.cmslite.api.web.ResourceServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>ReportsProxy</servlet-name>
+        <servlet-class>org.motechproject.tama.web.servlet.TAMAProxyServlet</servlet-class>
+        <init-param>
+            <param-name>rewriteHost</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>path</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>log</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>ReportsProxy</servlet-name>
+        <url-pattern>/tama-reports/*</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>tama</servlet-name>
         <url-pattern>/</url-pattern>
