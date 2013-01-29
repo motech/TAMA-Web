@@ -1,9 +1,24 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:spring="http://www.springframework.org/tags"
-     version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core">
+     version="2.0"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
     <div class="reportsDownload">
         <spring:url value="/tama-reports/patient/report" var="download_patient_url"/>
-        <a href="${download_patient_url}"> Download patient report</a>
+        <util:panel id="patientReportPane" title="Patient Registration Details Report" openPane="true">
+            <form id="patientReportForm" action="${download_patient_url}" method="GET">
+                <div class="control-group">
+                    <label for="patientId">Patient Id</label>
+                    <input type="text" name="patientId"/>
+                </div>
+                <div class="control-group">
+                    <label for="clinicName">Clinic Name</label>
+                    <input type="text" name="clinicName"/>
+                </div>
+                <div class="control-group">
+                    <input type="submit" value="Find"/>
+                </div>
+            </form>
+        </util:panel>
     </div>
-    <jsp:include page="/WEB-INF/views/callsummary/create.jspx" />
+    <jsp:include page="/WEB-INF/views/callsummary/create.jspx"/>
 </div>

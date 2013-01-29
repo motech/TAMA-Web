@@ -592,3 +592,8 @@ fieldset th {
 .oi_display {
     margin: 5px;
 }
+
+.control-group {
+    margin-top:2px;
+    margin-bottom:3px;
+}
