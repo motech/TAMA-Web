@@ -27,7 +27,15 @@ public class PatientRequestMapper {
         Gender gender = gendersCache.getBy(patient.getGenderId());
 
         new BasicDetails(patient).copyTo(request);
-        new IVRDetails(patient, language.getCode(), gender.getType()).copyTo(request);
+        new IVRDetails(patient, getIVRLanguageCode(language), getGenderString(gender)).copyTo(request);
         return request;
+    }
+
+    private String getIVRLanguageCode(IVRLanguage language) {
+        return null == language ? "" : language.getCode();
+    }
+
+    private String getGenderString(Gender gender) {
+        return (null == gender) ? "" : gender.getType();
     }
 }

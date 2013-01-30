@@ -4,6 +4,8 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.motechproject.tama.patient.domain.NonHIVMedicalHistory;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.refdata.domain.HIVTestReason;
+import org.motechproject.tama.refdata.domain.ModeOfTransmission;
 import org.motechproject.tama.refdata.objectcache.AllHIVTestReasonsCache;
 import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 import org.motechproject.tama.reports.contract.MedicalHistoryRequest;
@@ -28,13 +30,23 @@ public class MedicalHistoryRequestMapper {
         MedicalHistoryRequest request = new MedicalHistoryRequest();
         try {
             request.setPatientId(patient.getPatientId());
-            request.setHivTestReason(testReasonsCache.getBy(patient.getMedicalHistory().getHivMedicalHistory().getTestReasonId()).getName());
-            request.setModesOfTransmission(modesOfTransmissionCache.getBy(patient.getMedicalHistory().getHivMedicalHistory().getModeOfTransmissionId()).getType());
+            request.setHivTestReason(getTestReasonName(patient));
+            request.setModesOfTransmission(getModeOfTransmissionType(patient));
             request.setNonHivMedicalHistory(toJson(patient.getMedicalHistory().getNonHivMedicalHistory()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return request;
+    }
+
+    private String getModeOfTransmissionType(Patient patient) {
+        ModeOfTransmission modeOfTransmission = modesOfTransmissionCache.getBy(patient.getMedicalHistory().getHivMedicalHistory().getModeOfTransmissionId());
+        return (null == modeOfTransmission) ? "" : modeOfTransmission.getType();
+    }
+
+    private String getTestReasonName(Patient patient) {
+        HIVTestReason reason = testReasonsCache.getBy(patient.getMedicalHistory().getHivMedicalHistory().getTestReasonId());
+        return (null == reason) ? "" : reason.getName();
     }
 
     private JsonNode toJson(NonHIVMedicalHistory medicalHistory) throws IOException {

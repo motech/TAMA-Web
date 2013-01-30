@@ -2,6 +2,7 @@ package org.motechproject.tama.patient.reporting;
 
 import lombok.Data;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.refdata.domain.Gender;
 import org.motechproject.tama.reports.contract.PatientRequest;
 
 import java.util.Date;
@@ -24,7 +25,7 @@ public class BasicDetails {
         patientDocumentId = patient.getId();
         clinicId = patient.getClinic_id();
         dateOfBirth = patient.getDateOfBirthAsDate();
-        gender = patient.getGender().getType();
+        gender = getGenderString(patient);
         registeredOn = patient.getRegistrationDateAsDate();
         status = patient.getStatus().getDisplayName();
         notes = patient.getNotes();
@@ -53,6 +54,11 @@ public class BasicDetails {
         request.setRegisteredOn(registeredOn);
         request.setStatus(status);
         request.setTravelTimeToClinic(travelTimeToClinic);
+    }
+
+    private String getGenderString(Patient patient) {
+        Gender patientGender = patient.getGender();
+        return (null == patientGender) ? "" : patientGender.getType();
     }
 
     private String travelTimeToClinic(int days, int hours, int minutes) {

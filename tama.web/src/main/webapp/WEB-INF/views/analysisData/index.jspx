@@ -1,7 +1,8 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:spring="http://www.springframework.org/tags"
      version="2.0"
-     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" >
     <div class="reportsDownload">
         <spring:url value="/tama-reports/patient/report" var="download_patient_url"/>
         <util:panel id="patientReportPane" title="Patient Registration Details Report" openPane="true">
@@ -14,11 +15,34 @@
                     <label for="clinicName">Clinic Name</label>
                     <input type="text" name="clinicName"/>
                 </div>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientReport.startDate" id="c_org_motechproject_tama_calllog_startDate" label="Starting From" required="true" />
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientReport.endDate" id="c_org_motechproject_tama_calllog_endDate" label="Till" required="true" />
                 <div class="control-group">
-                    <input type="submit" value="Get Report"/>
+                    <input type="submit" id="downloadPatientReport" value="Get Report"/>
                 </div>
             </form>
         </util:panel>
+        <script type="text/javascript">
+            <![CDATA[
+                dojo.addOnLoad(function() {
+                    startDateObj = dijit.byId("_patientReport.startDate_id");
+                    endDateObj = dijit.byId("_patientReport.endDate_id");
+                    setConstraintOnEndDate(startDateObj, endDateObj);
+
+                    dojo.connect(dojo.byId("downloadPatientReport"), "onclick", function(event){
+
+                        Spring.decorations['_patientReport.startDate_id'][0].validate();
+                        Spring.decorations['_patientReport.endDate_id'][0].validate();
+                        if (!(startDateObj.isValid() && endDateObj.isValid())){
+                            event.preventDefault();
+                        }
+                    });
+                    dojo.connect(startDateObj, "onChange", function() {
+                        setConstraintOnEndDate(startDateObj, endDateObj);
+                    });
+                });
+            ]]>
+        </script>
     </div>
     <jsp:include page="/WEB-INF/views/callsummary/create.jspx"/>
 </div>
