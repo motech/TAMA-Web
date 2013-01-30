@@ -105,6 +105,39 @@ public class PatientServiceTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldReportPatientActivation() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        PatientRequest request = new PatientRequest();
+
+        when(requestMapper.map(patient)).thenReturn(request);
+        when(allPatients.get(anyString())).thenReturn(patient);
+        patientService.activate(patient.getPatientId(), "user");
+        verify(patientReportingService).update(eq(request), any(MedicalHistoryRequest.class));
+    }
+
+    @Test
+    public void shouldReportPatientDeactivation() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        PatientRequest request = new PatientRequest();
+
+        when(requestMapper.map(patient)).thenReturn(request);
+        when(allPatients.get(anyString())).thenReturn(patient);
+        patientService.deactivate(patient.getPatientId(), Status.Inactive, "user");
+        verify(patientReportingService).update(eq(request), any(MedicalHistoryRequest.class));
+    }
+
+    @Test
+    public void shouldReportPatientSuspend() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        PatientRequest request = new PatientRequest();
+
+        when(requestMapper.map(patient)).thenReturn(request);
+        when(allPatients.get(anyString())).thenReturn(patient);
+        patientService.suspend(patient.getPatientId(), "user");
+        verify(patientReportingService).update(eq(request), any(MedicalHistoryRequest.class));
+    }
+
+    @Test
     public void shouldCreatePatientOnDaily() {
         DateTime now = new DateTime(2011, 10, 10, 10, 10);
         mockCurrentDate(now);

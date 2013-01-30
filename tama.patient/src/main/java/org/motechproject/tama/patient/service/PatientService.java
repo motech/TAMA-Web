@@ -82,6 +82,8 @@ public class PatientService {
         Patient patient = allPatients.get(id);
         patient.activate();
         allPatients.update(patient, userName);
+        patientReportingService.update(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
+
         allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Activation));
     }
 
@@ -89,6 +91,8 @@ public class PatientService {
         Patient patient = allPatients.get(id);
         patient.deactivate(deactivationStatus);
         allPatients.update(patient, userName);
+        patientReportingService.update(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
+
         if (deactivationStatus.isTemporarilyDeactivated()) {
             allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Temporary_Deactivation));
         }
@@ -98,6 +102,8 @@ public class PatientService {
         Patient patient = allPatients.get(patientId);
         patient.suspend();
         allPatients.update(patient, userName);
+        patientReportingService.update(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
+
         allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension));
     }
 
