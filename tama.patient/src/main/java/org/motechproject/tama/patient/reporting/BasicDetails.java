@@ -10,6 +10,7 @@ import java.util.Date;
 public class BasicDetails {
 
     private String patientId;
+    private String patientDocumentId;
     private Date dateOfBirth;
     private String gender;
     private String clinicId;
@@ -20,6 +21,7 @@ public class BasicDetails {
 
     public BasicDetails(Patient patient) {
         patientId = patient.getPatientId();
+        patientDocumentId = patient.getId();
         clinicId = patient.getClinic_id();
         dateOfBirth = patient.getDateOfBirthAsDate();
         gender = patient.getGender().getType();
@@ -31,6 +33,7 @@ public class BasicDetails {
 
     public BasicDetails(PatientRequest patientRequest) {
         patientId = patientRequest.getPatientId();
+        patientDocumentId = patientRequest.getPatientDocumentId();
         clinicId = patientRequest.getClinicId();
         dateOfBirth = patientRequest.getDateOfBirth();
         gender = patientRequest.getGender();
@@ -42,6 +45,7 @@ public class BasicDetails {
 
     public void copyTo(PatientRequest request) {
         request.setPatientId(patientId);
+        request.setPatientDocumentId(patientDocumentId);
         request.setDateOfBirth(dateOfBirth);
         request.setClinicId(clinicId);
         request.setGender(gender);

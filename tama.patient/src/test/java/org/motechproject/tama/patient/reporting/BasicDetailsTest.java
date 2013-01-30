@@ -19,6 +19,15 @@ public class BasicDetailsTest {
     }
 
     @Test
+    public void shouldMapPatientDocumentId() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        patient.setId("patientDocumentId");
+        PatientRequest request = new PatientRequest();
+        new BasicDetails(patient).copyTo(request);
+        assertEquals(patient.getId(), request.getPatientDocumentId());
+    }
+
+    @Test
     public void shouldMapDateOfBirth() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
         PatientRequest request = new PatientRequest();
