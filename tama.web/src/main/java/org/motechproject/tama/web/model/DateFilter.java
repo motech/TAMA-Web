@@ -4,8 +4,7 @@ import lombok.Data;
 import org.joda.time.DateTime;
 
 @Data
-public class PatientReport {
-
+public class DateFilter {
     public DateTime startDate;
     public DateTime endDate;
 }

@@ -17,7 +17,7 @@ public class PatientEventRequestMapper {
 
     public PatientEventRequest map(String user) {
         PatientEventRequest request = new PatientEventRequest();
-        request.setDateTime(getEntityDateString());
+        request.setDateTime(getEntityDate());
         request.setEventName(getDisplayName());
         request.setPatientDocumentId(entity.getPatientId());
         request.setPerformedBy(user);
@@ -29,7 +29,7 @@ public class PatientEventRequestMapper {
         return (null == event) ? "" : event.getDisplayName();
     }
 
-    private Date getEntityDateString() {
+    private Date getEntityDate() {
         DateTime date = entity.getDate();
         return (null == date) ? null : date.toDate();
     }

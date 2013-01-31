@@ -4,6 +4,51 @@
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" >
     <div class="reportsDownload">
+        <spring:url value="/tama-reports/patientEvent/report" var="download_patient_event_url"/>
+        <util:panel id="patientEventReportPane" title="Patient Events Report" openPane="true">
+            <form id="patientEventReportForm" action="${download_patient_event_url}" method="GET">
+                <div class="control-group">
+                    <label for="patientId">Patient Id</label>
+                    <input type="text" name="patientId"/>
+                </div>
+                <div class="control-group">
+                    <label for="clinicName">Clinic Name</label>
+                    <input type="text" name="clinicName"/>
+                </div>
+                <div class="control-group">
+                    <label for="clinicName">Event Name</label>
+                    <input type="text" name="eventName"/>
+                </div>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.startDate" id="c_org_motechproject_tama_patient_event_startDate" label="Starting From" required="true" />
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.endDate" id="c_org_motechproject_tama_patient_event_endDate" label="Till" required="true" />
+                <div class="control-group">
+                    <input type="submit" id="downloadPatientEventReport" value="Get Report"/>
+                </div>
+            </form>
+        </util:panel>
+        <script type="text/javascript">
+            <![CDATA[
+                dojo.addOnLoad(function() {
+                    var startDateObj = dijit.byId("_patientEventDateFilter.startDate_id");
+                    var endDateObj = dijit.byId("_patientEventDateFilter.endDate_id");
+                    setConstraintOnEndDate(startDateObj, endDateObj);
+
+                    dojo.connect(dojo.byId("downloadPatientEventReport"), "onclick", function(event){
+
+                        Spring.decorations['_patientEventDateFilter.startDate_id'][0].validate();
+                        Spring.decorations['_patientEventDateFilter.endDate_id'][0].validate();
+                        if (!(startDateObj.isValid() && endDateObj.isValid())){
+                            event.preventDefault();
+                        }
+                    });
+                    dojo.connect(startDateObj, "onChange", function() {
+                        setConstraintOnEndDate(startDateObj, endDateObj);
+                    });
+                });
+            ]]>
+        </script>
+    </div>
+    <div class="reportsDownload">
         <spring:url value="/tama-reports/patient/report" var="download_patient_url"/>
         <util:panel id="patientReportPane" title="Patient Registration Details Report" openPane="true">
             <form id="patientReportForm" action="${download_patient_url}" method="GET">
@@ -15,8 +60,8 @@
                     <label for="clinicName">Clinic Name</label>
                     <input type="text" name="clinicName"/>
                 </div>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientReport.startDate" id="c_org_motechproject_tama_calllog_startDate" label="Starting From" required="true" />
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientReport.endDate" id="c_org_motechproject_tama_calllog_endDate" label="Till" required="true" />
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.startDate" id="c_org_motechproject_tama_calllog_startDate" label="Starting From" required="true" />
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.endDate" id="c_org_motechproject_tama_calllog_endDate" label="Till" required="true" />
                 <div class="control-group">
                     <input type="submit" id="downloadPatientReport" value="Get Report"/>
                 </div>
@@ -25,14 +70,14 @@
         <script type="text/javascript">
             <![CDATA[
                 dojo.addOnLoad(function() {
-                    startDateObj = dijit.byId("_patientReport.startDate_id");
-                    endDateObj = dijit.byId("_patientReport.endDate_id");
+                    var startDateObj = dijit.byId("_patientDateFilter.startDate_id");
+                    var endDateObj = dijit.byId("_patientDateFilter.endDate_id");
                     setConstraintOnEndDate(startDateObj, endDateObj);
 
                     dojo.connect(dojo.byId("downloadPatientReport"), "onclick", function(event){
 
-                        Spring.decorations['_patientReport.startDate_id'][0].validate();
-                        Spring.decorations['_patientReport.endDate_id'][0].validate();
+                        Spring.decorations['_patientDateFilter.startDate_id'][0].validate();
+                        Spring.decorations['_patientDateFilter.endDate_id'][0].validate();
                         if (!(startDateObj.isValid() && endDateObj.isValid())){
                             event.preventDefault();
                         }
