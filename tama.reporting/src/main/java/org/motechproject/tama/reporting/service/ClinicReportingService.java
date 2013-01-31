@@ -7,24 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ClinicReportingService {
+public class ClinicReportingService extends ReportingService<ClinicRequest> {
 
     public static final String PATH_TO_CLINIC = "clinic";
 
-    private HttpClientService httpClientService;
-    private ReportingProperties reportingProperties;
-
     @Autowired
     public ClinicReportingService(HttpClientService httpClientService, ReportingProperties reportingProperties) {
-        this.httpClientService = httpClientService;
-        this.reportingProperties = reportingProperties;
+        super(reportingProperties, httpClientService);
     }
 
     public void save(ClinicRequest clinicRequest) {
-        httpClientService.post(reportingProperties.reportingURL() + PATH_TO_CLINIC, clinicRequest);
+        super.save(clinicRequest, PATH_TO_CLINIC);
     }
 
     public void update(ClinicRequest clinicRequest) {
-        httpClientService.post(reportingProperties.reportingURL() + PATH_TO_CLINIC + "/update", clinicRequest);
+        super.update(clinicRequest, PATH_TO_CLINIC + "/update");
     }
 }

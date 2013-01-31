@@ -188,7 +188,7 @@ public class PatientServiceTest extends BaseUnitTest {
         assertEquals(now, patient.getActivationDate());
 
         ArgumentCaptor<PatientEventLog> eventLogArgumentCaptor = ArgumentCaptor.forClass(PatientEventLog.class);
-        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture());
+        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture(), anyString());
         assertEquals(PatientEvent.Activation, eventLogArgumentCaptor.getValue().getEvent());
         assertEquals(patient.getId(), eventLogArgumentCaptor.getValue().getPatientId());
         assertEquals(DateUtil.now(), eventLogArgumentCaptor.getValue().getDate());
@@ -209,7 +209,7 @@ public class PatientServiceTest extends BaseUnitTest {
         assertEquals(now, patient.getLastDeactivationDate());
 
         ArgumentCaptor<PatientEventLog> eventLogArgumentCaptor = ArgumentCaptor.forClass(PatientEventLog.class);
-        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture());
+        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture(), anyString());
         assertEquals(PatientEvent.Temporary_Deactivation, eventLogArgumentCaptor.getValue().getEvent());
         assertEquals(patient.getId(), eventLogArgumentCaptor.getValue().getPatientId());
         assertEquals(now, eventLogArgumentCaptor.getValue().getDate());
@@ -232,7 +232,7 @@ public class PatientServiceTest extends BaseUnitTest {
         assertEquals(DateUtil.today(), patientArgumentCaptor.getValue().getLastSuspendedDate().toLocalDate());
 
         ArgumentCaptor<PatientEventLog> eventLogArgumentCaptor = ArgumentCaptor.forClass(PatientEventLog.class);
-        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture());
+        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture(), anyString());
         assertEquals(PatientEvent.Suspension, eventLogArgumentCaptor.getValue().getEvent());
         assertEquals(patient.getId(), eventLogArgumentCaptor.getValue().getPatientId());
         assertEquals(now, eventLogArgumentCaptor.getValue().getDate());

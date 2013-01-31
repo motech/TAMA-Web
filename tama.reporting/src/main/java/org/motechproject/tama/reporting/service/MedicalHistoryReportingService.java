@@ -7,24 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MedicalHistoryReportingService {
-    public static final String PATH_TO_MEDICAL_HISTORY = "medicalHistory";
+public class MedicalHistoryReportingService extends ReportingService<MedicalHistoryRequest> {
 
-    private HttpClientService httpClientService;
-    private ReportingProperties reportingProperties;
+    public static final String PATH_TO_MEDICAL_HISTORY = "medicalHistory";
 
     @Autowired
     public MedicalHistoryReportingService(HttpClientService httpClientService, ReportingProperties reportingProperties) {
-        this.httpClientService = httpClientService;
-        this.reportingProperties = reportingProperties;
+        super(reportingProperties, httpClientService);
     }
 
     public void save(MedicalHistoryRequest medicalHistoryRequest) {
-        httpClientService.post(reportingProperties.reportingURL() + PATH_TO_MEDICAL_HISTORY, medicalHistoryRequest);
+        super.save(medicalHistoryRequest, PATH_TO_MEDICAL_HISTORY);
     }
 
     public void update(MedicalHistoryRequest medicalHistoryRequest) {
-        httpClientService.post(reportingProperties.reportingURL() + PATH_TO_MEDICAL_HISTORY + "/update", medicalHistoryRequest);
+        super.update(medicalHistoryRequest, PATH_TO_MEDICAL_HISTORY + "/update");
     }
-
 }

@@ -84,7 +84,7 @@ public class PatientService {
         allPatients.update(patient, userName);
         patientReportingService.update(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
 
-        allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Activation));
+        allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Activation), userName);
     }
 
     public void deactivate(String id, Status deactivationStatus, String userName) {
@@ -94,7 +94,7 @@ public class PatientService {
         patientReportingService.update(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
 
         if (deactivationStatus.isTemporarilyDeactivated()) {
-            allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Temporary_Deactivation));
+            allPatientEventLogs.add(new PatientEventLog(id, PatientEvent.Temporary_Deactivation), userName);
         }
     }
 
@@ -104,7 +104,7 @@ public class PatientService {
         allPatients.update(patient, userName);
         patientReportingService.update(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
 
-        allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension));
+        allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension),userName);
     }
 
     public Regimen currentRegimen(Patient patient) {

@@ -1,6 +1,5 @@
 package org.motechproject.tama.patient.integration.repository;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +20,7 @@ import static junit.framework.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml")
-public class AllPatientEventLogsTest extends SpringIntegrationTest {
+public class AllPatientEventLogsIT extends SpringIntegrationTest {
 
     @Autowired
     private AllPatientEventLogs allPatientEventLogs;
@@ -38,7 +37,7 @@ public class AllPatientEventLogsTest extends SpringIntegrationTest {
     @Test
     public void shouldFindByPatientId() throws Exception {
         PatientEventLog patientEventLog = new PatientEventLog(patient.getId(), PatientEvent.Suspension);
-        allPatientEventLogs.add(patientEventLog);
+        allPatientEventLogs.add(patientEventLog, "user");
         markForDeletion(patientEventLog);
 
         List<PatientEventLog> eventLogs = allPatientEventLogs.findByPatientId(patient.getId());
