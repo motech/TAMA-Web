@@ -11,6 +11,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.builder.PatientReportBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.reporting.MedicalHistoryRequestMapper;
@@ -35,6 +36,7 @@ import org.motechproject.util.DateUtil;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertArrayEquals;
@@ -351,6 +353,22 @@ public class PatientServiceTest extends BaseUnitTest {
 
         assertEquals(3, patientStatusHistory.size());
         assertArrayEquals(Arrays.asList(activationEventLog, suspensionEventLog, tempDeactivationEventLog).toArray(), patientStatusHistory.toArray());
+    }
+
+    @Test
+    public void shouldCreatePatientReportsByPatientId() {
+        String patientId = "patientId";
+        String docId = "patientDocumentId";
+
+        PatientReportBuilder builder = PatientReportBuilder.newPatientReport().withPatientId(patientId).withPatientDocumentId(docId);
+        PatientReports patientReports = new PatientReports(asList(builder.build()));
+
+        when(allPatients.findAllByPatientId(patientId)).thenReturn(asList(patientReports.getPatientReport(patientReports.getPatientDocIds().get(0)).getPatient()));
+        when(allTreatmentAdvices.earliestTreatmentAdvice(docId)).thenReturn(builder.earliestTreatmentAdvice());
+        when(allTreatmentAdvices.currentTreatmentAdvice(docId)).thenReturn(builder.currentTreatmentAdvice());
+        when(allRegimens.getBy(anyString())).thenReturn(builder.regimen());
+
+        assertEquals(patientReports, patientService.getPatientReports(patientId));
     }
 
     private void assertPatientEventLog(PatientEventLog patientEventLog, PatientEvent patientEvent, String newValue, DateTime now) {

@@ -1,7 +1,6 @@
 package org.motechproject.tama.patient.repository;
 
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.ektorp.ComplexKey;
 import org.ektorp.CouchDbConnector;
@@ -26,11 +25,9 @@ import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -69,6 +66,15 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         return patient;
     }
 
+    public List<Patient> findAllByPatientId(String patientId) {
+        ViewQuery q = createQuery("by_patientId").key(patientId).includeDocs(true);
+        List<Patient> patients = db.queryView(q, Patient.class);
+        for (Patient patient : patients) {
+            loadPatientDependencies(patient, true);
+        }
+        return patients;
+    }
+
     @View(name = "find_by_clinic", map = "function(doc) {if (doc.documentType =='Patient' && doc.clinic_id) {emit(doc.clinic_id, doc._id);}}")
     public List<Patient> findByClinic(String clinicId) {
         final Clinic clinic = allClinics.get(clinicId);
@@ -95,13 +101,13 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         return patients;
     }
 
+
     public Patient findByMobileNumberAndPasscode(String phoneNumber, String passcode) {
         List<Patient> patients = findAllByMobileNumberAndPasscode(phoneNumber, passcode);
         Patient patient = singleResult(patients);
         loadPatientDependencies(patient, true);
         return patient;
     }
-
 
     @View(name = "find_by_patient_id_and_clinic_id", map = "function(doc) {if (doc.documentType =='Patient' && doc.patientId && doc.clinic_id) {emit([doc.patientId.toLowerCase(), doc.clinic_id.toLowerCase()], doc._id);}}")
     public Patient findByPatientIdAndClinicId(final String patientId, final String clinicId) {

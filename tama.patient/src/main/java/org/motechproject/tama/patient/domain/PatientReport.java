@@ -1,9 +1,11 @@
 package org.motechproject.tama.patient.domain;
 
+import lombok.EqualsAndHashCode;
 import org.motechproject.tama.refdata.domain.Regimen;
 
 import java.util.Date;
 
+@EqualsAndHashCode
 public class PatientReport {
 
     private Patient patient;
@@ -39,7 +41,7 @@ public class PatientReport {
     }
 
     public Date getARTStartedOn() {
-        return earliestTreatmentAdvice !=null ? earliestTreatmentAdvice.getStartDate() : null;
+        return earliestTreatmentAdvice != null ? earliestTreatmentAdvice.getStartDate() : null;
     }
 
     public String getCurrentRegimenName() {
@@ -47,6 +49,6 @@ public class PatientReport {
     }
 
     public Date getCurrentRegimenStartDate() {
-        return currentTreatmentAdvice !=null ? currentTreatmentAdvice.getStartDate() : null;
+        return currentTreatmentAdvice != null ? currentTreatmentAdvice.getStartDate() : null;
     }
 }

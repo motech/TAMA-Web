@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -158,6 +159,15 @@ public class AllClinicVisitsTest extends BaseUnitTest {
         when(createVisitRequestBuilder.adHocVisitRequest(Matchers.<String>any(), eq(TypeOfVisit.Unscheduled), eq(dueDate))).thenReturn(createVisitRequest);
         allClinicVisits.createUnScheduledAppointment(PATIENT_ID, dueDate, TypeOfVisit.Unscheduled, USER_NAME);
         verify(appointmentService).addVisit(eq(PATIENT_ID), same(createVisitRequest));
+    }
+
+    @Test
+    public void shouldFindAllClinicVisits() {
+        List<String> externalIds = asList("externalId1", "externalId2");
+
+        allClinicVisits.clinicVisits(externalIds);
+        verify(appointmentService).getAllVisits(externalIds.get(0));
+        verify(appointmentService).getAllVisits(externalIds.get(1));
     }
 
     @Test

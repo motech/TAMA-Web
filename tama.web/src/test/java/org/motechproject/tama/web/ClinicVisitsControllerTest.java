@@ -15,6 +15,7 @@ import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
+import org.motechproject.tama.clinicvisits.service.AppointmentCalenderReportService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
@@ -37,6 +38,7 @@ import org.springframework.validation.BindingResult;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -94,6 +96,8 @@ public class ClinicVisitsControllerTest {
         HttpServletRequest request;
         @Mock
         HttpSession session;
+        @Mock
+        AppointmentCalenderReportService appointmentCalenderReportService;
 
         protected ClinicVisitsController clinicVisitsController;
 
@@ -104,7 +108,7 @@ public class ClinicVisitsControllerTest {
             initMocks(this);
             now = DateUtil.now();
             mockCurrentDate(now);
-            clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, allVitalStatistics, allLabResults, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits, patientService);
+            clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, allVitalStatistics, allLabResults, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits, patientService, appointmentCalenderReportService);
             when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
             when(allLabResults.allLabResults(PATIENT_ID)).thenReturn(new LabResults());
@@ -280,8 +284,8 @@ public class ClinicVisitsControllerTest {
             assertEquals("clinicvisits/manage_list", listUrl);
             ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
             verify(uiModel).addAttribute(eq("clinicVisits"), listArgumentCaptor.capture());
-            assertEquals(visit1.getId(), ((ClinicVisitUIModel)listArgumentCaptor.getValue().get(0)).getId());
-            assertEquals(visit2.getId(), ((ClinicVisitUIModel)listArgumentCaptor.getValue().get(1)).getId());
+            assertEquals(visit1.getId(), ((ClinicVisitUIModel) listArgumentCaptor.getValue().get(0)).getId());
+            assertEquals(visit2.getId(), ((ClinicVisitUIModel) listArgumentCaptor.getValue().get(1)).getId());
         }
 
         @Test
@@ -304,7 +308,7 @@ public class ClinicVisitsControllerTest {
     public static class DownloadList extends SubjectUnderTest {
 
         @Test
-        public void shouldCreateExcelDocumentWithClinicVisitsAndPatientReport(){
+        public void shouldCreateExcelDocumentWithClinicVisitsAndPatientReport() {
             String patientDocId = "patientDocId";
             HttpServletResponse response = mock(HttpServletResponse.class);
             PatientReport patientReport = mock(PatientReport.class);
@@ -316,6 +320,17 @@ public class ClinicVisitsControllerTest {
 
             verify(allClinicVisits).clinicVisits(patientDocId);
             verify(patientService).getPatientReport(patientDocId);
+        }
+
+        @Test
+        public void shouldDownloadAppointmentCalendarGivenPatientId() throws IOException {
+            String patientId = "patientDocId";
+            HttpServletResponse response = mock(HttpServletResponse.class);
+
+            clinicVisitsController.downloadAppointmentCalenderReport(patientId, response);
+            verify(response).setContentType("application/vnd.ms-excel");
+            verify(response).setHeader("Content-Disposition", "inline; filename=AppointmentCalendarReport.xls");
+            verify(response).getOutputStream();
         }
     }
 

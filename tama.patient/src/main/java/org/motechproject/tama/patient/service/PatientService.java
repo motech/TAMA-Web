@@ -104,7 +104,7 @@ public class PatientService {
         allPatients.update(patient, userName);
         patientReportingService.update(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
 
-        allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension),userName);
+        allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension), userName);
     }
 
     public Regimen currentRegimen(Patient patient) {
@@ -114,14 +114,27 @@ public class PatientService {
 
     public PatientReport getPatientReport(String patientDocId) {
         Patient patient = allPatients.get(patientDocId);
-        TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
-        TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
-        return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen(patient));
+        return patientReport(patient);
+    }
+
+    public PatientReports getPatientReports(String patientId) {
+        List<Patient> patients = allPatients.findAllByPatientId(patientId);
+        PatientReports reports = new PatientReports();
+        for (Patient patient : patients) {
+            reports.add(patientReport(patient));
+        }
+        return reports;
     }
 
     public List<PatientEventLog> getStatusChangeHistory(String patientDocId) {
         List<PatientEventLog> allPatientEventLogs = this.allPatientEventLogs.findByPatientId(patientDocId);
         return selectOnlyStatusChangeLogs(allPatientEventLogs);
+    }
+
+    private PatientReport patientReport(Patient patient) {
+        TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patient.getId());
+        TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen(patient));
     }
 
     private List<PatientEventLog> selectOnlyStatusChangeLogs(List<PatientEventLog> patientEventLogs) {

@@ -16,7 +16,6 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +67,14 @@ public class AllClinicVisits {
             clinicVisits.add(new ClinicVisit(patient, visitResponse));
         }
         return clinicVisits;
+    }
+
+    public ClinicVisits clinicVisits(List<String> patientDocumentIds) {
+        ClinicVisits result = new ClinicVisits();
+        for (String patientDocumentId : patientDocumentIds) {
+            result.addAll(clinicVisits(patientDocumentId));
+        }
+        return result;
     }
 
     public void createUnScheduledAppointment(String patientDocId, DateTime dueDate, TypeOfVisit typeOfVisit, String userName) {

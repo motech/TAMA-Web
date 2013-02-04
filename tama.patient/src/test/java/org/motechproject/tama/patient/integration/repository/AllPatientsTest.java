@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
+import org.motechproject.tama.common.repository.AllAuditRecords;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
@@ -14,7 +15,6 @@ import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.MedicalHistory;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.UniquePatientField;
-import org.motechproject.tama.common.repository.AllAuditRecords;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 import org.motechproject.tama.refdata.domain.Gender;
@@ -34,11 +34,11 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath*:applicationPatientContext.xml", inheritLocations = false)
 public class AllPatientsTest extends SpringIntegrationTest {
@@ -412,5 +412,20 @@ public class AllPatientsTest extends SpringIntegrationTest {
         Assert.assertEquals("STDs", loadedPatient.getMedicalHistory().getHivMedicalHistory().getTestReason().getName());
         markForDeletion(testReason);
         markForDeletion(modeOfTransmission);
+    }
+
+    @Test
+    public void shouldFindAllPatientsWithSamePatientId() {
+        String patientId = "patientId";
+        Patient patient1 = PatientBuilder.startRecording().withDefaults().withPatientId(patientId).build();
+
+        assertTrue(allPatients.findAllByPatientId(patientId).isEmpty());
+
+        allPatients.add(patient1, "user");
+        markForDeletion(patient1);
+
+        List<Patient> allByPatientId = allPatients.findAllByPatientId(patientId);
+        assertEquals(1, allByPatientId.size());
+        assertEquals(patient1.getPatientId(), allByPatientId.get(0).getPatientId());
     }
 }

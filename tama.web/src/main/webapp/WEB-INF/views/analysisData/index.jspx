@@ -4,6 +4,20 @@
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" >
     <div class="reportsDownload">
+        <spring:url value="/clinicvisits/appointmentCalendarReport.xls" var="download_appointment_calendar_url"/>
+        <util:panel id="appointmentCalendarReportPane" title="Appointment Calendar report" openPane="true">
+            <form id="appointmentCalendarReportForm" action="${download_appointment_calendar_url}" method="GET">
+                <div class="control-group">
+                    <label for="patientId">Patient Id</label>
+                    <input type="text" name="patientId"/>
+                </div>
+                <div class="control-group">
+                    <input type="submit" id="downloadAppointmentCalendarReport" value="Get Report"/>
+                </div>
+            </form>
+        </util:panel>
+    </div>
+        <div class="reportsDownload">
         <spring:url value="/tama-reports/patientEvent/report" var="download_patient_event_url"/>
         <util:panel id="patientEventReportPane" title="Patient Events Report" openPane="true">
             <form id="patientEventReportForm" action="${download_patient_event_url}" method="GET">
