@@ -30,7 +30,7 @@
     </div>
         <div class="reportsDownload">
         <spring:url value="/tama-reports/patientEvent/report" var="download_patient_event_url"/>
-        <util:panel id="patientEventReportPane" title="Patient Events Report" openPane="true">
+        <util:panel id="patientEventReportPane" title="History of Patient Events Report" openPane="true">
             <form id="patientEventReportForm" action="${download_patient_event_url}" method="GET">
                 <div class="control-group">
                     <label for="patientId">Patient Id</label>

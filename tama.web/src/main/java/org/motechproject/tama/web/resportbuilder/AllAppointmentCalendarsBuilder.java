@@ -1,5 +1,7 @@
 package org.motechproject.tama.web.resportbuilder;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.common.TAMAConstants;
@@ -58,16 +60,22 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
         List<Object> row = new ArrayList<>();
         row.add(patientReport.getPatientReport(clinicVisit.getPatientDocId()).getPatientId());
         row.add(patientReport.getPatientReport(clinicVisit.getPatientDocId()).getClinicName());
+        row.add(clinicVisit.getTitle());
         addARTStartDate(patientReport.getPatientReport(clinicVisit.getPatientDocId()), row);
         row.add(patientReport.getPatientReport(clinicVisit.getPatientDocId()).getCurrentRegimenName());
         addCurrentRegimenStartDate(patientReport.getPatientReport(clinicVisit.getPatientDocId()), row);
-        row.add(clinicVisit.getTitle());
         addAppointmentDueDate(clinicVisit, row);
         addAdjustedDueDate(clinicVisit, row);
         addAppointmentConfirmedDate(clinicVisit, row);
         addVisitDate(clinicVisit, row);
         row.add(clinicVisit.getTypeOfVisit());
         return row;
+    }
+
+    @Override
+    protected void buildSummary(HSSFSheet worksheet) {
+        List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
+        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("MMM dd, yyyy"));
     }
 
     private void addCurrentRegimenStartDate(PatientReport patientReport, List<Object> row) {
