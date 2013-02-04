@@ -22,7 +22,7 @@
         <!-- Only clinicians -->
         <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
         <intercept-url pattern="/patients" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" method="POST" requires-channel="any"/>
-        <intercept-url pattern="/clinicvisits/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR', 'ANALYST')" requires-channel="any"/>
+        <intercept-url pattern="/clinicvisits/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
         <intercept-url pattern="/treatmentadvices/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
         <intercept-url pattern="/labresults/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
         <intercept-url pattern="/vitalstatistics/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
@@ -38,7 +38,6 @@
         <intercept-url pattern="/callsummary/**" access="hasAnyRole('ADMIN','ANALYST','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
 
         <!-- Only analysts -->
-        <intercept-url pattern="/clinicvisits/appointmentCalendarReport.xls**" access="hasRole('ANALYST')" requires-channel="any"/>
         <intercept-url pattern="/analysisData/**" access="hasRole('ANALYST')" requires-channel="any"/>
 
         <!-- None -->

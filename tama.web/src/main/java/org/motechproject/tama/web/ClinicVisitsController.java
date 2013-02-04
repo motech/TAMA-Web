@@ -3,12 +3,10 @@ package org.motechproject.tama.web;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.motechproject.tama.clinicvisits.contract.AppointmentCalenderReport;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
-import org.motechproject.tama.clinicvisits.service.AppointmentCalenderReportService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientReport;
@@ -22,7 +20,6 @@ import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.model.IncompletePatientDataWarning;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
-import org.motechproject.tama.web.resportbuilder.AllAppointmentCalendarsBuilder;
 import org.motechproject.tama.web.resportbuilder.AppointmentCalendarBuilder;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.util.DateUtil;
@@ -59,7 +56,6 @@ public class ClinicVisitsController extends BaseController {
     private AllLabResults allLabResults;
     private AllTreatmentAdvices allTreatmentAdvices;
     private PatientService patientService;
-    private AppointmentCalenderReportService appointmentCalenderReportService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -73,8 +69,7 @@ public class ClinicVisitsController extends BaseController {
                                   VitalStatisticsController vitalStatisticsController,
                                   OpportunisticInfectionsController opportunisticInfectionsController,
                                   AllClinicVisits allClinicVisits,
-                                  PatientService patientService,
-                                  AppointmentCalenderReportService appointmentCalenderReportService) {
+                                  PatientService patientService) {
 
         this.treatmentAdviceController = treatmentAdviceController;
         this.allTreatmentAdvices = allTreatmentAdvices;
@@ -85,7 +80,6 @@ public class ClinicVisitsController extends BaseController {
         this.opportunisticInfectionsController = opportunisticInfectionsController;
         this.allClinicVisits = allClinicVisits;
         this.patientService = patientService;
-        this.appointmentCalenderReportService = appointmentCalenderReportService;
     }
 
     @RequestMapping(value = "/newVisit")
@@ -195,19 +189,6 @@ public class ClinicVisitsController extends BaseController {
             List<ClinicVisitUIModel> clinicVisitUIModels = allClinicVisits(patientDocId);
             PatientReport patientReport = patientService.getPatientReport(patientDocId);
             AppointmentCalendarBuilder appointmentCalendarBuilder = new AppointmentCalendarBuilder(clinicVisitUIModels, patientReport);
-            writeExcelToResponse(response, appointmentCalendarBuilder);
-        } catch (Exception e) {
-            logger.error("Error while generating excel report: " + e.getMessage());
-        }
-    }
-
-    @RequestMapping(value = "/appointmentCalendarReport.xls", method = RequestMethod.GET)
-    public void downloadAppointmentCalenderReport(@RequestParam(value = "patientId", required = true) String patientId, HttpServletResponse response) {
-        response.setHeader("Content-Disposition", "inline; filename=AppointmentCalendarReport.xls");
-        response.setContentType("application/vnd.ms-excel");
-        try {
-            AppointmentCalenderReport appointmentCalendarReport = appointmentCalenderReportService.appointmentCalendarReport(patientId);
-            AllAppointmentCalendarsBuilder appointmentCalendarBuilder = new AllAppointmentCalendarsBuilder(appointmentCalendarReport.getClinicVisits(), appointmentCalendarReport.getPatientReports());
             writeExcelToResponse(response, appointmentCalendarBuilder);
         } catch (Exception e) {
             logger.error("Error while generating excel report: " + e.getMessage());
