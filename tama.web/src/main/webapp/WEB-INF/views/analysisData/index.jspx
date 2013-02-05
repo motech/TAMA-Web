@@ -44,8 +44,8 @@
                     <label for="clinicName">Event Name</label>
                     <input type="text" name="eventName"/>
                 </div>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.startDate" id="c_org_motechproject_tama_patient_event_startDate" label="Starting From" required="true" />
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.endDate" id="c_org_motechproject_tama_patient_event_endDate" label="Till" required="true" />
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.startDate" id="c_org_motechproject_tama_patient_event_startDate" label="Starting From"/>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.endDate" id="c_org_motechproject_tama_patient_event_endDate" label="Till"/>
                 <div class="control-group">
                     <input type="submit" id="downloadPatientEventReport" value="Get Report"/>
                 </div>
@@ -58,14 +58,6 @@
                     var endDateObj = dijit.byId("_patientEventDateFilter.endDate_id");
                     setConstraintOnEndDate(startDateObj, endDateObj);
 
-                    dojo.connect(dojo.byId("downloadPatientEventReport"), "onclick", function(event){
-
-                        Spring.decorations['_patientEventDateFilter.startDate_id'][0].validate();
-                        Spring.decorations['_patientEventDateFilter.endDate_id'][0].validate();
-                        if (!(startDateObj.isValid() && endDateObj.isValid())){
-                            event.preventDefault();
-                        }
-                    });
                     dojo.connect(startDateObj, "onChange", function() {
                         setConstraintOnEndDate(startDateObj, endDateObj);
                     });
@@ -85,8 +77,8 @@
                     <label for="clinicName">Clinic Name</label>
                     <input type="text" name="clinicName"/>
                 </div>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.startDate" id="c_org_motechproject_tama_calllog_startDate" label="Starting From" required="true" />
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.endDate" id="c_org_motechproject_tama_calllog_endDate" label="Till" required="true" />
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.startDate" id="c_org_motechproject_tama_calllog_startDate" label="Starting From"/>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.endDate" id="c_org_motechproject_tama_calllog_endDate" label="Till"/>
                 <div class="control-group">
                     <input type="submit" id="downloadPatientReport" value="Get Report"/>
                 </div>
@@ -99,14 +91,6 @@
                     var endDateObj = dijit.byId("_patientDateFilter.endDate_id");
                     setConstraintOnEndDate(startDateObj, endDateObj);
 
-                    dojo.connect(dojo.byId("downloadPatientReport"), "onclick", function(event){
-
-                        Spring.decorations['_patientDateFilter.startDate_id'][0].validate();
-                        Spring.decorations['_patientDateFilter.endDate_id'][0].validate();
-                        if (!(startDateObj.isValid() && endDateObj.isValid())){
-                            event.preventDefault();
-                        }
-                    });
                     dojo.connect(startDateObj, "onChange", function() {
                         setConstraintOnEndDate(startDateObj, endDateObj);
                     });

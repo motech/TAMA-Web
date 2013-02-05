@@ -39,8 +39,12 @@ var closePanel = function(_panelWidgetArray) {
 }
 
 var setConstraintOnEndDate = function(startDateObj, endDateObj) {
-    if (startDateObj != undefined && endDateObj != undefined && startDateObj.value != null) {
-        endDateObj.constraints.min = startDateObj.value;
+    if (startDateObj != undefined && endDateObj != undefined) {
+        if(startDateObj.value != null){
+            endDateObj.constraints.min = startDateObj.value;
+        }else{
+            endDateObj.constraints.min = {};
+        }
     }
 }
 
