@@ -31,4 +31,12 @@ public class AllOutboxMessageSummaries {
         }
         return outboxMessageSummaries;
     }
+
+    public List<OutboxMessageSummary> findAll(List<String> patientDocIds, LocalDate start, LocalDate end) {
+        List<OutboxMessageSummary> outboxMessageSummaries = new ArrayList<>();
+        for (String patientDocId : patientDocIds) {
+            outboxMessageSummaries.addAll(find(patientDocId, start, end));
+        }
+        return outboxMessageSummaries;
+    }
 }

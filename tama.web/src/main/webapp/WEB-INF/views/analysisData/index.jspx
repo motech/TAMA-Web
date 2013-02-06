@@ -2,7 +2,7 @@
      xmlns:spring="http://www.springframework.org/tags"
      version="2.0"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" >
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
     <div class="reportsDownload">
         <spring:url value="/analysisData/appointmentCalendarReport.xls" var="download_appointment_calendar_url"/>
         <util:panel id="appointmentCalendarReportPane" title="Appointment Calendar report" openPane="true">
@@ -28,7 +28,47 @@
             </script>
         </util:panel>
     </div>
-        <div class="reportsDownload">
+    <div class="reportsDownload">
+        <spring:url value="/analysisData/outboxMessageReport.xls" var="download_outbox_report_url"/>
+        <util:panel id="outboxMessageReportPane" title="Outbox Message Report" openPane="true">
+            <form id="outboxMessageReportForm" action="${download_outbox_report_url}" method="GET">
+                <div class="control-group">
+                    <label for="patientId">Patient Id</label>
+                    <input id="outboxMessageReportPatientId" type="text" name="patientId"/>
+                </div>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="outboxMessageReportFilter.startDate"
+                                id="c_org_motechproject_tama_outbox_filter_startDate" label="Starting From" required="true"/>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="outboxMessageReportFilter.endDate"
+                                id="c_org_motechproject_tama_outbox_filter_endDate" label="Till" required="true"/>
+                <div class="control-group">
+                    <input type="submit" id="downloadOutboxMessageReport" value="Get Report"/>
+                </div>
+            </form>
+            <script type="text/javascript">
+                <![CDATA[
+                    dojo.addOnLoad(function() {
+                        var startDateObj = dijit.byId("_outboxMessageReportFilter.startDate_id");
+                        var endDateObj = dijit.byId("_outboxMessageReportFilter.endDate_id");
+                        setConstraintOnEndDate(startDateObj, endDateObj);
+                        Spring.addDecoration(new Spring.ElementDecoration({elementId : 'outboxMessageReportPatientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}));
+                        dojo.connect(dojo.byId("downloadOutboxMessageReport"), "onclick", function(event){
+                            event.preventDefault();
+                            Spring.decorations['outboxMessageReportPatientId'][0].validate();
+                            Spring.decorations['_outboxMessageReportFilter.startDate_id'][0].validate();
+                            Spring.decorations['_outboxMessageReportFilter.endDate_id'][0].validate();
+                            if(dijit.byId("outboxMessageReportPatientId").isValid() && startDateObj.isValid() && endDateObj.isValid()){
+                                dojo.byId('outboxMessageReportForm').submit();
+                            }
+                        });
+                        dojo.connect(startDateObj, "onChange", function() {
+                            setConstraintOnEndDate(startDateObj, endDateObj);
+                        });
+                     });
+                 ]]>
+            </script>
+        </util:panel>
+    </div>
+    <div class="reportsDownload">
         <spring:url value="/tama-reports/patientEvent/report" var="download_patient_event_url"/>
         <util:panel id="patientEventReportPane" title="History of Patient Events Report" openPane="true">
             <form id="patientEventReportForm" action="${download_patient_event_url}" method="GET">
@@ -44,8 +84,10 @@
                     <label for="clinicName">Event Name</label>
                     <input type="text" name="eventName"/>
                 </div>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.startDate" id="c_org_motechproject_tama_patient_event_startDate" label="Starting From"/>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.endDate" id="c_org_motechproject_tama_patient_event_endDate" label="Till"/>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.startDate"
+                                id="c_org_motechproject_tama_patient_event_startDate" label="Starting From"/>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.endDate"
+                                id="c_org_motechproject_tama_patient_event_endDate" label="Till"/>
                 <div class="control-group">
                     <input type="submit" id="downloadPatientEventReport" value="Get Report"/>
                 </div>
@@ -77,8 +119,10 @@
                     <label for="clinicName">Clinic Name</label>
                     <input type="text" name="clinicName"/>
                 </div>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.startDate" id="c_org_motechproject_tama_calllog_startDate" label="Starting From"/>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.endDate" id="c_org_motechproject_tama_calllog_endDate" label="Till"/>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.startDate"
+                                id="c_org_motechproject_tama_calllog_startDate" label="Starting From"/>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.endDate"
+                                id="c_org_motechproject_tama_calllog_endDate" label="Till"/>
                 <div class="control-group">
                     <input type="submit" id="downloadPatientReport" value="Get Report"/>
                 </div>

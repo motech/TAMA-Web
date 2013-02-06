@@ -25,17 +25,35 @@ public class OutboxMessageSummaryBuilder {
     }
 
     public List<OutboxMessageSummary> build(OutboxMessageLog log) {
-        List<OutboxMessageSummary> outboxMessageSummaries = new ArrayList<OutboxMessageSummary>();
-        final List<OutboxMessageLog.PlayedLog> playedLogs = log.getPlayedLogs();
+        List<OutboxMessageLog.PlayedLog> playedLogs = log.getPlayedLogs();
         if (playedLogs.size() == 0) {
-            outboxMessageSummaries.add(new OutboxMessageSummary(log.getCreatedOn(), log.getTypeName()));
+            return emptySummary(log);
+        } else {
+            return summaryPerPlayedLog(log, playedLogs);
         }
+    }
+
+    private List<OutboxMessageSummary> summaryPerPlayedLog(OutboxMessageLog log, List<OutboxMessageLog.PlayedLog> playedLogs) {
+        List<OutboxMessageSummary> outboxMessageSummaries = new ArrayList<>();
         for (OutboxMessageLog.PlayedLog playedLog : playedLogs) {
-            OutboxMessageSummary outboxMessageSummary = new OutboxMessageSummary(log.getCreatedOn(), log.getTypeName());
-            outboxMessageSummary.playedOn(playedLog.getDate(), getPlayedFilesAsString(playedLog));
-            outboxMessageSummaries.add(outboxMessageSummary);
+            OutboxMessageSummary summary = summary(log);
+            summary.playedOn(playedLog.getDate(), getPlayedFilesAsString(playedLog));
+            outboxMessageSummaries.add(summary);
         }
         return outboxMessageSummaries;
+    }
+
+    private List<OutboxMessageSummary> emptySummary(OutboxMessageLog log) {
+        List<OutboxMessageSummary> outboxMessageSummaries = new ArrayList<>();
+        OutboxMessageSummary summary = summary(log);
+        outboxMessageSummaries.add(summary);
+        return outboxMessageSummaries;
+    }
+
+    private OutboxMessageSummary summary(OutboxMessageLog log) {
+        OutboxMessageSummary summary = new OutboxMessageSummary(log.getCreatedOn(), log.getTypeName());
+        summary.setPatientDocId(log.getPatientDocId());
+        return summary;
     }
 
     private String getPlayedFilesAsString(OutboxMessageLog.PlayedLog playedLogs) {
@@ -52,5 +70,4 @@ public class OutboxMessageSummaryBuilder {
         }
         return StringUtils.join(messages.toArray());
     }
-
 }

@@ -3,10 +3,14 @@ package org.motechproject.tama.web;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.motechproject.tama.clinicvisits.contract.AppointmentCalenderReport;
 import org.motechproject.tama.clinicvisits.service.AppointmentCalenderReportService;
+import org.motechproject.tama.outbox.contract.OutboxMessageReport;
+import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
+import org.motechproject.tama.web.model.AnalystOutboxReportFilter;
 import org.motechproject.tama.web.model.DateFilter;
 import org.motechproject.tama.web.model.PatientIDFilter;
 import org.motechproject.tama.web.resportbuilder.AllAppointmentCalendarsBuilder;
+import org.motechproject.tama.web.resportbuilder.AllOutboxReportsBuilder;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,14 +32,16 @@ public class AnalysisDataController extends BaseController {
     private CallSummaryController callSummaryController;
     private ReportingProperties reportingProperties;
     private AppointmentCalenderReportService appointmentCalenderReportService;
+    private OutboxMessageReportService outboxMessageReportService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public AnalysisDataController(CallSummaryController callSummaryController, ReportingProperties reportingProperties, AppointmentCalenderReportService appointmentCalenderReportService) {
+    public AnalysisDataController(CallSummaryController callSummaryController, ReportingProperties reportingProperties, AppointmentCalenderReportService appointmentCalenderReportService, OutboxMessageReportService outboxMessageReportService) {
         this.callSummaryController = callSummaryController;
         this.reportingProperties = reportingProperties;
         this.appointmentCalenderReportService = appointmentCalenderReportService;
+        this.outboxMessageReportService = outboxMessageReportService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -43,6 +49,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("patientIdFilter", new PatientIDFilter());
         uiModel.addAttribute("patientDateFilter", new DateFilter());
         uiModel.addAttribute("patientEventDateFilter", new DateFilter());
+        uiModel.addAttribute("outboxMessageReportFilter", new AnalystOutboxReportFilter());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
         callSummaryController.filterLogs(uiModel);
         return "analysisData/show";
@@ -50,18 +57,30 @@ public class AnalysisDataController extends BaseController {
 
     @RequestMapping(value = "/appointmentCalendarReport.xls", method = RequestMethod.GET)
     public void downloadAppointmentCalenderReport(@RequestParam(value = "patientId", required = true) String patientId, HttpServletResponse response) {
-        response.setHeader("Content-Disposition", "inline; filename=AppointmentCalendarReport.xls");
-        response.setContentType("application/vnd.ms-excel");
+        AppointmentCalenderReport appointmentCalendarReport = appointmentCalenderReportService.appointmentCalendarReport(patientId);
+        AllAppointmentCalendarsBuilder appointmentCalendarBuilder = new AllAppointmentCalendarsBuilder(appointmentCalendarReport.getClinicVisits(), appointmentCalendarReport.getPatientReports());
         try {
-            AppointmentCalenderReport appointmentCalendarReport = appointmentCalenderReportService.appointmentCalendarReport(patientId);
-            AllAppointmentCalendarsBuilder appointmentCalendarBuilder = new AllAppointmentCalendarsBuilder(appointmentCalendarReport.getClinicVisits(), appointmentCalendarReport.getPatientReports());
-            writeExcelToResponse(response, appointmentCalendarBuilder);
+            writeExcelToResponse(response, appointmentCalendarBuilder, "AppointmentCalendarReport");
         } catch (Exception e) {
             logger.error("Error while generating excel report: " + e.getMessage());
         }
     }
 
-    private void writeExcelToResponse(HttpServletResponse response, InMemoryReportBuilder appointmentCalendarBuilder) throws IOException {
+    @RequestMapping(value = "/outboxMessageReport.xls", method = RequestMethod.GET)
+    public void downloadOutboxMessageReport(AnalystOutboxReportFilter filter, HttpServletResponse response) {
+        OutboxMessageReport outboxMessageReport = outboxMessageReportService.reports(filter.getPatientId(), filter.getStartDate(), filter.getEndDate());
+        AllOutboxReportsBuilder allOutboxReportsBuilder = new AllOutboxReportsBuilder(outboxMessageReport.getOutboxMessageSummaries(), outboxMessageReport.getPatientReports());
+        try {
+            writeExcelToResponse(response, allOutboxReportsBuilder, "OutboxSummaryReport");
+        } catch (Exception e) {
+            logger.error("Error while generating excel report: " + e.getMessage());
+        }
+    }
+
+    private void writeExcelToResponse(HttpServletResponse response, InMemoryReportBuilder appointmentCalendarBuilder, String appointmentCalendarReport) throws IOException {
+        response.setHeader("Content-Disposition", "inline; filename=" + appointmentCalendarReport + ".xls");
+        response.setContentType("application/vnd.ms-excel");
+
         ServletOutputStream outputStream = response.getOutputStream();
         HSSFWorkbook excelWorkbook = appointmentCalendarBuilder.getExcelWorkbook();
         excelWorkbook.write(outputStream);

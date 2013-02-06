@@ -13,6 +13,13 @@ public class PatientReport {
     private TreatmentAdvice currentTreatmentAdvice;
     private Regimen currentRegimen;
 
+    private PatientReport() {
+        patient = null;
+        earliestTreatmentAdvice = null;
+        currentTreatmentAdvice = null;
+        currentRegimen = null;
+    }
+
     public PatientReport(Patient patient, TreatmentAdvice earliestTreatmentAdvice, TreatmentAdvice currentTreatmentAdvice, Regimen currentRegimen) {
         this.patient = patient;
         this.earliestTreatmentAdvice = earliestTreatmentAdvice;
@@ -29,15 +36,15 @@ public class PatientReport {
     }
 
     public String getPatientId() {
-        return patient.getPatientId();
+        return (null == patient) ? "" : patient.getPatientId();
     }
 
     public String getPatientDocId() {
-        return patient.getId();
+        return (null == patient) ? "" : patient.getId();
     }
 
     public String getClinicName() {
-        return patient.getClinic().getName();
+        return (null == patient) ? "" : patient.getClinic().getName();
     }
 
     public Date getARTStartedOn() {
@@ -50,5 +57,9 @@ public class PatientReport {
 
     public Date getCurrentRegimenStartDate() {
         return currentTreatmentAdvice != null ? currentTreatmentAdvice.getStartDate() : null;
+    }
+
+    public static PatientReport nullPatientReport() {
+        return new PatientReport();
     }
 }

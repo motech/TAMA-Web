@@ -37,7 +37,7 @@ public class OutboxMessageSummaryBuilderTest {
         OutboxMessageLog log = new OutboxMessageLog("patientDocId", "id", createdOn, "type");
         List<OutboxMessageSummary> summaries = outboxMessageSummaryBuilder.build(log);
         assertEquals(1, summaries.size());
-        assertSummary(summaries.get(0), "2011-10-10", "type", null, null);
+        assertSummary(summaries.get(0), "2011-10-10", "type", null, null, "patientDocId");
     }
 
     @Test
@@ -49,8 +49,8 @@ public class OutboxMessageSummaryBuilderTest {
         log.playedOn(createdOn.plusDays(2), Arrays.asList("file2", "100"));
         List<OutboxMessageSummary> summaries = outboxMessageSummaryBuilder.build(log);
         assertEquals(2, summaries.size());
-        assertSummary(summaries.get(0), "2011-10-10", "type", "2011-10-11 10:00:00", " FILE_ONE FILE_TWO");
-        assertSummary(summaries.get(1), "2011-10-10", "type", "2011-10-12 10:00:00", " FILE_TWO 100");
+        assertSummary(summaries.get(0), "2011-10-10", "type", "2011-10-11 10:00:00", " FILE_ONE FILE_TWO", "patientDocId");
+        assertSummary(summaries.get(1), "2011-10-10", "type", "2011-10-12 10:00:00", " FILE_TWO 100", "patientDocId");
     }
 
     @Test
@@ -69,14 +69,15 @@ public class OutboxMessageSummaryBuilderTest {
 
         List<OutboxMessageSummary> summaries = outboxMessageSummaryBuilder.build(log);
         assertEquals(1, summaries.size());
-        assertSummary(summaries.get(0), "2011-10-10", "type", "2011-10-11 10:00:00", " a 123 b");
+        assertSummary(summaries.get(0), "2011-10-10", "type", "2011-10-11 10:00:00", " a 123 b", "patientDocId");
     }
 
-    private void assertSummary(OutboxMessageSummary summary, String createdOn, String type, String playedOn, String playedFiles) {
+    private void assertSummary(OutboxMessageSummary summary, String createdOn, String type, String playedOn, String playedFiles, String patientDocId) {
         assertEquals(createdOn, summary.getCreatedOn());
         assertEquals(type, summary.getTypeName());
         assertEquals(playedOn, summary.getPlayedOn());
         assertEquals(playedFiles, summary.getPlayedFiles());
+        assertEquals(patientDocId, summary.getPatientDocId());
     }
 
 }
