@@ -2,7 +2,13 @@
      xmlns:spring="http://www.springframework.org/tags"
      version="2.0"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <c:if test="${warning != null}">
+        <div class="warning">
+            <c:out value="${warning}"/>
+        </div>
+    </c:if>
     <div class="reportsDownload">
         <spring:url value="/analysisData/appointmentCalendarReport.xls" var="download_appointment_calendar_url"/>
         <util:panel id="appointmentCalendarReportPane" title="Appointment Calendar report" openPane="true">
@@ -37,7 +43,8 @@
                     <input id="outboxMessageReportPatientId" type="text" name="patientId"/>
                 </div>
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="outboxMessageReportFilter.startDate"
-                                id="c_org_motechproject_tama_outbox_filter_startDate" label="Starting From" required="true"/>
+                                id="c_org_motechproject_tama_outbox_filter_startDate" label="Starting From"
+                                required="true"/>
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="outboxMessageReportFilter.endDate"
                                 id="c_org_motechproject_tama_outbox_filter_endDate" label="Till" required="true"/>
                 <div class="control-group">

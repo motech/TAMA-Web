@@ -67,7 +67,10 @@ public class AnalysisDataController extends BaseController {
     }
 
     @RequestMapping(value = "/outboxMessageReport.xls", method = RequestMethod.GET)
-    public void downloadOutboxMessageReport(AnalystOutboxReportFilter filter, HttpServletResponse response) {
+    public String downloadOutboxMessageReport(AnalystOutboxReportFilter filter, Model uiModel,HttpServletResponse response) {
+        if (filter.isMoreThanOneMonth()) {
+            return error(uiModel);
+        }
         OutboxMessageReport outboxMessageReport = outboxMessageReportService.reports(filter.getPatientId(), filter.getStartDate(), filter.getEndDate());
         AllOutboxReportsBuilder allOutboxReportsBuilder = new AllOutboxReportsBuilder(outboxMessageReport.getOutboxMessageSummaries(), outboxMessageReport.getPatientReports());
         try {
@@ -75,6 +78,13 @@ public class AnalysisDataController extends BaseController {
         } catch (Exception e) {
             logger.error("Error while generating excel report: " + e.getMessage());
         }
+        return null;
+    }
+
+    private String error(Model uiModel) {
+        String view = show(uiModel);
+        uiModel.addAttribute("warning", "There is too much data. Please narrow your search");
+        return view;
     }
 
     private void writeExcelToResponse(HttpServletResponse response, InMemoryReportBuilder appointmentCalendarBuilder, String appointmentCalendarReport) throws IOException {

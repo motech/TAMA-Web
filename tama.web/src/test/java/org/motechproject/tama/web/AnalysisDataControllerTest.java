@@ -68,6 +68,18 @@ public class AnalysisDataControllerTest {
     }
 
     @Test
+    public void shouldAddWarningMessageOnError() {
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        AnalystOutboxReportFilter filter = mock(AnalystOutboxReportFilter.class);
+        when(filter.isMoreThanOneMonth()).thenReturn(true);
+
+        String view = analysisDataController.downloadOutboxMessageReport(filter, model, response);
+        verify(model).addAttribute(eq("warning"), anyString());
+        assertEquals("analysisData/show", view);
+    }
+
+    @Test
     public void shouldDownloadOutboxReportGivenPatientId() throws IOException {
         LocalDate startDate = DateUtil.today().minusDays(3);
         LocalDate endDate = DateUtil.today();
@@ -81,7 +93,7 @@ public class AnalysisDataControllerTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(outboxMessageReportService.reports(patientId, startDate, endDate)).thenReturn(new OutboxMessageReport(null, null));
 
-        analysisDataController.downloadOutboxMessageReport(filter, response);
+        analysisDataController.downloadOutboxMessageReport(filter, model, response);
         verify(response).setContentType("application/vnd.ms-excel");
         verify(response).setHeader("Content-Disposition", "inline; filename=OutboxSummaryReport.xls");
     }
