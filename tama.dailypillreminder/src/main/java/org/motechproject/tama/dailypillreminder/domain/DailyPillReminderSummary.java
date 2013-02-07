@@ -1,9 +1,11 @@
 package org.motechproject.tama.dailypillreminder.domain;
 
+import lombok.EqualsAndHashCode;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.motechproject.model.Time;
 
+@EqualsAndHashCode
 public class DailyPillReminderSummary {
 
     private LocalDate date;
@@ -11,16 +13,17 @@ public class DailyPillReminderSummary {
     private DosageStatus morningDoseStatus;
     private String eveningDoseTime;
     private DosageStatus eveningDoseStatus;
-    private final Time NOON_TIME = new Time(12, 0);
+    private Time NOON_TIME = new Time(12, 0);
+    private String patientDocId;
 
     public DailyPillReminderSummary(DosageAdherenceLogPerDay dosageAdherenceLogPerDay) {
         this.date = dosageAdherenceLogPerDay.getDate();
+        this.patientDocId = dosageAdherenceLogPerDay.getPatientDocId();
         for (DosageAdherenceLogSummary dosageAdherenceLogSummary : dosageAdherenceLogPerDay.getLogs()) {
             if (dosageAdherenceLogSummary.getDosageTime().ge(NOON_TIME)) {
                 setEveningDoseTime(dosageAdherenceLogSummary.getDosageTime());
                 setEveningDoseStatus(dosageAdherenceLogSummary.getDosageStatus());
-            }
-            else {
+            } else {
                 setMorningDoseTime(dosageAdherenceLogSummary.getDosageTime());
                 setMorningDoseStatus(dosageAdherenceLogSummary.getDosageStatus());
             }
@@ -45,7 +48,8 @@ public class DailyPillReminderSummary {
     }
 
     private String getStatusString(DosageStatus status) {
-        if (status.equals(DosageStatus.WILL_TAKE_LATER) || status.equals(DosageStatus.NOT_RECORDED)) return "NOT_REPORTED";
+        if (status.equals(DosageStatus.WILL_TAKE_LATER) || status.equals(DosageStatus.NOT_RECORDED))
+            return "NOT_REPORTED";
         return status.toString();
     }
 
@@ -74,5 +78,13 @@ public class DailyPillReminderSummary {
 
     private String getTimeAsString(Time time) {
         return new LocalTime(time.getHour(), time.getMinute()).toString("hh:mm");
+    }
+
+    public void setPatientDocId(String patientDocId) {
+        this.patientDocId = patientDocId;
+    }
+
+    public String getPatientDocId() {
+        return patientDocId;
     }
 }

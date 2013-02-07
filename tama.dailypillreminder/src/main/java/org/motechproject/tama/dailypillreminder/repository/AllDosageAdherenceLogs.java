@@ -8,13 +8,15 @@ import org.ektorp.support.View;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.domain.AdherenceSummaryForAWeek;
 import org.motechproject.tama.common.repository.AbstractCouchRepository;
-import org.motechproject.tama.dailypillreminder.domain.*;
+import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLog;
+import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLogPerDay;
+import org.motechproject.tama.dailypillreminder.domain.DosageAdherenceLogSummary;
+import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.tama.dailypillreminder.mapper.DosageAdherenceLogPerDayMapper;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -68,7 +70,7 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return singleResult(adherenceLogs);
     }
 
-    @View(name="getPillsTakenAndTotalCountPerWeek_v1", file = "doseTakenSummaryPerWeekMapReduce.json")
+    @View(name = "getPillsTakenAndTotalCountPerWeek_v1", file = "doseTakenSummaryPerWeekMapReduce.json")
     public List<AdherenceSummaryForAWeek> getDoseTakenSummaryPerWeek(String patientDocId) {
         final ComplexKey startKey = ComplexKey.of(patientDocId);
         final ComplexKey endKey = ComplexKey.of(patientDocId, ComplexKey.emptyObject());
@@ -76,11 +78,11 @@ public class AllDosageAdherenceLogs extends AbstractCouchRepository<DosageAdhere
         return db.queryView(q, AdherenceSummaryForAWeek.class);
     }
 
-    @View(name="find_all_logs_by_patient_id_per_day_v1", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.patientId && doc.dosageDate) {emit([doc.patientId, doc.dosageDate], {dosageDate: doc.dosageDate, dosageStatus: doc.dosageStatus, dosageTime: doc.dosageTime});}}")
+    @View(name = "find_all_logs_by_patient_id_per_day_v1", map = "function(doc) {if (doc.documentType =='DosageAdherenceLog' && doc.patientId && doc.dosageDate) {emit([doc.patientId, doc.dosageDate], {dosageDate: doc.dosageDate, dosageStatus: doc.dosageStatus, dosageTime: doc.dosageTime});}}")
     public List<DosageAdherenceLogPerDay> getLogsPerDay(String patientDocId, LocalDate startDate, LocalDate endDate) {
         final ComplexKey startKey = ComplexKey.of(patientDocId, startDate);
         final ComplexKey endKey = ComplexKey.of(patientDocId, endDate);
         ViewQuery q = createQuery("find_all_logs_by_patient_id_per_day_v1").startKey(startKey).endKey(endKey);
-        return new DosageAdherenceLogPerDayMapper().map(db.queryView(q, DosageAdherenceLogSummary.class));
+        return new DosageAdherenceLogPerDayMapper().map(patientDocId, db.queryView(q, DosageAdherenceLogSummary.class));
     }
 }

@@ -11,7 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Data
-public class AnalystOutboxReportFilter {
+public class FilterWithPatientIDAndDateRange {
 
     private String patientId;
     @Temporal(TemporalType.DATE)
@@ -21,7 +21,7 @@ public class AnalystOutboxReportFilter {
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private LocalDate endDate;
 
-    public AnalystOutboxReportFilter() {
+    public FilterWithPatientIDAndDateRange() {
         startDate = DateUtil.today();
         endDate = startDate;
     }

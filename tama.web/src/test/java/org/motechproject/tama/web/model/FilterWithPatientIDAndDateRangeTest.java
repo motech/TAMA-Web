@@ -8,14 +8,14 @@ import org.motechproject.util.DateUtil;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
-public class AnalystOutboxReportFilterTest {
+public class FilterWithPatientIDAndDateRangeTest {
 
     @Test
     public void testFilterIsGreaterThanOneMonth() {
         LocalDate startDate = DateUtil.today();
         LocalDate endDate = startDate.plusDays(31);
 
-        AnalystOutboxReportFilter filter = new AnalystOutboxReportFilter();
+        FilterWithPatientIDAndDateRange filter = new FilterWithPatientIDAndDateRange();
         filter.setStartDate(startDate);
         filter.setEndDate(endDate);
 
@@ -27,7 +27,7 @@ public class AnalystOutboxReportFilterTest {
         LocalDate startDate = DateUtil.today();
         LocalDate endDate = startDate.plusDays(30);
 
-        AnalystOutboxReportFilter filter = new AnalystOutboxReportFilter();
+        FilterWithPatientIDAndDateRange filter = new FilterWithPatientIDAndDateRange();
         filter.setStartDate(startDate);
         filter.setEndDate(endDate);
 

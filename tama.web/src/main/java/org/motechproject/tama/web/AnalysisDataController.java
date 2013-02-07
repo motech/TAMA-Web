@@ -3,13 +3,16 @@ package org.motechproject.tama.web;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.motechproject.tama.clinicvisits.contract.AppointmentCalenderReport;
 import org.motechproject.tama.clinicvisits.service.AppointmentCalenderReportService;
+import org.motechproject.tama.dailypillreminder.contract.DailyPillReminderReport;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
-import org.motechproject.tama.web.model.AnalystOutboxReportFilter;
+import org.motechproject.tama.web.model.FilterWithPatientIDAndDateRange;
 import org.motechproject.tama.web.model.DateFilter;
 import org.motechproject.tama.web.model.PatientIDFilter;
 import org.motechproject.tama.web.resportbuilder.AllAppointmentCalendarsBuilder;
+import org.motechproject.tama.web.resportbuilder.AllDailyPillReminderReportsBuilder;
 import org.motechproject.tama.web.resportbuilder.AllOutboxReportsBuilder;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.slf4j.Logger;
@@ -33,15 +36,17 @@ public class AnalysisDataController extends BaseController {
     private ReportingProperties reportingProperties;
     private AppointmentCalenderReportService appointmentCalenderReportService;
     private OutboxMessageReportService outboxMessageReportService;
+    private DailyPillReminderReportService dailyPillReminderReportService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public AnalysisDataController(CallSummaryController callSummaryController, ReportingProperties reportingProperties, AppointmentCalenderReportService appointmentCalenderReportService, OutboxMessageReportService outboxMessageReportService) {
+    public AnalysisDataController(CallSummaryController callSummaryController, ReportingProperties reportingProperties, AppointmentCalenderReportService appointmentCalenderReportService, OutboxMessageReportService outboxMessageReportService, DailyPillReminderReportService dailyPillReminderReportService) {
         this.callSummaryController = callSummaryController;
         this.reportingProperties = reportingProperties;
         this.appointmentCalenderReportService = appointmentCalenderReportService;
         this.outboxMessageReportService = outboxMessageReportService;
+        this.dailyPillReminderReportService = dailyPillReminderReportService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -49,7 +54,8 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("patientIdFilter", new PatientIDFilter());
         uiModel.addAttribute("patientDateFilter", new DateFilter());
         uiModel.addAttribute("patientEventDateFilter", new DateFilter());
-        uiModel.addAttribute("outboxMessageReportFilter", new AnalystOutboxReportFilter());
+        uiModel.addAttribute("outboxMessageReportFilter", new FilterWithPatientIDAndDateRange());
+        uiModel.addAttribute("dosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
         callSummaryController.filterLogs(uiModel);
         return "analysisData/show";
@@ -67,7 +73,7 @@ public class AnalysisDataController extends BaseController {
     }
 
     @RequestMapping(value = "/outboxMessageReport.xls", method = RequestMethod.GET)
-    public String downloadOutboxMessageReport(AnalystOutboxReportFilter filter, Model uiModel,HttpServletResponse response) {
+    public String downloadOutboxMessageReport(FilterWithPatientIDAndDateRange filter, Model uiModel, HttpServletResponse response) {
         if (filter.isMoreThanOneMonth()) {
             return error(uiModel);
         }
@@ -75,6 +81,21 @@ public class AnalysisDataController extends BaseController {
         AllOutboxReportsBuilder allOutboxReportsBuilder = new AllOutboxReportsBuilder(outboxMessageReport.getOutboxMessageSummaries(), outboxMessageReport.getPatientReports());
         try {
             writeExcelToResponse(response, allOutboxReportsBuilder, "OutboxSummaryReport");
+        } catch (Exception e) {
+            logger.error("Error while generating excel report: " + e.getMessage());
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "/dailyPillReminderReport.xls", method = RequestMethod.GET)
+    public String downloadDailyPillReminderReport(FilterWithPatientIDAndDateRange filter, Model uiModel, HttpServletResponse response) {
+        if (filter.isMoreThanOneMonth()) {
+            return error(uiModel);
+        }
+        DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(filter.getPatientId(), filter.getStartDate(), filter.getEndDate());
+        AllDailyPillReminderReportsBuilder allDailyPillReminderReportsBuilder = new AllDailyPillReminderReportsBuilder(dailyPillReminderReport.getDailyPillReminderSummaries(), dailyPillReminderReport.getPatientReports());
+        try {
+            writeExcelToResponse(response, allDailyPillReminderReportsBuilder, "DailyPillReminderReport");
         } catch (Exception e) {
             logger.error("Error while generating excel report: " + e.getMessage());
         }

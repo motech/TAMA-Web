@@ -8,6 +8,7 @@ public class DosageAdherenceLogPerDay implements Comparable<DosageAdherenceLogPe
 
     List<DosageAdherenceLogSummary> logs;
     LocalDate date;
+    private String patientDocId;
 
     public DosageAdherenceLogPerDay setLogs(List<DosageAdherenceLogSummary> dosageAdherenceLogSummaries) {
         this.logs = dosageAdherenceLogSummaries;
@@ -25,6 +26,15 @@ public class DosageAdherenceLogPerDay implements Comparable<DosageAdherenceLogPe
 
     public LocalDate getDate() {
         return date;
+    }
+
+    public DosageAdherenceLogPerDay setPatientDocId(String patientDocId) {
+        this.patientDocId = patientDocId;
+        return this;
+    }
+
+    public String getPatientDocId() {
+        return patientDocId;
     }
 
     @Override

@@ -7,10 +7,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.contract.AppointmentCalenderReport;
 import org.motechproject.tama.clinicvisits.service.AppointmentCalenderReportService;
+import org.motechproject.tama.dailypillreminder.contract.DailyPillReminderReport;
+import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
-import org.motechproject.tama.web.model.AnalystOutboxReportFilter;
+import org.motechproject.tama.web.model.FilterWithPatientIDAndDateRange;
 import org.motechproject.util.DateUtil;
 import org.springframework.ui.Model;
 
@@ -33,13 +35,15 @@ public class AnalysisDataControllerTest {
     private AppointmentCalenderReportService appointmentCalenderReportService;
     @Mock
     private OutboxMessageReportService outboxMessageReportService;
+    @Mock
+    private DailyPillReminderReportService dailyPillReminderReportService;
 
     private AnalysisDataController analysisDataController;
 
     @Before
     public void setup() {
         initMocks(this);
-        analysisDataController = new AnalysisDataController(callSummaryController, reportingProperties, appointmentCalenderReportService, outboxMessageReportService);
+        analysisDataController = new AnalysisDataController(callSummaryController, reportingProperties, appointmentCalenderReportService, outboxMessageReportService, dailyPillReminderReportService);
     }
 
     @Test
@@ -64,17 +68,29 @@ public class AnalysisDataControllerTest {
     public void shouldAddOutboxFilterModel() {
         when(reportingProperties.reportingURL()).thenReturn("url");
         assertEquals("analysisData/show", analysisDataController.show(model));
-        verify(model).addAttribute(eq("outboxMessageReportFilter"), any(AnalystOutboxReportFilter.class));
+        verify(model).addAttribute(eq("outboxMessageReportFilter"), any(FilterWithPatientIDAndDateRange.class));
     }
 
     @Test
-    public void shouldAddWarningMessageOnError() {
+    public void shouldAddWarningMessageOnErrorForOutboxReport() {
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        AnalystOutboxReportFilter filter = mock(AnalystOutboxReportFilter.class);
+        FilterWithPatientIDAndDateRange filter = mock(FilterWithPatientIDAndDateRange.class);
         when(filter.isMoreThanOneMonth()).thenReturn(true);
 
         String view = analysisDataController.downloadOutboxMessageReport(filter, model, response);
+        verify(model).addAttribute(eq("warning"), anyString());
+        assertEquals("analysisData/show", view);
+    }
+
+    @Test
+    public void shouldAddWarningMessageOnErrorForDailyPillReminderReport() {
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        FilterWithPatientIDAndDateRange filter = mock(FilterWithPatientIDAndDateRange.class);
+        when(filter.isMoreThanOneMonth()).thenReturn(true);
+
+        String view = analysisDataController.downloadDailyPillReminderReport(filter, model, response);
         verify(model).addAttribute(eq("warning"), anyString());
         assertEquals("analysisData/show", view);
     }
@@ -85,7 +101,7 @@ public class AnalysisDataControllerTest {
         LocalDate endDate = DateUtil.today();
         String patientId = "patientDocId";
 
-        AnalystOutboxReportFilter filter = new AnalystOutboxReportFilter();
+        FilterWithPatientIDAndDateRange filter = new FilterWithPatientIDAndDateRange();
         filter.setPatientId(patientId);
         filter.setStartDate(startDate);
         filter.setEndDate(endDate);
@@ -96,5 +112,24 @@ public class AnalysisDataControllerTest {
         analysisDataController.downloadOutboxMessageReport(filter, model, response);
         verify(response).setContentType("application/vnd.ms-excel");
         verify(response).setHeader("Content-Disposition", "inline; filename=OutboxSummaryReport.xls");
+    }
+
+    @Test
+    public void shouldDownloadDailyPillReminderReportGivenPatientId() throws IOException {
+        LocalDate startDate = DateUtil.today().minusDays(3);
+        LocalDate endDate = DateUtil.today();
+        String patientId = "patientDocId";
+
+        FilterWithPatientIDAndDateRange filter = new FilterWithPatientIDAndDateRange();
+        filter.setPatientId(patientId);
+        filter.setStartDate(startDate);
+        filter.setEndDate(endDate);
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        when(dailyPillReminderReportService.reports(patientId, startDate, endDate)).thenReturn(new DailyPillReminderReport(null,null));
+
+        analysisDataController.downloadDailyPillReminderReport(filter, model, response);
+        verify(response).setContentType("application/vnd.ms-excel");
+        verify(response).setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
     }
 }
