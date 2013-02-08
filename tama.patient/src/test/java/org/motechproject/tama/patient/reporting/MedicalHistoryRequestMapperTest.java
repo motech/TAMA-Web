@@ -84,4 +84,12 @@ public class MedicalHistoryRequestMapperTest {
 
         assertEquals(patient.getPatientId(), medicalHistoryMapper.map(patient).getPatientId());
     }
+
+    @Test
+    public void shouldSetPatientDocumentId() {
+        MedicalHistory medicalHistory = MedicalHistoryBuilder.startRecording().withDefaults().build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withMedicalHistory(medicalHistory).build();
+
+        assertEquals(patient.getId(), medicalHistoryMapper.map(patient).getPatientDoucmentId());
+    }
 }
