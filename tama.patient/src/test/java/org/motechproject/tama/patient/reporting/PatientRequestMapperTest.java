@@ -41,7 +41,7 @@ public class PatientRequestMapperTest {
 
     private void setupIvrLanguage() {
         ivrLanguage = new IVRLanguage("ivrLanguageId");
-        ivrLanguage.setCode("ivrLanguageCode");
+        ivrLanguage.setName("ivrLanguageName");
     }
 
     @Test
@@ -53,11 +53,11 @@ public class PatientRequestMapperTest {
         PatientRequest patientRequest = mapper.map(patient);
 
         assertEquals(new BasicDetails(patient), new BasicDetails(patientRequest));
-        assertEquals("ivrLanguageCode", patientRequest.getIvrLanguage());
+        assertEquals("ivrLanguageName", patientRequest.getIvrLanguage());
     }
 
     @Test
-    public void shouldSetIVRLanguageCodeOnPatientRequest() {
+    public void shouldSetIVRLanguageNameOnPatientRequest() {
         Patient patient = PatientBuilder.startRecording().withDefaults().build();
 
         when(gendersCache.getBy(patient.getGenderId())).thenReturn(gender);
@@ -73,6 +73,6 @@ public class PatientRequestMapperTest {
         when(gendersCache.getBy(patient.getGenderId())).thenReturn(gender);
         when(ivrLanguagesCache.getBy(patient.getPatientPreferences().getIvrLanguageId())).thenReturn(ivrLanguage);
         PatientRequest patientRequest = mapper.map(patient);
-        assertEquals(new IVRDetails(patient, ivrLanguage.getCode(), gender.getType()), new IVRDetails(patientRequest));
+        assertEquals(new IVRDetails(patient, ivrLanguage.getName(), gender.getType()), new IVRDetails(patientRequest));
     }
 }

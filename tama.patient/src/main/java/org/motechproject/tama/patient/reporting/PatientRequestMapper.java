@@ -32,7 +32,7 @@ public class PatientRequestMapper {
     }
 
     private String getIVRLanguageCode(IVRLanguage language) {
-        return null == language ? "" : language.getCode();
+        return null == language ? "" : language.getName();
     }
 
     private String getGenderString(Gender gender) {
