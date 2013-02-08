@@ -16,7 +16,6 @@
             <field:select field="callType" id="callLogType" items="${callTypes}" path="/callType" required="true" label="Call Type"/>
             <form:hidden path="pageNumber" ></form:hidden>
             <span class="submit" id="showLogs">
-                <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'nextToShowLogs', event:'onclick'}));</script>
                 <input id="nextToShowLogs" type="submit" value="Get Logs"/>
             </span>
         </form:form>
@@ -27,13 +26,16 @@
             dojo.addOnLoad(function() {
                 callLogStartDateObj = dijit.byId("_callLogStartDate_id");
                 callLogEndDateObj = dijit.byId("_callLogEndDate_id");
+                var callType = dijit.byId("_callType_id");
                 setConstraintOnEndDate(callLogStartDateObj, callLogEndDateObj);
+
 
                 dojo.connect(dojo.byId("nextToShowLogs"), "onclick", function(event){
                     Spring.decorations['_callLogStartDate_id'][0].validate();
                     Spring.decorations['_callLogEndDate_id'][0].validate();
 
-                    if (!(callLogStartDateObj.isValid() && callLogEndDateObj.isValid())){
+                    if (!(callType.isValid() && callLogStartDateObj.isValid() && callLogEndDateObj.isValid())){
+                        callType.validate();
                         event.preventDefault();
                     }
                 });
