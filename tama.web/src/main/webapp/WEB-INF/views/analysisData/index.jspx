@@ -118,7 +118,7 @@
         </util:panel>
     </div>
     <div class="reportsDownload">
-        <spring:url value="/tama-reports/patientEvent/report" var="download_patient_event_url"/>
+        <spring:url value="/analysisData/patientEventReport.xls" var="download_patient_event_url"/>
         <util:panel id="patientEventReportPane" title="History of Patient Events Report" openPane="true">
             <form id="patientEventReportForm" action="${download_patient_event_url}" method="GET">
                 <div class="control-group">
@@ -156,7 +156,7 @@
         </script>
     </div>
     <div class="reportsDownload">
-        <spring:url value="/tama-reports/patient/report" var="download_patient_url"/>
+        <spring:url value="/analysisData/patientRegistrationReport.xls" var="download_patient_url"/>
         <util:panel id="patientReportPane" title="Patient Registration Details Report" openPane="true">
             <form id="patientReportForm" action="${download_patient_url}" method="GET">
                 <div class="control-group">

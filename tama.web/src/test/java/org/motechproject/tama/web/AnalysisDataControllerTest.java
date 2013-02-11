@@ -115,6 +115,20 @@ public class AnalysisDataControllerTest {
     }
 
     @Test
+    public void shouldRedirectToDownloadOfPatientEventReport() {
+        LocalDate today = DateUtil.today();
+        String view = analysisDataController.downloadPatientEventReport("clinic", "patientId", today, today, "eventName", model);
+        assertEquals("redirect:/tama-reports/patientEvent/report?clinicName=clinic&patientId=patientId&startDate=11/02/2013&endDate=11/02/2013&eventName=eventName", view);
+    }
+
+    @Test
+    public void shouldRedirectToDownloadOfPatientRegistrationReport() {
+        LocalDate today = DateUtil.today();
+        String view = analysisDataController.downloadPatientRegistrationReport("clinic", "patientId", today, today, model);
+        assertEquals("redirect:/tama-reports/patient/report?clinicName=clinic&patientId=patientId&startDate=11/02/2013&endDate=11/02/2013", view);
+    }
+
+    @Test
     public void shouldDownloadDailyPillReminderReportGivenPatientId() throws IOException {
         LocalDate startDate = DateUtil.today().minusDays(3);
         LocalDate endDate = DateUtil.today();
@@ -126,7 +140,7 @@ public class AnalysisDataControllerTest {
         filter.setEndDate(endDate);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
-        when(dailyPillReminderReportService.reports(patientId, startDate, endDate)).thenReturn(new DailyPillReminderReport(null,null));
+        when(dailyPillReminderReportService.reports(patientId, startDate, endDate)).thenReturn(new DailyPillReminderReport(null, null));
 
         analysisDataController.downloadDailyPillReminderReport(filter, model, response);
         verify(response).setContentType("application/vnd.ms-excel");

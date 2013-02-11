@@ -14,7 +14,9 @@ import javax.persistence.TemporalType;
 public class FilterWithPatientIDAndDateRange {
 
     public static final int DAYS_IN_A_YEAR = 365;
+
     private String patientId;
+
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private LocalDate startDate;
