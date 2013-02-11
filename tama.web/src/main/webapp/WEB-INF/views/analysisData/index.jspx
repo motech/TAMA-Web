@@ -1,6 +1,7 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:spring="http://www.springframework.org/tags"
      version="2.0"
+     xmlns:form="http://www.springframework.org/tags/form"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:c="http://java.sun.com/jsp/jstl/core">
@@ -129,12 +130,11 @@
                     <input type="text" name="clinicName"/>
                 </div>
                 <div class="control-group">
-                    <label for="clinicName">Event Name</label>
-                    <input type="text" name="eventName"/>
+                    <field:select field="patientEventFilter.eventName" id="eventName" items="${patientEventFilter.allPatientEvents}" path="/patientEventFilter.eventName" required="false" disableDefaultSelection="true" label="Event Name"/>
                 </div>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.startDate"
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventFilter.startDate"
                                 id="c_org_motechproject_tama_patient_event_startDate" label="Starting From"/>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventDateFilter.endDate"
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventFilter.endDate"
                                 id="c_org_motechproject_tama_patient_event_endDate" label="Till"/>
                 <div class="control-group">
                     <input type="submit" id="downloadPatientEventReport" value="Get Report"/>
@@ -144,8 +144,8 @@
         <script type="text/javascript">
             <![CDATA[
                 dojo.addOnLoad(function() {
-                    var startDateObj = dijit.byId("_patientEventDateFilter.startDate_id");
-                    var endDateObj = dijit.byId("_patientEventDateFilter.endDate_id");
+                    var startDateObj = dijit.byId("_patientEventFilter.startDate_id");
+                    var endDateObj = dijit.byId("_patientEventFilter.endDate_id");
                     setConstraintOnEndDate(startDateObj, endDateObj);
 
                     dojo.connect(startDateObj, "onChange", function() {

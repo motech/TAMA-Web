@@ -597,3 +597,8 @@ fieldset th {
     margin-top:2px;
     margin-bottom:3px;
 }
+
+.control-group.expanded-control-group{
+    margin-top:5px;
+    margin-bottom:6px;
+}

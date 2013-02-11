@@ -10,6 +10,7 @@ import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.web.model.FilterWithPatientIDAndDateRange;
 import org.motechproject.tama.web.model.DateFilter;
+import org.motechproject.tama.web.model.PatientEventFilter;
 import org.motechproject.tama.web.model.PatientIDFilter;
 import org.motechproject.tama.web.resportbuilder.AllAppointmentCalendarsBuilder;
 import org.motechproject.tama.web.resportbuilder.AllDailyPillReminderReportsBuilder;
@@ -53,7 +54,7 @@ public class AnalysisDataController extends BaseController {
     public String show(Model uiModel) {
         uiModel.addAttribute("patientIdFilter", new PatientIDFilter());
         uiModel.addAttribute("patientDateFilter", new DateFilter());
-        uiModel.addAttribute("patientEventDateFilter", new DateFilter());
+        uiModel.addAttribute("patientEventFilter", new PatientEventFilter());
         uiModel.addAttribute("outboxMessageReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("dosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
