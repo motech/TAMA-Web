@@ -30,12 +30,13 @@ public class PatientEventRequestMapperTest {
     }
 
     @Test
-    public void shouldMapPatientDocumentId() {
+    public void shouldMapPatientEvent() {
         PatientEventRequest request = new PatientEventRequest();
         request.setDateTime(now.toDate());
         request.setEventName(PatientEvent.Activation.getDisplayName());
         request.setPatientDocumentId("patientDocumentId");
         request.setPerformedBy("user");
+        request.setNewValue("Value");
 
         assertEquals(request, patientRequestMapper.map("user"));
     }

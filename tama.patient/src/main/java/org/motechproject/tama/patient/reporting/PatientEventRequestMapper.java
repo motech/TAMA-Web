@@ -21,6 +21,7 @@ public class PatientEventRequestMapper {
         request.setEventName(getDisplayName());
         request.setPatientDocumentId(entity.getPatientId());
         request.setPerformedBy(user);
+        request.setNewValue(entity.getNewValue());
         return request;
     }
 
