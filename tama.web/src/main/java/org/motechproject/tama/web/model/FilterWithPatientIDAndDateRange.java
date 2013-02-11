@@ -13,6 +13,7 @@ import javax.persistence.TemporalType;
 @Data
 public class FilterWithPatientIDAndDateRange {
 
+    public static final int DAYS_IN_A_YEAR = 365;
     private String patientId;
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
@@ -26,7 +27,7 @@ public class FilterWithPatientIDAndDateRange {
         endDate = startDate;
     }
 
-    public boolean isMoreThanOneMonth() {
-        return Days.daysBetween(startDate, endDate).getDays() > 30;
+    public boolean isMoreThanOneYear() {
+        return Days.daysBetween(startDate, endDate).getDays() > DAYS_IN_A_YEAR;
     }
 }

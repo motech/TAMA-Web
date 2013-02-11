@@ -75,7 +75,7 @@ public class AnalysisDataController extends BaseController {
 
     @RequestMapping(value = "/outboxMessageReport.xls", method = RequestMethod.GET)
     public String downloadOutboxMessageReport(FilterWithPatientIDAndDateRange filter, Model uiModel, HttpServletResponse response) {
-        if (filter.isMoreThanOneMonth()) {
+        if (filter.isMoreThanOneYear()) {
             return error(uiModel);
         }
         OutboxMessageReport outboxMessageReport = outboxMessageReportService.reports(filter.getPatientId(), filter.getStartDate(), filter.getEndDate());
@@ -90,7 +90,7 @@ public class AnalysisDataController extends BaseController {
 
     @RequestMapping(value = "/dailyPillReminderReport.xls", method = RequestMethod.GET)
     public String downloadDailyPillReminderReport(FilterWithPatientIDAndDateRange filter, Model uiModel, HttpServletResponse response) {
-        if (filter.isMoreThanOneMonth()) {
+        if (filter.isMoreThanOneYear()) {
             return error(uiModel);
         }
         DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(filter.getPatientId(), filter.getStartDate(), filter.getEndDate());

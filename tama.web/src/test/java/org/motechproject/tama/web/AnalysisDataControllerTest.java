@@ -76,7 +76,7 @@ public class AnalysisDataControllerTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         FilterWithPatientIDAndDateRange filter = mock(FilterWithPatientIDAndDateRange.class);
-        when(filter.isMoreThanOneMonth()).thenReturn(true);
+        when(filter.isMoreThanOneYear()).thenReturn(true);
 
         String view = analysisDataController.downloadOutboxMessageReport(filter, model, response);
         verify(model).addAttribute(eq("warning"), anyString());
@@ -88,7 +88,7 @@ public class AnalysisDataControllerTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         FilterWithPatientIDAndDateRange filter = mock(FilterWithPatientIDAndDateRange.class);
-        when(filter.isMoreThanOneMonth()).thenReturn(true);
+        when(filter.isMoreThanOneYear()).thenReturn(true);
 
         String view = analysisDataController.downloadDailyPillReminderReport(filter, model, response);
         verify(model).addAttribute(eq("warning"), anyString());

@@ -11,26 +11,26 @@ import static junit.framework.Assert.assertTrue;
 public class FilterWithPatientIDAndDateRangeTest {
 
     @Test
-    public void testFilterIsGreaterThanOneMonth() {
+    public void testFilterIsGreaterThanOneYear() {
         LocalDate startDate = DateUtil.today();
-        LocalDate endDate = startDate.plusDays(31);
+        LocalDate endDate = startDate.plusYears(1).plusDays(1);
 
         FilterWithPatientIDAndDateRange filter = new FilterWithPatientIDAndDateRange();
         filter.setStartDate(startDate);
         filter.setEndDate(endDate);
 
-        assertTrue(filter.isMoreThanOneMonth());
+        assertTrue(filter.isMoreThanOneYear());
     }
 
     @Test
-    public void testFilterIsNotGreaterThanOneMonth() {
+    public void testFilterIsNotGreaterThanOneYear() {
         LocalDate startDate = DateUtil.today();
-        LocalDate endDate = startDate.plusDays(30);
+        LocalDate endDate = startDate.plusYears(1).minusDays(1);
 
         FilterWithPatientIDAndDateRange filter = new FilterWithPatientIDAndDateRange();
         filter.setStartDate(startDate);
         filter.setEndDate(endDate);
 
-        assertFalse(filter.isMoreThanOneMonth());
+        assertFalse(filter.isMoreThanOneYear());
     }
 }
