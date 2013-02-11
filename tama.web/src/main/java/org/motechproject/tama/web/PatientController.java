@@ -91,7 +91,7 @@ public class PatientController extends BaseController {
     @Autowired
     public PatientController(AllPatients allPatients, AllGendersCache allGenders, AllIVRLanguagesCache allIVRLanguages, AllHIVTestReasonsCache allTestReasons, AllModesOfTransmissionCache allModesOfTransmission, AllTreatmentAdvices allTreatmentAdvices,
                              AllVitalStatistics allVitalStatistics, AllLabResults allLabResults, PatientService patientService, DailyPillReminderAdherenceService dailyPillReminderAdherenceService, ResumeFourDayRecallService resumeFourDayRecallService,
-                             AdherenceService adherenceService,  @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly,
+                             AdherenceService adherenceService, @Value("#{dailyPillReminderProperties['" + TAMAConstants.MIN_NUMBER_OF_DAYS_ON_DAILY_BEFORE_TRANSITIONING_TO_WEEKLY + "']}") Integer minNumberOfDaysOnDailyBeforeTransitioningToWeekly,
                              AllClinicVisits allClinicVisits) {
         this.allPatients = allPatients;
         this.allGenders = allGenders;
@@ -151,7 +151,7 @@ public class PatientController extends BaseController {
     public String reactivatePatient(@RequestParam String id, @RequestParam DoseStatus doseStatus, HttpServletRequest request) {
         Patient patient = allPatients.get(id);
         final TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(id);
-        if (treatmentAdvice == null){
+        if (treatmentAdvice == null) {
             return activate(id, request);
         }
         final DateTime startDate = patient.getStatus().isTemporarilyDeactivated() ? patient.getLastDeactivationDate() : patient.getLastSuspendedDate();
@@ -194,13 +194,21 @@ public class PatientController extends BaseController {
         Regimen currentRegimen = patientService.currentRegimen(patient);
         List<PatientEventLog> patientStatusChangeHistory = patientService.getStatusChangeHistory(patient.getId());
         ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patient.getId());
-        Double runningAdherencePercentage = adherenceService.getRunningAdherencePercentage(patient);
+        Double runningAdherencePercentage = getRunningAdherencePercentage(patient);
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
         PatientSummary patientSummary = new PatientSummary(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen,
                 clinicVisits, patientStatusChangeHistory, runningAdherencePercentage, warning);
         //Do not change name of form bean - currently used by graphs to get data.
         //TODO : Change <graph>.jspx partials to accept patient form bean name as parameter/variable.
         return new ModelAndView(SUMMARY_VIEW, "patient", patientSummary);
+    }
+
+    private Double getRunningAdherencePercentage(Patient patient) {
+        if (null != patient.getActivationDate()) {
+            return adherenceService.getRunningAdherencePercentage(patient);
+        } else {
+            return 0d;
+        }
     }
 
     @RequestMapping(method = RequestMethod.GET)
