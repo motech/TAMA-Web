@@ -204,7 +204,8 @@ public class PatientController extends BaseController {
     }
 
     private Double getRunningAdherencePercentage(Patient patient) {
-        if (null != patient.getActivationDate()) {
+        PatientReport patientReport = patientService.getPatientReport(patient.getId());
+        if (null != patientReport && null != patientReport.getCurrentRegimenStartDate()) {
             return adherenceService.getRunningAdherencePercentage(patient);
         } else {
             return 0d;
