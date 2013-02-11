@@ -20,7 +20,6 @@
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogReport.startDate" id="c_org_motechproject_tama_calllog_startDate" label="Starting From" required="true" />
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="callLogReport.endDate" id="c_org_motechproject_tama_calllog_endDate" label="Till" required="true" />
                 <span class="submit" id="downloadCallLogsSpan">
-                    <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'downloadCallLogs', event:'onclick'}));</script>
                     <input id="downloadCallLogs" type="submit" value="Download as Excel"/>
                 </span>
             </form>

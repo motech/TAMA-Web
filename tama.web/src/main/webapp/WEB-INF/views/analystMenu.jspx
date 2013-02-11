@@ -6,10 +6,7 @@
     <menu:menu id="_menu" z="nZaf43BjUg1iM0v70HJVEsXDopc=">
         <menu:category id="c_analyst_home">
             <menu:item id="i_all_analyst_reports" messageCode="global_menu_list" url="/"/>
-        </menu:category>
-        <menu:category id="c_summary">
             <menu:item id="i_logs_list" messageCode="global_menu_list" url="/callsummary?form"/>
-            <menu:item id="i_download_reports_list" messageCode="global_menu_list" url="/callsummary?download"/>
         </menu:category>
     </menu:menu>
 </div>

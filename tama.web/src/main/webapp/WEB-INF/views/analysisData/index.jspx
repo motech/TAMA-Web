@@ -19,7 +19,7 @@
                     <input id="appointmentCalenderPatientId" type="text" name="patientId"/>
                 </div>
                 <div class="control-group">
-                    <input type="submit" id="downloadAppointmentCalendarReport" value="Get Report"/>
+                    <input type="submit" id="downloadAppointmentCalendarReport" value="DOWNLOAD AS EXCEL"/>
                 </div>
             </form>
             <script type="text/javascript">
@@ -49,7 +49,7 @@
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="dosageAdherenceReportFilter.endDate"
                                 id="c_org_motechproject_tama_dosage_adherence_filter_endDate" label="Till" required="true"/>
                 <div class="control-group">
-                    <input type="submit" id="downloadDosageAdherenceReport" value="Get Report"/>
+                    <input type="submit" id="downloadDosageAdherenceReport" value="DOWNLOAD AS EXCEL"/>
                 </div>
             </form>
             <script type="text/javascript">
@@ -90,7 +90,7 @@
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="outboxMessageReportFilter.endDate"
                                 id="c_org_motechproject_tama_outbox_filter_endDate" label="Till" required="true"/>
                 <div class="control-group">
-                    <input type="submit" id="downloadOutboxMessageReport" value="Get Report"/>
+                    <input type="submit" id="downloadOutboxMessageReport" value="DOWNLOAD AS EXCEL"/>
                 </div>
             </form>
             <script type="text/javascript">
@@ -137,7 +137,7 @@
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventFilter.endDate"
                                 id="c_org_motechproject_tama_patient_event_endDate" label="Till"/>
                 <div class="control-group">
-                    <input type="submit" id="downloadPatientEventReport" value="Get Report"/>
+                    <input type="submit" id="downloadPatientEventReport" value="DOWNLOAD AS EXCEL"/>
                 </div>
             </form>
         </util:panel>
@@ -172,7 +172,7 @@
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="patientDateFilter.endDate"
                                 id="c_org_motechproject_tama_calllog_endDate" label="Till"/>
                 <div class="control-group">
-                    <input type="submit" id="downloadPatientReport" value="Get Report"/>
+                    <input type="submit" id="downloadPatientReport" value="DOWNLOAD AS EXCEL"/>
                 </div>
             </form>
         </util:panel>
@@ -190,5 +190,5 @@
             ]]>
         </script>
     </div>
-    <jsp:include page="/WEB-INF/views/callsummary/create.jspx"/>
+    <jsp:include page="/WEB-INF/views/callsummary/download.jspx"/>
 </div>

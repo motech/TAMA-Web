@@ -63,7 +63,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("outboxMessageReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("dosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
-        callSummaryController.filterLogs(uiModel);
+        callSummaryController.download(uiModel);
         return "analysisData/show";
     }
 
