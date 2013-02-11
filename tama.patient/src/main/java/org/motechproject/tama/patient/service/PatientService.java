@@ -57,7 +57,7 @@ public class PatientService {
     public void create(Patient patient, String clinicId, String userName) {
         allPatients.addToClinic(patient, clinicId, userName);
         outboxRegistry.getOutbox().enroll(patient);
-        allPatientEventLogs.addAll(new ChangedPatientPreferenceContext(null, patient).getEventLogs());
+        allPatientEventLogs.addAll(new ChangedPatientPreferenceContext(null, patient).getEventLogs(), userName);
         patientReportingService.save(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
     }
 
@@ -74,7 +74,7 @@ public class PatientService {
         final ChangedPatientPreferenceContext changedPatientPreferenceContext = new ChangedPatientPreferenceContext(dbPatient, patient);
         if (changedPatientPreferenceContext.patientPreferenceHasChanged()) {
             preferenceChangedStrategyFactory.getStrategy(changedPatientPreferenceContext).execute(dbPatient, patient, allTreatmentAdvices.currentTreatmentAdvice(patient.getId()));
-            allPatientEventLogs.addAll(changedPatientPreferenceContext.getEventLogs());
+            allPatientEventLogs.addAll(changedPatientPreferenceContext.getEventLogs(), userName);
         }
     }
 
@@ -104,7 +104,7 @@ public class PatientService {
         allPatients.update(patient, userName);
         patientReportingService.update(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
 
-        allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension), userName);
+        allPatientEventLogs.add(new PatientEventLog(patientId, PatientEvent.Suspension), "");
     }
 
     public Regimen currentRegimen(Patient patient) {

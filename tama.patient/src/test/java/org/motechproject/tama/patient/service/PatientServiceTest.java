@@ -150,7 +150,7 @@ public class PatientServiceTest extends BaseUnitTest {
         verify(allPatients).addToClinic(patient, "clinicId", USER_NAME);
         verify(outbox).enroll(patient);
         final ArgumentCaptor<List> eventLogsCaptor = ArgumentCaptor.forClass(List.class);
-        verify(allPatientEventLogs).addAll(eventLogsCaptor.capture());
+        verify(allPatientEventLogs).addAll(eventLogsCaptor.capture(), eq(USER_NAME));
         final List<PatientEventLog> eventLogs = eventLogsCaptor.getValue();
         assertEquals(1, eventLogs.size());
         assertPatientEventLog(eventLogs.get(0), PatientEvent.Call_Plan_Changed, patient.getPatientPreferences().getCallPreference().name(), now);
@@ -168,7 +168,7 @@ public class PatientServiceTest extends BaseUnitTest {
         verify(allPatients).addToClinic(patient, "clinicId", USER_NAME);
         verify(outbox).enroll(patient);
         final ArgumentCaptor<List> eventLogsCaptor = ArgumentCaptor.forClass(List.class);
-        verify(allPatientEventLogs).addAll(eventLogsCaptor.capture());
+        verify(allPatientEventLogs).addAll(eventLogsCaptor.capture(), eq(USER_NAME));
         final List<PatientEventLog> eventLogs = eventLogsCaptor.getValue();
         assertEquals(3, eventLogs.size());
         assertPatientEventLog(eventLogs.get(0), PatientEvent.Call_Plan_Changed, patient.getPatientPreferences().getCallPreference().name(), now);
@@ -234,7 +234,7 @@ public class PatientServiceTest extends BaseUnitTest {
         assertEquals(DateUtil.today(), patientArgumentCaptor.getValue().getLastSuspendedDate().toLocalDate());
 
         ArgumentCaptor<PatientEventLog> eventLogArgumentCaptor = ArgumentCaptor.forClass(PatientEventLog.class);
-        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture(), anyString());
+        verify(allPatientEventLogs).add(eventLogArgumentCaptor.capture(), eq(""));
         assertEquals(PatientEvent.Suspension, eventLogArgumentCaptor.getValue().getEvent());
         assertEquals(patient.getId(), eventLogArgumentCaptor.getValue().getPatientId());
         assertEquals(now, eventLogArgumentCaptor.getValue().getDate());
@@ -307,7 +307,7 @@ public class PatientServiceTest extends BaseUnitTest {
 
         verify(allPatients).update(patient, USER_NAME);
         final ArgumentCaptor<List> eventLogsCaptor = ArgumentCaptor.forClass(List.class);
-        verify(allPatientEventLogs).addAll(eventLogsCaptor.capture());
+        verify(allPatientEventLogs).addAll(eventLogsCaptor.capture(), eq(USER_NAME));
         final List<PatientEventLog> eventLogs = eventLogsCaptor.getValue();
         assertEquals(3, eventLogs.size());
         assertPatientEventLog(eventLogs.get(0), PatientEvent.Call_Plan_Changed, patient.getPatientPreferences().getCallPreference().name(), now);
