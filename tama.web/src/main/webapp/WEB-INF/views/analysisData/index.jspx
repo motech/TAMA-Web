@@ -133,9 +133,9 @@
                     <field:select field="patientEventFilter.eventName" id="eventName" items="${patientEventFilter.allPatientEvents}" path="/patientEventFilter.eventName" required="false" disableDefaultSelection="true" label="Event Name"/>
                 </div>
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventFilter.startDate"
-                                id="c_org_motechproject_tama_patient_event_startDate" label="Starting From"/>
+                                id="c_org_motechproject_tama_patient_event_startDate" label="Starting From" required="true"/>
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="patientEventFilter.endDate"
-                                id="c_org_motechproject_tama_patient_event_endDate" label="Till"/>
+                                id="c_org_motechproject_tama_patient_event_endDate" label="Till" required="true"/>
                 <div class="control-group">
                     <input type="submit" id="downloadPatientEventReport" value="DOWNLOAD AS EXCEL"/>
                 </div>
@@ -147,7 +147,14 @@
                     var startDateObj = dijit.byId("_patientEventFilter.startDate_id");
                     var endDateObj = dijit.byId("_patientEventFilter.endDate_id");
                     setConstraintOnEndDate(startDateObj, endDateObj);
-
+                    dojo.connect(dojo.byId("downloadPatientEventReport"), "onclick", function(event){
+                        event.preventDefault();
+                        Spring.decorations['_patientEventFilter.startDate_id'][0].validate();
+                        Spring.decorations['_patientEventFilter.endDate_id'][0].validate();
+                        if(startDateObj.isValid() && endDateObj.isValid()){
+                            dojo.byId('patientEventReportForm').submit();
+                        }
+                    });
                     dojo.connect(startDateObj, "onChange", function() {
                         setConstraintOnEndDate(startDateObj, endDateObj);
                     });
