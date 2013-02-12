@@ -79,7 +79,7 @@ public class VitalStatisticsController extends BaseController {
         return UPDATE_FORM;
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public String update(VitalStatisticsUIModel vitalStatisticsUIModel, HttpServletRequest httpServletRequest) {
         final VitalStatistics vitalStatistics = vitalStatisticsUIModel.getVitalStatistics();
         vitalStatistics.setCaptureDate(DateUtil.today());

@@ -70,7 +70,7 @@ public class TreatmentAdviceController extends BaseController {
         return "treatmentadvices/update";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/changeRegimen", method = RequestMethod.POST)
     public String changeRegimen(String existingTreatmentAdviceId, String discontinuationReason, TreatmentAdvice treatmentAdvice, String clinicVisitId, Model uiModel, HttpServletRequest httpServletRequest) {
         uiModel.asMap().clear();
         fixTimeString(treatmentAdvice);
@@ -79,7 +79,7 @@ public class TreatmentAdviceController extends BaseController {
             treatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, loggedInUserId(httpServletRequest));
             allClinicVisits.changeRegimen(treatmentAdvice.getPatientId(), clinicVisitId, treatmentAdviceId);
             return ClinicVisitsController.redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId());
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             httpServletRequest.setAttribute("flash.flashError", "Error occurred while changing Regimen. Please try again: " + e.getMessage());
             return "redirect:/treatmentadvices/changeRegimen?id=" + treatmentAdviceId + "&clinicVisitId=" + clinicVisitId + "&patientId=" + treatmentAdvice.getPatientId();
         }

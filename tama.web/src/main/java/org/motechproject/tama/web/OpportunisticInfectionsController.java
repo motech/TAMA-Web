@@ -121,7 +121,7 @@ public class OpportunisticInfectionsController extends BaseController {
         return UPDATE_FORM;
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
     public String update(OpportunisticInfectionsUIModel opportunisticInfectionsUIModel, HttpServletRequest httpServletRequest) {
         ReportedOpportunisticInfections storedOpportunisticInfections = getStoredOpportunisticInfections(opportunisticInfectionsUIModel);
         if (storedOpportunisticInfections != null) {
