@@ -3,6 +3,7 @@ package org.motechproject.tama.patient.domain;
 import lombok.Getter;
 import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.*;
 import org.joda.time.format.DateTimeFormatter;
@@ -47,6 +48,7 @@ public class Patient extends CouchEntity {
     private Gender gender;
 
     @ManyToOne
+    @JsonProperty
     private Clinic clinic;
 
     @Getter @Setter private String genderId;
