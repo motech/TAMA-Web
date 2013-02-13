@@ -64,6 +64,10 @@ body {
 	padding: 0px;
 }
 
+#menu a.selected {
+    background: #FFFFFF;
+    font-weight:bold;
+}
 
 #menu a, #menu h2 {
 	display: block;
