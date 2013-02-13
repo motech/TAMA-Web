@@ -11,7 +11,7 @@ MenuSelection.prototype = {
            var longestMatch = 0;
            var longestMatchIndex = -1;
            for(i = 0;i<links.length;i++){
-                var currentLength = self.lengthOfMatch(document.location.href, dojo.attr(links[i],"href"));
+                var currentLength = self.lengthOfMatch(document.location.pathname, dojo.attr(links[i],"href"));
                 if(currentLength > longestMatch){
                     longestMatch = currentLength;
                     longestMatchIndex = i;
@@ -24,6 +24,8 @@ MenuSelection.prototype = {
     },
 
     lengthOfMatch: function(source, pattern){
+        var endIndex = pattern.indexOf("?") > 0 ? pattern.indexOf("?") : pattern.length;
+        pattern = pattern.substring(0, endIndex);
         var index = source.indexOf(pattern);
         if(index >= 0){
             return index + pattern.length;
