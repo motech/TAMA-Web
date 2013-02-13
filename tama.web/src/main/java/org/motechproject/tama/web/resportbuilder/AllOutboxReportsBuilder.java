@@ -73,6 +73,6 @@ public class AllOutboxReportsBuilder extends InMemoryReportBuilder<OutboxMessage
     @Override
     protected void buildSummary(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
-        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("MMM dd, yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("yyyy-MM-dd"));
     }
 }

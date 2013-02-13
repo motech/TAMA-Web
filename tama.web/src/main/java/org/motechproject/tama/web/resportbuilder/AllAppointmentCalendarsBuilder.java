@@ -75,16 +75,16 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
     @Override
     protected void buildSummary(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
-        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("MMM dd, yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("yyyy-MM-dd"));
     }
 
     private void addCurrentRegimenStartDate(PatientReport patientReport, List<Object> row) {
-        String currentRegimenStartDate = patientReport.getCurrentRegimenStartDate() != null ? DateUtil.newDate(patientReport.getCurrentRegimenStartDate()).toString("MMM dd, yyyy") : null;
+        String currentRegimenStartDate = patientReport.getCurrentRegimenStartDate() != null ? DateUtil.newDate(patientReport.getCurrentRegimenStartDate()).toString("yyyy-MM-dd") : null;
         row.add(currentRegimenStartDate);
     }
 
     private void addARTStartDate(PatientReport patientReport, List<Object> row) {
-        String artStartDate = patientReport.getARTStartedOn() != null ? DateUtil.newDate(patientReport.getARTStartedOn()).toString("MMM dd, yyyy") : null;
+        String artStartDate = patientReport.getARTStartedOn() != null ? DateUtil.newDate(patientReport.getARTStartedOn()).toString("yyyy-MM-dd") : null;
         row.add(artStartDate);
     }
 

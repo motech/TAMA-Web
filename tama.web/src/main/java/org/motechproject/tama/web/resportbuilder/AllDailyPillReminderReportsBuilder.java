@@ -76,6 +76,6 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
     @Override
     protected void buildSummary(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
-        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("MMM dd, yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("yyyy-MM-dd"));
     }
 }
