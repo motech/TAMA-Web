@@ -544,6 +544,10 @@ fieldset th {
     margin-bottom: 5px;
 }
 
+.center.warning {
+    text-align:center;
+}
+
 .info {
     height: 15px;
     background-color: GREY;

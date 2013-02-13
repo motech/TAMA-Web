@@ -14,15 +14,12 @@
                 <tr>
                     <th>Name</th>
                     <th>UserName</th>
-                    <th>Reset Password</th>
                 </tr>
             </thead>
             <c:forEach items="${analysts}" var="analyst">
                  <tr>
                      <td><c:out value="${analyst.name}"/></td>
                      <td><c:out value="${analyst.username}"/></td>
-                     <spring:url value="/security/changeUserPassword/analyst/${analyst.id}" var="changePasswordLink"/>
-                     <td><a href="${changePasswordLink}">Reset Password</a></td>
                  </tr>
             </c:forEach>
         </table>

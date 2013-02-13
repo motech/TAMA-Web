@@ -80,7 +80,7 @@ public class AnalysisDataControllerTest {
         when(filter.isMoreThanOneYear()).thenReturn(true);
 
         String view = analysisDataController.downloadOutboxMessageReport(filter, model, response);
-        verify(model).addAttribute(eq("warning"), anyString());
+        verify(model).addAttribute(eq("outboxReport_warning"), anyString());
         assertEquals("analysisData/show", view);
     }
 
@@ -92,7 +92,7 @@ public class AnalysisDataControllerTest {
         when(filter.isMoreThanOneYear()).thenReturn(true);
 
         String view = analysisDataController.downloadDailyPillReminderReport(filter, model, response);
-        verify(model).addAttribute(eq("warning"), anyString());
+        verify(model).addAttribute(eq("dailyPillReminderReport_warning"), anyString());
         assertEquals("analysisData/show", view);
     }
 

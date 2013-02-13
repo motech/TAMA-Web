@@ -76,7 +76,7 @@ public class AnalysisDataController extends BaseController {
                                              Model uiModel) {
         DateFilter filter = new DateFilter().setDates(startDate, endDate);
         if (filter.isMoreThanOneYear()) {
-            return error(uiModel);
+            return error(uiModel, "patientEventReport_warning");
         } else {
             return format("redirect:/tama-reports/patientEvent/report?clinicName=%s&patientId=%s&startDate=%s&endDate=%s&eventName=%s", clinicName, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"), eventName);
         }
@@ -90,7 +90,7 @@ public class AnalysisDataController extends BaseController {
                                                     Model uiModel) {
         DateFilter filter = new DateFilter().setDates(startDate, endDate);
         if (filter.isMoreThanOneYear()) {
-            return error(uiModel);
+            return error(uiModel, "patientRegistrationReport_warning");
         } else {
             return format("redirect:/tama-reports/patient/report?clinicName=%s&patientId=%s&startDate=%s&endDate=%s", clinicName, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"));
         }
@@ -110,7 +110,7 @@ public class AnalysisDataController extends BaseController {
     @RequestMapping(value = "/outboxMessageReport.xls", method = RequestMethod.GET)
     public String downloadOutboxMessageReport(FilterWithPatientIDAndDateRange filter, Model uiModel, HttpServletResponse response) {
         if (filter.isMoreThanOneYear()) {
-            return error(uiModel);
+            return error(uiModel, "outboxReport_warning");
         }
         OutboxMessageReport outboxMessageReport = outboxMessageReportService.reports(filter.getPatientId(), filter.getStartDate(), filter.getEndDate());
         AllOutboxReportsBuilder allOutboxReportsBuilder = new AllOutboxReportsBuilder(outboxMessageReport.getOutboxMessageSummaries(), outboxMessageReport.getPatientReports());
@@ -125,7 +125,7 @@ public class AnalysisDataController extends BaseController {
     @RequestMapping(value = "/dailyPillReminderReport.xls", method = RequestMethod.GET)
     public String downloadDailyPillReminderReport(FilterWithPatientIDAndDateRange filter, Model uiModel, HttpServletResponse response) {
         if (filter.isMoreThanOneYear()) {
-            return error(uiModel);
+            return error(uiModel, "dailyPillReminderReport_warning");
         }
         DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(filter.getPatientId(), filter.getStartDate(), filter.getEndDate());
         AllDailyPillReminderReportsBuilder allDailyPillReminderReportsBuilder = new AllDailyPillReminderReportsBuilder(dailyPillReminderReport.getDailyPillReminderSummaries(), dailyPillReminderReport.getPatientReports());
@@ -137,9 +137,9 @@ public class AnalysisDataController extends BaseController {
         return null;
     }
 
-    private String error(Model uiModel) {
+    private String error(Model uiModel, String warning) {
         String view = show(uiModel);
-        uiModel.addAttribute("warning", "There is too much data. Please narrow your search");
+        uiModel.addAttribute(warning, "There is too much data to load. Please narrow down the date range in your search criteria");
         return view;
     }
 

@@ -3,6 +3,7 @@
         "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 <tiles-definitions>
     <definition extends="default" name="analysisData/show">
+        <put-attribute name="enableChangePassword" value="false"/>
         <put-attribute name="body" value="/WEB-INF/views/analysisData/index.jspx"/>
     </definition>
 </tiles-definitions>

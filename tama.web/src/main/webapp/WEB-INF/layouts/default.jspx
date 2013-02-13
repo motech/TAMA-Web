@@ -55,16 +55,20 @@
                    </c:if>
                    <div class="logged_in_clinic">
                        <c:if test="${sessionScope.loggedInUser != null}">
-                            <span><c:out value="${sessionScope.loggedInUser.name} | ${sessionScope.loggedInUser.clinicName}"/></span>
-                            <c:if test="${sessionScope.loggedInUser.clinicName != ''}">
-                               <c:out value=" | "/>
+                           <span><c:out value="${sessionScope.loggedInUser.name}"/></span>
+                           <tiles:useAttribute id="enableChangePassword" name="enableChangePassword" ignore="true"/>
+                           <c:if test="${enableChangePassword != 'false'}">
+                                <c:if test="${sessionScope.loggedInUser.clinicName != ''}">
+                                   <c:out value=" |  ${sessionScope.loggedInUser.clinicName} "/>
+                                </c:if>
+                                <span>
+                                <spring:url value="/security/changePassword" var="changepassword"/>
+                                    <c:out value=" | "/>
+                                    <a id="changePasswordLink" href="${changepassword}">
+                                       <spring:message code="security_change_password"/>
+                                    </a>
+                                </span>
                             </c:if>
-                            <span>
-                            <spring:url value="/security/changePassword" var="changepassword"/>
-                            <a id="changePasswordLink" href="${changepassword}">
-                               <spring:message code="security_change_password"/>
-                            </a>
-                            </span>
                        </c:if>
                    </div>
                </div>
