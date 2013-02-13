@@ -62,7 +62,7 @@ public class AnalystCallLogReportBuilder extends BatchReportBuilder {
     protected void initializeColumns() {
         columns = new LinkedList<ExcelColumn>();
         columns.add(new ExcelColumn("Patient ID", Cell.CELL_TYPE_STRING, 8000));
-        columns.add(new ExcelColumn("Call Direction", Cell.CELL_TYPE_STRING, 8000));
+        columns.add(new ExcelColumn("Call made by", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Clinic Name", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("TAMA Initiated Call At (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Call Started At (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 10000));
@@ -99,7 +99,7 @@ public class AnalystCallLogReportBuilder extends BatchReportBuilder {
         List<Object> row = new LinkedList<Object>();
         row.add(callLogSummary.getPatientId());
         final String sourcePhoneNumber = callLogSummary.getSourcePhoneNumber();
-        row.add("TAMA".equals(sourcePhoneNumber) ? "Outgoing from TAMA" : "Incoming to TAMA");
+        row.add("TAMA".equals(sourcePhoneNumber) ? "TAMA" : "Patient");
         row.add(callLogSummary.getClinicName());
         row.add(callLogSummary.getInitiatedDateTime());
         row.add(callLogSummary.getStartDateTime());
