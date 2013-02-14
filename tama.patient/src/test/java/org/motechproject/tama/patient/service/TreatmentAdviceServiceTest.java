@@ -8,15 +8,20 @@ import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.reporting.PillTimeRequestMapper;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.registry.CallPlanRegistry;
+import org.motechproject.tama.reporting.service.PatientReportingService;
+import org.motechproject.tama.reports.contract.PillTimeRequest;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TreatmentAdviceServiceTest {
+
+    private static final String USER_NAME = "userName";
 
     @Mock
     private AllPatients allPatients;
@@ -29,8 +34,10 @@ public class TreatmentAdviceServiceTest {
     @Mock
     private CallTimeSlotService callTimeSlotService;
 
+    @Mock
+    private PatientReportingService patientReportingService;
+
     private TreatmentAdviceService treatmentAdviceService;
-    private static final String USER_NAME = "userName";
 
     @Before
     public void setUp() {
@@ -38,31 +45,37 @@ public class TreatmentAdviceServiceTest {
         CallPlanRegistry callPlanRegistry = new CallPlanRegistry();
         callPlanRegistry.registerCallPlan(CallPreference.DailyPillReminder, dailyCallPlan);
         callPlanRegistry.registerCallPlan(CallPreference.FourDayRecall, weeklyCallPlan);
-        treatmentAdviceService = new TreatmentAdviceService(allPatients, allTreatmentAdvices, callTimeSlotService, callPlanRegistry);
+        treatmentAdviceService = new TreatmentAdviceService(allPatients, allTreatmentAdvices, callTimeSlotService, callPlanRegistry, patientReportingService);
     }
 
     @Test
     public void dailyPillReminderPatient_createsANewRegimen() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+        PillTimeRequestMapper pillTimeRequestMapper = new PillTimeRequestMapper(treatmentAdvice);
+        PillTimeRequest pillTimesRequest = pillTimeRequestMapper.map();
 
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
 
         treatmentAdviceService.createRegimen(treatmentAdvice, USER_NAME);
         verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
         verify(dailyCallPlan).enroll(patient, treatmentAdvice);
+        verify(patientReportingService).savePillTimes(pillTimesRequest);
     }
 
     @Test
     public void fourDayRecallPatient_createsANewRegimen() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+        PillTimeRequestMapper pillTimeRequestMapper = new PillTimeRequestMapper(treatmentAdvice);
+        PillTimeRequest pillTimesRequest = pillTimeRequestMapper.map();
 
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
 
         treatmentAdviceService.createRegimen(treatmentAdvice, USER_NAME);
         verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
         verify(weeklyCallPlan).enroll(patient, treatmentAdvice);
+        verify(patientReportingService).savePillTimes(pillTimesRequest);
     }
 
     @Test
@@ -70,6 +83,8 @@ public class TreatmentAdviceServiceTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+        PillTimeRequestMapper pillTimeRequestMapper = new PillTimeRequestMapper(treatmentAdvice);
+        PillTimeRequest pillTimesRequest = pillTimeRequestMapper.map();
 
         when(allTreatmentAdvices.get(existingTreatmentAdvice.getId())).thenReturn(existingTreatmentAdvice);
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
@@ -82,6 +97,7 @@ public class TreatmentAdviceServiceTest {
         verify(dailyCallPlan).reEnroll(patient, treatmentAdvice);
         verify(callTimeSlotService).freeSlots(patient, existingTreatmentAdvice);
         verify(callTimeSlotService).allotSlots(patient, treatmentAdvice);
+        verify(patientReportingService).savePillTimes(pillTimesRequest);
     }
 
     @Test
@@ -89,6 +105,8 @@ public class TreatmentAdviceServiceTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         TreatmentAdvice existingTreatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+        PillTimeRequestMapper pillTimeRequestMapper = new PillTimeRequestMapper(treatmentAdvice);
+        PillTimeRequest pillTimesRequest = pillTimeRequestMapper.map();
 
         when(allTreatmentAdvices.get(existingTreatmentAdvice.getId())).thenReturn(existingTreatmentAdvice);
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
@@ -99,5 +117,6 @@ public class TreatmentAdviceServiceTest {
         verify(weeklyCallPlan).reEnroll(patient, treatmentAdvice);
         verify(callTimeSlotService).freeSlots(patient, existingTreatmentAdvice);
         verify(callTimeSlotService, times(0)).allotSlots(patient, treatmentAdvice);
+        verify(patientReportingService).savePillTimes(pillTimesRequest);
     }
 }

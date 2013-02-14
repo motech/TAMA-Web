@@ -7,6 +7,7 @@ import org.motechproject.http.client.service.HttpClientService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.reports.contract.MedicalHistoryRequest;
 import org.motechproject.tama.reports.contract.PatientRequest;
+import org.motechproject.tama.reports.contract.PillTimeRequest;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,6 +16,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class PatientReportingServiceTest {
 
     public static final String REPORTS_URL = "http://localhost:9999/tama-reports";
+    public static final String PATIENT = "patient";
 
     @Mock
     private HttpClientService httpClientService;
@@ -37,7 +39,7 @@ public class PatientReportingServiceTest {
         MedicalHistoryRequest medicalHistoryRequest = new MedicalHistoryRequest();
         patientReportingService.save(request, medicalHistoryRequest);
         verify(medicalHistoryReportingService).save(medicalHistoryRequest);
-        verify(httpClientService).post(REPORTS_URL + "patient", request);
+        verify(httpClientService).post(REPORTS_URL + PATIENT, request);
     }
 
     @Test
@@ -46,6 +48,13 @@ public class PatientReportingServiceTest {
         MedicalHistoryRequest medicalHistoryRequest = new MedicalHistoryRequest();
         patientReportingService.update(request, medicalHistoryRequest);
         verify(medicalHistoryReportingService).update(medicalHistoryRequest);
-        verify(httpClientService).post(REPORTS_URL + "patient/update", request);
+        verify(httpClientService).post(REPORTS_URL + PATIENT + "/update", request);
+    }
+
+    @Test
+    public void shouldSavePillTime() {
+        PillTimeRequest request = new PillTimeRequest();
+        patientReportingService.savePillTimes(request);
+        verify(httpClientService).post(REPORTS_URL + PATIENT + "/update/pillTimes", request);
     }
 }

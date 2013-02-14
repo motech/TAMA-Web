@@ -4,6 +4,7 @@ import org.motechproject.http.client.service.HttpClientService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.reports.contract.MedicalHistoryRequest;
 import org.motechproject.tama.reports.contract.PatientRequest;
+import org.motechproject.tama.reports.contract.PillTimeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,5 +29,9 @@ public class PatientReportingService extends ReportingService<PatientRequest> {
     public void update(PatientRequest patientRequest, MedicalHistoryRequest medicalHistoryRequest) {
         super.update(patientRequest, PATH_TO_PATIENT + "/update");
         medicalHistoryReportingService.update(medicalHistoryRequest);
+    }
+
+    public void savePillTimes(PillTimeRequest request) {
+        httpClientService.post(reportingProperties.reportingURL() + PATH_TO_PATIENT + "/update/pillTimes", request);
     }
 }

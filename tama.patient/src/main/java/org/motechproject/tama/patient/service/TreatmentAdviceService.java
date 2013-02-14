@@ -2,9 +2,11 @@ package org.motechproject.tama.patient.service;
 
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.reporting.PillTimeRequestMapper;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.registry.CallPlanRegistry;
+import org.motechproject.tama.reporting.service.PatientReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +17,15 @@ public class TreatmentAdviceService {
     private AllTreatmentAdvices allTreatmentAdvices;
     private CallTimeSlotService callTimeSlotService;
     private CallPlanRegistry callPlanRegistry;
+    private PatientReportingService patientReportingService;
 
     @Autowired
-    public TreatmentAdviceService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, CallTimeSlotService callTimeSlotService, CallPlanRegistry callPlanRegistry) {
+    public TreatmentAdviceService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices, CallTimeSlotService callTimeSlotService, CallPlanRegistry callPlanRegistry, PatientReportingService patientReportingService) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.callTimeSlotService = callTimeSlotService;
         this.callPlanRegistry = callPlanRegistry;
+        this.patientReportingService = patientReportingService;
     }
 
     public String createRegimen(TreatmentAdvice treatmentAdvice, String userName) {
@@ -31,6 +35,8 @@ public class TreatmentAdviceService {
             callTimeSlotService.allotSlots(patient, treatmentAdvice);
         }
         callPlanRegistry.getCallPlan(patient.callPreference()).enroll(patient, treatmentAdvice);
+
+        patientReportingService.savePillTimes(new PillTimeRequestMapper(treatmentAdvice).map());
         return treatmentAdvice.getId();
     }
 
@@ -44,6 +50,8 @@ public class TreatmentAdviceService {
             callTimeSlotService.allotSlots(patient, treatmentAdvice);
         }
         callPlanRegistry.getCallPlan(patient.callPreference()).reEnroll(patient, treatmentAdvice);
+
+        patientReportingService.savePillTimes(new PillTimeRequestMapper(treatmentAdvice).map());
         return treatmentAdvice.getId();
     }
 
