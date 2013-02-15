@@ -44,6 +44,10 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
+            <artifactId>migration_from_0.6_to_0.7</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.tools</artifactId>
         </dependency>
         <dependency>

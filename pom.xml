@@ -529,6 +529,11 @@
             <!-- Child modules -->
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
+                <artifactId>migration_from_0.6_to_0.7</artifactId>
+                <version>0.7-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.common</artifactId>
                 <version>0.7-SNAPSHOT</version>
             </dependency>

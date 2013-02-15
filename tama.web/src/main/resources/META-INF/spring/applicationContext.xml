@@ -6,6 +6,7 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
     <import resource="classpath:applicationPlatformServerAPI.xml"/>
+    <import resource="classpath:applicationMigration0_6To0_7Context.xml"/>
     <import resource="classpath:applicationDailyPillReminderContext.xml"/>
     <import resource="classpath:applicationFourDayRecallContext.xml"/>
     <import resource="classpath:applicationSymptomReportingContext.xml"/>

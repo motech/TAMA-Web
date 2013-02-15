@@ -21,7 +21,7 @@ public class ClinicMigration extends Migration<Clinic> {
     }
 
     @Override
-    @Seed(version = "1.0", priority = 0)
+    @Seed(version = "2.0", priority = 0)
     public void migrate() {
         super.migrate();
     }
