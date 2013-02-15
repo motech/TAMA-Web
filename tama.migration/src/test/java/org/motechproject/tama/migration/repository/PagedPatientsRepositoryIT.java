@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationMigrationContext.xml")
@@ -51,23 +51,25 @@ public class PagedPatientsRepositoryIT extends SpringIntegrationTest {
 
     @Test
     public void shouldLoadPatientInPages() {
+        List<String> patientIds = asList("patientId1", "patientId2");
+
         List<Patient> patients = asList(
-                PatientBuilder.startRecording().withDefaults().withPatientId("patientId1").withClinic(clinic).build(),
-                PatientBuilder.startRecording().withDefaults().withPatientId("patientId2").withClinic(clinic).build()
+                PatientBuilder.startRecording().withDefaults().withPatientId(patientIds.get(0)).withClinic(clinic).build(),
+                PatientBuilder.startRecording().withDefaults().withPatientId(patientIds.get(1)).withClinic(clinic).build()
         );
         pagedPatientsRepository.add(patients.get(0), "userName");
         pagedPatientsRepository.add(patients.get(1), "userName");
         markForDeletion(patients);
 
-        assertEquals("patientId1", pagedPatientsRepository.get(0, 1).get(0).getPatientId());
-        assertEquals("patientId2", pagedPatientsRepository.get(1, 1).get(0).getPatientId());
-        assertPatientDependencies(patients);
+        assertTrue(patientIds.contains(pagedPatientsRepository.get(0, 1).get(0).getPatientId()));
+        assertTrue(patientIds.contains(pagedPatientsRepository.get(1, 1).get(0).getPatientId()));
+        assertTrue(pagedPatientsRepository.get(2, 1).isEmpty());
+        assertPatientDependencies(pagedPatientsRepository.get(0, 1));
     }
 
     private void assertPatientDependencies(List<Patient> patients) {
         for (Patient patient : patients) {
             assertNotNull(patient.getClinic());
-            assertNotNull(patient.getGender());
         }
     }
 }

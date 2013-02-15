@@ -30,8 +30,7 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
 
     @Override
     public void add(Clinic entity, String user) {
-        super.add(entity, user);
-        clinicReportingService.save(new ClinicRequestMapper(entity).map());
+        add(entity, user, true);
     }
 
     @Override
@@ -43,10 +42,7 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
     @Override
     public List<Clinic> getAll() {
         List<Clinic> clinicList = super.getAll();
-        for (Clinic clinic : clinicList) {
-            if (!StringUtils.isEmpty(clinic.getCityId()))
-                clinic.setCity(allCities.getBy(clinic.getCityId()));
-        }
+        loadDependencies(clinicList);
         return clinicList;
     }
 
@@ -56,5 +52,19 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
         if (!StringUtils.isEmpty(clinic.getCityId()))
             clinic.setCity(allCities.getBy(clinic.getCityId()));
         return clinic;
+    }
+
+    protected void add(Clinic entity, String user, boolean report) {
+        super.add(entity, user);
+        if (report) {
+            clinicReportingService.save(new ClinicRequestMapper(entity).map());
+        }
+    }
+
+    protected void loadDependencies(List<Clinic> clinicList) {
+        for (Clinic clinic : clinicList) {
+            if (!StringUtils.isEmpty(clinic.getCityId()))
+                clinic.setCity(allCities.getBy(clinic.getCityId()));
+        }
     }
 }
