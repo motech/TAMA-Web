@@ -1,5 +1,6 @@
 package org.motechproject.tama.migration.repository;
 
+import junit.framework.Assert;
 import org.ektorp.CouchDbConnector;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,8 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationMigrationContext.xml")
@@ -69,7 +69,7 @@ public class PagedPatientsRepositoryIT extends SpringIntegrationTest {
 
     private void assertPatientDependencies(List<Patient> patients) {
         for (Patient patient : patients) {
-            assertNotNull(patient.getClinic());
+            Assert.assertNotNull(patient.getClinic());
         }
     }
 }

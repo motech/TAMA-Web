@@ -2,7 +2,9 @@ package org.motechproject.tama.migration;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.motechproject.tama.migration.repository.PagedPatientEventsRepository;
 import org.motechproject.tama.patient.domain.PatientEvent;
 import org.motechproject.tama.patient.domain.PatientEventLog;
@@ -10,10 +12,8 @@ import org.motechproject.tama.reporting.service.PatientEventReportingService;
 import org.motechproject.tama.reports.contract.PatientEventRequest;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientEventLogMigrationTest {
 
@@ -26,7 +26,7 @@ public class PatientEventLogMigrationTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        MockitoAnnotations.initMocks(this);
         patientEventLogMigration = new PatientEventLogMigration(pagedPatientEventsRepository, patientEventReportingService);
     }
 
@@ -36,6 +36,6 @@ public class PatientEventLogMigrationTest {
 
         when(pagedPatientEventsRepository.get(0, 100)).thenReturn(asList(patientEventLog));
         patientEventLogMigration.migrate();
-        verify(patientEventReportingService).save(any(PatientEventRequest.class));
+        verify(patientEventReportingService).save(Matchers.any(PatientEventRequest.class));
     }
 }

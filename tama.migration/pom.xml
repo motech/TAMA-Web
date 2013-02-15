@@ -12,57 +12,13 @@
         <build.dir>../build</build.dir>
     </properties>
 
+    <modules>
+        <module>migration_from_0.6_to_0.7</module>
+    </modules>
+    <packaging>pom</packaging>
+
     <modelVersion>4.0.0</modelVersion>
     <artifactId>tama.migration</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.patient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.facility</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.facility</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.reporting</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.patient</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.facility</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama</groupId>
-            <artifactId>tama.common</artifactId>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject</groupId>
-            <artifactId>motech-seed</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.motechproject.tama.reports</groupId>
-            <artifactId>tama-reports-contract</artifactId>
-        </dependency>
-    </dependencies>
+
 </project>

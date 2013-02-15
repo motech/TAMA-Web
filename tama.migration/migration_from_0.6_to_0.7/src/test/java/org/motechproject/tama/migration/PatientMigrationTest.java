@@ -3,6 +3,7 @@ package org.motechproject.tama.migration;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.motechproject.tama.migration.repository.PagedPatientsRepository;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
@@ -18,7 +19,6 @@ import static java.util.Arrays.asList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PatientMigrationTest {
 
@@ -39,7 +39,7 @@ public class PatientMigrationTest {
 
     @Before
     public void setup() {
-        initMocks(this);
+        MockitoAnnotations.initMocks(this);
         patientMigration = new PatientMigration(patientRepository, allIVRLanguages, allGenders, allModesOfTransmission, allHIVTestReasons, reportingService);
     }
 
