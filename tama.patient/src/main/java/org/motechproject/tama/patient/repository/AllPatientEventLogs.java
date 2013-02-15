@@ -32,13 +32,19 @@ public class AllPatientEventLogs extends AbstractCouchRepository<PatientEventLog
     }
 
     public void add(PatientEventLog entity, String user) {
-        super.add(entity);
-        patientEventReportingService.save(new PatientEventRequestMapper(entity).map(user));
+        add(entity, user, true);
     }
 
     public void addAll(List<PatientEventLog> list, String userName) {
         for (PatientEventLog patientEventLog : list) {
             patientEventReportingService.save(new PatientEventRequestMapper(patientEventLog).map(userName));
+        }
+    }
+
+    protected void add(PatientEventLog entity, String user, boolean report) {
+        super.add(entity);
+        if (report) {
+            patientEventReportingService.save(new PatientEventRequestMapper(entity).map(user));
         }
     }
 }

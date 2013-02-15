@@ -21,6 +21,7 @@
         <module>tama.tools</module>
         <module>tama.web</module>
         <module>tama.reporting</module>
+        <module>tama.migration</module>
     </modules>
     <name>tama-all</name>
     <repositories>

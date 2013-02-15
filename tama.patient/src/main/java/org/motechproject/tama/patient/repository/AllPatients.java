@@ -220,7 +220,7 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         return db.queryView(q, Patient.class);
     }
 
-    private void loadPatientDependencies(Patient patient, boolean shouldLoadClinic) {
+    protected void loadPatientDependencies(Patient patient, boolean shouldLoadClinic) {
         if (patient == null) return;
         if (!StringUtils.isBlank(patient.getGenderId()))
             patient.setGender(allGenders.getBy(patient.getGenderId()));
