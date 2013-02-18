@@ -13,7 +13,7 @@ import org.motechproject.tama.patient.domain.Patients;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.builder.CallLogSummaryBuilder;
-import org.motechproject.tama.web.model.CallFlowDetails;
+import org.motechproject.tama.ivr.log.CallFlowDetails;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.resportbuilder.abstractbuilder.BatchReportBuilder;
 import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;

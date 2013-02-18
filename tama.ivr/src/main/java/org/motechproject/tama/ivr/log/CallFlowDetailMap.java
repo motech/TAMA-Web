@@ -1,6 +1,7 @@
-package org.motechproject.tama.web.model;
+package org.motechproject.tama.ivr.log;
 
 import org.motechproject.tama.common.CallTypeConstants;
+import org.motechproject.tama.ivr.log.CallFlowDetails;
 import org.motechproject.tama.ivr.log.CallFlowGroupView;
 import org.motechproject.tama.ivr.log.CallFlowGroupViews;
 

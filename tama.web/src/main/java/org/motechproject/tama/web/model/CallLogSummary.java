@@ -1,5 +1,7 @@
 package org.motechproject.tama.web.model;
 
+import org.motechproject.tama.ivr.log.CallFlowDetails;
+
 import java.util.Map;
 
 public class CallLogSummary {

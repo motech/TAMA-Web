@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.model;
+package org.motechproject.tama.ivr.log;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,10 +6,6 @@ import org.mockito.Mock;
 import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.IVREvent;
 import org.motechproject.tama.common.CallTypeConstants;
-import org.motechproject.tama.ivr.log.CallEventView;
-import org.motechproject.tama.ivr.log.CallFlowConstants;
-import org.motechproject.tama.ivr.log.CallFlowGroupView;
-import org.motechproject.tama.ivr.log.CallFlowGroupViews;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.model;
+package org.motechproject.tama.ivr.log;
 
 import org.apache.commons.lang.StringUtils;
 
