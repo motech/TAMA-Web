@@ -7,7 +7,7 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.IVREvent;
 import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.log.CallEventView;
-import org.motechproject.tama.web.view.CallFlowConstants;
+import org.motechproject.tama.ivr.log.CallFlowConstants;
 import org.motechproject.tama.ivr.log.CallFlowGroupView;
 import org.motechproject.tama.web.view.CallLogView;
 import org.motechproject.util.DateUtil;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.motechproject.tama.web.view.CallFlowConstants.TREE_TO_FLOW_MAP;
+import static org.motechproject.tama.ivr.log.CallFlowConstants.TREE_TO_FLOW_MAP;
 
 public class CallFlowDetailMapTest {
 

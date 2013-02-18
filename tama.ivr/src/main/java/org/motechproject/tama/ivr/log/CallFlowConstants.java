@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.view;
+package org.motechproject.tama.ivr.log;
 
 import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;

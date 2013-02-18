@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.motechproject.tama.web.view.CallFlowConstants.TREE_TO_FLOW_MAP;
+import static org.motechproject.tama.ivr.log.CallFlowConstants.TREE_TO_FLOW_MAP;
 
 public class CallFlowDetailMap {
     private Map<String, CallFlowDetails> callFlowDetailsMap = new HashMap<String, CallFlowDetails>();

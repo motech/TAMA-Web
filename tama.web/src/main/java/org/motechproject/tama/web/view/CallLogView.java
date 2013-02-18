@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.motechproject.tama.web.view.CallFlowConstants.TREE_TO_FLOW_MAP;
+import static org.motechproject.tama.ivr.log.CallFlowConstants.TREE_TO_FLOW_MAP;
 
 public class CallLogView {
 
