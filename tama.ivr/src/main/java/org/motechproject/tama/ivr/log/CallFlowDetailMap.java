@@ -1,9 +1,6 @@
 package org.motechproject.tama.ivr.log;
 
 import org.motechproject.tama.common.CallTypeConstants;
-import org.motechproject.tama.ivr.log.CallFlowDetails;
-import org.motechproject.tama.ivr.log.CallFlowGroupView;
-import org.motechproject.tama.ivr.log.CallFlowGroupViews;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +25,7 @@ public class CallFlowDetailMap {
         List<CallFlowGroupView> callFlowGroupViews = flowGroupViews.getCallFlowGroupViews();
         for (CallFlowGroupView callFlowGroupView : callFlowGroupViews) {
             callFlowDetailsMap.get(callFlowGroupView.getFlow()).flowAccessed(callFlowGroupView.getFlowDuration());
+            callFlowDetailsMap.get(callFlowGroupView.getFlow()).respondedWith(callFlowGroupView.getAllResponses());
         }
     }
 
