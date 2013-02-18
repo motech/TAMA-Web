@@ -6,9 +6,9 @@ import org.mockito.Mock;
 import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.IVREvent;
 import org.motechproject.tama.common.CallTypeConstants;
-import org.motechproject.tama.web.view.CallEventView;
+import org.motechproject.tama.ivr.log.CallEventView;
 import org.motechproject.tama.web.view.CallFlowConstants;
-import org.motechproject.tama.web.view.CallFlowGroupView;
+import org.motechproject.tama.ivr.log.CallFlowGroupView;
 import org.motechproject.tama.web.view.CallLogView;
 import org.motechproject.util.DateUtil;
 

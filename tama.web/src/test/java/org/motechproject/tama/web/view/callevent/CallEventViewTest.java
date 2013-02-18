@@ -7,7 +7,7 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.tama.ivr.StandardIVRResponse;
 import org.motechproject.tama.ivr.TamaIVRMessage;
-import org.motechproject.tama.web.view.CallEventView;
+import org.motechproject.tama.ivr.log.CallEventView;
 
 import java.util.List;
 import java.util.Properties;

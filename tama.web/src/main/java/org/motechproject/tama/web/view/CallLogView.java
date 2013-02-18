@@ -10,6 +10,8 @@ import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallState;
+import org.motechproject.tama.ivr.log.CallEventView;
+import org.motechproject.tama.ivr.log.CallFlowGroupView;
 
 import java.util.ArrayList;
 import java.util.HashSet;

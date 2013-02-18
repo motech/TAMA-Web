@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.view;
+package org.motechproject.tama.ivr.log;
 
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -7,6 +7,8 @@ import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.event.IVREvent;
 import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.common.CallTypeConstants;
+import org.motechproject.tama.ivr.log.CallEventView;
+import org.motechproject.tama.ivr.log.CallFlowGroupView;
 import org.motechproject.util.DateUtil;
 
 import static org.junit.Assert.assertEquals;

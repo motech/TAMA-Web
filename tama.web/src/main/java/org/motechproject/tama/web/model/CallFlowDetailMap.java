@@ -1,7 +1,7 @@
 package org.motechproject.tama.web.model;
 
 import org.motechproject.tama.common.CallTypeConstants;
-import org.motechproject.tama.web.view.CallFlowGroupView;
+import org.motechproject.tama.ivr.log.CallFlowGroupView;
 import org.motechproject.tama.web.view.CallLogView;
 
 import java.util.HashMap;

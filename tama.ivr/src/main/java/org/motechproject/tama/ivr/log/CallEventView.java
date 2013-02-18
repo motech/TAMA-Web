@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.view;
+package org.motechproject.tama.ivr.log;
 
 import org.joda.time.DateTime;
 import org.motechproject.ivr.event.CallEvent;
