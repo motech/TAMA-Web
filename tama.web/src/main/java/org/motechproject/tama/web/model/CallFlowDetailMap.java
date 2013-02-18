@@ -11,6 +11,7 @@ import java.util.Map;
 import static org.motechproject.tama.ivr.log.CallFlowConstants.TREE_TO_FLOW_MAP;
 
 public class CallFlowDetailMap {
+
     private Map<String, CallFlowDetails> callFlowDetailsMap = new HashMap<String, CallFlowDetails>();
 
     public CallFlowDetailMap() {
@@ -21,9 +22,9 @@ public class CallFlowDetailMap {
         callFlowDetailsMap.put(CallTypeConstants.HEALTH_TIPS, new CallFlowDetails());
     }
 
-    public void populateFlowDetails(List<CallLogView> callLogViews) {
-        if (callLogViews.isEmpty() || callLogViews.get(0).isMissedCall()) return;
-        List<CallFlowGroupView> callFlowGroupViews = callLogViews.get(0).getCallFlowGroupViews();
+    public void populateFlowDetails(CallLogView callLogView) {
+        if (null == callLogView || callLogView.isMissedCall()) return;
+        List<CallFlowGroupView> callFlowGroupViews = callLogView.getCallFlowGroupViews();
         for (CallFlowGroupView callFlowGroupView : callFlowGroupViews) {
             callFlowDetailsMap.get(callFlowGroupView.getFlow()).flowAccessed(callFlowGroupView.getFlowDuration());
         }

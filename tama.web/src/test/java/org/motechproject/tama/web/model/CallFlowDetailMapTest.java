@@ -13,7 +13,6 @@ import org.motechproject.tama.web.view.CallLogView;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -44,7 +43,7 @@ public class CallFlowDetailMapTest {
     public void shouldPopulateMapWithFlowDetails() {
         CallFlowDetailMap callFlowDetailMap = new CallFlowDetailMap();
 
-        callFlowDetailMap.populateFlowDetails(Arrays.asList(callLogView));
+        callFlowDetailMap.populateFlowDetails(callLogView);
 
         CallFlowDetails menuFlow = callFlowDetailMap.getCallFlowDetailsMap().get(CallTypeConstants.MENU);
         assertEquals(123, menuFlow.getTotalAccessDuration());
@@ -63,7 +62,7 @@ public class CallFlowDetailMapTest {
 
         CallFlowDetailMap callFlowDetailMap = new CallFlowDetailMap();
 
-        callFlowDetailMap.populateFlowDetails(Arrays.asList(callLogView));
+        callFlowDetailMap.populateFlowDetails(callLogView);
 
         for (String key : CallFlowConstants.TREE_TO_FLOW_MAP.keySet()) {
             String flowName = TREE_TO_FLOW_MAP.get(key);

@@ -16,10 +16,10 @@ import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.view.CallLogView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.apache.commons.lang.StringUtils.join;
 import static org.motechproject.tama.common.TAMAConstants.DATETIME_YYYY_MM_DD_FORMAT;
@@ -113,11 +113,10 @@ public class CallLogSummaryBuilder {
     }
 
     private String getCallLogFlows(CallLog callLog) {
-        List<CallLogView> callLogViews = mapCallLogToCallLogView(callLog);
-        if (callLogViews.isEmpty()) {
+        CallLogView callLogView = mapCallLogToCallLogView(callLog);
+        if (null == callLogView) {
             return " - ";
         } else {
-            CallLogView callLogView = callLogViews.get(0);
             return StringUtils.join(callLogView.getCallFlowGroupViews(), ", ");
         }
     }
@@ -159,9 +158,10 @@ public class CallLogSummaryBuilder {
         return allLoadedPatients.getBy(callLog.getPatientDocumentId());
     }
 
-    private List<CallLogView> mapCallLogToCallLogView(CallLog callLog) {
+    private CallLogView mapCallLogToCallLogView(CallLog callLog) {
         CallLogViewMapper callLogViewMapper = new CallLogViewMapper(allPatients, allLoadedPatients);
-        return callLogViewMapper.toCallLogView(Arrays.asList(callLog));
+        List<CallLogView> views = callLogViewMapper.toCallLogView(asList(callLog));
+        return CollectionUtils.isEmpty(views) ? null : views.get(0);
     }
 }
 
