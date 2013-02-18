@@ -11,6 +11,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.reporting.service.CallLogReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class CallLogService {
     private CallLogReportingService callLogReportingService;
 
     @Autowired
-    public CallLogService(AllCallLogs allCallDetails,
+    public CallLogService(@Qualifier("allCallLogs") AllCallLogs allCallDetails,
                           KookooCallDetailRecordsService kookooCallDetailRecordsService,
                           CallLogMapper callDetailRecordMapper,
                           AllPatients allPatients,

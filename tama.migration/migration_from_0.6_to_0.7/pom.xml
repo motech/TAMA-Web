@@ -23,6 +23,11 @@
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.ivr</artifactId>
+            <version>0.7-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.facility</artifactId>
             <version>0.7-SNAPSHOT</version>
         </dependency>
