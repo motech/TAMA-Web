@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.tools;
+package org.motechproject.tama.ivr.log.tools;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;

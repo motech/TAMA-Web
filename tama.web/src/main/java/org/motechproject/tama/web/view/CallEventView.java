@@ -5,8 +5,8 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.service.IVRService;
-import org.motechproject.tama.web.tools.KooKooResponseParser;
-import org.motechproject.tama.web.tools.Response;
+import org.motechproject.tama.ivr.log.tools.KooKooResponseParser;
+import org.motechproject.tama.ivr.log.tools.Response;
 
 import java.util.ArrayList;
 import java.util.List;

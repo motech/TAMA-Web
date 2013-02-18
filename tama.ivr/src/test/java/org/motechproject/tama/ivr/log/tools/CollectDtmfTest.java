@@ -1,6 +1,8 @@
-package org.motechproject.tama.web.tools;
+package org.motechproject.tama.ivr.log.tools;
 
 import org.junit.Test;
+import org.motechproject.tama.ivr.log.tools.KooKooResponseParser;
+import org.motechproject.tama.ivr.log.tools.Response;
 
 import java.util.Collections;
 import java.util.List;
