@@ -10,10 +10,7 @@ import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportS
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
-import org.motechproject.tama.web.model.DateFilter;
-import org.motechproject.tama.web.model.FilterWithPatientIDAndDateRange;
-import org.motechproject.tama.web.model.PatientEventFilter;
-import org.motechproject.tama.web.model.PatientIDFilter;
+import org.motechproject.tama.web.model.*;
 import org.motechproject.tama.web.resportbuilder.AllAppointmentCalendarsBuilder;
 import org.motechproject.tama.web.resportbuilder.AllDailyPillReminderReportsBuilder;
 import org.motechproject.tama.web.resportbuilder.AllOutboxReportsBuilder;
@@ -61,6 +58,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("patientDateFilter", new DateFilter());
         uiModel.addAttribute("patientEventFilter", new PatientEventFilter());
         uiModel.addAttribute("outboxMessageReportFilter", new FilterWithPatientIDAndDateRange());
+        uiModel.addAttribute("healthTipsReportFilter", new HealthTipsReportsFilter());
         uiModel.addAttribute("dosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
         callSummaryController.download(uiModel);
@@ -135,6 +133,20 @@ public class AnalysisDataController extends BaseController {
             logger.error("Error while generating excel report: " + e.getMessage());
         }
         return null;
+    }
+
+    @RequestMapping(value = "/healthTipsReport.xls", method = RequestMethod.GET)
+    public String downloadHealthTipsReport(@RequestParam("clinicName") String clinicName,
+                                           @RequestParam("patientId") String patientId,
+                                           @RequestParam("startDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate startDate,
+                                           @RequestParam("endDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate endDate,
+                                           Model uiModel) {
+        DateFilter filter = new DateFilter().setDates(startDate, endDate);
+        if (filter.isMoreThanOneYear()) {
+            return error(uiModel, "healthTips_warning");
+        } else {
+            return format("redirect:/tama-reports/healthTips/report?clinicName=%s&patientId=%s&startDate=%s&endDate=%s", clinicName, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"));
+        }
     }
 
     private String error(Model uiModel, String warning) {

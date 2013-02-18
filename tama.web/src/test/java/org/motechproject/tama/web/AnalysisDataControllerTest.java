@@ -13,6 +13,7 @@ import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.web.model.FilterWithPatientIDAndDateRange;
+import org.motechproject.tama.web.model.HealthTipsReportsFilter;
 import org.motechproject.util.DateUtil;
 import org.springframework.ui.Model;
 
@@ -73,6 +74,13 @@ public class AnalysisDataControllerTest {
     }
 
     @Test
+    public void shouldAddHealthTipsFilterModel() {
+        when(reportingProperties.reportingURL()).thenReturn("url");
+        assertEquals("analysisData/show", analysisDataController.show(model));
+        verify(model).addAttribute(eq("healthTipsReportFilter"), any(HealthTipsReportsFilter.class));
+    }
+
+    @Test
     public void shouldAddWarningMessageOnErrorForOutboxReport() {
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -120,6 +128,13 @@ public class AnalysisDataControllerTest {
         LocalDate today = DateUtil.today();
         String view = analysisDataController.downloadPatientEventReport("clinic", "patientId", today, today, "eventName", model);
         assertTrue(view.contains("redirect:/tama-reports/patientEvent/report"));
+    }
+
+    @Test
+    public void shouldRedirectToDownloadOfHealthTipsReport() {
+        LocalDate today = DateUtil.today();
+        String view = analysisDataController.downloadHealthTipsReport("clinic", "patientId", today, today, model);
+        assertTrue(view.contains("redirect:/tama-reports/healthTips/report"));
     }
 
     @Test
