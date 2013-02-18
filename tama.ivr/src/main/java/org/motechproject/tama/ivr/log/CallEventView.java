@@ -25,7 +25,6 @@ public class CallEventView {
         if (responseXMLs == null) {
             return responses;
         }
-
         for (String responseXML : responseXMLs) {
             Response response = KooKooResponseParser.fromXml(responseXML);
             List<String> audios = response.responsePlayed();

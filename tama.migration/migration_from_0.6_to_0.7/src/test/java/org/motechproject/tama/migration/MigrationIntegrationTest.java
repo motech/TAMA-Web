@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:applicationMigrationContext.xml")
+@ContextConfiguration(locations = "classpath:applicationMigration0_6To0_7Context.xml")
 public class MigrationIntegrationTest {
 
     @Autowired

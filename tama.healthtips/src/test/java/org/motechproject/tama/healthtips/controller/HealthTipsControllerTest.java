@@ -84,7 +84,7 @@ public class HealthTipsControllerTest {
     }
 
     @Test
-    public void shouldNotContinueToHealTipsWhenContinueToHealthTipsCriteriaNotSatisfied() {
+    public void shouldNotContinueToHealthTipsWhenContinueToHealthTipsCriteriaNotSatisfied() {
         when(healthTipService.nextHealthTip(patientId)).thenReturn("");
         when(continueToHealthTipsCriteria.shouldContinue(patientId)).thenReturn(false);
 

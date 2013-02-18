@@ -22,7 +22,7 @@ import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "classpath:applicationMigrationContext.xml")
+@ContextConfiguration(locations = "classpath:applicationMigration0_6To0_7Context.xml")
 public class PagedPatientsRepositoryIT extends SpringIntegrationTest {
 
     @Autowired

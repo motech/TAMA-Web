@@ -38,4 +38,8 @@ public class CallFlowDetails {
             this.responses.addAll(responses);
         }
     }
+
+    public List<Integer> getAllIndividualAccessDurations() {
+        return accessDurations;
+    }
 }

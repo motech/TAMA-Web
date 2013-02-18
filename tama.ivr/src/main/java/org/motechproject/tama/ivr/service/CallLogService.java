@@ -5,9 +5,11 @@ import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.mapper.CallLogMapper;
+import org.motechproject.tama.ivr.reporting.HealthTipsRequestMapper;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.reporting.service.CallLogReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,14 +25,19 @@ public class CallLogService {
     private final KookooCallDetailRecordsService kookooCallDetailRecordsService;
     private final CallLogMapper callDetailRecordMapper;
     private final AllPatients allPatients;
+    private CallLogReportingService callLogReportingService;
 
     @Autowired
-    public CallLogService(AllCallLogs allCallDetails, KookooCallDetailRecordsService kookooCallDetailRecordsService,
-                          CallLogMapper callDetailRecordMapper, AllPatients allPatients) {
+    public CallLogService(AllCallLogs allCallDetails,
+                          KookooCallDetailRecordsService kookooCallDetailRecordsService,
+                          CallLogMapper callDetailRecordMapper,
+                          AllPatients allPatients,
+                          CallLogReportingService callLogReportingService) {
         this.allCallLogs = allCallDetails;
         this.kookooCallDetailRecordsService = kookooCallDetailRecordsService;
         this.callDetailRecordMapper = callDetailRecordMapper;
         this.allPatients = allPatients;
+        this.callLogReportingService = callLogReportingService;
     }
 
     public void log(String callId, String patientDocumentId) {
@@ -49,6 +56,7 @@ public class CallLogService {
             callLog.callLanguage(patient.getLanguageCode());
         }
         allCallLogs.add(callLog);
+        callLogReportingService.reportHealthTips(new HealthTipsRequestMapper(callLog).map());
     }
 
     public List<CallLog> getAll() {
