@@ -91,6 +91,10 @@ public class CallLogView {
         }
     }
 
+    public CallFlowGroupViews getFlowGroupViews() {
+        return flowGroupViews;
+    }
+
     public boolean isMissedCall() {
         return flowGroupViews.hasMissedEvent();
     }

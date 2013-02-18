@@ -123,7 +123,7 @@ public class CallLogSummaryBuilder {
 
     public Map<String, CallFlowDetails> getCallFlowDetails(CallLog callLog) {
         CallFlowDetailMap callFlowDetailMap = new CallFlowDetailMap();
-        callFlowDetailMap.populateFlowDetails(mapCallLogToCallLogView(callLog));
+        callFlowDetailMap.populateFlowDetails(mapCallLogToCallLogView(callLog).getFlowGroupViews());
         return callFlowDetailMap.getCallFlowDetailsMap();
     }
 

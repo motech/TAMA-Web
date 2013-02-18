@@ -2,7 +2,7 @@ package org.motechproject.tama.web.model;
 
 import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.log.CallFlowGroupView;
-import org.motechproject.tama.web.view.CallLogView;
+import org.motechproject.tama.ivr.log.CallFlowGroupViews;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +22,9 @@ public class CallFlowDetailMap {
         callFlowDetailsMap.put(CallTypeConstants.HEALTH_TIPS, new CallFlowDetails());
     }
 
-    public void populateFlowDetails(CallLogView callLogView) {
-        if (null == callLogView || callLogView.isMissedCall()) return;
-        List<CallFlowGroupView> callFlowGroupViews = callLogView.getCallFlowGroupViews();
+    public void populateFlowDetails(CallFlowGroupViews flowGroupViews) {
+        if (null == flowGroupViews || flowGroupViews.hasMissedEvent()) return;
+        List<CallFlowGroupView> callFlowGroupViews = flowGroupViews.getCallFlowGroupViews();
         for (CallFlowGroupView callFlowGroupView : callFlowGroupViews) {
             callFlowDetailsMap.get(callFlowGroupView.getFlow()).flowAccessed(callFlowGroupView.getFlowDuration());
         }

@@ -9,7 +9,7 @@ import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.log.CallEventView;
 import org.motechproject.tama.ivr.log.CallFlowConstants;
 import org.motechproject.tama.ivr.log.CallFlowGroupView;
-import org.motechproject.tama.web.view.CallLogView;
+import org.motechproject.tama.ivr.log.CallFlowGroupViews;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -22,9 +22,9 @@ import static org.motechproject.tama.ivr.log.CallFlowConstants.TREE_TO_FLOW_MAP;
 public class CallFlowDetailMapTest {
 
     @Mock
-    private CallLogView callLogView;
+    private CallFlowGroupViews flowGroupViews;
 
-    CallFlowGroupView callFlowGroupView;
+    private CallFlowGroupView callFlowGroupView;
 
     @Before
     public void setUp() {
@@ -34,7 +34,7 @@ public class CallFlowDetailMapTest {
 
         callFlowGroupView.setFlowStartTime(DateUtil.now());
         callFlowGroupView.setFlowEndTime(DateUtil.now().plusMinutes(2).plusSeconds(3));
-        when(callLogView.getCallFlowGroupViews()).thenReturn(new ArrayList<CallFlowGroupView>() {{
+        when(flowGroupViews.getCallFlowGroupViews()).thenReturn(new ArrayList<CallFlowGroupView>() {{
             add(callFlowGroupView);
         }});
     }
@@ -43,7 +43,7 @@ public class CallFlowDetailMapTest {
     public void shouldPopulateMapWithFlowDetails() {
         CallFlowDetailMap callFlowDetailMap = new CallFlowDetailMap();
 
-        callFlowDetailMap.populateFlowDetails(callLogView);
+        callFlowDetailMap.populateFlowDetails(flowGroupViews);
 
         CallFlowDetails menuFlow = callFlowDetailMap.getCallFlowDetailsMap().get(CallTypeConstants.MENU);
         assertEquals(123, menuFlow.getTotalAccessDuration());
@@ -58,11 +58,9 @@ public class CallFlowDetailMapTest {
 
     @Test
     public void shouldNotPopulateMapWithFlowDetails_GivenAMissedCallLog() {
-        when(callLogView.isMissedCall()).thenReturn(true);
-
+        when(flowGroupViews.hasMissedEvent()).thenReturn(true);
         CallFlowDetailMap callFlowDetailMap = new CallFlowDetailMap();
-
-        callFlowDetailMap.populateFlowDetails(callLogView);
+        callFlowDetailMap.populateFlowDetails(flowGroupViews);
 
         for (String key : CallFlowConstants.TREE_TO_FLOW_MAP.keySet()) {
             String flowName = TREE_TO_FLOW_MAP.get(key);
