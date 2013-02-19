@@ -21,6 +21,6 @@ public class MedicalHistoryReportingService extends ReportingService<MedicalHist
     }
 
     public void update(MedicalHistoryRequest medicalHistoryRequest) {
-        super.update(medicalHistoryRequest, PATH_TO_MEDICAL_HISTORY + "/update");
+        super.update(medicalHistoryRequest, PATH_TO_MEDICAL_HISTORY);
     }
 }

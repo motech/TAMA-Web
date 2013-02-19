@@ -7,10 +7,11 @@ import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.motechproject.tama.common.repository.AllAuditRecords;
 import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.facility.domain.Clinician;
+import org.motechproject.tama.facility.reporting.ClinicianRequestMapper;
+import org.motechproject.tama.reporting.service.ClinicianReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -18,14 +19,16 @@ import java.util.List;
 public class AllClinicians extends AuditableCouchRepository<Clinician> {
     private AllClinics allClinics;
     private AllClinicianIds allClinicianIds;
+    private ClinicianReportingService clinicianReportingService;
     private PBEStringEncryptor encryptor;
 
     @Autowired
-    public AllClinicians(@Qualifier("tamaDbConnector") CouchDbConnector db, PBEStringEncryptor encryptor, AllClinics allClinics, AllClinicianIds clinicinanIds, AllAuditRecords allAuditRecords) {
+    public AllClinicians(@Qualifier("tamaDbConnector") CouchDbConnector db, PBEStringEncryptor encryptor, AllClinics allClinics, AllClinicianIds clinicinanIds, AllAuditRecords allAuditRecords, ClinicianReportingService clinicianReportingService) {
         super(Clinician.class, db, allAuditRecords);
         this.allClinics = allClinics;
         this.encryptor = encryptor;
         this.allClinicianIds = clinicinanIds;
+        this.clinicianReportingService = clinicianReportingService;
         initStandardDesignDocument();
     }
 
@@ -51,6 +54,7 @@ public class AllClinicians extends AuditableCouchRepository<Clinician> {
         clinician.setEncryptedPassword(encryptor.encrypt(clinician.getPassword()));
         allClinicianIds.add(clinician);
         super.add(clinician, userName);
+        clinicianReportingService.save(new ClinicianRequestMapper(clinician).map());
     }
 
     @Override
@@ -66,6 +70,7 @@ public class AllClinicians extends AuditableCouchRepository<Clinician> {
         clinician.setRevision(dbClinician.getRevision());
         clinician.setEncryptedPassword(dbClinician.getEncryptedPassword());
         super.update(clinician, userName);
+        clinicianReportingService.update(new ClinicianRequestMapper(clinician).map());
     }
 
     public void updatePassword(Clinician clinician, String userName) {

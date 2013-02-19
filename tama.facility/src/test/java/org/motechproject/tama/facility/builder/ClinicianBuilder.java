@@ -44,6 +44,11 @@ public class ClinicianBuilder {
         return this;
     }
 
+    public ClinicianBuilder withRole(Clinician.Role role) {
+        clinician.setRole(role);
+        return this;
+    }
+
     public Clinician build() {
         return this.clinician;
     }
@@ -61,6 +66,7 @@ public class ClinicianBuilder {
                 withContactNumber(validContactNumber).
                 withPassword(password).
                 withUserName(username).
+                withRole(Clinician.Role.StudyNurse).
                 withClinic(ClinicBuilder.startRecording().withDefaults().build());
     }
 }

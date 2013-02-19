@@ -19,6 +19,6 @@ public class ReportingService<RequestObject> {
     }
 
     protected void update(RequestObject requestObject, String path) {
-        httpClientService.post(reportingProperties.reportingURL() + path, requestObject);
+        httpClientService.post(reportingProperties.reportingURL() + path + "/update", requestObject);
     }
 }

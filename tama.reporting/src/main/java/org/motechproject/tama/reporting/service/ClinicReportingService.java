@@ -21,6 +21,6 @@ public class ClinicReportingService extends ReportingService<ClinicRequest> {
     }
 
     public void update(ClinicRequest clinicRequest) {
-        super.update(clinicRequest, PATH_TO_CLINIC + "/update");
+        super.update(clinicRequest, PATH_TO_CLINIC);
     }
 }

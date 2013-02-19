@@ -27,7 +27,7 @@ public class PatientReportingService extends ReportingService<PatientRequest> {
     }
 
     public void update(PatientRequest patientRequest, MedicalHistoryRequest medicalHistoryRequest) {
-        super.update(patientRequest, PATH_TO_PATIENT + "/update");
+        super.update(patientRequest, PATH_TO_PATIENT);
         medicalHistoryReportingService.update(medicalHistoryRequest);
     }
 
