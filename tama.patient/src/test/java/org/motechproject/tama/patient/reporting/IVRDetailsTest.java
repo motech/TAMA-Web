@@ -41,7 +41,7 @@ public class IVRDetailsTest {
         Patient patient = PatientBuilder.startRecording().withDefaults().withBestCallTime(new TimeOfDay(10, 10, TimeMeridiem.PM)).build();
         PatientRequest request = new PatientRequest();
         new IVRDetails(patient, "en", "gender").copyTo(request);
-        assertEquals("10:10 PM", request.getBestCallTime());
+        assertEquals("22:10:00", request.getBestCallTime());
     }
 
     @Test

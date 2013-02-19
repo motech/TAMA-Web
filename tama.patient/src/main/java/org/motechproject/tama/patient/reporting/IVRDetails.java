@@ -2,7 +2,9 @@ package org.motechproject.tama.patient.reporting;
 
 
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.common.domain.TimeOfDay;
+import org.motechproject.tama.common.util.TimeUtil;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.reports.contract.PatientRequest;
@@ -46,9 +48,17 @@ public class IVRDetails {
         request.setGender(gender);
         request.setIvrPassCode(ivrPassCode);
         request.setCallPreference(callPreference);
-        request.setBestCallTime(bestCallTime);
+        mapBestCallTime(request);
         request.setReceiveOTCAdvice(receiveOTCAdvice);
         request.setReceiveAppointmentReminder(receiveAppointmentReminder);
+    }
+
+    private void mapBestCallTime(PatientRequest request) {
+        if (StringUtils.isNotBlank(bestCallTime)) {
+            request.setBestCallTime(new TimeUtil(bestCallTime).toTimeStamp());
+        } else {
+            request.setBestCallTime("");
+        }
     }
 
     private String bestCallTime(Patient patient) {

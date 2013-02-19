@@ -1,5 +1,6 @@
 package org.motechproject.tama.common.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.motechproject.util.DateUtil;
@@ -13,16 +14,16 @@ public class TimeUtil {
     private int minutes;
 
     public TimeUtil(String timeString) {
+        timeString = StringUtils.remove(timeString, " ");
         Pattern pattern = Pattern.compile(TIME_STRING_FORMAT);
         Matcher matcher = pattern.matcher(timeString);
         boolean found = matcher.find();
         if (found) {
             String ampm = matcher.group(3);
             int parsedHour = Integer.parseInt(matcher.group(1));
-            if (ampm.equals("am")) {
+            if (ampm.equalsIgnoreCase("am")) {
                 hours = parsedHour == 12 ? 0 : parsedHour;
-            }
-            else if (ampm.equals("pm")) {
+            } else if (ampm.equalsIgnoreCase("pm")) {
                 hours = parsedHour == 12 ? parsedHour : parsedHour + 12;
             }
             minutes = Integer.parseInt(matcher.group(2));
@@ -45,6 +46,10 @@ public class TimeUtil {
 
     public int getMinutes() {
         return minutes;
+    }
+
+    public String toTimeStamp() {
+        return String.format("%s:%s:00", getHours(), getMinutes());
     }
 
     public LocalTime toLocalTime() {
