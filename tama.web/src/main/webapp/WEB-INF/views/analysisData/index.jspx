@@ -6,8 +6,8 @@
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:c="http://java.sun.com/jsp/jstl/core">
     <util:panel id="allAnalystReportsDownload" title="All Reports" openPane="true">
-        <div class="reportsDownload">
-            <spring:url value="/analysisData/appointmentCalendarReport.xls" var="download_appointment_calendar_url"/>
+        <div id="appointmentCalendarReportDownload" class="reportsDownload">
+            <spring:url value="/analysisData/appointmentCalendarReport.xls#appointmentCalendarReportDownload" var="download_appointment_calendar_url"/>
             <util:panel id="appointmentCalendarReportPane" title="Appointment Calendar report" openPane="true">
                 <form id="appointmentCalendarReportForm" action="${download_appointment_calendar_url}" method="GET">
                     <div class="control-group">
@@ -31,13 +31,13 @@
                 </script>
             </util:panel>
         </div>
-        <div class="reportsDownload">
+        <div id="dailyPillReminderReportDownload" class="reportsDownload">
             <c:if test="${dailyPillReminderReport_warning != null}">
                 <div class="center warning">
                     <c:out value="${dailyPillReminderReport_warning}"/>
                 </div>
             </c:if>
-            <spring:url value="/analysisData/dailyPillReminderReport.xls" var="download_dosage_adherence_report_url"/>
+            <spring:url value="/analysisData/dailyPillReminderReport.xls#dailyPillReminderReportDownload" var="download_dosage_adherence_report_url"/>
             <util:panel id="dosageAdherenceReportPane" title="Daily Adherence Report" openPane="true">
                 <form id="dosageAdherenceReportForm" action="${download_dosage_adherence_report_url}" method="GET">
                     <div class="control-group">
@@ -77,13 +77,13 @@
                 </script>
             </util:panel>
         </div>
-        <div class="reportsDownload">
+        <div id="outboxMessageReportDownload" class="reportsDownload">
             <c:if test="${outboxReport_warning != null}">
                 <div class="center warning">
                     <c:out value="${outboxReport_warning}"/>
                 </div>
             </c:if>
-            <spring:url value="/analysisData/outboxMessageReport.xls" var="download_outbox_report_url"/>
+            <spring:url value="/analysisData/outboxMessageReport.xls#outboxMessageReportDownload" var="download_outbox_report_url"/>
             <util:panel id="outboxMessageReportPane" title="Outbox Message Report" openPane="true">
                 <form id="outboxMessageReportForm" action="${download_outbox_report_url}" method="GET">
                     <div class="control-group">
@@ -123,13 +123,13 @@
                 </script>
             </util:panel>
         </div>
-        <div class="reportsDownload">
+        <div id="patientEventReportDownload" class="reportsDownload">
             <c:if test="${patientEventReport_warning != null}">
                 <div class="center warning">
                     <c:out value="${patientEventReport_warning}"/>
                 </div>
             </c:if>
-            <spring:url value="/analysisData/patientEventReport.xls" var="download_patient_event_url"/>
+            <spring:url value="/analysisData/patientEventReport.xls#patientEventReportDownload" var="download_patient_event_url"/>
             <util:panel id="patientEventReportPane" title="History of Patient Events Report" openPane="true">
                 <form id="patientEventReportForm" action="${download_patient_event_url}" method="GET">
                     <div class="control-group">
@@ -173,13 +173,13 @@
                 ]]>
             </script>
         </div>
-        <div class="reportsDownload">
+        <div id="healthTipsReportDownloadSection" class="reportsDownload">
             <c:if test="${healthTips_warning != null}">
                 <div class="center warning">
                     <c:out value="${healthTips_warning}"/>
                 </div>
             </c:if>
-            <spring:url value="/analysisData/healthTipsReport.xls" var="download_health_tips_url"/>
+            <spring:url value="/analysisData/healthTipsReport.xls#healthTipsReportDownloadSection" var="download_health_tips_url"/>
             <util:panel id="healthTipsReportPane" title="Health Tips Report" openPane="true">
                 <form id="healthTipsReportForm" action="${download_health_tips_url}" method="GET">
                     <div class="control-group">
@@ -220,13 +220,13 @@
                 ]]>
             </script>
         </div>
-        <div class="reportsDownload">
+        <div id="patientRegistrationReportDownload" class="reportsDownload">
             <c:if test="${patientRegistrationReport_warning != null}">
                 <div class="center warning">
                     <c:out value="${patientRegistrationReport_warning}"/>
                 </div>
             </c:if>
-            <spring:url value="/analysisData/patientRegistrationReport.xls" var="download_patient_url"/>
+            <spring:url value="/analysisData/patientRegistrationReport.xls#patientRegistrationReportDownload" var="download_patient_url"/>
             <util:panel id="patientReportPane" title="Patient Registration Details Report" openPane="true">
                 <form id="patientReportForm" action="${download_patient_url}" method="GET">
                     <div class="control-group">
