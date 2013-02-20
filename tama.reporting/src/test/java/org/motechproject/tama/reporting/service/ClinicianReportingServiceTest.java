@@ -41,6 +41,6 @@ public class ClinicianReportingServiceTest {
     public void shouldReportClinicianUpdate() {
         ClinicianRequest request = new ClinicianRequest();
         clinicianReportingService.update(request);
-        verify(httpClientService).post(REPORTS_URL + "clinician/update", request);
+        verify(httpClientService).put(REPORTS_URL + "clinician", request);
     }
 }

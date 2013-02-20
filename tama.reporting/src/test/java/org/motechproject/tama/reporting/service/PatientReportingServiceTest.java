@@ -48,13 +48,13 @@ public class PatientReportingServiceTest {
         MedicalHistoryRequest medicalHistoryRequest = new MedicalHistoryRequest();
         patientReportingService.update(request, medicalHistoryRequest);
         verify(medicalHistoryReportingService).update(medicalHistoryRequest);
-        verify(httpClientService).post(REPORTS_URL + PATIENT + "/update", request);
+        verify(httpClientService).put(REPORTS_URL + PATIENT, request);
     }
 
     @Test
     public void shouldSavePillTime() {
         PillTimeRequest request = new PillTimeRequest();
         patientReportingService.savePillTimes(request);
-        verify(httpClientService).post(REPORTS_URL + PATIENT + "/update/pillTimes", request);
+        verify(httpClientService).put(REPORTS_URL + PATIENT + "/pillTimes", request);
     }
 }

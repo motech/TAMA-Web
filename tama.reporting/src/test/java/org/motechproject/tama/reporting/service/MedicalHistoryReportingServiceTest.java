@@ -40,6 +40,6 @@ public class MedicalHistoryReportingServiceTest {
     public void shouldPublishPatientUpdate() {
         MedicalHistoryRequest request = new MedicalHistoryRequest();
         medicalHistoryReportingService.update(request);
-        verify(httpClientService).post(REPORTS_URL + "medicalHistory/update", request);
+        verify(httpClientService).put(REPORTS_URL + "medicalHistory", request);
     }
 }

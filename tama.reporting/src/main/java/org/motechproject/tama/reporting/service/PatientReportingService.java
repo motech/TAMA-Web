@@ -32,6 +32,6 @@ public class PatientReportingService extends ReportingService<PatientRequest> {
     }
 
     public void savePillTimes(PillTimeRequest request) {
-        httpClientService.post(reportingProperties.reportingURL() + PATH_TO_PATIENT + "/update/pillTimes", request);
+        httpClientService.put(reportingProperties.reportingURL() + PATH_TO_PATIENT + "/pillTimes", request);
     }
 }
