@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 @Component
 public class AllClinicians extends AuditableCouchRepository<Clinician> {
     private AllClinics allClinics;
@@ -43,7 +45,7 @@ public class AllClinicians extends AuditableCouchRepository<Clinician> {
         List<Clinician> clinicians = queryView("by_username", username);
         Clinician clinician = singleResult(clinicians);
         if (clinician != null) {
-            loadDependencies(clinician);
+            loadDependencies(asList(clinician));
             clinician.setPassword(encryptor.decrypt(clinician.getEncryptedPassword()));
         }
         return clinician;
@@ -51,10 +53,7 @@ public class AllClinicians extends AuditableCouchRepository<Clinician> {
 
     @Override
     public void add(Clinician clinician, String userName) {
-        clinician.setEncryptedPassword(encryptor.encrypt(clinician.getPassword()));
-        allClinicianIds.add(clinician);
-        super.add(clinician, userName);
-        clinicianReportingService.save(new ClinicianRequestMapper(clinician).map());
+        add(clinician, userName, true);
     }
 
     @Override
@@ -83,21 +82,31 @@ public class AllClinicians extends AuditableCouchRepository<Clinician> {
     @Override
     public List<Clinician> getAll() {
         List<Clinician> clinicianList = super.getAll();
-        for (Clinician clinician : clinicianList) {
-            loadDependencies(clinician);
-        }
+        loadDependencies(clinicianList);
         return clinicianList;
-    }
-
-    private void loadDependencies(Clinician clinician) {
-        if (!StringUtils.isEmpty(clinician.getClinicId())) clinician.setClinic(allClinics.get(clinician.getClinicId()));
     }
 
     @Override
     public Clinician get(String id) {
         Clinician clinician = super.get(id);
-        loadDependencies(clinician);
+        loadDependencies(asList(clinician));
         clinician.setPassword(encryptor.decrypt(clinician.getPassword()));
         return clinician;
+    }
+
+    protected void add(Clinician clinician, String userName, boolean report){
+        clinician.setEncryptedPassword(encryptor.encrypt(clinician.getPassword()));
+        allClinicianIds.add(clinician);
+        super.add(clinician, userName);
+        if(report){
+            clinicianReportingService.save(new ClinicianRequestMapper(clinician).map());
+        }
+    }
+
+    protected void loadDependencies(List<Clinician> clinicians) {
+        for (Clinician clinician : clinicians) {
+            if (!StringUtils.isEmpty(clinician.getClinicId()))
+                clinician.setClinic(allClinics.get(clinician.getClinicId()));
+        }
     }
 }

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 @Component
 public class AllClinics extends AuditableCouchRepository<Clinic> {
 
@@ -49,8 +51,7 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
     @Override
     public Clinic get(String id) {
         Clinic clinic = super.get(id);
-        if (!StringUtils.isEmpty(clinic.getCityId()))
-            clinic.setCity(allCities.getBy(clinic.getCityId()));
+        loadDependencies(asList(clinic));
         return clinic;
     }
 
