@@ -6,6 +6,8 @@ import org.mockito.Mock;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.dto.SendSMSRequest;
+import org.motechproject.tama.ivr.reporting.SMSType;
 import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
@@ -56,7 +58,7 @@ public class SendSMSCommandTest {
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(sendSMSService, times(1)).send(eq(patient.getMobilePhoneNumber()), anyString());
+        verify(sendSMSService, times(1)).send(eq(new SendSMSRequest(patient.getMobilePhoneNumber(), patient.getId())), anyString(), eq(SMSType.OTC));
     }
 
     @Test
@@ -67,7 +69,7 @@ public class SendSMSCommandTest {
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(sendSMSService, times(1)).send(patient.getMobilePhoneNumber(), descriptionOfAdvice);
+        verify(sendSMSService, times(1)).send(eq(new SendSMSRequest(patient.getMobilePhoneNumber(), patient.getId())), eq(descriptionOfAdvice), eq(SMSType.OTC));
     }
 
     @Test
@@ -88,7 +90,7 @@ public class SendSMSCommandTest {
 
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(sendSMSService).send(eq(patient.getMobilePhoneNumber()), anyString());
+        verify(sendSMSService).send(eq(new SendSMSRequest(patient.getMobilePhoneNumber(), patient.getId())), anyString(), eq(SMSType.OTC));
     }
 
     @Test
@@ -102,15 +104,15 @@ public class SendSMSCommandTest {
     }
 
     @Test
-    public void shouldAddWillSendSMSMessageOnlyOnce_IrrespectiveOfHowManySMSAreSent(){
+    public void shouldAddWillSendSMSMessageOnlyOnce_IrrespectiveOfHowManySMSAreSent() {
         String descriptionOfAdvice1 = "Take one tablet of crocin";
         String descriptionOfAdvice2 = "Take a paracetamol tablet thrice a day for 5 days after eating something.";
         sendSMSCommand = new SendSMSCommand(Arrays.asList(new AudioPrompt().setName("adv_crocin01"), new AudioPrompt().setName("adv_halfhourcro01")),
                 sendSMSService, allPatients, messageDescription);
         when(allPatients.get(tamaivrContextForTest.patientDocumentId())).thenReturn(patient);
         String[] willSendSMSMessage = sendSMSCommand.executeCommand(tamaivrContextForTest);
-        verify(sendSMSService, times(1)).send(patient.getMobilePhoneNumber(), descriptionOfAdvice1);
-        verify(sendSMSService, times(1)).send(patient.getMobilePhoneNumber(), descriptionOfAdvice2);
+        verify(sendSMSService, times(1)).send(eq(new SendSMSRequest(patient.getMobilePhoneNumber(), patient.getId())), eq(descriptionOfAdvice1), eq(SMSType.OTC));
+        verify(sendSMSService, times(1)).send(eq(new SendSMSRequest(patient.getMobilePhoneNumber(), patient.getId())), eq(descriptionOfAdvice2), eq(SMSType.OTC));
         assertEquals(1, willSendSMSMessage.length);
     }
 

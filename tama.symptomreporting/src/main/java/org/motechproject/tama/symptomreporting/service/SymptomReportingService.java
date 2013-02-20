@@ -6,6 +6,8 @@ import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.ivr.dto.SendSMSRequest;
+import org.motechproject.tama.ivr.reporting.SMSType;
 import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
@@ -81,33 +83,39 @@ public class SymptomReportingService {
         SymptomReport symptomReport = allSymptomReports.findByCallId(kookooCallDetailRecord.getVendorCallId());
         Patient patient = allPatients.get(patientDocId);
         Regimen regimen = allRegimens.getBy(allTreatmentAdvices.currentTreatmentAdvice(patientDocId).getRegimenId());
-        List<String> cliniciansMobileNumbers = new ArrayList<String>();
+        List<SendSMSRequest> cliniciansMobileNumbers = new ArrayList<>();
         for (Clinic.ClinicianContact clinicianContact : patient.getClinic().getClinicianContacts()) {
-            cliniciansMobileNumbers.add(clinicianContact.getPhoneNumber());
+            cliniciansMobileNumbers.add(new SendSMSRequest(clinicianContact.getPhoneNumber(), patient.getClinic_id()));
         }
         notifyCliniciansAboutOTCAdvice(patient, regimen, cliniciansMobileNumbers, symptomReport);
     }
 
-    void notifyCliniciansAboutOTCAdvice(Patient patient, Regimen regimen, List<String> cliniciansMobileNumbers, SymptomReport symptomReport) {
+    void notifyCliniciansAboutOTCAdvice(Patient patient, Regimen regimen, List<SendSMSRequest> clinicianContacts, SymptomReport symptomReport) {
         List<String> symptoms = new ArrayList<String>();
-        List<String> numbersToSendSMS = new ArrayList<String>();
-        numbersToSendSMS.addAll(cliniciansMobileNumbers);
-        numbersToSendSMS.addAll(additionalNumbersToSendSMS());
 
         for (String symptomId : symptomReport.getSymptomIds()) {
             symptoms.add(((String) symptomReportingProperties.get(symptomId)));
         }
+
         String symptomsReported = StringUtils.join(symptoms, ",");
         String adviceGiven = fullAdviceGiven(symptomReport.getAdviceGiven());
-
         String message = String.format("%s (%s):%s:%s, trying to contact. %s. %s", patient.getPatientId(), patient.getClinic().getName(), patient.getMobilePhoneNumber(), regimen.getDisplayName(), symptomsReported, adviceGiven);
-        sendSMSService.send(numbersToSendSMS, message);
+        sendSMSService.send(clinicianContacts, message, SMSType.Clinician);
+        sendSMSService.send(additionalNumbersToSendSMS(), message, SMSType.AdditionalSMS);
     }
 
-    private List<String> additionalNumbersToSendSMS() {
+    private List<SendSMSRequest> additionalNumbersToSendSMS() {
         String additionalSMSNumbers = (String) clinicianSMSProperties.get("additional_sms_numbers");
-        if (StringUtils.isEmpty(additionalSMSNumbers)) return Collections.emptyList();
-        return Arrays.asList(additionalSMSNumbers.replaceAll(" ", "").split(","));
+        if (StringUtils.isEmpty(additionalSMSNumbers)) {
+            return Collections.emptyList();
+        } else {
+            List<String> additionalNumbers = Arrays.asList(additionalSMSNumbers.replaceAll(" ", "").split(","));
+            List<SendSMSRequest> requests = new ArrayList<>();
+            for (String additionalNumber : additionalNumbers) {
+                requests.add(new SendSMSRequest(additionalNumber));
+            }
+            return requests;
+        }
     }
 
     public String fullAdviceGiven(String adviceGiven) {

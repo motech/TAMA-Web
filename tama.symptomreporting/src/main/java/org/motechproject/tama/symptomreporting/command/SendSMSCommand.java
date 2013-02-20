@@ -6,6 +6,8 @@ import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.BaseTreeCommand;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.dto.SendSMSRequest;
+import org.motechproject.tama.ivr.reporting.SMSType;
 import org.motechproject.tama.ivr.service.SendSMSService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -40,7 +42,7 @@ public class SendSMSCommand extends BaseTreeCommand {
             for (Prompt advicePrompt : getAdvicePrompts()) {
                 String messageBody = prescriptionSMSProperties.getProperty(advicePrompt.getName());
                 if (StringUtils.isNotEmpty(messageBody)) {
-                    sendSMSService.send(patient.getMobilePhoneNumber(), messageBody);
+                    sendSMSService.send(new SendSMSRequest(patient.getMobilePhoneNumber(), patient.getId()), messageBody, SMSType.OTC);
                     messages.add(TamaIVRMessage.WILL_SEND_SMS);
                 }
             }
