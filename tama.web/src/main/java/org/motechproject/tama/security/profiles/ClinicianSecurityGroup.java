@@ -10,20 +10,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class ClinicianSecurityGroup extends AbstractSecurityGroup {
     @Autowired
-    private AllClinicians clinicians;
+    private AllClinicians allClinicians;
 
     public ClinicianSecurityGroup() {
         add(Role.CLINICIAN_DOCTOR, Role.CLINICIAN_STUDY_NURSE);
     }
 
-    public ClinicianSecurityGroup(AllClinicians clinicians) {
+    public ClinicianSecurityGroup(AllClinicians allClinicians) {
         this();
-        this.clinicians = clinicians;
+        this.allClinicians = allClinicians;
     }
 
     @Override
     public AuthenticatedUser getAuthenticatedUser(String username, String password) {
-        Clinician clinician = clinicians.findByUserNameAndPassword(username, password);
+        Clinician clinician = allClinicians.findByUserNameAndPassword(username, password);
         if (clinician == null) return null;
         return userFor(clinician);
     }
