@@ -269,5 +269,15 @@
             </script>
         </div>
         <jsp:include page="/WEB-INF/views/callsummary/analystDownload.jspx"/>
+        <div id="clinicianReportDownload" class="reportsDownload">
+            <spring:url value="/analysisData/clinicianReport.xls" var="download_clinician_url"/>
+            <util:panel id="clinicianReportPane" title="Clinicians Report" openPane="true">
+                <form id="patientReportForm" action="${download_clinician_url}" method="GET">
+                    <div class="control-group">
+                        <input type="submit" id="downloadClinicianReport" value="DOWNLOAD AS EXCEL"/>
+                    </div>
+                </form>
+            </util:panel>
+        </div>
     </util:panel>
 </div>
