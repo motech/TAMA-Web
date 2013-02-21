@@ -48,4 +48,16 @@ public class ClinicianRequestMapperTest {
         ClinicianRequest clinicianRequest = clinicianRequestMapper.map();
         assertEquals(clinician.getRole().name(), clinicianRequest.getRole());
     }
+
+    @Test
+    public void shouldMapUserName() {
+        ClinicianRequest clinicianRequest = clinicianRequestMapper.map();
+        assertEquals(clinician.getUsername(), clinicianRequest.getUserName());
+    }
+
+    @Test
+    public void shouldMapName() {
+        ClinicianRequest clinicianRequest = clinicianRequestMapper.map();
+        assertEquals(clinician.getName(), clinicianRequest.getName());
+    }
 }

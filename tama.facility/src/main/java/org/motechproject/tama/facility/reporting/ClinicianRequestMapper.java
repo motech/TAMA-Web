@@ -19,6 +19,8 @@ public class ClinicianRequestMapper {
         request.setContactNumber(clinician.getContactNumber());
         request.setAlternateNumber(clinician.getAlternateContactNumber());
         request.setRole(clinician.getRole().name());
+        request.setUserName(clinician.getUsername());
+        request.setName(clinician.getName());
         return request;
     }
 }

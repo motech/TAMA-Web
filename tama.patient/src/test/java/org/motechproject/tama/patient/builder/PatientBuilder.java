@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.common.util.UniqueMobileNumber;
+import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.refdata.domain.Gender;
@@ -121,7 +122,7 @@ public class PatientBuilder {
                 withMobileNumber(Long.toString(UniqueMobileNumber.generate())).
                 withPasscode("1234").
                 withGender(gender).
-                withClinic(Clinic.newClinic()).
+                withClinic(ClinicBuilder.startRecording().withDefaults().build()).
                 withIVRLanguage(IVRLanguage.newIVRLanguage("English", "en")).
                 withTravelTimeToClinicInDays(1).
                 withTravelTimeToClinicInHours(2).
