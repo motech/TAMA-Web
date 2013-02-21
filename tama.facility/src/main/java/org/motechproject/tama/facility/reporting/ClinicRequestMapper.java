@@ -16,6 +16,7 @@ public class ClinicRequestMapper {
         ClinicRequest request = new ClinicRequest();
         request.setClinicId(clinic.getId());
         request.setClinicName(clinic.getName());
+        request.setCityName(clinic.getCity().getName());
         return request;
     }
 }
