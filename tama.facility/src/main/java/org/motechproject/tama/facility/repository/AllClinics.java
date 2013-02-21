@@ -6,8 +6,12 @@ import org.motechproject.tama.common.repository.AllAuditRecords;
 import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.reporting.ClinicRequestMapper;
+import org.motechproject.tama.facility.reporting.ClinicianContactRequestMapper;
 import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
+import org.motechproject.tama.reporting.ClinicReportingRequest;
 import org.motechproject.tama.reporting.service.ClinicReportingService;
+import org.motechproject.tama.reports.contract.ClinicRequest;
+import org.motechproject.tama.reports.contract.ClinicianContactRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -32,13 +36,16 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
 
     @Override
     public void add(Clinic entity, String user) {
-        add(entity, user, true);
+        super.add(entity, user);
+        publishClinicReport(entity);
     }
 
     @Override
     public void update(Clinic entity, String user) {
         super.update(entity, user);
-        clinicReportingService.update(new ClinicRequestMapper(allCities,entity).map());
+        ClinicRequest clinicRequest = new ClinicRequestMapper(allCities, entity).map();
+        List<ClinicianContactRequest> contactRequests = new ClinicianContactRequestMapper(entity).map();
+        clinicReportingService.update(new ClinicReportingRequest(clinicRequest, contactRequests));
     }
 
     @Override
@@ -55,11 +62,10 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
         return clinic;
     }
 
-    protected void add(Clinic entity, String user, boolean report) {
-        super.add(entity, user);
-        if (report) {
-            clinicReportingService.save(new ClinicRequestMapper(allCities,entity).map());
-        }
+    private void publishClinicReport(Clinic entity) {
+        ClinicRequest clinicRequest = new ClinicRequestMapper(allCities, entity).map();
+        List<ClinicianContactRequest> contactRequests = new ClinicianContactRequestMapper(entity).map();
+        clinicReportingService.save(new ClinicReportingRequest(clinicRequest, contactRequests));
     }
 
     protected void loadDependencies(List<Clinic> clinicList) {

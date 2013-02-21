@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PatientReportingService extends ReportingService<PatientRequest> {
+public class PatientReportingService extends ReportingService {
 
     public static final String PATH_TO_PATIENT = "patient";
 

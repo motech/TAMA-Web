@@ -10,6 +10,8 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
+import static junit.framework.Assert.assertFalse;
+
 public class ClinicTest {
 
     private Validator validator;
@@ -47,5 +49,13 @@ public class ClinicTest {
         contact.setPhoneNumber("abcde");
         Set<ConstraintViolation<Clinic.ClinicianContact>> constraintViolations = validator.validate(contact);
         ValidationUtil.assertConstraintViolation(constraintViolations, "phoneNumber", "Mobile Phone Number should be numeric and 10 digits long.");
+    }
+
+    @Test
+    public void shouldIdentifyClinicianContactsUniquely() {
+        Clinic.ClinicianContact clinicianContact = new Clinic.ClinicianContact("name", "phoneNumber");
+        Clinic.ClinicianContact anotherClinicianContact = new Clinic.ClinicianContact("name", "phoneNumber");
+
+        assertFalse(clinicianContact.getId().equals(anotherClinicianContact.getId()));
     }
 }

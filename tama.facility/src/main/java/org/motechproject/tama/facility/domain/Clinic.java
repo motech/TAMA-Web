@@ -5,6 +5,7 @@ import org.ektorp.support.TypeDiscriminator;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.TAMAMessages;
 import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.tama.common.util.UUIDUtil;
 import org.motechproject.tama.refdata.domain.City;
 
 import javax.persistence.ManyToOne;
@@ -126,16 +127,28 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
         @NotNull(message = "Clinician name is mandatory")
         private String name;
 
+        private String id;
+
         @NotNull(message = "Phone number is mandatory")
         @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
         private String phoneNumber;
 
         public ClinicianContact() {
+            id = UUIDUtil.newUUID();
         }
 
         public ClinicianContact(String name, String phoneNumber) {
+            this();
             this.name = name;
             this.phoneNumber = phoneNumber;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
 
         public String getName() {

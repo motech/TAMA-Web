@@ -39,7 +39,7 @@ public class SMSLogMapperTest {
     public void shouldMapSMSType() {
         assertNull(request.getSmsType());
         request = new SMSLogMapper("externalId", SMSType.OTC, log).map();
-        assertEquals("o", request.getSmsType());
+        assertEquals("O", request.getSmsType());
     }
 
     @Test

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PatientEventReportingService extends ReportingService<PatientEventRequest>{
+public class PatientEventReportingService extends ReportingService {
 
     public static final String PATH_TO_PATIENT_EVENT = "/patientEvent";
 

@@ -4,7 +4,7 @@ package org.motechproject.tama.reporting.service;
 import org.motechproject.http.client.service.HttpClientService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 
-public class ReportingService<RequestObject> {
+public class ReportingService {
 
     protected HttpClientService httpClientService;
     protected ReportingProperties reportingProperties;
@@ -14,11 +14,11 @@ public class ReportingService<RequestObject> {
         this.httpClientService = httpClientService;
     }
 
-    protected void save(RequestObject requestObject, String path) {
+    protected void save(Object requestObject, String path) {
         httpClientService.post(reportingProperties.reportingURL() + path, requestObject);
     }
 
-    protected void update(RequestObject requestObject, String path) {
+    protected void update(Object requestObject, String path) {
         httpClientService.put(reportingProperties.reportingURL() + path, requestObject);
     }
 }

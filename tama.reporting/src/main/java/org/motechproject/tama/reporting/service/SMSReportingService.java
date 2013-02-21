@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SMSReportingService extends ReportingService<SMSLogRequest> {
+public class SMSReportingService extends ReportingService {
 
     public static final String PATH_TO_SMS_LOG = "smsLog";
 

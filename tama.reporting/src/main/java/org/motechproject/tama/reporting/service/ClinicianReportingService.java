@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClinicianReportingService extends ReportingService<ClinicianRequest> {
+public class ClinicianReportingService extends ReportingService {
 
     public static final String PATH_TO_CLINICIAN = "clinician";
 

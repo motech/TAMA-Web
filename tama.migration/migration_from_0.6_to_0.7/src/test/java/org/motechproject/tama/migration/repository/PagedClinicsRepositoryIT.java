@@ -62,8 +62,8 @@ public class PagedClinicsRepositoryIT extends SpringIntegrationTest {
                 ClinicBuilder.startRecording().withDefaults().withName(clinicNames.get(1)).withCity(city).build()
         );
 
-        clinicsRepository.add(clinics.get(0), "userName", false);
-        clinicsRepository.add(clinics.get(1), "userName", false);
+        clinicsRepository.add(clinics.get(0), "userName");
+        clinicsRepository.add(clinics.get(1), "userName");
         markForDeletion(clinics);
 
         assertTrue(clinicNames.contains(clinicsRepository.get(0, 1).get(0).getName()));

@@ -28,10 +28,5 @@ public class PagedClinicsRepository extends AllClinics implements Paged<Clinic> 
         loadDependencies(clinics);
         return clinics;
     }
-
-    @Override
-    protected void add(Clinic entity, String user, boolean report) {
-        super.add(entity, user, report);
-    }
 }
 

@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MedicalHistoryReportingService extends ReportingService<MedicalHistoryRequest> {
+public class MedicalHistoryReportingService extends ReportingService {
 
     public static final String PATH_TO_MEDICAL_HISTORY = "medicalHistory";
 
