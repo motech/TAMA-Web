@@ -16,6 +16,8 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
+
 @ContextConfiguration(locations = "classpath*:applicationFacilityContext.xml", inheritLocations = false)
 public class AllClinicsIT extends SpringIntegrationTest {
 
@@ -42,6 +44,22 @@ public class AllClinicsIT extends SpringIntegrationTest {
     }
 
     @Test
+    public void shouldFindClinicianContactByPhoneNumber() {
+        City city = City.newCity("Pune");
+        allCities.add(city);
+
+        allCitiesCache.refresh();
+
+        Clinic.ClinicianContact contact = new Clinic.ClinicianContact("name", "1234");
+
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withClinicianContacts(contact).build();
+        allClinics.add(clinic, "user");
+        markForDeletion(clinic);
+
+        assertNotNull(allClinics.findByPhoneNumber("1234"));
+    }
+
+    @Test
     public void shouldLoadCorrespondingCityWhenQueryingClinic() {
         City city = City.newCity("Pune");
         allCities.add(city);
@@ -53,8 +71,8 @@ public class AllClinicsIT extends SpringIntegrationTest {
 
         Clinic returnedClinic = allClinics.get(clinic.getId());
 
-        Assert.assertNotNull(returnedClinic);
-        Assert.assertNotNull(returnedClinic.getCity());
+        assertNotNull(returnedClinic);
+        assertNotNull(returnedClinic.getCity());
         Assert.assertEquals(city.getName(), returnedClinic.getCity().getName());
 
         markForDeletion(clinic);

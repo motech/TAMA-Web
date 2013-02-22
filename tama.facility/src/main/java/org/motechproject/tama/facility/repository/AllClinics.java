@@ -2,6 +2,8 @@ package org.motechproject.tama.facility.repository;
 
 import org.apache.commons.lang.StringUtils;
 import org.ektorp.CouchDbConnector;
+import org.ektorp.ViewQuery;
+import org.ektorp.support.View;
 import org.motechproject.tama.common.repository.AllAuditRecords;
 import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.facility.domain.Clinic;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Component
 public class AllClinics extends AuditableCouchRepository<Clinic> {
@@ -53,6 +56,13 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
         List<Clinic> clinicList = super.getAll();
         loadDependencies(clinicList);
         return clinicList;
+    }
+
+    @View(name = "find_contact_by_phone_number", map = "function(doc){ if(doc.documentType == 'Clinic') { for(i in doc.clinicianContacts){ emit(doc.clinicianContacts[i].phoneNumber, doc.clinicianContacts[i]); } }}")
+    public Clinic.ClinicianContact findByPhoneNumber(String phoneNumber) {
+        ViewQuery query = createQuery("find_contact_by_phone_number").key(phoneNumber);
+        List<Clinic.ClinicianContact> contacts = db.queryView(query, Clinic.ClinicianContact.class);
+        return isNotEmpty(contacts) ? contacts.get(0) : null;
     }
 
     @Override
