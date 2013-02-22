@@ -48,6 +48,8 @@ public class ClinicMigration extends Migration<Clinic> {
             clinicianContact.setId(UUIDUtil.newUUID());
         }
         allDocuments.update(document);
+        /*Dummy fetch to rebuild index*/
+        allDocuments.get(document.getId());
     }
 
     private void publishToReports(Clinic document) {

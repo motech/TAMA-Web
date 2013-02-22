@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.motechproject.appointments.api.service.contract.VisitResponse;
@@ -37,6 +36,7 @@ import org.motechproject.tama.refdata.domain.Regimen;
 import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.symptomreporting.domain.SymptomReport;
 import org.motechproject.tama.symptomreporting.repository.AllSymptomReports;
+import org.motechproject.tama.symptomreporting.testdata.PatientSetup;
 import org.motechproject.tama.symptomsreporting.decisiontree.domain.MedicalCondition;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -79,13 +79,11 @@ public class SymptomReportingServiceTest extends BaseUnitTest {
     private AllClinicVisits allClinicVisits;
 
     private final String patientId = "patientId";
+
     private final String patientDocId = "patientDocId";
 
     private String clinicId = UUID.randomUUID().toString();
 
-    private final SendSMSRequest request1 = new SendSMSRequest("ph1", clinicId);
-    private final SendSMSRequest request2 = new SendSMSRequest("ph2", clinicId);
-    private final SendSMSRequest request3 = new SendSMSRequest("ph3", clinicId);
     private final SendSMSRequest additionalRequest1 = new SendSMSRequest("adr1", StringUtils.EMPTY);
     private final SendSMSRequest additionalRequest2 = new SendSMSRequest("adr2", StringUtils.EMPTY);
 
@@ -141,9 +139,20 @@ public class SymptomReportingServiceTest extends BaseUnitTest {
     @Test
     public void shouldSendSMSToNotifyCliniciansAboutOTCAdvice() {
         Clinic clinic = ClinicBuilder.startRecording().withName("pujari").withId(clinicId).build();
+        clinic.setClinicianContacts(Arrays.asList(
+                new Clinic.ClinicianContact("name1", "ph1")
+        ));
+
+
         Patient patient = PatientBuilder.startRecording().withId(patientDocId).withClinic(clinic).withMobileNumber("1234567890").withPatientId(patientId).build();
         Regimen regimen = mock(Regimen.class);
+
         SymptomReport symptomReport = mock(SymptomReport.class);
+
+        SendSMSRequest request1 = new SendSMSRequest("ph1", clinic.getClinicianContacts().get(0).getId());
+        SendSMSRequest request2 = new SendSMSRequest("ph2", clinic.getClinicianContacts().get(0).getId());
+        SendSMSRequest request3 = new SendSMSRequest("ph3", clinic.getClinicianContacts().get(0).getId());
+
         when(regimen.getDisplayName()).thenReturn("D4T+EFV+NVP");
         when(symptomReport.getAdviceGiven()).thenReturn("adv_crocin01");
         when(clinicianSMSProperties.get("adv_crocin01")).thenReturn("ADV: Some advice");
@@ -160,17 +169,22 @@ public class SymptomReportingServiceTest extends BaseUnitTest {
 
     @Test
     public void shouldSMS_OTCAdviceToAllCliniciansInAGivenClinic_WhenDialToAllCliniciansFails() {
-        final Clinic clinic = new Clinic(clinicId);
+        Clinic clinic = new Clinic(clinicId);
+
         clinic.setClinicianContacts(Arrays.asList(
                 new Clinic.ClinicianContact("name1", "ph1"),
                 new Clinic.ClinicianContact("name2", "ph2")));
 
-        Patient patient = PatientBuilder.startRecording().withMobileNumber("1234567890").withId(patientDocId).withPatientId(patientId).withClinic(clinic).build();
-        when(allPatients.get(patientDocId)).thenReturn(patient);
-        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().withRegimenId("regimenId").build();
-        when(allTreatmentAdvices.currentTreatmentAdvice(patientDocId)).thenReturn(treatmentAdvice);
-        Regimen regimen = mock(Regimen.class);
-        when(allRegimens.getBy(Matchers.<String>any())).thenReturn(regimen);
+        SendSMSRequest request1 = new SendSMSRequest("ph1", clinic.getClinicianContacts().get(0).getId());
+        SendSMSRequest request2 = new SendSMSRequest("ph2", clinic.getClinicianContacts().get(1).getId());
+
+        PatientSetup setup = new PatientSetup(allPatients, allTreatmentAdvices, allRegimens)
+                .withClinic(clinic)
+                .withMobileNumber("1234567890")
+                .withPatientDocumentId(patientDocId)
+                .withPatientId(patientId)
+                .withRegimenId("regimenId");
+        setup.run();
 
         KookooCallDetailRecord callDetailRecord = new KookooCallDetailRecord(null, "callId");
         when(kookooCallDetailRecordsService.get("callId")).thenReturn(callDetailRecord);
@@ -180,12 +194,12 @@ public class SymptomReportingServiceTest extends BaseUnitTest {
         when(symptomReport.getDoctorContacted()).thenReturn(TAMAConstants.ReportedType.No);
 
         symptomReportingService = Mockito.spy(symptomReportingService);
-        doNothing().when(symptomReportingService).notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList(request1, request2), symptomReport);
+        doNothing().when(symptomReportingService).notifyCliniciansAboutOTCAdvice(setup.getPatient(), setup.getRegimen(), Arrays.asList(request1, request2), symptomReport);
         doCallRealMethod().when(symptomReportingService).smsOTCAdviceToAllClinicians(patientDocId, "callId");
 
         symptomReportingService.smsOTCAdviceToAllClinicians(patientDocId, "callId");
 
-        verify(symptomReportingService).notifyCliniciansAboutOTCAdvice(patient, regimen, Arrays.asList(request1, request2), symptomReport);
+        verify(symptomReportingService).notifyCliniciansAboutOTCAdvice(setup.getPatient(), setup.getRegimen(), Arrays.asList(request1, request2), symptomReport);
     }
 
 }

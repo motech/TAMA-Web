@@ -9,7 +9,6 @@ import org.motechproject.tama.ivr.domain.SMSLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -22,8 +21,8 @@ public class AllSMSLogs extends AbstractCouchRepository<SMSLog> {
         initStandardDesignDocument();
     }
 
-    public void log(String recipient, String message) {
-        this.add(new SMSLog(recipient, message));
+    public void log(SMSLog smsLog) {
+        this.add(smsLog);
     }
 
     @View(name = "find_by_date_range", map = "function(doc) { if(doc.documentType == 'SMSLog') { emit(doc.sentDateTime, doc._id); } }")

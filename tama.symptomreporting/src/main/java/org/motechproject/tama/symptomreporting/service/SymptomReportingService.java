@@ -85,13 +85,13 @@ public class SymptomReportingService {
         Regimen regimen = allRegimens.getBy(allTreatmentAdvices.currentTreatmentAdvice(patientDocId).getRegimenId());
         List<SendSMSRequest> cliniciansMobileNumbers = new ArrayList<>();
         for (Clinic.ClinicianContact clinicianContact : patient.getClinic().getClinicianContacts()) {
-            cliniciansMobileNumbers.add(new SendSMSRequest(clinicianContact.getPhoneNumber(), patient.getClinic_id()));
+            cliniciansMobileNumbers.add(new SendSMSRequest(clinicianContact.getPhoneNumber(), clinicianContact.getId()));
         }
         notifyCliniciansAboutOTCAdvice(patient, regimen, cliniciansMobileNumbers, symptomReport);
     }
 
     void notifyCliniciansAboutOTCAdvice(Patient patient, Regimen regimen, List<SendSMSRequest> clinicianContacts, SymptomReport symptomReport) {
-        List<String> symptoms = new ArrayList<String>();
+        List<String> symptoms = new ArrayList<>();
 
         for (String symptomId : symptomReport.getSymptomIds()) {
             symptoms.add(((String) symptomReportingProperties.get(symptomId)));

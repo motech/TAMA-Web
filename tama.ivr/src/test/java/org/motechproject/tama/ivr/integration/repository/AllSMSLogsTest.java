@@ -23,7 +23,8 @@ public class AllSMSLogsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldPersistLog() {
-        allSMSLogs.log("recipient", "message");
+        SMSLog log = new SMSLog("recipient", "message");
+        allSMSLogs.log(log);
 
         List<SMSLog> logs = allSMSLogs.getAll();
         assertTrue(CollectionUtils.isNotEmpty(logs));
@@ -32,7 +33,8 @@ public class AllSMSLogsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldFindByDateRange() {
-        allSMSLogs.log("recipient", "message");
+        SMSLog log = new SMSLog("recipient", "message");
+        allSMSLogs.log(log);
 
         DateTime now = DateUtil.now();
         List<SMSLog> logs = allSMSLogs.findAllSMSLogsForDateRange(now.withTime(0, 0, 0, 0), now.withTime(23, 59, 59, 0));
