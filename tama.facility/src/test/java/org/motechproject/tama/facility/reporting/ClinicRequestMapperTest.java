@@ -23,7 +23,7 @@ public class ClinicRequestMapperTest {
     @Before
     public void setup() {
         initMocks(this);
-        clinic = ClinicBuilder.startRecording().withDefaults().build();
+        clinic = ClinicBuilder.startRecording().withDefaults().withGreetingName("greeting").build();
         when(allCitiesCache.getBy(clinic.getCityId())).thenReturn(clinic.getCity());
     }
 
@@ -43,5 +43,23 @@ public class ClinicRequestMapperTest {
     public void shouldMapClinicCityName() {
         ClinicRequest clinicRequest = new ClinicRequestMapper(allCitiesCache, clinic).map();
         assertEquals(clinic.getCity().getName(), clinicRequest.getCityName());
+    }
+
+    @Test
+    public void shouldMapClinicGreeting() {
+        ClinicRequest clinicRequest = new ClinicRequestMapper(allCitiesCache, clinic).map();
+        assertEquals(clinic.getGreetingName(), clinicRequest.getGreetingName());
+    }
+
+    @Test
+    public void shouldMapClinicAddress() {
+        ClinicRequest clinicRequest = new ClinicRequestMapper(allCitiesCache, clinic).map();
+        assertEquals(clinic.getAddress(), clinicRequest.getAddress());
+    }
+
+    @Test
+    public void shouldMapClinicContactNumber() {
+        ClinicRequest clinicRequest = new ClinicRequestMapper(allCitiesCache, clinic).map();
+        assertEquals(clinic.getPhone(), clinicRequest.getContactNumber());
     }
 }
