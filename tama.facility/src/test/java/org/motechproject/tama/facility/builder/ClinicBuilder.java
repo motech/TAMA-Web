@@ -47,6 +47,11 @@ public class ClinicBuilder {
         return this;
     }
 
+    public ClinicBuilder withCityId(String cityId) {
+        this.clinic.setCityId(cityId);
+        return this;
+    }
+
     public ClinicBuilder withClinicianContacts(Clinic.ClinicianContact... contacts) {
         this.clinic.setClinicianContacts(Arrays.asList(contacts));
         return this;
@@ -58,6 +63,7 @@ public class ClinicBuilder {
                 .withPhoneNumber("1234567890")
                 .withAddress("DefaultAddress")
                 .withCity(City.newCity("Pune"))
+                .withCityId("city_id")
                 .withClinicianContacts(contact);
         return this;
     }

@@ -12,6 +12,7 @@ import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.reporting.service.ClinicReportingService;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AllClinicsTest {
@@ -35,8 +36,11 @@ public class AllClinicsTest {
 
     @Test
     public void shouldReportClinicAdded() {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCityId("city_id").build();
+        when(allCities.getBy("city_id")).thenReturn(clinic.getCity());
+
         allClinics.add(clinic, "user");
-        verify(clinicReportingService).save(new ClinicRequestMapper(clinic).map());
+
+        verify(clinicReportingService).save(new ClinicRequestMapper(allCities,clinic).map());
     }
 }

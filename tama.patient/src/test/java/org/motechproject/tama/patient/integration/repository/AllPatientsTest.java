@@ -17,18 +17,9 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.UniquePatientField;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
-import org.motechproject.tama.refdata.domain.Gender;
-import org.motechproject.tama.refdata.domain.HIVTestReason;
-import org.motechproject.tama.refdata.domain.IVRLanguage;
-import org.motechproject.tama.refdata.domain.ModeOfTransmission;
-import org.motechproject.tama.refdata.objectcache.AllGendersCache;
-import org.motechproject.tama.refdata.objectcache.AllHIVTestReasonsCache;
-import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
-import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
-import org.motechproject.tama.refdata.repository.AllGenders;
-import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
-import org.motechproject.tama.refdata.repository.AllIVRLanguages;
-import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
+import org.motechproject.tama.refdata.domain.*;
+import org.motechproject.tama.refdata.objectcache.*;
+import org.motechproject.tama.refdata.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -78,9 +69,16 @@ public class AllPatientsTest extends SpringIntegrationTest {
     @Autowired
     private AllAuditRecords allAuditRecords;
 
+    @Autowired
+    private AllCitiesCache allCitiesCache;
+
+    @Autowired
+    private AllCities allCities;
+
     private Gender gender;
     private IVRLanguage ivrLanguage;
     private static final String USER_NAME = "USER_NAME";
+    private City city;
 
 
     @Before
@@ -96,20 +94,25 @@ public class AllPatientsTest extends SpringIntegrationTest {
         ivrLanguage = IVRLanguage.newIVRLanguage("English", "en");
         allIVRLanguages.add(ivrLanguage);
         allIVRLanguagesCache.refresh();
+        allCitiesCache.refresh();
+        city = createCityForClinic();
     }
 
     @After
     public void after() {
+        markForDeletion(allClinics.getAll().toArray());
         markForDeletion(gender);
         markForDeletion(ivrLanguage);
         markForDeletion(allUniquePatientFields.getAll().toArray());
         markForDeletion(allPatients.getAll().toArray());
+        markForDeletion(allCities.getAll().toArray());
         super.after();
     }
 
     @Test
     public void shouldLoadPatientByPatientId() {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withGender(gender).withIVRLanguage(ivrLanguage).withPatientId("12345678").build();
+        Clinic patientClinic = ClinicBuilder.startRecording().withCity(city).withCityId(city.getId()).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(patientClinic).withGender(gender).withIVRLanguage(ivrLanguage).withPatientId("12345678").build();
         final Clinic clinic = patient.getClinic();
         allClinics.add(clinic, "admin");
         patient.setClinic_id(clinic.getId());
@@ -125,7 +128,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void addToClinicShouldAddPatient_WhenPatientWithSamePhoneNumberAndPasscode_DoesNotExists() {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinicForPatient").build();
         allClinics.add(clinic, "admin");
         markForDeletion(clinic);
 
@@ -154,7 +157,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test(expected = TamaException.class)
     public void addToClinicShouldThrowException_WhenPatientWithSamePhoneNumberAndPasscode_Exists() {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinicForPatient").build();
         allClinics.add(clinic, "admin");
         markForDeletion(clinic);
 
@@ -179,10 +182,10 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldUpdatePatient() {
-        Clinic clinic1 = ClinicBuilder.startRecording().withDefaults().withName("clinic1").build();
+        Clinic clinic1 = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinic1").build();
         allClinics.add(clinic1, "admin");
         markForDeletion(clinic1);
-        Clinic clinic2 = ClinicBuilder.startRecording().withDefaults().withName("clinic2").build();
+        Clinic clinic2 = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinic2").build();
         allClinics.add(clinic2, "admin");
         markForDeletion(clinic2);
 
@@ -208,11 +211,11 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldGetOnlyPatientsWithTheSpecifiedClinicID() {
-        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinicForPatient").build();
         allClinics.add(clinicForPatient, "admin");
         markForDeletion(clinicForPatient);
 
-        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withName("anotherClinic").build();
+        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("anotherClinic").build();
         allClinics.add(anotherClinic, "admin");
         markForDeletion(anotherClinic);
 
@@ -229,7 +232,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldRemovePatient() {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinic").build();
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinic").build();
         allClinics.add(clinic, "admin");
         markForDeletion(clinic);
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).withPatientId("5678").withGender(gender).withIVRLanguage(ivrLanguage).build();
@@ -245,7 +248,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldAddPatient() {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withId("8790").build();
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withId("8790").build();
         allClinics.add(clinic, "admin");
         markForDeletion(clinic);
         Patient patient = PatientBuilder.startRecording().withDefaults().withPatientId("5678").withGender(gender).withIVRLanguage(ivrLanguage).withClinic(clinic).build();
@@ -262,7 +265,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldFindClinicForPatient() {
-        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinicForPatient").build();
         allClinics.add(clinicForPatient, "admin");
         markForDeletion(clinicForPatient);
 
@@ -296,11 +299,11 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldGetAllPatientsByMobileNumber() {
-        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinicForPatient").build();
         allClinics.add(clinicForPatient, "admin");
         markForDeletion(clinicForPatient);
 
-        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withName("anotherClinic").build();
+        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("anotherClinic").build();
         allClinics.add(anotherClinic, "admin");
         markForDeletion(anotherClinic);
 
@@ -318,11 +321,11 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void findbyPatientIdAndClinicId_shouldFindBy_CaseInsensitivePatientId_And_ClinicId() {
-        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinicForPatient").build();
         allClinics.add(clinicForPatient, "admin");
         markForDeletion(clinicForPatient);
 
-        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withName("anotherClinic").build();
+        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("anotherClinic").build();
         allClinics.add(anotherClinic, "admin");
         markForDeletion(anotherClinic);
 
@@ -345,11 +348,11 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldFindByIdAndClinicId() {
-        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinicForPatient").build();
         allClinics.add(clinicForPatient, "admin");
         markForDeletion(clinicForPatient);
 
-        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withName("anotherClinic").build();
+        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("anotherClinic").build();
         allClinics.add(anotherClinic, "admin");
         markForDeletion(anotherClinic);
 
@@ -367,11 +370,11 @@ public class AllPatientsTest extends SpringIntegrationTest {
 
     @Test
     public void shouldFindByMobileNumberAndPasscode() {
-        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        Clinic clinicForPatient = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinicForPatient").build();
         allClinics.add(clinicForPatient, "admin");
         markForDeletion(clinicForPatient);
 
-        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withName("anotherClinic").build();
+        Clinic anotherClinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("anotherClinic").build();
         allClinics.add(anotherClinic, "admin");
         markForDeletion(anotherClinic);
 
@@ -400,7 +403,7 @@ public class AllPatientsTest extends SpringIntegrationTest {
         allHIVTestReasonsCache.refresh();
         allModesOfTransmission.add(modeOfTransmission);
         allModesOfTransmissionCache.refresh();
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName("clinic").build();
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withCityId(city.getId()).withName("clinic").build();
         allClinics.add(clinic, "admin");
         markForDeletion(clinic);
         Patient patient = PatientBuilder.startRecording().withDefaults().withClinic(clinic).withHIVTestReason(testReason)
@@ -427,5 +430,13 @@ public class AllPatientsTest extends SpringIntegrationTest {
         List<Patient> allByPatientId = allPatients.findAllByPatientId(patientId);
         assertEquals(1, allByPatientId.size());
         assertEquals(patient1.getPatientId(), allByPatientId.get(0).getPatientId());
+    }
+
+    private City createCityForClinic() {
+        City city = City.newCity("Bangalore");
+        city.setId("city_id");
+        allCities.add(city);
+        allCitiesCache.refresh();
+        return city;
     }
 }

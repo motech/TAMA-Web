@@ -10,6 +10,9 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.refdata.domain.City;
+import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
+import org.motechproject.tama.refdata.repository.AllCities;
 import org.motechproject.testing.utils.SpringIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,6 +38,12 @@ public class PagedPatientsRepositoryIT extends SpringIntegrationTest {
     @Autowired
     AllClinics allClinics;
 
+    @Autowired
+    AllCities allCities;
+
+    @Autowired
+    AllCitiesCache allCitiesCache;
+
     Clinic clinic;
 
     @Override
@@ -44,9 +53,14 @@ public class PagedPatientsRepositoryIT extends SpringIntegrationTest {
 
     @Before
     public void setup() {
-        clinic = ClinicBuilder.startRecording().withDefaults().withName("clinicForPatient").build();
+        City city = City.newCity("Bangalore");
+        city.setId("city_id");
+        allCities.add(city);
+        allCitiesCache.refresh();
+        clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withName("clinicForPatient").build();
         allClinics.add(clinic, "admin");
         markForDeletion(clinic);
+        markForDeletion(city);
     }
 
     @Test

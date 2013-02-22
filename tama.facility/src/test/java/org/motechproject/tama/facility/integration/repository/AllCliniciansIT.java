@@ -10,6 +10,9 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tama.facility.repository.AllClinicians;
 import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.refdata.domain.City;
+import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
+import org.motechproject.tama.refdata.repository.AllCities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -26,10 +29,15 @@ public class AllCliniciansIT extends SpringIntegrationTest {
     private AllClinicians allClinicians;
     @Autowired
     private AllClinics allClinics;
+    @Autowired
+    private AllCities allCities;
+    @Autowired
+    private AllCitiesCache allCitiesCache;
 
     @Before
     public void before() {
         super.before();
+        markForDeletion(allCities.getAll().toArray());
         markForDeletion(allClinicians.getAll().toArray());
         markForDeletion(allClinics.getAll().toArray());
         deleteAll();
@@ -37,6 +45,7 @@ public class AllCliniciansIT extends SpringIntegrationTest {
 
     @After
     public void after() {
+        markForDeletion(allCities.getAll().toArray());
         markForDeletion(allClinicians.getAll().toArray());
         markForDeletion(allClinics.getAll().toArray());
         super.after();
@@ -44,7 +53,11 @@ public class AllCliniciansIT extends SpringIntegrationTest {
 
     @Test
     public void getShouldLoadClinicWhenQueryingClinician() {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
+        City city = new City("city_id");
+        allCities.add(city);
+        allCitiesCache.refresh();
+
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCityId(city.getId()).build();
         allClinics.add(clinic, "admin");
 
         Clinician clinician = ClinicianBuilder.startRecording().withDefaults().withClinic(clinic).build();
@@ -56,15 +69,20 @@ public class AllCliniciansIT extends SpringIntegrationTest {
         assertNotNull(returnedClinician.getClinic());
         assertEquals(clinic.getName(), returnedClinician.getClinic().getName());
 
+        markForDeletion(city);
         markForDeletion(clinic);
         markForDeletion(clinician);
     }
 
     @Test
     public void getAllShouldLoadClinicsWhenQueryingClinicians() {
-        Clinic clinic1 = ClinicBuilder.startRecording().withDefaults().withName("First Clinic").build();
+        City city = new City("city_id");
+        allCities.add(city);
+        allCitiesCache.refresh();
+
+        Clinic clinic1 = ClinicBuilder.startRecording().withDefaults().withName("First Clinic").withCityId(city.getId()).build();
         allClinics.add(clinic1, "admin");
-        Clinic clinic2 = ClinicBuilder.startRecording().withDefaults().withName("Second Clinic").build();
+        Clinic clinic2 = ClinicBuilder.startRecording().withDefaults().withName("Second Clinic").withCityId(city.getId()).build();
         allClinics.add(clinic2, "admin");
 
         Clinician clinician1 = ClinicianBuilder.startRecording().withDefaults().withClinic(clinic1).build();
@@ -79,6 +97,7 @@ public class AllCliniciansIT extends SpringIntegrationTest {
         assertEquals(clinic1, clinicians.get(0).getClinic());
         assertEquals(clinic2, clinicians.get(1).getClinic());
 
+        markForDeletion(city);
         markForDeletion(asList(clinic1, clinic2));
         markForDeletion(asList(clinician1, clinician2));
     }

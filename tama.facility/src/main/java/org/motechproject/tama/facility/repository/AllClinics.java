@@ -38,7 +38,7 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
     @Override
     public void update(Clinic entity, String user) {
         super.update(entity, user);
-        clinicReportingService.update(new ClinicRequestMapper(entity).map());
+        clinicReportingService.update(new ClinicRequestMapper(allCities,entity).map());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
     protected void add(Clinic entity, String user, boolean report) {
         super.add(entity, user);
         if (report) {
-            clinicReportingService.save(new ClinicRequestMapper(entity).map());
+            clinicReportingService.save(new ClinicRequestMapper(allCities,entity).map());
         }
     }
 

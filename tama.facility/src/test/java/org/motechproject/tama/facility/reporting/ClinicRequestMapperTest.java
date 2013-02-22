@@ -3,36 +3,45 @@ package org.motechproject.tama.facility.reporting;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.reports.contract.ClinicRequest;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ClinicRequestMapperTest {
 
     private Clinic clinic;
 
+    @Mock
+    private AllCitiesCache allCitiesCache;
+
     @Before
     public void setup() {
+        initMocks(this);
         clinic = ClinicBuilder.startRecording().withDefaults().build();
+        when(allCitiesCache.getBy(clinic.getCityId())).thenReturn(clinic.getCity());
     }
 
     @Test
     public void shouldMapClinicId() {
-        ClinicRequest clinicRequest = new ClinicRequestMapper(clinic).map();
+        ClinicRequest clinicRequest = new ClinicRequestMapper(allCitiesCache, clinic).map();
         assertEquals(clinic.getId(), clinicRequest.getClinicId());
     }
 
     @Test
     public void shouldMapClinicName() {
-        ClinicRequest clinicRequest = new ClinicRequestMapper(clinic).map();
+        ClinicRequest clinicRequest = new ClinicRequestMapper(allCitiesCache, clinic).map();
         assertEquals(clinic.getName(), clinicRequest.getClinicName());
     }
 
     @Test
     public void shouldMapClinicCityName() {
-        ClinicRequest clinicRequest = new ClinicRequestMapper(clinic).map();
+        ClinicRequest clinicRequest = new ClinicRequestMapper(allCitiesCache, clinic).map();
         assertEquals(clinic.getCity().getName(), clinicRequest.getCityName());
     }
 }
