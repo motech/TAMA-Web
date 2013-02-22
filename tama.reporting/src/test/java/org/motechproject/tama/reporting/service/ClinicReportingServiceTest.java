@@ -49,7 +49,7 @@ public class ClinicReportingServiceTest {
 
         ClinicReportingRequest reportingRequest = new ClinicReportingRequest(request, contactRequests);
         clinicReportingService.save(reportingRequest);
-        verify(httpClientService).post(REPORTS_URL + "clinicianContacts", contactRequests);
+        verify(httpClientService).post(REPORTS_URL + "clinicianContact", contactRequests);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ClinicReportingServiceTest {
 
         ClinicReportingRequest reportingRequest = new ClinicReportingRequest(request, contactRequests);
         clinicReportingService.update(reportingRequest);
-        verify(httpClientService).put(REPORTS_URL + "clinicianContacts", contactRequests);
+        verify(httpClientService).put(REPORTS_URL + "clinicianContact", contactRequests);
     }
 
     @Test

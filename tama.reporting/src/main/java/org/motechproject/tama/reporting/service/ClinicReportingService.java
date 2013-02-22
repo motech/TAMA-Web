@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class ClinicReportingService extends ReportingService {
 
     public static final String PATH_TO_CLINIC = "clinic";
-    private static final String PATH_TO_CLINICIAN_CONTACTS = "clinicianContacts";
+    private static final String PATH_TO_CLINICIAN_CONTACTS = "clinicianContact";
 
     @Autowired
     public ClinicReportingService(HttpClientService httpClientService, ReportingProperties reportingProperties) {
