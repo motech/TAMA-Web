@@ -268,6 +268,54 @@
                 ]]>
             </script>
         </div>
+        <div id="smsReportDownload" class="reportsDownload">
+            <c:if test="${smsReport_warning != null}">
+                <div class="center warning">
+                    <c:out value="${smsReport_warning}"/>
+                </div>
+            </c:if>
+            <spring:url value="/analysisData/smsReport.xls#smsReportDownload" var="download_sms_url"/>
+            <util:panel id="smsReportPane" title="SMS Report" openPane="true">
+                <form id="smsReportForm" action="${download_sms_url}" method="GET">
+                    <div class="control-group">
+                        <label for="patientId">Patient Id</label>
+                        <input type="text" name="patientId"/>
+                    </div>
+                    <div class="control-group">
+                        <label for="clinicName">Clinic Name</label>
+                        <input type="text" name="clinicName"/>
+                    </div>
+                    <field:datetime dateTimePattern="dd/MM/yyyy" field="smsDateFilter.startDate"
+                                    id="c_org_motechproject_tama_calllog_startDate" label="Starting From" required="true"/>
+                    <field:datetime dateTimePattern="dd/MM/yyyy" field="smsDateFilter.endDate"
+                                    id="c_org_motechproject_tama_calllog_endDate" label="Till" required="true"/>
+                    <div class="control-group">
+                        <input type="submit" id="downloadSmsReport" value="DOWNLOAD AS EXCEL"/>
+                    </div>
+                </form>
+            </util:panel>
+            <script type="text/javascript">
+                <![CDATA[
+                    dojo.addOnLoad(function() {
+                        var startDateObj = dijit.byId("_smsDateFilter.startDate_id");
+                        var endDateObj = dijit.byId("_smsDateFilter.endDate_id");
+                        setConstraintOnEndDate(startDateObj, endDateObj);
+
+                        dojo.connect(dojo.byId("downloadSmsReport"), "onclick", function(event){
+                            event.preventDefault();
+                            Spring.decorations['_smsDateFilter.startDate_id'][0].validate();
+                            Spring.decorations['_smsDateFilter.endDate_id'][0].validate();
+                            if(startDateObj.isValid() && endDateObj.isValid()){
+                                dojo.byId('smsReportForm').submit();
+                            }
+                        });
+                        dojo.connect(startDateObj, "onChange", function() {
+                            setConstraintOnEndDate(startDateObj, endDateObj);
+                        });
+                    });
+                ]]>
+            </script>
+        </div>
         <jsp:include page="/WEB-INF/views/callsummary/analystDownload.jspx"/>
         <div id="clinicianReportDownload" class="reportsDownload">
             <spring:url value="/analysisData/clinicianReport.xls" var="download_clinician_url"/>

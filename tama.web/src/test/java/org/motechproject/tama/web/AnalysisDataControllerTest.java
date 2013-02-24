@@ -12,8 +12,9 @@ import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportS
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
+import org.motechproject.tama.web.model.DateFilter;
 import org.motechproject.tama.web.model.FilterWithPatientIDAndDateRange;
-import org.motechproject.tama.web.model.HealthTipsReportsFilter;
+import org.motechproject.tama.web.model.ReportsFilterForPatientWithClinicName;
 import org.motechproject.util.DateUtil;
 import org.springframework.ui.Model;
 
@@ -77,7 +78,14 @@ public class AnalysisDataControllerTest {
     public void shouldAddHealthTipsFilterModel() {
         when(reportingProperties.reportingURL()).thenReturn("url");
         assertEquals("analysisData/show", analysisDataController.show(model));
-        verify(model).addAttribute(eq("healthTipsReportFilter"), any(HealthTipsReportsFilter.class));
+        verify(model).addAttribute(eq("healthTipsReportFilter"), any(ReportsFilterForPatientWithClinicName.class));
+    }
+
+    @Test
+    public void shouldAddSMSReportFilterModel() {
+        when(reportingProperties.reportingURL()).thenReturn("url");
+        assertEquals("analysisData/show", analysisDataController.show(model));
+        verify(model).addAttribute(eq("smsDateFilter"), any(DateFilter.class));
     }
 
     @Test
@@ -135,6 +143,31 @@ public class AnalysisDataControllerTest {
         LocalDate today = DateUtil.today();
         String view = analysisDataController.downloadHealthTipsReport("clinic", "patientId", today, today, model);
         assertTrue(view.contains("redirect:/tama-reports/healthTips/report"));
+    }
+
+    @Test
+    public void shouldRedirectToDownloadOfSMSReport() {
+        ReportsFilterForPatientWithClinicName filter = new ReportsFilterForPatientWithClinicName();
+        filter.setClinicName("clinic");
+        filter.setPatientId("patientId");
+        filter.setStartDate(DateUtil.now().toLocalDate());
+        filter.setEndDate(DateUtil.now().toLocalDate());
+
+        String view = analysisDataController.downloadSMSReport(filter, model);
+        assertTrue(view.contains("redirect:/tama-reports/smsLog/report"));
+    }
+
+    @Test
+    public void shouldShowErrorWhenDateRangeIsGreaterThanOneYearForSMSReportDownload() {
+        ReportsFilterForPatientWithClinicName filter = new ReportsFilterForPatientWithClinicName();
+        filter.setClinicName("clinic");
+        filter.setPatientId("patientId");
+        filter.setStartDate(DateUtil.now().minusYears(2).toLocalDate());
+        filter.setEndDate(DateUtil.now().toLocalDate());
+
+        String view = analysisDataController.downloadSMSReport(filter, model);
+        assertEquals("analysisData/show", view);
+        verify(model).addAttribute(eq("smsReport_warning"), anyString());
     }
 
     @Test

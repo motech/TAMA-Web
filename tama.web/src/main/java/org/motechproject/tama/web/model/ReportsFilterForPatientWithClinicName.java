@@ -3,7 +3,7 @@ package org.motechproject.tama.web.model;
 import lombok.Data;
 
 @Data
-public class HealthTipsReportsFilter extends FilterWithPatientIDAndDateRange {
+public class ReportsFilterForPatientWithClinicName extends FilterWithPatientIDAndDateRange {
 
     private String clinicName;
 }

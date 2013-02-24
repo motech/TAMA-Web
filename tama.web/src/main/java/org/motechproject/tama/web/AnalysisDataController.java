@@ -56,9 +56,10 @@ public class AnalysisDataController extends BaseController {
     public String show(Model uiModel) {
         uiModel.addAttribute("patientIdFilter", new PatientIDFilter());
         uiModel.addAttribute("patientDateFilter", new DateFilter());
+        uiModel.addAttribute("smsDateFilter", new DateFilter());
         uiModel.addAttribute("patientEventFilter", new PatientEventFilter());
         uiModel.addAttribute("outboxMessageReportFilter", new FilterWithPatientIDAndDateRange());
-        uiModel.addAttribute("healthTipsReportFilter", new HealthTipsReportsFilter());
+        uiModel.addAttribute("healthTipsReportFilter", new ReportsFilterForPatientWithClinicName());
         uiModel.addAttribute("dosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
         callSummaryController.download(uiModel);
@@ -133,6 +134,21 @@ public class AnalysisDataController extends BaseController {
             logger.error("Error while generating excel report: " + e.getMessage());
         }
         return null;
+    }
+
+    @RequestMapping(value = "/smsReport.xls", method = RequestMethod.GET)
+    public String downloadSMSReport(ReportsFilterForPatientWithClinicName filter, Model model) {
+        if (filter.isMoreThanOneYear()) {
+            return error(model, "smsReport_warning");
+        } else {
+            return format(
+                    "redirect:/tama-reports/smsLog/report?clinicName=%s&patientId=%s&startDate=%s&endDate=%s",
+                    filter.getClinicName(),
+                    filter.getPatientId(),
+                    filter.getStartDate().toString("dd/MM/yyyy"),
+                    filter.getEndDate().toString("dd/MM/yyyy")
+            );
+        }
     }
 
     @RequestMapping(value = "/healthTipsReport.xls", method = RequestMethod.GET)
