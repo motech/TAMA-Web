@@ -147,25 +147,21 @@ public class AnalysisDataControllerTest {
 
     @Test
     public void shouldRedirectToDownloadOfSMSReport() {
-        ReportsFilterForPatientWithClinicName filter = new ReportsFilterForPatientWithClinicName();
-        filter.setClinicName("clinic");
-        filter.setPatientId("patientId");
+        DateFilter filter = new DateFilter();
         filter.setStartDate(DateUtil.now().toLocalDate());
         filter.setEndDate(DateUtil.now().toLocalDate());
 
-        String view = analysisDataController.downloadSMSReport(filter, model);
+        String view = analysisDataController.downloadSMSReport(filter, "clinic", "patientId", "ClinicianSMS", model);
         assertTrue(view.contains("redirect:/tama-reports/smsLog/report"));
     }
 
     @Test
     public void shouldShowErrorWhenDateRangeIsGreaterThanOneYearForSMSReportDownload() {
-        ReportsFilterForPatientWithClinicName filter = new ReportsFilterForPatientWithClinicName();
-        filter.setClinicName("clinic");
-        filter.setPatientId("patientId");
+        DateFilter filter = new DateFilter();
         filter.setStartDate(DateUtil.now().minusYears(2).toLocalDate());
         filter.setEndDate(DateUtil.now().toLocalDate());
 
-        String view = analysisDataController.downloadSMSReport(filter, model);
+        String view = analysisDataController.downloadSMSReport(filter, "clinic", "patientId", "ClinicianSMS", model);
         assertEquals("analysisData/show", view);
         verify(model).addAttribute(eq("smsReport_warning"), anyString());
     }

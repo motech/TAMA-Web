@@ -1,0 +1,30 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     version="2.0"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
+    <div id="appointmentCalendarReportDownload" class="reportsDownload">
+        <spring:url value="/analysisData/appointmentCalendarReport.xls#appointmentCalendarReportDownload"
+                    var="download_appointment_calendar_url"/>
+        <util:panel id="appointmentCalendarReportPane" title="Appointment Calendar report" openPane="true">
+            <form id="appointmentCalendarReportForm" action="${download_appointment_calendar_url}" method="GET">
+                <div class="control-group">
+                    <label for="patientId">Patient Id * :</label>
+                    <input id="appointmentCalenderPatientId" type="text" name="patientId"/>
+                </div>
+                <div class="control-group">
+                    <input type="submit" id="downloadAppointmentCalendarReport" value="DOWNLOAD AS EXCEL"/>
+                </div>
+            </form>
+            <script type="text/javascript">
+                <![CDATA[
+                        Spring.addDecoration(new Spring.ElementDecoration({elementId : 'appointmentCalenderPatientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}));
+                        dojo.connect(dojo.byId("downloadAppointmentCalendarReport"), "onclick", function(event){
+                            if(!dijit.byId("appointmentCalenderPatientId").isValid()){
+                                Spring.decorations['appointmentCalenderPatientId'][0].validate();
+                                event.preventDefault();
+                            }
+                        });
+                     ]]>
+            </script>
+        </util:panel>
+    </div>
+</div>

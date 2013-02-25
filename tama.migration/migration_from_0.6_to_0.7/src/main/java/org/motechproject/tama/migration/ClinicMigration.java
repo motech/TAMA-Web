@@ -10,11 +10,9 @@ import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.reporting.ClinicReportingRequest;
 import org.motechproject.tama.reporting.service.ClinicReportingService;
 import org.motechproject.tama.reports.contract.ClinicRequest;
-import org.motechproject.tama.reports.contract.ClinicianContactRequest;
+import org.motechproject.tama.reports.contract.ClinicianContactRequests;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class ClinicMigration extends Migration<Clinic> {
@@ -54,7 +52,7 @@ public class ClinicMigration extends Migration<Clinic> {
 
     private void publishToReports(Clinic document) {
         ClinicRequest request = new ClinicRequestMapper(allCities, document).map();
-        List<ClinicianContactRequest> contactRequests = new ClinicianContactRequestMapper(document).map();
+        ClinicianContactRequests contactRequests = new ClinicianContactRequestMapper(document).map();
         reportingService.save(new ClinicReportingRequest(request, contactRequests));
     }
 }

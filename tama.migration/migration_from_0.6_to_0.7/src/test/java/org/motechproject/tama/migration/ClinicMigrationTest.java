@@ -58,6 +58,6 @@ public class ClinicMigrationTest {
 
         ArgumentCaptor<ClinicReportingRequest> captor = ArgumentCaptor.forClass(ClinicReportingRequest.class);
         verify(clinicReportingService).save(captor.capture());
-        assertNotNull(captor.getValue().getClinicianContactRequests().get(0).getId());
+        assertNotNull(captor.getValue().getClinicianContactRequests().getClinicianContactRequests().get(0).getId());
     }
 }

@@ -13,7 +13,7 @@ import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.reporting.ClinicReportingRequest;
 import org.motechproject.tama.reporting.service.ClinicReportingService;
 import org.motechproject.tama.reports.contract.ClinicRequest;
-import org.motechproject.tama.reports.contract.ClinicianContactRequest;
+import org.motechproject.tama.reports.contract.ClinicianContactRequests;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -47,7 +47,7 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
     public void update(Clinic entity, String user) {
         super.update(entity, user);
         ClinicRequest clinicRequest = new ClinicRequestMapper(allCities, entity).map();
-        List<ClinicianContactRequest> contactRequests = new ClinicianContactRequestMapper(entity).map();
+        ClinicianContactRequests contactRequests = new ClinicianContactRequestMapper(entity).map();
         clinicReportingService.update(new ClinicReportingRequest(clinicRequest, contactRequests));
     }
 
@@ -74,7 +74,7 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
 
     private void publishClinicReport(Clinic entity) {
         ClinicRequest clinicRequest = new ClinicRequestMapper(allCities, entity).map();
-        List<ClinicianContactRequest> contactRequests = new ClinicianContactRequestMapper(entity).map();
+        ClinicianContactRequests contactRequests = new ClinicianContactRequestMapper(entity).map();
         clinicReportingService.save(new ClinicReportingRequest(clinicRequest, contactRequests));
     }
 

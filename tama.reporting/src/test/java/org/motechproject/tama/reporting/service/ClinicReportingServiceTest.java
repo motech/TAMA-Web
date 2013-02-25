@@ -7,10 +7,7 @@ import org.motechproject.http.client.service.HttpClientService;
 import org.motechproject.tama.reporting.ClinicReportingRequest;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.reports.contract.ClinicRequest;
-import org.motechproject.tama.reports.contract.ClinicianContactRequest;
-
-import java.util.Collections;
-import java.util.List;
+import org.motechproject.tama.reports.contract.ClinicianContactRequests;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,7 +33,7 @@ public class ClinicReportingServiceTest {
     @Test
     public void shouldPublishClinicSave() {
         ClinicRequest request = new ClinicRequest();
-        ClinicReportingRequest reportingRequest = new ClinicReportingRequest(request, Collections.<ClinicianContactRequest>emptyList());
+        ClinicReportingRequest reportingRequest = new ClinicReportingRequest(request, new ClinicianContactRequests());
 
         clinicReportingService.save(reportingRequest);
         verify(httpClientService).post(REPORTS_URL + "clinic", request);
@@ -45,7 +42,7 @@ public class ClinicReportingServiceTest {
     @Test
     public void shouldPublishClinicianContactSave() {
         ClinicRequest request = new ClinicRequest();
-        List<ClinicianContactRequest> contactRequests = Collections.emptyList();
+        ClinicianContactRequests contactRequests = new ClinicianContactRequests();
 
         ClinicReportingRequest reportingRequest = new ClinicReportingRequest(request, contactRequests);
         clinicReportingService.save(reportingRequest);
@@ -55,9 +52,9 @@ public class ClinicReportingServiceTest {
     @Test
     public void shouldPublishClinicianContactUpdateAsSave() {
         ClinicRequest request = new ClinicRequest();
-        List<ClinicianContactRequest> contactRequests = Collections.emptyList();
+        ClinicianContactRequests contactRequests = new ClinicianContactRequests();
 
-        ClinicReportingRequest reportingRequest = new ClinicReportingRequest(request, contactRequests);
+        ClinicReportingRequest reportingRequest = new ClinicReportingRequest(request, new ClinicianContactRequests());
         clinicReportingService.update(reportingRequest);
         verify(httpClientService).put(REPORTS_URL + "clinicianContact", contactRequests);
     }
@@ -65,7 +62,7 @@ public class ClinicReportingServiceTest {
     @Test
     public void shouldPublishClinicUpdate() {
         ClinicRequest request = new ClinicRequest();
-        ClinicReportingRequest reportingRequest = new ClinicReportingRequest(request, Collections.<ClinicianContactRequest>emptyList());
+        ClinicReportingRequest reportingRequest = new ClinicReportingRequest(request, new ClinicianContactRequests());
 
         clinicReportingService.update(reportingRequest);
         verify(httpClientService).put(REPORTS_URL + "clinic", request);

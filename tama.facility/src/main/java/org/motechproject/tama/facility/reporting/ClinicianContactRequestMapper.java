@@ -3,6 +3,7 @@ package org.motechproject.tama.facility.reporting;
 
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.reports.contract.ClinicianContactRequest;
+import org.motechproject.tama.reports.contract.ClinicianContactRequests;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -16,13 +17,14 @@ public class ClinicianContactRequestMapper {
         this.clinic = clinic;
     }
 
-    public List<ClinicianContactRequest> map() {
+    public ClinicianContactRequests map() {
         List<ClinicianContactRequest> requests = new ArrayList<>();
         for (Clinic.ClinicianContact clinicianContact : clinic.getClinicianContacts()) {
             ClinicianContactRequest request = new ClinicianContactRequest();
             BeanUtils.copyProperties(clinicianContact, request);
+            request.setClinicId(clinic.getId());
             requests.add(request);
         }
-        return requests;
+        return new ClinicianContactRequests(requests);
     }
 }

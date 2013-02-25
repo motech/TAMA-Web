@@ -13,9 +13,7 @@ import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.reporting.ClinicReportingRequest;
 import org.motechproject.tama.reporting.service.ClinicReportingService;
 import org.motechproject.tama.reports.contract.ClinicRequest;
-import org.motechproject.tama.reports.contract.ClinicianContactRequest;
-
-import java.util.List;
+import org.motechproject.tama.reports.contract.ClinicianContactRequests;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,7 +45,7 @@ public class AllClinicsTest {
 
         allClinics.add(clinic, "user");
         ClinicRequest clinicRequest = new ClinicRequestMapper(allCities, clinic).map();
-        List<ClinicianContactRequest> contactRequests = new ClinicianContactRequestMapper(clinic).map();
+        ClinicianContactRequests contactRequests = new ClinicianContactRequestMapper(clinic).map();
 
         verify(clinicReportingService).save(new ClinicReportingRequest(clinicRequest, contactRequests));
     }
