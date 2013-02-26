@@ -6,9 +6,9 @@
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:c="http://java.sun.com/jsp/jstl/core">
     <div id="smsReportDownload" class="reportsDownload">
-        <c:if test="${smsReport_warning != null}">
+        <c:if test="${OTCSmsReport_warning != null}">
             <div class="center warning">
-                <c:out value="${smsReport_warning}"/>
+                <c:out value="${OTCSmsReport_warning}"/>
             </div>
         </c:if>
         <spring:url value="/analysisData/smsReport.xls#smsReportDownload" var="download_sms_url"/>

@@ -140,7 +140,7 @@ public class AnalysisDataController extends BaseController {
     @RequestMapping(value = "/smsReport.xls", method = RequestMethod.GET)
     public String downloadSMSReport(DateFilter filter, @RequestParam("clinicName") String clinicName, @RequestParam("externalId") String externalId, @RequestParam("type") String type, Model model) {
         if (filter.isMoreThanOneYear()) {
-            return error(model, "smsReport_warning");
+            return error(model, type + "Report_warning");
         } else {
             return format(
                     "redirect:/tama-reports/smsLog/report?clinicName=%s&externalId=%s&startDate=%s&endDate=%s&type=%s",

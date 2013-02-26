@@ -163,7 +163,7 @@ public class AnalysisDataControllerTest {
 
         String view = analysisDataController.downloadSMSReport(filter, "clinic", "patientId", "ClinicianSMS", model);
         assertEquals("analysisData/show", view);
-        verify(model).addAttribute(eq("smsReport_warning"), anyString());
+        verify(model).addAttribute(eq("ClinicianSMSReport_warning"), anyString());
     }
 
     @Test
