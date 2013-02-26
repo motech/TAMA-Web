@@ -63,6 +63,7 @@ public class ClinicBuilder {
                 .withPhoneNumber("1234567890")
                 .withAddress("DefaultAddress")
                 .withCity(City.newCity("Pune"))
+                .withGreetingName("greetingName")
                 .withCityId("city_id")
                 .withClinicianContacts(contact);
         return this;
