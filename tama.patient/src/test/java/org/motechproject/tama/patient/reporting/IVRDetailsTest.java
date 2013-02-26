@@ -1,6 +1,7 @@
 package org.motechproject.tama.patient.reporting;
 
 import org.junit.Test;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -42,6 +43,22 @@ public class IVRDetailsTest {
         PatientRequest request = new PatientRequest();
         new IVRDetails(patient, "en", "gender").copyTo(request);
         assertEquals("22:10:00", request.getBestCallTime());
+    }
+
+    @Test
+    public void shouldMapDayOfWeeklyCall() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withDayOfWeeklyCall(DayOfWeek.Monday).build();
+        PatientRequest request = new PatientRequest();
+        new IVRDetails(patient, "en", "gender").copyTo(request);
+        assertEquals("Monday", request.getDayOfWeeklyCall());
+    }
+
+    @Test
+    public void shouldMapDayOfWeeklyCallWhenNull() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        PatientRequest request = new PatientRequest();
+        new IVRDetails(patient, "en", "gender").copyTo(request);
+        assertEquals("", request.getDayOfWeeklyCall());
     }
 
     @Test

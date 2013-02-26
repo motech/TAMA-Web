@@ -3,6 +3,7 @@ package org.motechproject.tama.patient.reporting;
 
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.common.util.TimeUtil;
 import org.motechproject.tama.patient.domain.CallPreference;
@@ -22,11 +23,13 @@ public class IVRDetails {
     private Boolean receiveAppointmentReminder;
     private String ivrLanguageCode;
     private String gender;
+    private DayOfWeek dayOfWeeklyCall;
 
     public IVRDetails(Patient patient, String ivrLanguageCode, String gender) {
         this.ivrLanguageCode = ivrLanguageCode;
         this.gender = gender;
         ivrPassCode = patient.getPatientPreferences().getPasscode();
+        dayOfWeeklyCall = patient.getDayOfWeeklyCall();
         callPreference = callPreference(patient);
         bestCallTime = bestCallTime(patient);
         receiveOTCAdvice = patient.hasAgreedToReceiveOTCAdvice();
@@ -48,6 +51,7 @@ public class IVRDetails {
         request.setGender(gender);
         request.setIvrPassCode(ivrPassCode);
         request.setCallPreference(callPreference);
+        request.setDayOfWeeklyCall((null == dayOfWeeklyCall) ? "" : dayOfWeeklyCall.name());
         mapBestCallTime(request);
         request.setReceiveOTCAdvice(receiveOTCAdvice);
         request.setReceiveAppointmentReminder(receiveAppointmentReminder);
