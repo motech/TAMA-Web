@@ -2,6 +2,7 @@ package org.motechproject.tama.web.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
+import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.Patient;
@@ -108,11 +109,11 @@ public class PatientSummary {
         return warning;
     }
 
-    public String getId(){
+    public String getId() {
         return patient.getId();
     }
 
-    public Status getStatus(){
+    public Status getStatus() {
         return patient.getStatus();
     }
 
@@ -120,7 +121,16 @@ public class PatientSummary {
         return statusChangeHistory;
     }
 
-    public Double getRunningAdherencePercentage() {
-        return runningAdherencePercentage;
+    public String getRunningAdherencePercentage() {
+        return String.format("%2.0f%%", runningAdherencePercentage);
+    }
+
+    public String getBestCallTime() {
+        return patient.getBestCallTime().toString();
+    }
+
+    public String getDayOfWeeklyCall() {
+        DayOfWeek dayOfWeeklyCall = patient.getDayOfWeeklyCall();
+        return dayOfWeeklyCall == null ? StringUtils.EMPTY : patient.getDayOfWeeklyCall().name();
     }
 }
