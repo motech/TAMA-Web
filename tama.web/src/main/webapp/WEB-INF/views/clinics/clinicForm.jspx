@@ -39,6 +39,9 @@
             <div class='title'>Clinician Contact Details</div>
              <c:forEach var="i" begin="0" end="2" varStatus="status">
                 <div class="contact">
+                    <c:if test="${mode == 'update' and clinic.clinicianContacts[i].id != null}">
+                        <input type="hidden" name="clinicianContacts[${i}].id" value="${clinic.clinicianContacts[i].id}" required="${i == 0}"/>
+                    </c:if>
                     <field:input field="clinicianContacts[${i}].name" id="clinicianContacts[${i}]_name" label="Clinician Name" required="${i == 0}"/>
                     <field:input field="clinicianContacts[${i}].phoneNumber" id="clinicianContacts[${i}]_phone" label="Phone Number"  max="10" validationMessage="Phone Number should be numeric and 10 digits long." validationRegex="^[0-9]{10}$" required="${i == 0}"/>
                 </div>
