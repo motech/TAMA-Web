@@ -180,6 +180,12 @@ public class AnalysisDataControllerTest {
     }
 
     @Test
+    public void shouldRedirectToDownloadOfClinicReport() {
+        String view = analysisDataController.downloadClinicReport(model);
+        assertTrue(view.contains("redirect:/tama-reports/clinic/report"));
+    }
+
+    @Test
     public void shouldDownloadDailyPillReminderReportGivenPatientId() throws IOException {
         LocalDate startDate = DateUtil.today().minusDays(3);
         LocalDate endDate = DateUtil.today();

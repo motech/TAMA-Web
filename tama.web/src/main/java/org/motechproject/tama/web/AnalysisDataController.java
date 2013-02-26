@@ -172,6 +172,11 @@ public class AnalysisDataController extends BaseController {
         return "redirect:/tama-reports/clinician/report";
     }
 
+    @RequestMapping(value = "/clinicReport.xls", method = RequestMethod.GET)
+    public String downloadClinicReport(Model uiModel) {
+        return "redirect:/tama-reports/clinic/report";
+    }
+
     private String error(Model uiModel, String warning) {
         String view = show(uiModel);
         uiModel.addAttribute(warning, "There is too much data to load. Please narrow down the date range in your search criteria");

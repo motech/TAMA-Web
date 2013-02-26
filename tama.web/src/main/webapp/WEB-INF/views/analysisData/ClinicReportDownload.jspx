@@ -1,0 +1,11 @@
+<div id="clinicReportDownload" class="reportsDownload" xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
+    <spring:url value="/analysisData/clinicReport.xls" var="download_clinic_url"/>
+    <util:panel id="clinicReportPane" title="Clinics Report" openPane="true">
+        <form id="clinicDownloadForm" action="${download_clinic_url}" method="GET">
+            <div class="control-group">
+                <input type="submit" id="downloadClinicReport" value="DOWNLOAD AS EXCEL"/>
+            </div>
+        </form>
+    </util:panel>
+</div>
