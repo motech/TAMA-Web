@@ -7,6 +7,7 @@ import org.motechproject.tama.clinicvisits.service.AppointmentCalenderReportServ
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.contract.DailyPillReminderReport;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
+import org.motechproject.tama.facility.service.ClinicService;
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
@@ -40,24 +41,32 @@ public class AnalysisDataController extends BaseController {
     private AppointmentCalenderReportService appointmentCalenderReportService;
     private OutboxMessageReportService outboxMessageReportService;
     private DailyPillReminderReportService dailyPillReminderReportService;
+    private ClinicService clinicService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public AnalysisDataController(CallSummaryController callSummaryController, ReportingProperties reportingProperties, AppointmentCalenderReportService appointmentCalenderReportService, OutboxMessageReportService outboxMessageReportService, DailyPillReminderReportService dailyPillReminderReportService) {
+    public AnalysisDataController(CallSummaryController callSummaryController,
+                                  ReportingProperties reportingProperties,
+                                  AppointmentCalenderReportService appointmentCalenderReportService,
+                                  OutboxMessageReportService outboxMessageReportService,
+                                  DailyPillReminderReportService dailyPillReminderReportService,
+                                  ClinicService clinicService) {
         this.callSummaryController = callSummaryController;
         this.reportingProperties = reportingProperties;
         this.appointmentCalenderReportService = appointmentCalenderReportService;
         this.outboxMessageReportService = outboxMessageReportService;
         this.dailyPillReminderReportService = dailyPillReminderReportService;
+        this.clinicService = clinicService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public String show(Model uiModel) {
+        uiModel.addAttribute("clinicFilter", new ClinicFilter(clinicService.getAllClinics()));
         uiModel.addAttribute("patientIdFilter", new PatientIDFilter());
-        uiModel.addAttribute("patientDateFilter", new DateFilter());
-        uiModel.addAttribute("smsDateFilter", new DateFilter());
-        uiModel.addAttribute("clinicianSmsDateFilter", new DateFilter());
+        uiModel.addAttribute("patientReportFilter", new ClinicAndDateFilter());
+        uiModel.addAttribute("otcSmsFilter", new ClinicAndDateFilter());
+        uiModel.addAttribute("clinicianSmsFilter", new ClinicAndDateFilter());
         uiModel.addAttribute("patientEventFilter", new PatientEventFilter());
         uiModel.addAttribute("outboxMessageReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("healthTipsReportFilter", new ReportsFilterForPatientWithClinicName());
@@ -68,7 +77,7 @@ public class AnalysisDataController extends BaseController {
     }
 
     @RequestMapping(value = "/patientEventReport.xls", method = RequestMethod.GET)
-    public String downloadPatientEventReport(@RequestParam("clinicName") String clinicName,
+    public String downloadPatientEventReport(@RequestParam("clinicId") String clinicId,
                                              @RequestParam("patientId") String patientId,
                                              @RequestParam("startDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate startDate,
                                              @RequestParam("endDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate endDate,
@@ -78,12 +87,12 @@ public class AnalysisDataController extends BaseController {
         if (filter.isMoreThanOneYear()) {
             return error(uiModel, "patientEventReport_warning");
         } else {
-            return format("redirect:/tama-reports/patientEvent/report?clinicName=%s&patientId=%s&startDate=%s&endDate=%s&eventName=%s", clinicName, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"), eventName);
+            return format("redirect:/tama-reports/patientEvent/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s&eventName=%s", clinicId, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"), eventName);
         }
     }
 
     @RequestMapping(value = "/patientRegistrationReport.xls", method = RequestMethod.GET)
-    public String downloadPatientRegistrationReport(@RequestParam("clinicName") String clinicName,
+    public String downloadPatientRegistrationReport(@RequestParam("clinicId") String clinicId,
                                                     @RequestParam("patientId") String patientId,
                                                     @RequestParam("startDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate startDate,
                                                     @RequestParam("endDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate endDate,
@@ -92,7 +101,7 @@ public class AnalysisDataController extends BaseController {
         if (filter.isMoreThanOneYear()) {
             return error(uiModel, "patientRegistrationReport_warning");
         } else {
-            return format("redirect:/tama-reports/patient/report?clinicName=%s&patientId=%s&startDate=%s&endDate=%s", clinicName, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"));
+            return format("redirect:/tama-reports/patient/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s", clinicId, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"));
         }
     }
 
@@ -138,12 +147,12 @@ public class AnalysisDataController extends BaseController {
     }
 
     @RequestMapping(value = "/smsReport.xls", method = RequestMethod.GET)
-    public String downloadSMSReport(DateFilter filter, @RequestParam("clinicName") String clinicName, @RequestParam("externalId") String externalId, @RequestParam("type") String type, Model model) {
+    public String downloadSMSReport(DateFilter filter, @RequestParam("clinicId") String clinicName, @RequestParam("externalId") String externalId, @RequestParam("type") String type, Model model) {
         if (filter.isMoreThanOneYear()) {
             return error(model, type + "Report_warning");
         } else {
             return format(
-                    "redirect:/tama-reports/smsLog/report?clinicName=%s&externalId=%s&startDate=%s&endDate=%s&type=%s",
+                    "redirect:/tama-reports/smsLog/report?clinicId=%s&externalId=%s&startDate=%s&endDate=%s&type=%s",
                     clinicName,
                     externalId,
                     filter.getStartDate().toString("dd/MM/yyyy"),

@@ -24,8 +24,9 @@ public class DateFilter {
     public LocalDate endDate;
 
     public DateFilter() {
-        startDate = today();
-        endDate = today();
+        LocalDate today = today();
+        startDate = today;
+        endDate = today;
     }
 
     public boolean isMoreThanOneYear() {
@@ -38,3 +39,4 @@ public class DateFilter {
         return this;
     }
 }
+

@@ -19,8 +19,7 @@
                     <input type="text" name="patientId"/>
                 </div>
                 <div class="control-group">
-                    <label for="clinicName">Clinic Name</label>
-                    <input type="text" name="clinicName"/>
+                    <field:select field="patientEventFilter.clinicId" id="patientEventFilterClinicId" items="${clinicFilter.allClinics}" path="/clinicFilter.clinicId" itemLabel="name" itemValue="id" required="false" disableDefaultSelection="false" label="Clinic Name"/>
                 </div>
                 <div class="control-group">
                     <field:select field="patientEventFilter.eventName" id="eventName" items="${patientEventFilter.allPatientEvents}" path="/patientEventFilter.eventName" required="false" disableDefaultSelection="true" label="Event Name"/>

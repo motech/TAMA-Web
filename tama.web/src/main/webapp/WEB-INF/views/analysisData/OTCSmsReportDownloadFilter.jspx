@@ -20,12 +20,11 @@
                     <input type="text" name="externalId"/>
                 </div>
                 <div class="control-group">
-                    <label for="clinicName">Clinic Name</label>
-                    <input type="text" name="clinicName"/>
+                    <field:select field="otcSmsFilter.clinicId" id="otcSmsFilterClinicId" items="${clinicFilter.allClinics}" path="/otcSmsFilter.clinicId" itemLabel="name" itemValue="id" required="false" disableDefaultSelection="false" label="Clinic Name"/>
                 </div>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="smsDateFilter.startDate"
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="otcSmsFilter.startDate"
                                 id="c_org_motechproject_tama_calllog_startDate" label="Starting From" required="true"/>
-                <field:datetime dateTimePattern="dd/MM/yyyy" field="smsDateFilter.endDate"
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="otcSmsFilter.endDate"
                                 id="c_org_motechproject_tama_calllog_endDate" label="Till" required="true"/>
                 <div class="control-group">
                     <input type="submit" id="downloadSmsReport" value="DOWNLOAD AS EXCEL"/>
@@ -35,14 +34,14 @@
         <script type="text/javascript">
             <![CDATA[
                     dojo.addOnLoad(function() {
-                        var startDateObj = dijit.byId("_smsDateFilter.startDate_id");
-                        var endDateObj = dijit.byId("_smsDateFilter.endDate_id");
+                        var startDateObj = dijit.byId("_otcSmsFilter.startDate_id");
+                        var endDateObj = dijit.byId("_otcSmsFilter.endDate_id");
                         setConstraintOnEndDate(startDateObj, endDateObj);
 
                         dojo.connect(dojo.byId("downloadSmsReport"), "onclick", function(event){
                             event.preventDefault();
-                            Spring.decorations['_smsDateFilter.startDate_id'][0].validate();
-                            Spring.decorations['_smsDateFilter.endDate_id'][0].validate();
+                            Spring.decorations['_otcSmsFilter.startDate_id'][0].validate();
+                            Spring.decorations['_otcSmsFilter.endDate_id'][0].validate();
                             if(startDateObj.isValid() && endDateObj.isValid()){
                                 dojo.byId('smsReportForm').submit();
                             }

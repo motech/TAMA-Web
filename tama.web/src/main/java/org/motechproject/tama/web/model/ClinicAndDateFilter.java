@@ -3,29 +3,16 @@ package org.motechproject.tama.web.model;
 import lombok.Data;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.patient.domain.PatientEvent;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
-public class PatientEventFilter {
+public class ClinicAndDateFilter {
 
     private DateFilter dateFilter = new DateFilter();
-    private String eventName;
     private String clinicId;
-
-    public List<String> getAllPatientEvents() {
-        List<String> result = new ArrayList<>();
-        result.add("");
-        for (PatientEvent event : PatientEvent.values()) {
-            result.add(event.getDisplayName());
-        }
-        return result;
-    }
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
@@ -47,4 +34,3 @@ public class PatientEventFilter {
         dateFilter.setEndDate(endDate);
     }
 }
-

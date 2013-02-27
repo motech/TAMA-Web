@@ -9,18 +9,20 @@ import org.motechproject.tama.clinicvisits.contract.AppointmentCalenderReport;
 import org.motechproject.tama.clinicvisits.service.AppointmentCalenderReportService;
 import org.motechproject.tama.dailypillreminder.contract.DailyPillReminderReport;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
+import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.service.ClinicService;
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
-import org.motechproject.tama.web.model.DateFilter;
-import org.motechproject.tama.web.model.FilterWithPatientIDAndDateRange;
-import org.motechproject.tama.web.model.ReportsFilterForPatientWithClinicName;
+import org.motechproject.tama.web.model.*;
 import org.motechproject.util.DateUtil;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -40,13 +42,21 @@ public class AnalysisDataControllerTest {
     private OutboxMessageReportService outboxMessageReportService;
     @Mock
     private DailyPillReminderReportService dailyPillReminderReportService;
+    @Mock
+    private ClinicService clinicService;
 
     private AnalysisDataController analysisDataController;
 
     @Before
     public void setup() {
         initMocks(this);
-        analysisDataController = new AnalysisDataController(callSummaryController, reportingProperties, appointmentCalenderReportService, outboxMessageReportService, dailyPillReminderReportService);
+        analysisDataController = new AnalysisDataController(callSummaryController,
+                reportingProperties,
+                appointmentCalenderReportService,
+                outboxMessageReportService,
+                dailyPillReminderReportService,
+                clinicService
+        );
     }
 
     @Test
@@ -68,6 +78,16 @@ public class AnalysisDataControllerTest {
     }
 
     @Test
+    public void shouldAddAllClinicsAsModelAttribute() {
+        List<Clinic> clinics = asList(Clinic.newClinic());
+
+        when(clinicService.getAllClinics()).thenReturn(clinics);
+        when(reportingProperties.reportingURL()).thenReturn("url");
+        assertEquals("analysisData/show", analysisDataController.show(model));
+        verify(model).addAttribute(eq("clinicFilter"), eq(new ClinicFilter(clinics)));
+    }
+
+    @Test
     public void shouldAddOutboxFilterModel() {
         when(reportingProperties.reportingURL()).thenReturn("url");
         assertEquals("analysisData/show", analysisDataController.show(model));
@@ -85,7 +105,7 @@ public class AnalysisDataControllerTest {
     public void shouldAddSMSReportFilterModel() {
         when(reportingProperties.reportingURL()).thenReturn("url");
         assertEquals("analysisData/show", analysisDataController.show(model));
-        verify(model).addAttribute(eq("smsDateFilter"), any(DateFilter.class));
+        verify(model).addAttribute(eq("otcSmsFilter"), any(ClinicAndDateFilter.class));
     }
 
     @Test
