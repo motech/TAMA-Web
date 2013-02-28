@@ -69,7 +69,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("clinicianSmsFilter", new ClinicAndDateFilter());
         uiModel.addAttribute("patientEventFilter", new PatientEventFilter());
         uiModel.addAttribute("outboxMessageReportFilter", new FilterWithPatientIDAndDateRange());
-        uiModel.addAttribute("healthTipsReportFilter", new ReportsFilterForPatientWithClinicName());
+        uiModel.addAttribute("healthTipsReportFilter", new ClinicAndDateFilter());
         uiModel.addAttribute("dosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
         callSummaryController.download(uiModel);
@@ -147,13 +147,13 @@ public class AnalysisDataController extends BaseController {
     }
 
     @RequestMapping(value = "/smsReport.xls", method = RequestMethod.GET)
-    public String downloadSMSReport(DateFilter filter, @RequestParam("clinicId") String clinicName, @RequestParam("externalId") String externalId, @RequestParam("type") String type, Model model) {
+    public String downloadSMSReport(DateFilter filter, @RequestParam("clinicId") String clinicId, @RequestParam("externalId") String externalId, @RequestParam("type") String type, Model model) {
         if (filter.isMoreThanOneYear()) {
             return error(model, type + "Report_warning");
         } else {
             return format(
                     "redirect:/tama-reports/smsLog/report?clinicId=%s&externalId=%s&startDate=%s&endDate=%s&type=%s",
-                    clinicName,
+                    clinicId,
                     externalId,
                     filter.getStartDate().toString("dd/MM/yyyy"),
                     filter.getEndDate().toString("dd/MM/yyyy"),
@@ -163,7 +163,7 @@ public class AnalysisDataController extends BaseController {
     }
 
     @RequestMapping(value = "/healthTipsReport.xls", method = RequestMethod.GET)
-    public String downloadHealthTipsReport(@RequestParam("clinicName") String clinicName,
+    public String downloadHealthTipsReport(@RequestParam("clinicId") String clinicId,
                                            @RequestParam("patientId") String patientId,
                                            @RequestParam("startDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate startDate,
                                            @RequestParam("endDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate endDate,
@@ -172,7 +172,7 @@ public class AnalysisDataController extends BaseController {
         if (filter.isMoreThanOneYear()) {
             return error(uiModel, "healthTips_warning");
         } else {
-            return format("redirect:/tama-reports/healthTips/report?clinicName=%s&patientId=%s&startDate=%s&endDate=%s", clinicName, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"));
+            return format("redirect:/tama-reports/healthTips/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s", clinicId, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"));
         }
     }
 
