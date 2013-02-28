@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.resportbuilder.model;
+package org.motechproject.tama.web.reportbuilder.model;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 

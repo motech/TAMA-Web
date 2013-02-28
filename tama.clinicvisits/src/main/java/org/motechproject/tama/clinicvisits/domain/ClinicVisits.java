@@ -5,10 +5,19 @@ import org.joda.time.LocalDate;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 
 public class ClinicVisits extends ArrayList<ClinicVisit> {
+
+    public ClinicVisits(){
+
+    }
+
+    public ClinicVisits(Collection<? extends ClinicVisit> c) {
+        super(c);
+    }
 
     public LocalDate nextAppointmentDueDate() {
         ClinicVisits allPendingVisits = pendingVisits();

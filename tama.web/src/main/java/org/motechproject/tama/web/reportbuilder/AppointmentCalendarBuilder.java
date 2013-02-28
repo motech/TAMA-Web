@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.resportbuilder;
+package org.motechproject.tama.web.reportbuilder;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -6,8 +6,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
-import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
-import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
+import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
+import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;

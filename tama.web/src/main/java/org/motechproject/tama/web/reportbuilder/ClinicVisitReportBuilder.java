@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.resportbuilder;
+package org.motechproject.tama.web.reportbuilder;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -7,24 +7,24 @@ import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.domain.DailyPillReminderSummary;
 import org.motechproject.tama.patient.domain.PatientReport;
-import org.motechproject.tama.web.resportbuilder.abstractbuilder.InMemoryReportBuilder;
-import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
+import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
+import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DailyPillReminderReportBuilder extends InMemoryReportBuilder<DailyPillReminderSummary> {
+public class ClinicVisitReportBuilder extends InMemoryReportBuilder<DailyPillReminderSummary> {
 
     private PatientReport patientReport;
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public DailyPillReminderReportBuilder(List<DailyPillReminderSummary> objects) {
+    public ClinicVisitReportBuilder(List<DailyPillReminderSummary> objects) {
         super(objects);
     }
 
-    public DailyPillReminderReportBuilder(List<DailyPillReminderSummary> objects, PatientReport patientReport, LocalDate startDate, LocalDate endDate) {
+    public ClinicVisitReportBuilder(List<DailyPillReminderSummary> objects, PatientReport patientReport, LocalDate startDate, LocalDate endDate) {
         super(objects);
         this.patientReport = patientReport;
         this.startDate = startDate;

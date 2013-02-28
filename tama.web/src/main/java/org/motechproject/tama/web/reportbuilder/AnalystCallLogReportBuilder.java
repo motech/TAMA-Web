@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.resportbuilder;
+package org.motechproject.tama.web.reportbuilder;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -15,8 +15,8 @@ import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.builder.CallLogSummaryBuilder;
 import org.motechproject.tama.ivr.log.CallFlowDetails;
 import org.motechproject.tama.web.model.CallLogSummary;
-import org.motechproject.tama.web.resportbuilder.abstractbuilder.BatchReportBuilder;
-import org.motechproject.tama.web.resportbuilder.model.ExcelColumn;
+import org.motechproject.tama.web.reportbuilder.abstractbuilder.BatchReportBuilder;
+import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
 import org.motechproject.util.DateUtil;
 
 import java.util.LinkedList;

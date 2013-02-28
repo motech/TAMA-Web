@@ -1,4 +1,4 @@
-package org.motechproject.tama.web.resportbuilder.abstractbuilder;
+package org.motechproject.tama.web.reportbuilder.abstractbuilder;
 
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
