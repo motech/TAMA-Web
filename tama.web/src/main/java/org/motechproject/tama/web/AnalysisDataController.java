@@ -3,7 +3,9 @@ package org.motechproject.tama.web;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.contract.AppointmentCalenderReport;
+import org.motechproject.tama.clinicvisits.domain.ClinicVisitSummary;
 import org.motechproject.tama.clinicvisits.service.AppointmentCalenderReportService;
+import org.motechproject.tama.clinicvisits.service.ClinicVisitReportService;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.contract.DailyPillReminderReport;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
@@ -15,6 +17,7 @@ import org.motechproject.tama.web.model.*;
 import org.motechproject.tama.web.reportbuilder.AllAppointmentCalendarsBuilder;
 import org.motechproject.tama.web.reportbuilder.AllDailyPillReminderReportsBuilder;
 import org.motechproject.tama.web.reportbuilder.AllOutboxReportsBuilder;
+import org.motechproject.tama.web.reportbuilder.ClinicVisitReportBuilder;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 import static java.lang.String.format;
 
@@ -41,6 +45,7 @@ public class AnalysisDataController extends BaseController {
     private AppointmentCalenderReportService appointmentCalenderReportService;
     private OutboxMessageReportService outboxMessageReportService;
     private DailyPillReminderReportService dailyPillReminderReportService;
+    private ClinicVisitReportService clinicVisitReportService;
     private ClinicService clinicService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -51,12 +56,13 @@ public class AnalysisDataController extends BaseController {
                                   AppointmentCalenderReportService appointmentCalenderReportService,
                                   OutboxMessageReportService outboxMessageReportService,
                                   DailyPillReminderReportService dailyPillReminderReportService,
-                                  ClinicService clinicService) {
+                                  ClinicVisitReportService clinicVisitReportService, ClinicService clinicService) {
         this.callSummaryController = callSummaryController;
         this.reportingProperties = reportingProperties;
         this.appointmentCalenderReportService = appointmentCalenderReportService;
         this.outboxMessageReportService = outboxMessageReportService;
         this.dailyPillReminderReportService = dailyPillReminderReportService;
+        this.clinicVisitReportService = clinicVisitReportService;
         this.clinicService = clinicService;
     }
 
@@ -184,6 +190,17 @@ public class AnalysisDataController extends BaseController {
     @RequestMapping(value = "/clinicReport.xls", method = RequestMethod.GET)
     public String downloadClinicReport(Model uiModel) {
         return "redirect:/tama-reports/clinic/report";
+    }
+
+    @RequestMapping(value = "/clinicVisitReport.xls", method = RequestMethod.GET)
+    public void downloadClinicVisitReport(@RequestParam(value = "clinicVisitPatientId", required = true) String patientId, HttpServletResponse response) {
+        List<ClinicVisitSummary> clinicVisitSummaries = clinicVisitReportService.getClinicVisitReport(patientId);
+        ClinicVisitReportBuilder clinicVisitReportBuilder = new ClinicVisitReportBuilder(clinicVisitSummaries);
+        try {
+            writeExcelToResponse(response, clinicVisitReportBuilder, "ClinicVisitReport");
+        } catch (Exception e) {
+            logger.error("Error while generating excel report: " + e.getMessage());
+        }
     }
 
     private String error(Model uiModel, String warning) {

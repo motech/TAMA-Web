@@ -3,6 +3,7 @@ package org.motechproject.tama.healthtips.domain;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.domain.AdherenceComplianceReport;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.domain.Patient;
@@ -43,10 +44,10 @@ public class HealthTipParams {
     }
 
     public int numberOfWeeksSinceLastCD4LabTest() {
-        return new Period(labResults.latestLabTestDate(), DateUtil.today(), PeriodType.weeks()).getWeeks();
+        return new Period(labResults.latestLabTestDateOf(TAMAConstants.LabTestType.CD4), DateUtil.today(), PeriodType.weeks()).getWeeks();
     }
 
     public int lastCD4Count() {
-        return labResults.latestCD4Count();
+        return labResults.latestCountOf(TAMAConstants.LabTestType.CD4);
     }
 }

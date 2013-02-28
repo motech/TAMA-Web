@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.contract.AppointmentCalenderReport;
 import org.motechproject.tama.clinicvisits.service.AppointmentCalenderReportService;
+import org.motechproject.tama.clinicvisits.service.ClinicVisitReportService;
 import org.motechproject.tama.dailypillreminder.contract.DailyPillReminderReport;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
 import org.motechproject.tama.facility.domain.Clinic;
@@ -20,6 +21,7 @@ import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -44,6 +46,8 @@ public class AnalysisDataControllerTest {
     private DailyPillReminderReportService dailyPillReminderReportService;
     @Mock
     private ClinicService clinicService;
+    @Mock
+    private ClinicVisitReportService clinicVisitReportService;
 
     private AnalysisDataController analysisDataController;
 
@@ -55,7 +59,7 @@ public class AnalysisDataControllerTest {
                 appointmentCalenderReportService,
                 outboxMessageReportService,
                 dailyPillReminderReportService,
-                clinicService
+                clinicVisitReportService, clinicService
         );
     }
 
@@ -222,5 +226,16 @@ public class AnalysisDataControllerTest {
         analysisDataController.downloadDailyPillReminderReport(filter, model, response);
         verify(response).setContentType("application/vnd.ms-excel");
         verify(response).setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
+    }
+
+    @Test
+    public void shouldDownloadClinicVisitReportGivenPatientId() throws IOException {
+        String patientId = "patientDocId";
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        when(clinicVisitReportService.getClinicVisitReport(patientId)).thenReturn(Collections.EMPTY_LIST);
+
+        analysisDataController.downloadClinicVisitReport(patientId, response);
+        verify(response).setContentType("application/vnd.ms-excel");
+        verify(response).setHeader("Content-Disposition", "inline; filename=ClinicVisitReport.xls");
     }
 }

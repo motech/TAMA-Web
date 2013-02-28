@@ -20,7 +20,7 @@ import java.util.Date;
 @TypeDiscriminator("doc.documentType == 'LabResult'")
 public class LabResult extends CouchEntity {
 
-    public static final int INVALID_CD4_COUNT = -1;
+    public static final int INVALID_COUNT = -1;
     //TODO: This should not be a field
     private LabTest labTest;
 
@@ -101,6 +101,14 @@ public class LabResult extends CouchEntity {
         if (getLabTest() == null) return false;
         return TAMAConstants.LabTestType.isCD4(getLabTest().getName());
     }
+
+    @JsonIgnore
+    public boolean isPVL() {
+        if (getLabTest() == null) return false;
+        return TAMAConstants.LabTestType.isPVL(getLabTest().getName());
+
+    }
+
 
     public static class LabResultComparator implements Comparator<LabResult> {
 

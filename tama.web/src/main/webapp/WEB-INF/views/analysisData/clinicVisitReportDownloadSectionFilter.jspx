@@ -1,0 +1,33 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:spring="http://www.springframework.org/tags"
+     version="2.0"
+     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <div id="clinicVisitReportDownloadSection" class="reportsDownload">
+        <spring:url value="/analysisData/clinicVisitReport.xls#clinicVisitReportDownloadSection" var="download_clinic_visits_url"/>
+        <util:panel id="clinicVisitsReportPane" title="Clinic Visits Report" openPane="true">
+            <form id="clinicVisitsReportForm" action="${download_clinic_visits_url}" method="GET">
+                <div class="control-group">
+                    <label for="clinicVisitPatientId">Patient Id *:</label>
+                    <input type="text" name="clinicVisitPatientId"/>
+                </div>
+                <div class="control-group">
+                    <input type="submit" id="downloadClinicVisitsReport" value="DOWNLOAD AS EXCEL"/>
+                </div>
+            </form>
+            <script type="text/javascript">
+                <![CDATA[
+                Spring.addDecoration(new Spring.ElementDecoration({elementId : 'clinicVisitPatientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}));
+                dojo.connect(dojo.byId("downloadClinicVisitsReport"), "onclick", function(event){
+                    if(!dijit.byId("clinicVisitPatientId").isValid()){
+                        Spring.decorations['clinicVisitPatientId'][0].validate();
+                        event.preventDefault();
+                    }
+                });
+                ]]>
+            </script>
+        </util:panel>
+    </div>
+</div>

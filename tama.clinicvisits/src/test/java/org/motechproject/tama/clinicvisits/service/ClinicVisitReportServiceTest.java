@@ -8,12 +8,15 @@ import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisitSummary;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
+import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllReportedOpportunisticInfections;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 
 import java.util.List;
 
@@ -39,11 +42,13 @@ public class ClinicVisitReportServiceTest {
     private AllVitalStatistics allVitalStatistics;
     @Mock
     private AllReportedOpportunisticInfections allReportedOpportunisticInfections;
+    @Mock
+    private AllRegimens allRegimens;
 
     @Before
     public void setup() {
         initMocks(this);
-        clinicVisitReportService = new ClinicVisitReportService(patientService, allClinicVisits, allTreatmentAdvices, allLabResults, allVitalStatistics, allReportedOpportunisticInfections);
+        clinicVisitReportService = new ClinicVisitReportService(patientService, allClinicVisits, allTreatmentAdvices, allLabResults, allVitalStatistics, allReportedOpportunisticInfections, allRegimens);
     }
 
     @Test
@@ -57,8 +62,8 @@ public class ClinicVisitReportServiceTest {
         ClinicVisit clinicVisit2 = ClinicVisitBuilder.startRecording().withDefaults().withId("visit2").withTreatmentAdviceId("treatAdvice2").build();
         ClinicVisits clinicVisits = new ClinicVisits(asList(clinicVisit1, clinicVisit2));
 
-        TreatmentAdvice treatmentAdvice1 = new TreatmentAdvice();
-        TreatmentAdvice treatmentAdvice2 = new TreatmentAdvice();
+        TreatmentAdvice treatmentAdvice1 = new TreatmentAdviceBuilder().withDefaults().build();
+        TreatmentAdvice treatmentAdvice2 = new TreatmentAdviceBuilder().withDefaults().build();
 
         LabResults labResults = new LabResults(asList(new LabResult()));
 
@@ -67,8 +72,10 @@ public class ClinicVisitReportServiceTest {
         ReportedOpportunisticInfections opportunisticInfections1 = new ReportedOpportunisticInfections();
         ReportedOpportunisticInfections opportunisticInfections2 = new ReportedOpportunisticInfections();
 
-        ClinicVisitSummary clinicVisitSummary1 = new ClinicVisitSummary(patientReport, clinicVisit1, treatmentAdvice1, labResults, vitalStatistics, opportunisticInfections1);
-        ClinicVisitSummary clinicVisitSummary2 = new ClinicVisitSummary(patientReport, clinicVisit2, treatmentAdvice2, labResults, vitalStatistics, opportunisticInfections2);
+        Regimen regimen = new Regimen();
+
+        ClinicVisitSummary clinicVisitSummary1 = new ClinicVisitSummary(patientReport, clinicVisit1, treatmentAdvice1, labResults, vitalStatistics, opportunisticInfections1, regimen);
+        ClinicVisitSummary clinicVisitSummary2 = new ClinicVisitSummary(patientReport, clinicVisit2, treatmentAdvice2, labResults, vitalStatistics, opportunisticInfections2, regimen);
         List<ClinicVisitSummary> clinicVisitSummaries = asList(clinicVisitSummary1, clinicVisitSummary2);
 
         when(patientService.getPatientReports(patientId)).thenReturn(patientReports);
@@ -81,6 +88,8 @@ public class ClinicVisitReportServiceTest {
         when(allVitalStatistics.get(clinicVisit2.getVitalStatisticsId())).thenReturn(vitalStatistics);
         when(allReportedOpportunisticInfections.get(clinicVisit1.getReportedOpportunisticInfectionsId())).thenReturn(opportunisticInfections1);
         when(allReportedOpportunisticInfections.get(clinicVisit2.getReportedOpportunisticInfectionsId())).thenReturn(opportunisticInfections2);
+        when(allRegimens.get(treatmentAdvice1.getRegimenId())).thenReturn(regimen);
+        when(allRegimens.get(treatmentAdvice2.getRegimenId())).thenReturn(regimen);
 
         assertEquals(clinicVisitSummaries, clinicVisitReportService.getClinicVisitReport(patientId));
     }

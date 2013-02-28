@@ -114,6 +114,10 @@ public class TAMAConstants {
         public static boolean isCD4(String labTestName) {
             return CD4.name.equals(labTestName);
         }
+
+        public static boolean isPVL(String labTestName) {
+            return PVL.name.equals(labTestName);
+        }
     }
 
     public enum ReportedType {

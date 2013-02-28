@@ -3,12 +3,14 @@ package org.motechproject.tama.patient.domain;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.builder.LabResultBuilder;
 import org.motechproject.tama.refdata.builder.LabTestBuilder;
 import org.motechproject.tama.refdata.domain.LabTest;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
+import static org.motechproject.tama.common.TAMAConstants.LabTestType;
 
 public class LabResultsTest {
 
@@ -35,7 +37,27 @@ public class LabResultsTest {
         labResults.add(labResult2);
         labResults.add(labResult3);
 
-        assertEquals(50, labResults.latestCD4Count());
+        assertEquals(50, labResults.latestCountOf(TAMAConstants.LabTestType.CD4));
+    }
+
+
+    @Test
+    public void shouldSortLabResultsBasedOnDateAndReturnLatestPVLCount() {
+        String labTestId = "labTestId";
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withType(LabTestType.PVL).withId(labTestId).build();
+
+        LabResult labResult1 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
+        labResult1.setLabTest(labTest);
+        LabResult labResult2 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 10, 20)).withResult("50").build();
+        labResult2.setLabTest(labTest);
+        LabResult labResult3 = LabResultBuilder.startRecording().withDefaults().withLabTestId(labTestId).withTestDate(new LocalDate(2011, 9, 20)).withResult("70").build();
+        labResult3.setLabTest(labTest);
+
+        labResults.add(labResult1);
+        labResults.add(labResult2);
+        labResults.add(labResult3);
+
+        assertEquals(50, labResults.latestCountOf(LabTestType.PVL));
     }
 
     @Test
@@ -45,7 +67,17 @@ public class LabResultsTest {
         labResult.setLabTest(labTest);
 
         labResults.add(labResult);
-        assertEquals(60, labResults.baselineCD4Count());
+        assertEquals(60, labResults.baselineCountOf(LabTestType.CD4));
+    }
+
+    @Test
+    public void shouldReturnPVLCountOfTheOnlyResultAsBaselinePVLCount() {
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withType(LabTestType.PVL).withId("labTestId").build();
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId("labTestId").withTestDate(new LocalDate(2011, 6, 20)).withResult("60").build();
+        labResult.setLabTest(labTest);
+
+        labResults.add(labResult);
+        assertEquals(60, labResults.baselineCountOf(LabTestType.PVL));
     }
 
     @Test
@@ -56,7 +88,7 @@ public class LabResultsTest {
         labResult.setResult("90");
 
         labResults.add(labResult);
-        assertEquals(90, labResults.baselineCD4Count());
+        assertEquals(90, labResults.baselineCountOf(LabTestType.CD4));
     }
 
     @Test
@@ -66,7 +98,7 @@ public class LabResultsTest {
         labResult.setLabTest(labTest);
 
         labResults.add(labResult);
-        assertEquals(LabResult.INVALID_CD4_COUNT, labResults.baselineCD4Count());
+        assertEquals(LabResult.INVALID_COUNT, labResults.baselineCountOf(LabTestType.CD4));
     }
 
     @Test
@@ -80,7 +112,7 @@ public class LabResultsTest {
         cd4Result.setLabTest(cd4Test);
 
         labResults.addAll(asList(pvlResult, cd4Result));
-        assertEquals(70, labResults.baselineCD4Count());
+        assertEquals(70, labResults.baselineCountOf(LabTestType.CD4));
     }
 
     @Test
@@ -94,11 +126,12 @@ public class LabResultsTest {
         laterResult.setLabTest(laterTest);
 
         labResults.addAll(asList(laterResult, earlierResult));
-        assertEquals(60, labResults.baselineCD4Count());
+        assertEquals(60, labResults.baselineCountOf(LabTestType.CD4));
     }
 
     @Test
-    public void shouldReturn_INVALID_CD4_COUNT_WhenNoLabResults() {
-        assertEquals(-1, labResults.latestCD4Count());
+    public void shouldReturn_INVALID_COUNT_WhenNoLabResults() {
+        assertEquals(-1, labResults.latestCountOf(TAMAConstants.LabTestType.CD4));
+        assertEquals(-1, labResults.latestCountOf(TAMAConstants.LabTestType.PVL));
     }
 }

@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
+import org.motechproject.tama.web.reportbuilder.model.ExcelColumnGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ public abstract class ReportBuilder<T> {
     protected static final int MAX_ROWS_PER_SHEET = 30000;
 
     protected List<ExcelColumn> columns = new ArrayList<ExcelColumn>();
+    protected List<ExcelColumnGroup> columnGroups = new ArrayList<ExcelColumnGroup>();
 
     protected int currentRowIndex = 0;
     private int firstColumnIndex = 0;
@@ -63,6 +65,7 @@ public abstract class ReportBuilder<T> {
         setColumnWidths(worksheet);
         buildTitle(worksheet);
         buildSummary(worksheet);
+        buildColumnGroups(worksheet);
         buildColumnHeaders(worksheet);
         worksheet.createFreezePane(0, currentRowIndex);
     }
@@ -99,6 +102,51 @@ public abstract class ReportBuilder<T> {
         cellStyleTitle.setWrapText(true);
         cellStyleTitle.setFont(fontTitle);
         return cellStyleTitle;
+    }
+
+    private void buildColumnGroups(HSSFSheet worksheet){
+        HSSFCellStyle headerCellStyle = getHeaderCellStyle(worksheet);
+        HSSFRow headerRow = worksheet.createRow((short) currentRowIndex);
+        headerRow.setHeight((short) HEADER_ROW_HEIGHT);
+
+        int maxGroupLevel = getMaxGroupLevel();
+        for(int level=0; level <= maxGroupLevel; level++){
+            List<ExcelColumnGroup> groupColumnsForLevel = getColumnGroupsForLevel(level);
+
+            for (ExcelColumnGroup group : groupColumnsForLevel) {
+
+                int columnIndex = group.getStartColumnIndex();
+
+                HSSFCell cell = headerRow.createCell(columnIndex);
+                cell.setCellValue(group.getHeader());
+                cell.setCellStyle(headerCellStyle);
+
+                int groupColumnSpan = group.getEndColumnIndex() - group.getStartColumnIndex();
+                worksheet.addMergedRegion(new CellRangeAddress(currentRowIndex, currentRowIndex, columnIndex, columnIndex + groupColumnSpan));
+            }
+            currentRowIndex++;
+        }
+    }
+
+    private int getMaxGroupLevel(){
+        int maxLevel = 0;
+        for (ExcelColumnGroup columnGroup : columnGroups) {
+            int columnGroupLevel = columnGroup.getLevel();
+            if(maxLevel < columnGroupLevel){
+                maxLevel = columnGroupLevel;
+            }
+        }
+        return maxLevel;
+    }
+
+    private List<ExcelColumnGroup> getColumnGroupsForLevel(int level){
+        List<ExcelColumnGroup> columnGroupsForLevel = new ArrayList<>();
+        for (ExcelColumnGroup columnGroup : columnGroups) {
+            if (columnGroup.getLevel() == level){
+                columnGroupsForLevel.add(columnGroup);
+            }
+        }
+        return columnGroupsForLevel;
     }
 
     private void buildColumnHeaders(HSSFSheet worksheet) {

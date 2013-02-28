@@ -5,6 +5,7 @@ import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.dto.SendSMSRequest;
 import org.motechproject.tama.ivr.reporting.SMSType;
@@ -75,7 +76,7 @@ public class SymptomReportingService {
     private LabResult baselineCD4Count(Patient patient) {
         ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patient.getId());
         LabResults results = new LabResults(allLabResults.withIds(baselineVisit.getLabResultIds()));
-        return results.latestCD4Result();
+        return results.latestResultOf(TAMAConstants.LabTestType.CD4);
     }
 
     public void smsOTCAdviceToAllClinicians(String patientDocId, String callLogDocId) {

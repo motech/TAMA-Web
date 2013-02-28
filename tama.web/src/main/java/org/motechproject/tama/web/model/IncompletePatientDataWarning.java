@@ -3,6 +3,7 @@ package org.motechproject.tama.web.model;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -77,7 +78,7 @@ public class IncompletePatientDataWarning {
         LabResult cd4Result = null;
         if (baselineVisit != null) {
             List<LabResult> labResults = allLabResults.withIds(baselineVisit.getLabResultIds());
-            cd4Result = new LabResults(labResults).latestCD4Result();
+            cd4Result = new LabResults(labResults).latestResultOf(TAMAConstants.LabTestType.CD4);
         } else {
             cd4Result = null;
         }
@@ -86,9 +87,9 @@ public class IncompletePatientDataWarning {
 
     private void findLatestLabResults() {
         HashSet<String> requiredFor = new HashSet<String>(asList("Health Tips"));
-        int cd4Result = allLabResults.allLabResults(patient.getId()).latestCD4Count();
-        if (cd4Result == LabResult.INVALID_CD4_COUNT) {
-            requiredPatientDetails.add(new RequiredPatientDetail(cd4Result == LabResult.INVALID_CD4_COUNT ? null : cd4Result, "Latest CD4 count", requiredFor));
+        int cd4Result = allLabResults.allLabResults(patient.getId()).latestCountOf(TAMAConstants.LabTestType.CD4);
+        if (cd4Result == LabResult.INVALID_COUNT) {
+            requiredPatientDetails.add(new RequiredPatientDetail(cd4Result == LabResult.INVALID_COUNT ? null : cd4Result, "Latest CD4 count", requiredFor));
         }
     }
 

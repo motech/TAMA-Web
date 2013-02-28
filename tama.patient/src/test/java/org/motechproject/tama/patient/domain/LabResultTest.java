@@ -84,6 +84,17 @@ public class LabResultTest {
     }
 
     @Test
+    public void shouldReturnTrueForPVLLabResult() {
+        String labTestId = "labTestId1";
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withType(TAMAConstants.LabTestType.PVL).build();
+
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
+        labResult.setLabTest(labTest);
+
+        assertTrue(labResult.isPVL());
+    }
+
+    @Test
     public void shouldReturnFalseForNonCD4LabResult() {
         String labTestId = "labTestId1";
         LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withType(TAMAConstants.LabTestType.PVL).build();
@@ -95,10 +106,22 @@ public class LabResultTest {
     }
 
     @Test
-    public void shouldReturnFalseForCD4LabResultWhenNoLabTestSet() {
+    public void shouldReturnFalseForNonPVLLabResult() {
+        String labTestId = "labTestId1";
+        LabTest labTest = LabTestBuilder.startRecording().withDefaults().withId(labTestId).withType(TAMAConstants.LabTestType.CD4).build();
+
+        LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTestId("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
+        labResult.setLabTest(labTest);
+
+        assertFalse(labResult.isPVL());
+    }
+
+    @Test
+    public void shouldReturnFalseForLabResultWhenNoLabTestSet() {
         LabResult labResult = LabResultBuilder.startRecording().withDefaults().withLabTest(null).withLabTestId("labTestId1").withResult("60").withTestDate(DateUtil.newDate(2011, 8, 10)).build();
 
         assertFalse(labResult.isCD4());
+        assertFalse(labResult.isPVL());
     }
 
     private void assertConstraintViolation(Set<ConstraintViolation<LabResult>> constraintViolations, String property, String message) {

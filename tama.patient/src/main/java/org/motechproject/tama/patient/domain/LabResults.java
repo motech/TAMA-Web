@@ -1,6 +1,7 @@
 package org.motechproject.tama.patient.domain;
 
 import org.joda.time.LocalDate;
+import org.motechproject.tama.common.TAMAConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,41 +16,46 @@ public class LabResults extends ArrayList<LabResult> {
         super(c);
     }
 
-    public int latestCD4Count() {
-        LabResult labResult = latestCD4Result();
-        return labResult == null ? LabResult.INVALID_CD4_COUNT : Integer.parseInt(labResult.getResult());
+    public int latestCountOf(TAMAConstants.LabTestType type) {
+        LabResult labResult = getLatestResult(type);
+        return labResult == null ? LabResult.INVALID_COUNT : Integer.parseInt(labResult.getResult());
     }
 
-    public LabResult latestCD4Result() {
+    public LabResult latestResultOf(TAMAConstants.LabTestType type) {
+        return getLatestResult(type);
+    }
+
+    private LabResult getLatestResult(TAMAConstants.LabTestType type) {
         ArrayList<LabResult> results = new ArrayList<LabResult>(this);
         Collections.sort(results, new LabResult.LabResultComparator(false));
         for (LabResult result : results) {
-            if (result.isCD4()) {
+            if (result.getLabTest().getName() == type.getName()) {
                 return result;
             }
         }
         return null;
     }
 
-    public LocalDate latestLabTestDate() {
+
+    public LocalDate latestLabTestDateOf(TAMAConstants.LabTestType type) {
         ArrayList<LabResult> results = new ArrayList<LabResult>(this);
         Collections.sort(results, new LabResult.LabResultComparator(false));
         for (LabResult result : results) {
-            if (result.isCD4()) {
+            if (result.getLabTest().getName() == type.getName()) {
                 return result.getTestDate();
             }
         }
         return null;
     }
 
-    public int baselineCD4Count() {
+    public int baselineCountOf(TAMAConstants.LabTestType type) {
         ArrayList<LabResult> results = new ArrayList<LabResult>(this);
         Collections.sort(results, new LabResult.LabResultComparator(true));
         for (LabResult result : results) {
-            if (result.isCD4()) {
+            if (result.getLabTest().getName() == type.getName()) {
                 return Integer.parseInt(result.getResult());
             }
         }
-        return LabResult.INVALID_CD4_COUNT;
+        return LabResult.INVALID_COUNT;
     }
 }

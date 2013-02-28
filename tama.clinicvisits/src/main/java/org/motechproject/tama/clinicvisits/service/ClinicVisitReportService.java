@@ -10,6 +10,8 @@ import org.motechproject.tama.patient.repository.AllReportedOpportunisticInfecti
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,15 +27,17 @@ public class ClinicVisitReportService {
     private final AllLabResults allLabResults;
     private final AllVitalStatistics allVitalStatistics;
     private final AllReportedOpportunisticInfections allReportedOpportunisticInfections;
+    private final AllRegimens allRegimens;
 
     @Autowired
-    public ClinicVisitReportService(PatientService patientService, AllClinicVisits allClinicVisits, AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults, AllVitalStatistics allVitalStatistics, AllReportedOpportunisticInfections allReportedOpportunisticInfections) {
+    public ClinicVisitReportService(PatientService patientService, AllClinicVisits allClinicVisits, AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults, AllVitalStatistics allVitalStatistics, AllReportedOpportunisticInfections allReportedOpportunisticInfections, AllRegimens allRegimens) {
         this.patientService = patientService;
         this.allClinicVisits = allClinicVisits;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allLabResults = allLabResults;
         this.allVitalStatistics = allVitalStatistics;
         this.allReportedOpportunisticInfections = allReportedOpportunisticInfections;
+        this.allRegimens = allRegimens;
     }
 
     public List<ClinicVisitSummary> getClinicVisitReport(String patientId){
@@ -45,13 +49,31 @@ public class ClinicVisitReportService {
         for (String patientDocId : patientReports.getPatientDocIds()) {
             PatientReport patientReport = patientReports.getPatientReport(patientDocId);
             ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patientDocId);
+            TreatmentAdvice treatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
+            String earlierTreatmentAdviceId = treatmentAdvice == null ? null : treatmentAdvice.getId();
 
             for(ClinicVisit clinicVisit: clinicVisits){
-                TreatmentAdvice treatmentAdvices = allTreatmentAdvices.get(clinicVisit.getTreatmentAdviceId());
-                LabResults labResults = (LabResults) allLabResults.withIds(clinicVisit.getLabResultIds());
+
+                if(clinicVisit.getVisitDate() == null)
+                    continue;
+
+                String currentTreatmentAdviceId = clinicVisit.getTreatmentAdviceId();
+
+                if(currentTreatmentAdviceId == null)
+                    currentTreatmentAdviceId = earlierTreatmentAdviceId;
+                else
+                    earlierTreatmentAdviceId = currentTreatmentAdviceId;
+
+                if(currentTreatmentAdviceId == null)
+                    continue;
+
+                TreatmentAdvice treatmentAdvices = allTreatmentAdvices.get(currentTreatmentAdviceId);
+                LabResults labResults = new LabResults(allLabResults.withIds(clinicVisit.getLabResultIds()));
                 VitalStatistics vitalStatistics = allVitalStatistics.get(clinicVisit.getVitalStatisticsId());
                 ReportedOpportunisticInfections reportedOpportunisticInfections = allReportedOpportunisticInfections.get(clinicVisit.getReportedOpportunisticInfectionsId());
-                ClinicVisitSummary clinicVisitSummary = new ClinicVisitSummary(patientReport, clinicVisit, treatmentAdvices, labResults, vitalStatistics, reportedOpportunisticInfections);
+                Regimen regimen = allRegimens.get(treatmentAdvices.getRegimenId());
+
+                ClinicVisitSummary clinicVisitSummary = new ClinicVisitSummary(patientReport, clinicVisit, treatmentAdvices, labResults, vitalStatistics, reportedOpportunisticInfections, regimen);
                 clinicVisitSummaries.add(clinicVisitSummary);
             }
         }

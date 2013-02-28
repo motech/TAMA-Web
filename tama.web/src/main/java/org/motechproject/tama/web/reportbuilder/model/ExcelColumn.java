@@ -13,11 +13,13 @@ public class ExcelColumn {
     private int cellType;
     private int textAlignment;
 
+
     public ExcelColumn(String header, int cellType, int width, int textAlignment) {
         this.header = header;
         this.cellType = cellType;
         this.width = width;
         this.textAlignment = textAlignment;
+
     }
 
     public ExcelColumn(String header, int cellType, int columnWidth) {
@@ -44,3 +46,4 @@ public class ExcelColumn {
         return textAlignment;
     }
 }
+

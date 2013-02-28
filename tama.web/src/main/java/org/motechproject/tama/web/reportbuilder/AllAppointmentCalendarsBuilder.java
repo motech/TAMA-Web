@@ -10,6 +10,7 @@ import org.motechproject.tama.patient.domain.PatientReports;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
+import org.motechproject.tama.web.reportbuilder.model.ExcelColumnGroup;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
 
     @Override
     protected void initializeColumns() {
-        columns = new ArrayList<>();
         columns.add(new ExcelColumn("Patient Id", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Clinic", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Visit Name", Cell.CELL_TYPE_STRING, 10000));

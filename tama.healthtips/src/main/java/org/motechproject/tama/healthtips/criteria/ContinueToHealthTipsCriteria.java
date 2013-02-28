@@ -1,6 +1,7 @@
 package org.motechproject.tama.healthtips.criteria;
 
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.LabResult;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.repository.AllLabResults;
@@ -29,6 +30,6 @@ public class ContinueToHealthTipsCriteria {
     }
 
     private boolean hasCD4Result(LabResults results) {
-        return results.latestCD4Count() != LabResult.INVALID_CD4_COUNT;
+        return results.latestCountOf(TAMAConstants.LabTestType.CD4) != LabResult.INVALID_COUNT;
     }
 }
