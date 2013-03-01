@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -65,11 +67,11 @@ public class ClinicVisitReportService {
             TreatmentAdvice treatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patientDocId);
             String previousTreatmentAdviceId = treatmentAdvice == null ? null : treatmentAdvice.getId();
 
+            clinicVisits = removeUnvisitedClinicVisits(clinicVisits);
+            sortClinicVisitsByVisitDate(clinicVisits);
+
             for(ClinicVisit clinicVisit: clinicVisits){
                 DateTime visitDate = clinicVisit.getVisitDate();
-
-                if(visitDate == null)
-                    continue;
 
                 String currentTreatmentAdviceId = clinicVisit.getTreatmentAdviceId();
 
@@ -83,9 +85,9 @@ public class ClinicVisitReportService {
 
 
                 TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.get(currentTreatmentAdviceId);
-                LabResults labResults = new LabResults(allLabResults.withIds(clinicVisit.getLabResultIds()));
-                VitalStatistics vitalStatistics = allVitalStatistics.get(clinicVisit.getVitalStatisticsId());
-                ReportedOpportunisticInfections reportedOpportunisticInfections = allReportedOpportunisticInfections.get(clinicVisit.getReportedOpportunisticInfectionsId());
+                LabResults labResults = clinicVisit.getLabResultIds() == null ? null : new LabResults(allLabResults.withIds(clinicVisit.getLabResultIds()));
+                VitalStatistics vitalStatistics = clinicVisit.getVitalStatisticsId() == null ? null : allVitalStatistics.get(clinicVisit.getVitalStatisticsId());
+                ReportedOpportunisticInfections reportedOpportunisticInfections = clinicVisit.getReportedOpportunisticInfectionsId() == null ? null :allReportedOpportunisticInfections.get(clinicVisit.getReportedOpportunisticInfectionsId());
                 Regimen regimen = allRegimens.get(currentTreatmentAdvice.getRegimenId());
 
                 DrugCompositionGroup drugCompositionGroup = regimen.getDrugCompositionGroupFor(currentTreatmentAdvice.getDrugCompositionGroupId());
@@ -111,6 +113,27 @@ public class ClinicVisitReportService {
         return clinicVisitSummaries;
     }
 
+    private void sortClinicVisitsByVisitDate(ClinicVisits clinicVisits) {
+        Collections.sort(clinicVisits, new Comparator<ClinicVisit>() {
+            public int compare(ClinicVisit cv1, ClinicVisit cv2) {
+                return cv1.getVisitDate().compareTo(cv2.getVisitDate());
+            }
+        });
+    }
+
+    private ClinicVisits removeUnvisitedClinicVisits(ClinicVisits clinicVisits) {
+
+        ClinicVisits filteredClinicVisits = new ClinicVisits();
+        for(ClinicVisit clinicVisit: clinicVisits){
+            DateTime visitDate = clinicVisit.getVisitDate();
+            if(visitDate == null)
+                continue;
+            else
+                filteredClinicVisits.add(clinicVisit);
+        }
+        return filteredClinicVisits;
+    }
+
     private DrugDosageContract getDrugDosage(DrugDosage dosage) {
         DrugDosageContract drugDosage = new DrugDosageContract();
         drugDosage.setDrugName(dosage.getDrugName());
@@ -125,10 +148,19 @@ public class ClinicVisitReportService {
     }
 
     private String getOpportunisticInfections(ReportedOpportunisticInfections reportedOpportunisticInfections) {
+        if(reportedOpportunisticInfections == null)
+            return StringUtils.EMPTY;
+
         List<String> opportunisticInfections = new ArrayList<>();
         for (String infectionId : reportedOpportunisticInfections.getOpportunisticInfectionIds()) {
             opportunisticInfections.add(allOpportunisticInfections.get(infectionId).getName());
         }
-        return StringUtils.join(opportunisticInfections, ",");
+        String infections = StringUtils.join(opportunisticInfections, ",");
+
+        String otherOpportunisticInfectionDetails = reportedOpportunisticInfections.getOtherOpportunisticInfectionDetails();
+        if(StringUtils.isNotBlank(otherOpportunisticInfectionDetails)){
+            infections = infections + " (" + otherOpportunisticInfectionDetails + ")";
+        }
+        return infections;
     }
 }

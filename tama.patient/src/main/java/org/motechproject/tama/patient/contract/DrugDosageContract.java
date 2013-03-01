@@ -18,9 +18,6 @@ public class DrugDosageContract {
     private Integer offsetDays = 0;
     private String morningTime;
     private String eveningTime;
-
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private Date startDate;
 
     @Temporal(TemporalType.DATE)

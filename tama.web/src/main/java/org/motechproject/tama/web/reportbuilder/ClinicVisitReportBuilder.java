@@ -1,8 +1,10 @@
 package org.motechproject.tama.web.reportbuilder;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.impl.cookie.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
+import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisitSummary;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.contract.DrugDosageContract;
@@ -47,7 +49,7 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         columns.add(new ExcelColumn("Dosage", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Morning Time", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Evening Time", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Start evening dose after (days)", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Start evening dose after (days)", Cell.CELL_TYPE_NUMERIC));
         columns.add(new ExcelColumn("Start date", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Advice", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Meal Advice", Cell.CELL_TYPE_STRING));
@@ -56,22 +58,22 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         columns.add(new ExcelColumn("Dosage", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Morning Time", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Evening Time", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Start evening dose after (days)", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Start evening dose after (days)", Cell.CELL_TYPE_NUMERIC));
         columns.add(new ExcelColumn("Start date", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Advice", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Meal Advice", Cell.CELL_TYPE_STRING));
 
         columns.add(new ExcelColumn("CD4 Test Date", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("CD4 Count", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("CD4 Count", Cell.CELL_TYPE_NUMERIC));
         columns.add(new ExcelColumn("PVL Test Date", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("PVL Count", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("PVL Count", Cell.CELL_TYPE_NUMERIC));
 
-        columns.add(new ExcelColumn("Weight (in kg)", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Height (in cm)", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Systolic Blood Pressure", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Diastolic Blood Pressure", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Temperature (in F)", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Pulse", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Weight (in kg)", Cell.CELL_TYPE_NUMERIC));
+        columns.add(new ExcelColumn("Height (in cm)", Cell.CELL_TYPE_NUMERIC));
+        columns.add(new ExcelColumn("Systolic Blood Pressure", Cell.CELL_TYPE_NUMERIC));
+        columns.add(new ExcelColumn("Diastolic Blood Pressure", Cell.CELL_TYPE_NUMERIC));
+        columns.add(new ExcelColumn("Temperature (in F)", Cell.CELL_TYPE_NUMERIC));
+        columns.add(new ExcelColumn("Pulse", Cell.CELL_TYPE_NUMERIC));
 
         columns.add(new ExcelColumn("Opportunistic Infections", Cell.CELL_TYPE_STRING));
 
@@ -88,37 +90,71 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         List<Object> row = new ArrayList<Object>();
         row.add(summary.getPatientReport().getPatientId());
         row.add(summary.getPatientReport().getClinicName());
-        row.add(summary.getVisitDate());
-        row.add(summary.getRegimen().getDisplayName());
 
+        row.add(DateUtils.formatDate(summary.getVisitDate().toDate(), "dd/MM/yyyy"));
+
+        row.add(summary.getRegimen().getDisplayName());
         row.add(summary.getDrugCompositonGroupName());
 
-        DrugDosageContract dosage1 = summary.getDrugDosageOne();
+        populateDosage(row, summary.getDrugDosageOne());
+        populateDosage(row, summary.getDrugDosageTwo());
 
-        populateDosage(row, dosage1);
+        populateLabResults(row, summary.getLabResults());
 
-        DrugDosageContract dosage2 = summary.getDrugDosageTwo();
-
-        populateDosage(row, dosage2);
-
-        LabResults labResults = summary.getLabResults();
-        row.add(labResults.latestLabTestDateOf(TAMAConstants.LabTestType.CD4));
-        row.add(labResults.latestCountOf(TAMAConstants.LabTestType.CD4));
-        row.add(labResults.latestLabTestDateOf(TAMAConstants.LabTestType.PVL));
-        row.add(labResults.latestCountOf(TAMAConstants.LabTestType.PVL));
-
-        VitalStatistics vitalStatistics = summary.getVitalStatistics();
-        row.add(vitalStatistics.getWeightInKg());
-        row.add(vitalStatistics.getHeightInCm());
-        row.add(vitalStatistics.getSystolicBp());
-        row.add(vitalStatistics.getDiastolicBp());
-        row.add(vitalStatistics.getTemperatureInFahrenheit());
-        row.add(vitalStatistics.getPulse());
+        populateVitalStatistics(row, summary.getVitalStatistics());
 
         row.add(summary.getReportedOpportunisticInfections());
 
         return row;
     }
+
+    private void populateVitalStatistics(List<Object> row, VitalStatistics vitalStatistics) {
+        Double weightInKg = null;
+        Double heightInCm = null;
+        Integer systolicBp = null;
+        Integer diastolicBp = null;
+        Double temperatureInFahrenheit = null;
+        Integer pulse = null;
+
+        if(vitalStatistics != null){
+            weightInKg = vitalStatistics.getWeightInKg();
+            heightInCm = vitalStatistics.getHeightInCm();
+            systolicBp = vitalStatistics.getSystolicBp();
+            diastolicBp = vitalStatistics.getDiastolicBp();
+            temperatureInFahrenheit = vitalStatistics.getTemperatureInFahrenheit();
+            pulse = vitalStatistics.getPulse();
+        }
+
+        row.add(weightInKg);
+        row.add(heightInCm);
+        row.add(systolicBp);
+        row.add(diastolicBp);
+        row.add(temperatureInFahrenheit);
+        row.add(pulse);
+    }
+
+    private void populateLabResults(List<Object> row, LabResults labResults) {
+        LocalDate cd4TestDate = null;
+        Integer cd4Count = null;
+        LocalDate pvlTestDate = null;
+        Integer pvlCount = null;
+
+        if(labResults != null){
+            cd4TestDate = labResults.latestLabTestDateOf(TAMAConstants.LabTestType.CD4);
+            cd4Count = labResults.latestCountOf(TAMAConstants.LabTestType.CD4);
+            pvlTestDate = labResults.latestLabTestDateOf(TAMAConstants.LabTestType.PVL);
+            pvlCount = labResults.latestCountOf(TAMAConstants.LabTestType.PVL);
+
+            cd4Count = cd4Count == -1 ? null : cd4Count;
+            pvlCount = pvlCount == -1 ? null : pvlCount;
+        }
+
+        row.add(cd4TestDate);
+        row.add(cd4Count);
+        row.add(pvlTestDate);
+        row.add(pvlCount);
+    }
+
 
     private void populateDosage(List<Object> row, DrugDosageContract dosage) {
         String drugName = StringUtils.EMPTY;
@@ -126,7 +162,7 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         String morningTime = StringUtils.EMPTY;
         String eveningTime = StringUtils.EMPTY;
         Integer offsetDays = null;
-        Date startDate = null;
+        String startDate = null;
         String advice = StringUtils.EMPTY;
         String mealAdviceId = StringUtils.EMPTY;
 
@@ -136,7 +172,7 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
             morningTime = dosage.getMorningTime();
             eveningTime = dosage.getEveningTime();
             offsetDays = dosage.getOffsetDays();
-            startDate = dosage.getStartDate();
+            startDate = DateUtils.formatDate(dosage.getStartDate(), "dd/mm/yyyy");
             advice = dosage.getAdvice();
             mealAdviceId = dosage.getMealAdvice();
         }
