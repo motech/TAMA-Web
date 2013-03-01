@@ -40,3 +40,5 @@ public class AppointmentReminderMessageBuilder implements OutboxMessageBuilder {
         ivrResponseBuilder.withPlayAudios(TamaIVRMessage.NEXT_CLINIC_VISIT_IS_DUE_PART2);
     }
 }
+
+

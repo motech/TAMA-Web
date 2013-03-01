@@ -1,6 +1,5 @@
 package org.motechproject.tama.clinicvisits.builder;
 
-import org.drools.reteoo.builder.ReteooComponentBuilder;
 import org.joda.time.DateTime;
 import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
@@ -65,6 +64,11 @@ public class ClinicVisitBuilder {
 
     public ClinicVisitBuilder withTreatmentAdviceId(String treatmentAdviceId) {
         visitResponse.addVisitData(ClinicVisit.TREATMENT_ADVICE, treatmentAdviceId);
+        return this;
+    }
+
+    public ClinicVisitBuilder withReportedOpportunisticInfection(String opportunisticInfection) {
+        visitResponse.addVisitData(ClinicVisit.REPORTED_OPPORTUNISTIC_INFECTIONS, opportunisticInfection);
         return this;
     }
 

@@ -3,16 +3,19 @@ package org.motechproject.tama.web.reportbuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
-import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisitSummary;
 import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.patient.domain.*;
-import org.motechproject.tama.refdata.domain.DrugCompositionGroup;
+import org.motechproject.tama.patient.contract.DrugDosageContract;
+import org.motechproject.tama.patient.domain.DrugDosage;
+import org.motechproject.tama.patient.domain.LabResults;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumnGroup;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitSummary> {
@@ -85,19 +88,16 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         List<Object> row = new ArrayList<Object>();
         row.add(summary.getPatientReport().getPatientId());
         row.add(summary.getPatientReport().getClinicName());
-        row.add(summary.getClinicVisit().getVisitDate());
+        row.add(summary.getVisitDate());
         row.add(summary.getRegimen().getDisplayName());
 
-        TreatmentAdvice treatmentAdvice = summary.getTreatmentAdvice();
-        DrugCompositionGroup drugCompositionGroup = summary.getRegimen().getDrugCompositionGroupFor(treatmentAdvice.getDrugCompositionGroupId());
+        row.add(summary.getDrugCompositonGroupName());
 
-        row.add(drugCompositionGroup.getName());
-
-        DrugDosage dosage1 = getDrugDosage(treatmentAdvice, 0);
+        DrugDosageContract dosage1 = summary.getDrugDosageOne();
 
         populateDosage(row, dosage1);
 
-        DrugDosage dosage2 = getDrugDosage(treatmentAdvice, 1);
+        DrugDosageContract dosage2 = summary.getDrugDosageTwo();
 
         populateDosage(row, dosage2);
 
@@ -115,38 +115,37 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         row.add(vitalStatistics.getTemperatureInFahrenheit());
         row.add(vitalStatistics.getPulse());
 
-        ReportedOpportunisticInfections reportedOpportunisticInfections = summary.getReportedOpportunisticInfections();
-        row.add(StringUtils.join(reportedOpportunisticInfections.getOpportunisticInfectionIds(), ","));
+        row.add(summary.getReportedOpportunisticInfections());
 
         return row;
     }
 
-    private void populateDosage(List<Object> row, DrugDosage dosage) {
+    private void populateDosage(List<Object> row, DrugDosageContract dosage) {
         String drugName = StringUtils.EMPTY;
         String dosageTypeId = StringUtils.EMPTY;
         String morningTime = StringUtils.EMPTY;
         String eveningTime = StringUtils.EMPTY;
         Integer offsetDays = null;
-        LocalDate startDate = null;
+        Date startDate = null;
         String advice = StringUtils.EMPTY;
         String mealAdviceId = StringUtils.EMPTY;
 
         if(dosage != null) {
             drugName = dosage.getDrugName();
-            dosageTypeId = dosage.getDosageTypeId();
+            dosageTypeId = dosage.getDosageType();
             morningTime = dosage.getMorningTime();
             eveningTime = dosage.getEveningTime();
             offsetDays = dosage.getOffsetDays();
             startDate = dosage.getStartDate();
             advice = dosage.getAdvice();
-            mealAdviceId = dosage.getMealAdviceId();
+            mealAdviceId = dosage.getMealAdvice();
         }
-        row.add(startDate);
         row.add(drugName);
         row.add(dosageTypeId);
         row.add(morningTime);
         row.add(eveningTime);
         row.add(offsetDays);
+        row.add(startDate);
         row.add(advice);
         row.add(mealAdviceId);
     }
