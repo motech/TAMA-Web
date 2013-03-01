@@ -1,5 +1,6 @@
 package org.motechproject.tama.patient.domain;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 
@@ -26,10 +27,10 @@ public class LabResults extends ArrayList<LabResult> {
     }
 
     private LabResult getLatestResult(TAMAConstants.LabTestType type) {
-        ArrayList<LabResult> results = new ArrayList<LabResult>(this);
+        ArrayList<LabResult> results = new ArrayList<>(this);
         Collections.sort(results, new LabResult.LabResultComparator(false));
         for (LabResult result : results) {
-            if (result.getLabTest().getName() == type.getName()) {
+            if (StringUtils.equals(result.getLabTest().getName(), type.getName())) {
                 return result;
             }
         }
@@ -38,10 +39,10 @@ public class LabResults extends ArrayList<LabResult> {
 
 
     public LocalDate latestLabTestDateOf(TAMAConstants.LabTestType type) {
-        ArrayList<LabResult> results = new ArrayList<LabResult>(this);
+        ArrayList<LabResult> results = new ArrayList<>(this);
         Collections.sort(results, new LabResult.LabResultComparator(false));
         for (LabResult result : results) {
-            if (result.getLabTest().getName() == type.getName()) {
+            if (StringUtils.equals(result.getLabTest().getName(), type.getName())) {
                 return result.getTestDate();
             }
         }
@@ -49,10 +50,10 @@ public class LabResults extends ArrayList<LabResult> {
     }
 
     public int baselineCountOf(TAMAConstants.LabTestType type) {
-        ArrayList<LabResult> results = new ArrayList<LabResult>(this);
+        ArrayList<LabResult> results = new ArrayList<>(this);
         Collections.sort(results, new LabResult.LabResultComparator(true));
         for (LabResult result : results) {
-            if (result.getLabTest().getName() == type.getName()) {
+            if (StringUtils.equals(result.getLabTest().getName(), type.getName())) {
                 return Integer.parseInt(result.getResult());
             }
         }
