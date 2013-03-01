@@ -18,6 +18,6 @@ public class HomeController {
         } else if (user.isAdministrator()) {
             return "redirect:/clinics";
         }
-        return "redirect:/patients";
+        return "redirect:/alerts/list";
     }
 }

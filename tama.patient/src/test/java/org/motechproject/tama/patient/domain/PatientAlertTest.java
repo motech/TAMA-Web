@@ -22,7 +22,18 @@ public class PatientAlertTest {
 
         final PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
-        Assert.assertEquals("26/09/2011 12:05 PM", patientAlert.getGeneratedOn());
+        Assert.assertEquals("26/09/2011", patientAlert.getGeneratedOnDate());
+    }
+
+    @Test
+    public void shouldFormatTimeCorrectly() {
+        Alert alert = new Alert();
+        final DateTime dateTime = DateUtil.newDateTime(DateUtil.newDate(2011, 9, 26), 12, 5, 30);
+        alert.setDateTime(dateTime);
+
+        final PatientAlert patientAlert = new PatientAlert();
+        patientAlert.setAlert(alert);
+        Assert.assertEquals("12:05 PM", patientAlert.getGeneratedOnTime());
     }
 
     @Test

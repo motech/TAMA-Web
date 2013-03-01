@@ -40,11 +40,11 @@ public class HomeControllerTest {
     }
 
     @Test
-    public void shouldRedirectToPatientsListingPage_ForAClinician() {
+    public void shouldRedirectToAlertssListingPage_ForAClinician() {
         when(authenticatedUser.isAdministrator()).thenReturn(false);
 
         String page = homeController.homePage(httpServletRequest);
-        assertEquals("redirect:/patients", page);
+        assertEquals("redirect:/alerts/list", page);
     }
 
     @Test
