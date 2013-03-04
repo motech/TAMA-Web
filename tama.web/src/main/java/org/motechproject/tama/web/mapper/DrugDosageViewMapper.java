@@ -1,14 +1,12 @@
 package org.motechproject.tama.web.mapper;
 
 import org.motechproject.tama.patient.domain.DrugDosage;
-import org.motechproject.tama.refdata.domain.Brand;
 import org.motechproject.tama.refdata.domain.DosageType;
 import org.motechproject.tama.refdata.domain.Drug;
 import org.motechproject.tama.refdata.domain.MealAdviceType;
 import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.objectcache.AllDrugsCache;
 import org.motechproject.tama.refdata.objectcache.AllMealAdviceTypesCache;
-import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 import org.motechproject.tama.web.model.DrugDosageView;
 
 public class DrugDosageViewMapper {
@@ -25,13 +23,11 @@ public class DrugDosageViewMapper {
 
     public DrugDosageView map(final DrugDosage drugDosage) {
         final Drug drug = allDrugs.getBy(drugDosage.getDrugId());
-        final Brand brand = drug.getBrand(drugDosage.getBrandId());
         final DosageType dosageType = allDosageTypes.getBy(drugDosage.getDosageTypeId());
         final MealAdviceType mealAdviceType = allMealAdviceTypes.getBy(drugDosage.getMealAdviceId());
 
         return new DrugDosageView() {{
             setDrugName(drug.getName());
-            setBrandName(brand.getName());
             setDosageType(dosageType.getType());
             setOffsetDays(drugDosage.getOffsetDays());
             setMorningTime(drugDosage.getMorningTime());

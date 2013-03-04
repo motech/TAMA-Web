@@ -11,8 +11,6 @@ import org.motechproject.tama.refdata.domain.MealAdviceType;
 import org.motechproject.tama.refdata.objectcache.AllDosageTypesCache;
 import org.motechproject.tama.refdata.objectcache.AllDrugsCache;
 import org.motechproject.tama.refdata.objectcache.AllMealAdviceTypesCache;
-import org.motechproject.tama.refdata.repository.AllDrugs;
-import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
 import org.motechproject.tama.web.model.DrugDosageView;
 
 import static org.mockito.Mockito.mock;
@@ -47,7 +45,6 @@ public class DrugDosageViewMapperTest {
         DrugDosageView drugDosageView = new DrugDosageViewMapper(allDrugs, allDosageTypes, allMealAdviceTypes).map(drugDosage);
 
         Assert.assertEquals("drugName", drugDosageView.getDrugName());
-        Assert.assertEquals("brandName", drugDosageView.getBrandName());
         Assert.assertEquals("Once", drugDosageView.getDosageType());
         Assert.assertEquals("advice", drugDosageView.getAdvice());
         Assert.assertEquals("After Meal", drugDosageView.getMealAdviceType());
@@ -56,7 +53,6 @@ public class DrugDosageViewMapperTest {
     private DrugDosage getDrugDosage() {
         DrugDosage drugDosage = new DrugDosage();
         drugDosage.setDrugId("drugId");
-        drugDosage.setBrandId("brandId");
         drugDosage.setDosageTypeId("dosageTypeId");
         drugDosage.setAdvice("advice");
         drugDosage.setMealAdviceId("mealAdviceTypeId");
