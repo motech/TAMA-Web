@@ -45,7 +45,7 @@ public class ClinicMigrationTest {
 
         clinicMigration.save(clinic);
         assertNotNull(clinic.getClinicianContacts().get(0).getId());
-        verify(allDocuments).update(clinic);
+        verify(allDocuments).update(clinic, "");
     }
 
     @Test

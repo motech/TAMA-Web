@@ -62,15 +62,7 @@ dojo.addOnLoad(function() {
             });
 
             var drugIds = [dojo.byId("drugDosages[0].drugId"), dojo.byId("drugDosages[1].drugId")];
-
-            options = [ new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}}),
-                new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}})];
             dojo.forEach(composition_drugs, function(drug, i) {
-                dojo.forEach(drug.brands, function(brand, j) {
-                    options[i].newItem({name: brand.name, id: brand.companyId });
-                });
-                drug_brands[i].attr('store', options[i]);
-                drug_brands[i].setValue(drug.brands[0].companyId);
                 drugIds[i].value = drug._id;
             });
 

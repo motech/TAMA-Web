@@ -45,7 +45,7 @@ public class ClinicMigration extends Migration<Clinic> {
         for (Clinic.ClinicianContact clinicianContact : document.getClinicianContacts()) {
             clinicianContact.setId(UUIDUtil.newUUID());
         }
-        allDocuments.update(document);
+        allDocuments.update(document, "");
         /*Dummy fetch to rebuild index*/
         allDocuments.get(document.getId());
     }
