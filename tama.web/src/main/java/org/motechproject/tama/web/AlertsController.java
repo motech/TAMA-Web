@@ -28,7 +28,7 @@ public class AlertsController extends BaseController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(Model uiModel, HttpServletRequest request) {
-        AlertFilter unreadAlertsFilter = new AlertFilter().setAlertStatus(AlertFilter.STATUS_UNREAD);
+        AlertFilter unreadAlertsFilter = new AlertFilter().setAlertStatus(AlertFilter.STATUS_OPEN);
         final String clinicId = loggedInClinic(request);
         uiModel.addAttribute("alerts", getFilteredAlerts(unreadAlertsFilter, clinicId));
         uiModel.addAttribute("alertFilter", unreadAlertsFilter);
@@ -57,7 +57,7 @@ public class AlertsController extends BaseController {
         return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public String update(Model uiModel, String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String type, HttpServletRequest request) {
         try {
             patientAlertService.updateAlertData(alertId, symptomsAlertStatus, notes, doctorsNotes, type, loggedInUserId(request));
@@ -76,9 +76,9 @@ public class AlertsController extends BaseController {
     }
 
     private PatientAlerts getFilteredAlerts(AlertFilter filter, String clinicId) {
-        if (filter.getAlertStatus().equals(AlertFilter.STATUS_UNREAD)) {
+        if (filter.getAlertStatus().equals(AlertFilter.STATUS_OPEN)) {
             return patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
-        } else if (filter.getAlertStatus().equals(AlertFilter.STATUS_READ)) {
+        } else if (filter.getAlertStatus().equals(AlertFilter.STATUS_CLOSED)) {
             return patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
         } else {
             return patientAlertService.getAllAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());

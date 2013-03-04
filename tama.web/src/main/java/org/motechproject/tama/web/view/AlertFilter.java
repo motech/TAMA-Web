@@ -16,8 +16,8 @@ import java.util.List;
 
 public class AlertFilter {
 
-    public static final String STATUS_UNREAD = "Unread";
-    public static final String STATUS_READ = "Read";
+    public static final String STATUS_OPEN = "Open";
+    public static final String STATUS_CLOSED = "Closed";
     public static final String STATUS_ALL = "All";
 
     private String patientId;
@@ -105,8 +105,8 @@ public class AlertFilter {
 
     public List<String> getAllAlertStatuses() {
         ArrayList<String> alertStatuses = new ArrayList<String>();
-        alertStatuses.add(STATUS_UNREAD);
-        alertStatuses.add(STATUS_READ);
+        alertStatuses.add(STATUS_OPEN);
+        alertStatuses.add(STATUS_CLOSED);
         alertStatuses.add(STATUS_ALL);
         return alertStatuses;
     }
