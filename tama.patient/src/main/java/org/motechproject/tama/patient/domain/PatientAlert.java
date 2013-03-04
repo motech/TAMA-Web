@@ -66,12 +66,20 @@ public class PatientAlert {
         }
     }
 
+    public String getGeneratedOn() {
+        return getFormattedDateTime("dd/MM/yyyy h:mm aa");
+    }
+
     public String getGeneratedOnDate() {
-        return DateTimeFormat.forPattern("dd/MM/yyyy").print(this.alert.getDateTime());
+        return getFormattedDateTime("dd/MM/yyyy");
     }
 
     public String getGeneratedOnTime() {
-        return DateTimeFormat.forPattern("h:mm aa").print(this.alert.getDateTime());
+        return getFormattedDateTime("h:mm aa");
+    }
+
+    private String getFormattedDateTime(String format){
+        return DateTimeFormat.forPattern(format).print(this.alert.getDateTime());
     }
 
     public String getSymptomReported() {
