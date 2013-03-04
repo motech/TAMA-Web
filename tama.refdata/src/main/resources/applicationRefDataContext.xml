@@ -14,5 +14,5 @@
     <util:properties id="seedProperties" location="classpath:/seed.properties"/>
     <context:annotation-config/>
     <context:spring-configured/>
-    <context:property-placeholder location="classpath*:/*.properties"/>
+    <context:property-placeholder location="classpath*:/*.properties" ignore-unresolvable="true"/>
 </beans>

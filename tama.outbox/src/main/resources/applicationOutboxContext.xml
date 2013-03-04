@@ -12,7 +12,7 @@
     <import resource="classpath:applicationOutboxAPI.xml"/>
     <context:component-scan base-package="org.motechproject.tama.outbox"/>
     <util:properties id="outboxWaveFileToTextMapping" location="classpath:/outboxWaveFileToTextMapping.properties"/>
-    <context:property-placeholder location="classpath*:/*.properties"/>
+    <context:property-placeholder location="classpath*:/*.properties" ignore-unresolvable="true"/>
     <context:annotation-config/>
     <context:spring-configured/>
 </beans>

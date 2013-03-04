@@ -11,7 +11,7 @@
     <import resource="classpath:applicationCommonContext.xml"/>
 
     <util:properties id="ivrProperties" location="classpath:/ivr.properties"/>
-    <context:property-placeholder location="classpath*:/*.properties"/>
+    <context:property-placeholder location="classpath*:/*.properties" ignore-unresolvable="true"/>
     <context:annotation-config/>
     <context:spring-configured/>
 
