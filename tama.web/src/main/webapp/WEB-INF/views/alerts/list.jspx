@@ -13,7 +13,6 @@
         <jsp:include page="search.jspx" />
     </form:form>
     <c:if test="${alerts != null}" >
-        <div class="info"> <c:out value="Alerts"/> </div>
         <div id="_title_pl_org_motechproject_tama_domain_patientalert_id_pane">
             <page:plainlist id="pl_org_motechproject_tama_domain_patientalert" items="${alerts}" labelPlural="Alerts" label="Alert">
                 <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="/alerts" delete="false" create="false" show="flase" update="true" typeIdFieldName="alertId" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields">
