@@ -12,9 +12,7 @@
         ]]>
     </script>
 
-  <div id="tama-logo">
-    <spring:url value="/resources-${applicationVersion}/images/tama.png" var="banner" />
-  </div>
+  <spring:url value="/resources-${applicationVersion}/images/tama.png" var="banner" />
   <spring:url var="home" value="/" />
   <spring:message code="button_home" var="home_label" htmlEscape="false" />
   <a href="${home}" name="${fn:escapeXml(home_label)}" title="${fn:escapeXml(home_label)}">
