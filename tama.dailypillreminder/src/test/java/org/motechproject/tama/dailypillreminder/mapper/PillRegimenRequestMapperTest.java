@@ -66,16 +66,16 @@ public class PillRegimenRequestMapperTest {
 
         DosageRequest dosageRequest1 = getByStartHour(17, pillRegimenRequest.getDosageRequests());
         assertEquals(1, dosageRequest1.getMedicineRequests().size());
-        assertMedicineRequest(dosageRequest1.getMedicineRequests().get(0), "Drug2_brandName", DateUtil.newDate(2011, 2, 25), DateUtil.newDate(2011, 6, 10));
+        assertMedicineRequest(dosageRequest1.getMedicineRequests().get(0), DateUtil.newDate(2011, 2, 25), DateUtil.newDate(2011, 6, 10));
 
         DosageRequest dosageRequest2 = getByStartHour(20, pillRegimenRequest.getDosageRequests());
         assertEquals(1, dosageRequest2.getMedicineRequests().size());
-        assertMedicineRequest(dosageRequest2.getMedicineRequests().get(0), "Drug1_brandName", DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10));
+        assertMedicineRequest(dosageRequest2.getMedicineRequests().get(0), DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10));
 
         DosageRequest dosageRequest3 = getByStartHour(9, pillRegimenRequest.getDosageRequests());
         assertEquals(2, dosageRequest3.getMedicineRequests().size());
-        assertMedicineRequest(dosageRequest3.getMedicineRequests().get(0), "Drug1_brandName", DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10));
-        assertMedicineRequest(dosageRequest3.getMedicineRequests().get(1), "Drug2_brandName", DateUtil.newDate(2011, 2, 10), DateUtil.newDate(2011, 6, 10));
+        assertMedicineRequest(dosageRequest3.getMedicineRequests().get(0), DateUtil.newDate(2010, 10, 10), DateUtil.newDate(2010, 12, 10));
+        assertMedicineRequest(dosageRequest3.getMedicineRequests().get(1), DateUtil.newDate(2011, 2, 10), DateUtil.newDate(2011, 6, 10));
     }
 
     @Test
@@ -136,8 +136,8 @@ public class PillRegimenRequestMapperTest {
         return null;
     }
 
-    private void assertMedicineRequest(MedicineRequest medicineRequest, String name, LocalDate startDate, LocalDate endDate) {
-        Assert.assertEquals(name, medicineRequest.getName());
+    private void assertMedicineRequest(MedicineRequest medicineRequest, LocalDate startDate, LocalDate endDate) {
+        Assert.assertTrue(medicineRequest.getName().isEmpty());
         Assert.assertEquals(startDate, medicineRequest.getStartDate());
         Assert.assertEquals(endDate, medicineRequest.getEndDate());
     }

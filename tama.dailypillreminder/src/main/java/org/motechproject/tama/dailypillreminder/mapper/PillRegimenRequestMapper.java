@@ -71,7 +71,7 @@ public class PillRegimenRequestMapper {
         @Override
         public MedicineRequest convert(DrugDosage drugDosage) {
             LocalDate startDate = isMorningDose ? drugDosage.morningDoseTrackingStartDate(patient) : drugDosage.eveningDoseTrackingStartDate(patient);
-            return new MedicineRequest(allDrugs.getBy(drugDosage.getDrugId()).fullName(drugDosage.getBrandId()), startDate, drugDosage.getEndDate());
+            return new MedicineRequest("", startDate, drugDosage.getEndDate());
         }
     }
 
