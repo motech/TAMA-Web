@@ -53,17 +53,15 @@ public class MessageForMedicinesTest {
     }
 
     @Test
-    public void shouldReturnMessagesWithAListOfMedicinesToBeTaken() {
+    public void shouldReturnMessages() {
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
         context.callStartTime(timeWithinPillWindow);
         String[] messages = messageForMedicines.executeCommand(context);
 
-        assertEquals(5, messages.length);
+        assertEquals(3, messages.length);
         assertEquals("test_clinic", messages[0]);
         assertEquals(TamaIVRMessage.ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE, messages[1]);
-        assertEquals("pillmedicine1", messages[2]);
-        assertEquals("pillmedicine2", messages[3]);
-        assertEquals(TamaIVRMessage.FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE, messages[4]);
+        assertEquals(TamaIVRMessage.FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE, messages[2]);
     }
 }

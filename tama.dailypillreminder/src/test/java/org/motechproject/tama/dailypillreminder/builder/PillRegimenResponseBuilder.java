@@ -25,16 +25,16 @@ public class PillRegimenResponseBuilder {
 
     public PillRegimenResponseBuilder withDefaults() {
         id = "regimenId";
-        dosages = new ArrayList<DosageResponse>();
-        ArrayList<MedicineResponse> currentDosagesMedicines = new ArrayList<MedicineResponse>();
-        ArrayList<MedicineResponse> previousDosagesMedicines = new ArrayList<MedicineResponse>();
-        ArrayList<MedicineResponse> nextDosagesMedicines = new ArrayList<MedicineResponse>();
+        dosages = new ArrayList<>();
+        ArrayList<MedicineResponse> currentDosagesMedicines = new ArrayList<>();
+        ArrayList<MedicineResponse> previousDosagesMedicines = new ArrayList<>();
+        ArrayList<MedicineResponse> nextDosagesMedicines = new ArrayList<>();
         LocalDate date = new LocalDate(2010, 10, 10);
 
-        previousDosagesMedicines.add(new MedicineResponse("medicine3", date, null));
-        currentDosagesMedicines.add(new MedicineResponse("medicine1", date, null));
-        currentDosagesMedicines.add(new MedicineResponse("medicine2", date, null));
-        nextDosagesMedicines.add(new MedicineResponse("medicine4", date, null));
+        previousDosagesMedicines.add(new MedicineResponse("", date, null));
+        currentDosagesMedicines.add(new MedicineResponse("", date, null));
+        currentDosagesMedicines.add(new MedicineResponse("", date, null));
+        nextDosagesMedicines.add(new MedicineResponse("", date, null));
 
         dosages.add(new DosageResponse("previousDosageId", new Time(10, 5), date, null, date, previousDosagesMedicines));
         dosages.add(new DosageResponse("currentDosageId", new Time(16, 5), date, null, date, currentDosagesMedicines));
@@ -44,7 +44,7 @@ public class PillRegimenResponseBuilder {
     }
 
     public List<DosageResponse> dosages() {
-        return new ArrayList<DosageResponse>(dosages);
+        return new ArrayList<>(dosages);
     }
 
     public PillRegimenResponseBuilder withDosages(List<DosageResponse> dosages) {
@@ -58,7 +58,7 @@ public class PillRegimenResponseBuilder {
     }
 
     public PillRegimenResponseBuilder withTwoDosages(Time dosage1Time, LocalDate dosage1StartDate, String dosage1Id, Time dosage2Time, LocalDate dosage2StartDate, String dosage2Id) {
-        dosages = new ArrayList<DosageResponse>();
+        dosages = new ArrayList<>();
         dosages.add(new DosageResponse(dosage1Id, dosage1Time, dosage1StartDate, null, null, Collections.<MedicineResponse>emptyList()));
         dosages.add(new DosageResponse(dosage2Id, dosage2Time, dosage2StartDate, null, null, Collections.<MedicineResponse>emptyList()));
         return this;

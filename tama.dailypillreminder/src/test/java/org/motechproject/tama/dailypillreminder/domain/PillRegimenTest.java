@@ -32,27 +32,6 @@ public class PillRegimenTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldGetListOfMedicinesForCurrentDosage() {
-        ivrContext.callDirection(CallDirection.Outbound).callStartTime(new DateTime(2012, 1, 5, 15, 30, 0));
-        PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
-        List<String> medicines = pillRegimen.getDoseAt(ivrContext.callStartTime()).medicineNames();
-        assertEquals(2, medicines.size());
-        assertEquals("pillmedicine1", medicines.get(0));
-        assertEquals("pillmedicine2", medicines.get(1));
-    }
-
-    @Test
-    public void shouldGetListOfMedicinesForPreviousDosage() {
-        ivrContext.callDirection(CallDirection.Outbound).callStartTime(new DateTime(2012, 1, 5, 15, 30, 0));
-        PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();
-        PillRegimen pillRegimen = new PillRegimen(pillRegimenResponse);
-        List<String> medicines = pillRegimen.getPreviousDoseAt(ivrContext.callStartTime()).medicineNames();
-        assertEquals(1, medicines.size());
-        assertEquals("pillmedicine3", medicines.get(0));
-    }
-
-    @Test
     public void shouldGetPreviousDosage() {
         ivrContext.callDirection(CallDirection.Outbound).callStartTime(new DateTime(2012, 1, 5, 15, 30, 0));
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().build();

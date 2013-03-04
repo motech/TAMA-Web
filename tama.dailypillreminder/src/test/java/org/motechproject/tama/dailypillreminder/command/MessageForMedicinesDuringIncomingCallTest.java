@@ -52,27 +52,27 @@ public class MessageForMedicinesDuringIncomingCallTest {
     }
 
     @Test
-    public void shouldReturnMessagesWithAListOfMedicinesToBeTaken_timeWithinDosagePillWindow() {
+    public void shouldReturnMessages_timeWithinDosagePillWindow() {
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
         context.callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-        assertArrayEquals(new String[]{TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, "pillmedicine1", "pillmedicine2", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW}, messages);
+        assertArrayEquals(new String[]{TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW}, messages);
     }
 
     @Test
-    public void shouldReturnMessagesWithAListOfMedicinesToBeTaken_timeAfterDosagePillWindow() {
+    public void shouldReturnMessages_timeAfterDosagePillWindow() {
         int dosageHour = 10;
         DateTime timeAfterPillWindow = now.withHourOfDay(dosageHour + 3).withMinuteOfHour(5);
         context.callStartTime(timeAfterPillWindow);
         List<DosageResponse> dosages = Arrays.asList(new DosageResponse("currentDosageId", new Time(dosageHour, 5), today.minusDays(2),
                 today.plusDays(1), today.minusDays(1),
-                Arrays.asList(new MedicineResponse("medicine3", today, today))));
+                Arrays.asList(new MedicineResponse("", today, today))));
         PillRegimenResponse pillRegimenResponse = PillRegimenResponseBuilder.startRecording().withDefaults().withDosages(dosages).build();
 
         context.pillRegimen(new PillRegimen(pillRegimenResponse)).callDirection(CallDirection.Outbound);
 
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-        assertArrayEquals(new String[]{TamaIVRMessage.NOT_REPORTED_IF_TAKEN, "pillmedicine3", TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_AFTER_PILL_WINDOW}, messages);
+        assertArrayEquals(new String[]{TamaIVRMessage.NOT_REPORTED_IF_TAKEN, TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_AFTER_PILL_WINDOW}, messages);
     }
 }

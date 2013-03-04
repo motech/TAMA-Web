@@ -37,7 +37,7 @@ public class MessageFromPreviousDosageTest {
         ArrayList<DosageResponse> dosages = new ArrayList<DosageResponse>();
         LocalDate dosageLastTakenDate = today.minusDays(2);
         ArrayList<MedicineResponse> medicines = new ArrayList<MedicineResponse>();
-        medicines.add(new MedicineResponse("medicine1", today.minusDays(1), null));
+        medicines.add(new MedicineResponse("", today.minusDays(1), null));
         dosages.add(new DosageResponse("currentDosageId", new Time(10, 5), today.minusDays(2), null, dosageLastTakenDate, medicines));
 
         context.pillRegimen(new PillRegimenResponse("regimenId", "patientId", 2, 5, 5, dosages));
@@ -48,7 +48,6 @@ public class MessageFromPreviousDosageTest {
         assertTrue(messages.contains(TamaIVRMessage.DOSE_NOT_RECORDED));
         assertTrue(messages.contains(TamaIVRMessage.YESTERDAY));
         assertTrue(messages.contains(TamaIVRMessage.YOU_WERE_SUPPOSED_TO_TAKE));
-        assertTrue(messages.contains("pillmedicine1"));
         assertTrue(messages.contains(TamaIVRMessage.FROM_THE_BOTTLE_FOR_PREVIOUS_DOSAGE));
         assertTrue(messages.contains(TamaIVRMessage.PREVIOUS_DOSE_MENU));
     }

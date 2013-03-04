@@ -3,11 +3,7 @@ package org.motechproject.tama.dailypillreminder.domain;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.server.pillreminder.api.contract.DosageResponse;
-import org.motechproject.server.pillreminder.api.contract.MedicineResponse;
 import org.motechproject.util.DateUtil;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Dose implements Comparable<Dose> {
 
@@ -49,16 +45,6 @@ public class Dose implements Comparable<Dose> {
 
     public DateTime getDoseTime() {
         return DateUtil.newDateTime(date, dosageResponse.getDosageHour(), dosageResponse.getDosageMinute(), 0);
-    }
-
-    public List<String> medicineNames() {
-        List<String> medicineNames = new ArrayList<String>();
-        for (MedicineResponse medicine : dosageResponse.getMedicines()) {
-            if (!date.isBefore(medicine.getStartDate()) &&
-                    (medicine.getEndDate() == null || !date.isAfter(medicine.getEndDate())))
-                medicineNames.add(String.format("pill%s", medicine.getName()));
-        }
-        return medicineNames;
     }
 
     public boolean isTaken() {

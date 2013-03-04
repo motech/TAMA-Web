@@ -32,7 +32,6 @@ public class MessageFromPreviousDosage extends DailyPillReminderTreeCommand {
         messages.add(TamaIVRMessage.DOSE_NOT_RECORDED);
         messages.add(ivrDayMessageBuilder.getMessageForPreviousDosageQuestion_YESTERDAY_IN_THE_MORNING(context.previousDose().getDoseTime()));
         messages.add(TamaIVRMessage.YOU_WERE_SUPPOSED_TO_TAKE);
-        messages.addAll(context.previousDose().medicineNames());
         messages.add(TamaIVRMessage.FROM_THE_BOTTLE_FOR_PREVIOUS_DOSAGE);
         messages.add(TamaIVRMessage.PREVIOUS_DOSE_MENU);
 
