@@ -44,10 +44,7 @@
                             <input type="hidden" id="drugDosages[${item.index}].drugId"
                                    name="drugDosages[${item.index}].drugId"/>
 
-                            <field:select field="treatmentAdvice.drugDosages[${item.index}].brandId"
-                                          id="c_org_motechproject_tama_domain_TreatmentAdvice_brand${item.index}"
-                                          label="Brand Name *" items="${drugCompositionGroups}"
-                                          path="/treatmentadvices/dummy"/>
+
                             <field:select field="treatmentAdvice.drugDosages[${item.index}].dosageTypeId"
                                           id="c_org_motechproject_tama_domain_TreatmentAdvice_dosageType${item.index}"
                                           label="Dosage *" itemLabel="type" itemValue="id" items="${dosageTypes}"
