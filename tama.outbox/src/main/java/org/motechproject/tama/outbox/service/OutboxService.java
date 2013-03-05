@@ -51,7 +51,7 @@ public class OutboxService implements Outbox {
         }
     }
 
-    void disEnroll(Patient dbPatient) {
+    public void disEnroll(Patient dbPatient) {
         if (dbPatient.hasAgreedToBeCalledAtBestCallTime()) {
             outboxSchedulerService.unscheduleOutboxJobs(dbPatient);
         }

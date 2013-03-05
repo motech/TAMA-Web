@@ -12,6 +12,7 @@
 
     <import resource="classpath:applicationCommonContext.xml"/>
     <import resource="classpath:applicationPatientContext.xml"/>
+    <import resource="classpath:applicationOutboxContext.xml"/>
     <import resource="classpath:applicationReportingContext.xml"/>
 
     <util:properties id="migrationProperties" location="classpath:migration.properties"/>
