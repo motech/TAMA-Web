@@ -1,24 +1,22 @@
 package org.motechproject.tama.web.reportbuilder;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.impl.cookie.DateUtils;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisitSummary;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.contract.DrugDosageContract;
-import org.motechproject.tama.patient.domain.DrugDosage;
 import org.motechproject.tama.patient.domain.LabResults;
-import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumnGroup;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+
+import static org.motechproject.tama.common.util.DateFormat.format;
 
 public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitSummary> {
 
@@ -78,10 +76,10 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         columns.add(new ExcelColumn("Opportunistic Infections", Cell.CELL_TYPE_STRING));
 
         columnGroups.add(new ExcelColumnGroup("Basic Information", Cell.CELL_TYPE_STRING, 0, 0, 4));
-        columnGroups.add(new ExcelColumnGroup("Drug 1", Cell.CELL_TYPE_STRING,0, 5, 12));
-        columnGroups.add(new ExcelColumnGroup("Drug 2", Cell.CELL_TYPE_STRING,0, 13, 20));
-        columnGroups.add(new ExcelColumnGroup("Lab Results", Cell.CELL_TYPE_STRING,0, 21, 24));
-        columnGroups.add(new ExcelColumnGroup("Vital Statistics", Cell.CELL_TYPE_STRING,0, 25, 30));
+        columnGroups.add(new ExcelColumnGroup("Drug 1", Cell.CELL_TYPE_STRING, 0, 5, 12));
+        columnGroups.add(new ExcelColumnGroup("Drug 2", Cell.CELL_TYPE_STRING, 0, 13, 20));
+        columnGroups.add(new ExcelColumnGroup("Lab Results", Cell.CELL_TYPE_STRING, 0, 21, 24));
+        columnGroups.add(new ExcelColumnGroup("Vital Statistics", Cell.CELL_TYPE_STRING, 0, 25, 30));
     }
 
     @Override
@@ -91,7 +89,7 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         row.add(summary.getPatientReport().getPatientId());
         row.add(summary.getPatientReport().getClinicName());
 
-        row.add(DateUtils.formatDate(summary.getVisitDate().toDate(), "dd/MM/yyyy"));
+        row.add(format(summary.getVisitDate().toDate(), "dd/MM/yyyy"));
 
         row.add(summary.getRegimen().getDisplayName());
         row.add(summary.getDrugCompositonGroupName());
@@ -116,7 +114,7 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         Double temperatureInFahrenheit = null;
         Integer pulse = null;
 
-        if(vitalStatistics != null){
+        if (vitalStatistics != null) {
             weightInKg = vitalStatistics.getWeightInKg();
             heightInCm = vitalStatistics.getHeightInCm();
             systolicBp = vitalStatistics.getSystolicBp();
@@ -139,7 +137,7 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         LocalDate pvlTestDate = null;
         Integer pvlCount = null;
 
-        if(labResults != null){
+        if (labResults != null) {
             cd4TestDate = labResults.latestLabTestDateOf(TAMAConstants.LabTestType.CD4);
             cd4Count = labResults.latestCountOf(TAMAConstants.LabTestType.CD4);
             pvlTestDate = labResults.latestLabTestDateOf(TAMAConstants.LabTestType.PVL);
@@ -166,13 +164,13 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         String advice = StringUtils.EMPTY;
         String mealAdviceId = StringUtils.EMPTY;
 
-        if(dosage != null) {
+        if (dosage != null) {
             drugName = dosage.getDrugName();
             dosageTypeId = dosage.getDosageType();
             morningTime = dosage.getMorningTime();
             eveningTime = dosage.getEveningTime();
             offsetDays = dosage.getOffsetDays();
-            startDate = DateUtils.formatDate(dosage.getStartDate(), "dd/mm/yyyy");
+            startDate = format(dosage.getStartDate(), "dd/mm/yyyy");
             advice = dosage.getAdvice();
             mealAdviceId = dosage.getMealAdvice();
         }
@@ -184,14 +182,6 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         row.add(startDate);
         row.add(advice);
         row.add(mealAdviceId);
-    }
-
-    private DrugDosage getDrugDosage(TreatmentAdvice advice, int index){
-        List<DrugDosage> drugDosages = advice.getDrugDosages();
-        if(index >= drugDosages.size())
-            return null;
-
-        return drugDosages.get(index);
     }
 
     @Override

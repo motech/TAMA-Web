@@ -9,6 +9,8 @@ import org.motechproject.util.DateUtil;
 import java.util.Collections;
 import java.util.List;
 
+import static org.motechproject.util.DateUtil.setTimeZone;
+
 
 public class ClinicVisit implements Comparable<ClinicVisit> {
 
@@ -84,7 +86,7 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     }
 
     public DateTime getVisitDate() {
-        return visit.getVisitDate();
+        return setTimeZone(visit.getVisitDate());
     }
 
     public DateTime getAppointmentDueDate() {
