@@ -60,7 +60,6 @@ public class PatientAlertServiceTest {
 
         PatientAlert symptomReportingAlert = patientAlertService.readAlert(alertId);
         assertEquals(patient.getPatientId(), symptomReportingAlert.getPatientId());
-        verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(org.motechproject.server.alerts.domain.AlertStatus.READ))));
     }
 
     @Test
@@ -105,7 +104,6 @@ public class PatientAlertServiceTest {
         patientAlertService.updateAlertData(alertId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.toString(), USER_NAME);
 
         Map<String, String> data = new HashMap<String, String>();
-        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
         data.put(PatientAlert.DOCTORS_NOTES, doctorsNotes);
         data.put(PatientAlert.NOTES, notes);
         verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().data(data))));
@@ -158,7 +156,7 @@ public class PatientAlertServiceTest {
             setId(alertId);
         }});
 
-        patientAlertService.updateAlertData(alertId, "", "", "", PatientAlertType.SymptomReporting.name(), USER_NAME);
+        patientAlertService.updateAlertData(alertId, "Open", "", "", PatientAlertType.SymptomReporting.name(), USER_NAME);
 
         verify(alertService, never()).update(Matchers.<String>any(), Matchers.<UpdateCriteria>any());
     }

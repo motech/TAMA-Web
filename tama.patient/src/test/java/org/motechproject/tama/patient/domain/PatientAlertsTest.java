@@ -138,8 +138,8 @@ public class PatientAlertsTest {
         PatientAlerts sortedPatientAlerts = patientAlerts.sortByAlertStatusAndTimeOfAlert();
 
         assertNotNull(sortedPatientAlerts);
-        assertEquals(AlertStatus.NEW.name(), sortedPatientAlerts.get(0).getAlertStatus());
-        assertEquals(AlertStatus.NEW.name(), sortedPatientAlerts.get(1).getAlertStatus());
-        assertEquals(AlertStatus.READ.name(), sortedPatientAlerts.get(2).getAlertStatus());
+        assertEquals(TamaAlertStatus.Open.name(), sortedPatientAlerts.get(0).getAlertStatus());
+        assertEquals(TamaAlertStatus.Open.name(), sortedPatientAlerts.get(1).getAlertStatus());
+        assertEquals(TamaAlertStatus.Closed.name(), sortedPatientAlerts.get(2).getAlertStatus());
     }
 }

@@ -92,9 +92,15 @@ public class PatientAlertService {
     public void updateData(Alert alert, Map<String, String> data, String userName, String alertStatus) {
         AlertStatus status = TamaAlertStatus.Open.name().equals(alertStatus) ? AlertStatus.NEW : AlertStatus.READ;
 
-        UpdateCriteria updateCriteria = new UpdateCriteria().status(status);
+        if(data.isEmpty() && status.equals(alert.getStatus()))
+            return;
+
+        UpdateCriteria updateCriteria = new UpdateCriteria();
         if (!data.isEmpty()) {
             updateCriteria.data(data);
+        }
+        if(!status.equals(alert.getStatus())){
+            updateCriteria.status(status);
         }
         allAuditEvents.recordAlertEvent(userName, String.format(AUDIT_FORMAT, alert.getId(), updateCriteria));
         alertService.update(alert.getId(), updateCriteria);
