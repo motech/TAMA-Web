@@ -2,7 +2,7 @@ package org.motechproject.tama.web;
 
 import org.motechproject.tama.patient.domain.PatientAlert;
 import org.motechproject.tama.patient.domain.PatientAlerts;
-import org.motechproject.tama.patient.domain.SymptomsAlertStatus;
+import org.motechproject.tama.patient.domain.TamaAlertStatus;
 import org.motechproject.tama.patient.service.PatientAlertService;
 import org.motechproject.tama.web.view.AlertFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +28,10 @@ public class AlertsController extends BaseController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(Model uiModel, HttpServletRequest request) {
-        AlertFilter unreadAlertsFilter = new AlertFilter().setAlertStatus(AlertFilter.STATUS_OPEN);
+        AlertFilter allAlertsFilter = new AlertFilter().setAlertStatus(AlertFilter.STATUS_ALL);
         final String clinicId = loggedInClinic(request);
-        uiModel.addAttribute("alerts", getFilteredAlerts(unreadAlertsFilter, clinicId));
-        uiModel.addAttribute("alertFilter", unreadAlertsFilter);
+        uiModel.addAttribute("alerts", getFilteredAlerts(allAlertsFilter, clinicId));
+        uiModel.addAttribute("alertFilter", allAlertsFilter);
         return "alerts/list";
     }
 
@@ -58,9 +58,9 @@ public class AlertsController extends BaseController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public String update(Model uiModel, String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String type, HttpServletRequest request) {
+    public String update(Model uiModel, String alertId, String alertStatus, String notes, String doctorsNotes, String type, HttpServletRequest request) {
         try {
-            patientAlertService.updateAlertData(alertId, symptomsAlertStatus, notes, doctorsNotes, type, loggedInUserId(request));
+            patientAlertService.updateAlertData(alertId, alertStatus, notes, doctorsNotes, type, loggedInUserId(request));
             uiModel.asMap().clear();
         } catch (RuntimeException e) {
             PatientAlert patientAlert = patientAlertService.readAlert(alertId, loggedInUserId(request));
@@ -72,7 +72,7 @@ public class AlertsController extends BaseController {
 
     private void initUIModel(Model uiModel, PatientAlert patientAlert) {
         uiModel.addAttribute("alertInfo", patientAlert);
-        uiModel.addAttribute("symptomsStatuses", Arrays.asList(SymptomsAlertStatus.values()));
+        uiModel.addAttribute("alertStatuses", Arrays.asList(TamaAlertStatus.values()));
     }
 
     private PatientAlerts getFilteredAlerts(AlertFilter filter, String clinicId) {

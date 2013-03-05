@@ -7,7 +7,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.server.alerts.contract.UpdateCriteria;
 import org.motechproject.server.alerts.domain.Alert;
-import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.contract.AlertService;
 import org.motechproject.tama.common.TAMAConstants;
@@ -66,7 +65,7 @@ public class SymptomReportingAlertServiceTest {
         data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
 
         PatientAlerts alerts = new PatientAlerts() {{
-            add(PatientAlert.newPatientAlert(new Alert(patientDocId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+            add(PatientAlert.newPatientAlert(new Alert(patientDocId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, null) {{
                 setData(data);
                 setId(alertId);
             }}, patient));
@@ -88,7 +87,7 @@ public class SymptomReportingAlertServiceTest {
         final Patient patient = PatientBuilder.startRecording().withDefaults().withId("patientDocId").build();
         HashMap<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
-        final Alert alert = new Alert(patient.getId(), "", "", AlertType.MEDIUM, AlertStatus.READ, 2, data);
+        final Alert alert = new Alert(patient.getId(), "", "", AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 2, data);
         alert.setId("alertId");
 
         PatientAlerts alerts = new PatientAlerts() {{
@@ -98,7 +97,7 @@ public class SymptomReportingAlertServiceTest {
         when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
         symptomReportingAlertService.appendSymptomToAlert(patient.getId(), "fever");
 
-        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).description("you have fever"))));
+        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(org.motechproject.server.alerts.domain.AlertStatus.NEW).description("you have fever"))));
     }
 
     @Test
@@ -108,7 +107,7 @@ public class SymptomReportingAlertServiceTest {
         HashMap<String, String> data = new HashMap<String, String>() {{
             put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
         }};
-        final Alert alert = new Alert(patient.getId(), "", "you have nausea", AlertType.MEDIUM, AlertStatus.READ, 2, data);
+        final Alert alert = new Alert(patient.getId(), "", "you have nausea", AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 2, data);
         alert.setId("alertId");
 
         PatientAlerts alerts = new PatientAlerts() {{
@@ -118,7 +117,7 @@ public class SymptomReportingAlertServiceTest {
         when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
         symptomReportingAlertService.appendSymptomToAlert(patient.getId(), "fever");
 
-        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).description("you have nausea, you have fever"))));
+        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(org.motechproject.server.alerts.domain.AlertStatus.NEW).description("you have nausea, you have fever"))));
     }
 
     @Test
@@ -132,9 +131,9 @@ public class SymptomReportingAlertServiceTest {
         Map<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
         data.put(PatientAlert.PATIENT_CALL_PREFERENCE, patient.getPatientPreferences().getDisplayCallPreference());
-        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+        data.put(PatientAlert.ALERT_STATUS, TamaAlertStatus.Open.name());
         data.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.NA.name());
-        verify(alertService).create(patientDocId, "", "", AlertType.MEDIUM, AlertStatus.NEW, TAMAConstants.NO_ALERT_PRIORITY, data);
+        verify(alertService).create(patientDocId, "", "", AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, TAMAConstants.NO_ALERT_PRIORITY, data);
     }
 
     @Test
@@ -146,7 +145,7 @@ public class SymptomReportingAlertServiceTest {
             put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
         }};
 
-        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, AlertStatus.READ, 2, data);
+        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 2, data);
         alert.setId(alertId);
 
         PatientAlerts alerts = new PatientAlerts() {{
@@ -157,7 +156,7 @@ public class SymptomReportingAlertServiceTest {
         symptomReportingAlertService.setConnectedToDoctorStatusOnSymptomsReportingAlert(patientDocId, TAMAConstants.ReportedType.No);
         HashMap<String, String> newData = new HashMap<String, String>();
         newData.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.No.name());
-        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).data(newData))));
+        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(org.motechproject.server.alerts.domain.AlertStatus.NEW).data(newData))));
     }
 
     @Test
@@ -169,7 +168,7 @@ public class SymptomReportingAlertServiceTest {
             put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
         }};
 
-        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, AlertStatus.READ, 1, data);
+        final Alert alert = new Alert(patient.getId(), "", "nausea", AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 1, data);
         alert.setId(alertId);
 
         PatientAlerts alerts = new PatientAlerts() {{
@@ -178,7 +177,7 @@ public class SymptomReportingAlertServiceTest {
         when(patientAlertSearchService.search(patient.getId())).thenReturn(alerts);
 
         symptomReportingAlertService.updateAdviceOnSymptomsReportingAlert(patientDocId, "Some advice", 2);
-        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.NEW).priority(2).name("Some advice"))));
+        verify(alertService, times(1)).update(eq(alert.getId()), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(org.motechproject.server.alerts.domain.AlertStatus.NEW).priority(2).name("Some advice"))));
     }
 
     private class UpdateCriteriaMatcher extends ArgumentMatcher<UpdateCriteria> {

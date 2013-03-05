@@ -8,7 +8,6 @@ import org.motechproject.server.alerts.contract.UpdateCriteria;
 import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
-import org.motechproject.server.alerts.contract.AlertCriteria;
 import org.motechproject.tama.common.repository.AllAuditEvents;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -49,7 +48,7 @@ public class PatientAlertService {
             data.put(PatientAlert.PATIENT_CALL_PREFERENCE, patient.getPatientPreferences().getDisplayCallPreference());
         }
         if (PatientAlertType.SymptomReporting.equals(patientAlertType)) {
-            data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+            data.put(PatientAlert.ALERT_STATUS, TamaAlertStatus.Open.name());
         }
         alertService.create(patientDocId, name, description, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
     }
@@ -69,7 +68,7 @@ public class PatientAlertService {
         try {
             Map<String, String> newData = new HashMap<String, String>();
             if (PatientAlertType.SymptomReporting.toString().equals(patientAlertType)) {
-                addData(alert, PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus, newData);
+                addData(alert, PatientAlert.ALERT_STATUS, symptomsAlertStatus, newData);
                 addData(alert, PatientAlert.DOCTORS_NOTES, doctorsNotes, newData);
             }
             addData(alert, PatientAlert.NOTES, notes, newData);

@@ -105,9 +105,9 @@ public class AlertFilter {
 
     public List<String> getAllAlertStatuses() {
         ArrayList<String> alertStatuses = new ArrayList<String>();
+        alertStatuses.add(STATUS_ALL);
         alertStatuses.add(STATUS_OPEN);
         alertStatuses.add(STATUS_CLOSED);
-        alertStatuses.add(STATUS_ALL);
         return alertStatuses;
     }
 }

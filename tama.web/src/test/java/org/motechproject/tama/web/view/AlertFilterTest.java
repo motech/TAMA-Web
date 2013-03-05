@@ -22,8 +22,9 @@ public class AlertFilterTest {
     public void shouldReturnAllAlertStatuses() {
         List<String> allAlertStatuses = new AlertFilter().getAllAlertStatuses();
         assertTrue(CollectionUtils.isNotEmpty(allAlertStatuses));
-        assertEquals(AlertFilter.STATUS_OPEN, allAlertStatuses.get(0));
-        assertEquals(AlertFilter.STATUS_CLOSED, allAlertStatuses.get(1));
+        assertEquals(AlertFilter.STATUS_ALL, allAlertStatuses.get(0));
+        assertEquals(AlertFilter.STATUS_OPEN, allAlertStatuses.get(1));
+        assertEquals(AlertFilter.STATUS_CLOSED, allAlertStatuses.get(2));
     }
 
     @Test

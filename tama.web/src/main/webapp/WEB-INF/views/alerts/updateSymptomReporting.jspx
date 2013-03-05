@@ -17,7 +17,7 @@
             <form:form action="" method="POST" modelAttribute="alertInfo" enctype="${enctype}">
                 <form:hidden path="type" value="${alertInfo.type}"/>
                 <form:errors cssClass="errors" delimiter="&lt;p/&gt;" />
-                <field:select field="symptomsAlertStatus" label= "Symptoms Call Status" id="s_org_motechproject_tama_alert_symptomsStatus" required="true" items="${symptomsStatuses}" path="/symptomsStatuses" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
+                <field:select field="alertStatus" label= "Alert Status" id="s_org_motechproject_tama_alert_alertStatus" required="true" items="${alertStatuses}" path="/alertStatuses" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
                 <field:display field="connectedToDoctor" id="s_org_motechproject_tama_alert_connectedToDoctor" object="${alertInfo}" label="Connected to Doctor"/>
                 <field:textarea field="doctorsNotes" label="Doctor’s Notes based on direct contact" id="s_org_motechproject_tama_alert_doctorsNotes"  required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" /><br/>
                 <field:textarea field="notes" label= "Notes" id="s_org_motechproject_tama_alert_notes" required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />

@@ -8,7 +8,6 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.server.alerts.contract.UpdateCriteria;
 import org.motechproject.server.alerts.domain.Alert;
-import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.contract.AlertService;
 import org.motechproject.tama.common.repository.AllAuditEvents;
@@ -52,7 +51,7 @@ public class PatientAlertServiceTest {
         Patient patient = PatientBuilder.startRecording().withId("patientExternalId").withPatientId("patientId").build();
 
         final String alertId = "alertId";
-        final Alert alertForPatient = new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.NEW, 2, null);
+        final Alert alertForPatient = new Alert(patient.getId(), AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, null);
         alertForPatient.setId(alertId);
         alertForPatient.setExternalId(patient.getId());
 
@@ -61,7 +60,7 @@ public class PatientAlertServiceTest {
 
         PatientAlert symptomReportingAlert = patientAlertService.readAlert(alertId, USER_NAME);
         assertEquals(patient.getPatientId(), symptomReportingAlert.getPatientId());
-        verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(AlertStatus.READ))));
+        verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(org.motechproject.server.alerts.domain.AlertStatus.READ))));
     }
 
     @Test
@@ -76,10 +75,10 @@ public class PatientAlertServiceTest {
         patientAlertService.createAlert(testPatientId, 2, adviceGiven, symptomReported, PatientAlertType.SymptomReporting, new HashMap<String, String>());
         HashMap<String, String> data = new HashMap<String, String>() {{
             put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
-            put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+            put(PatientAlert.ALERT_STATUS, TamaAlertStatus.Open.name());
             put(PatientAlert.PATIENT_CALL_PREFERENCE, CallPreference.DailyPillReminder.displayName());
         }};
-        verify(alertService).create(testPatientId, adviceGiven, symptomReported, AlertType.MEDIUM, AlertStatus.NEW, 2, data);
+        verify(alertService).create(testPatientId, adviceGiven, symptomReported, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, data);
     }
 
     @Test
@@ -92,13 +91,13 @@ public class PatientAlertServiceTest {
         HashMap<String, String> data = new HashMap<String, String>() {{
             put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.AppointmentReminder.name());
         }};
-        verify(alertService).create(testPatientId, adviceGiven, symptomReported, AlertType.MEDIUM, AlertStatus.NEW, 2, data);
+        verify(alertService).create(testPatientId, adviceGiven, symptomReported, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, data);
     }
 
     @Test
     public void shouldUpdateSymptomReportingAlert() {
         final String alertId = "alertId";
-        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, null) {{
             setId(alertId);
         }});
         String doctorsNotes = "doctorsNotes";
@@ -106,7 +105,7 @@ public class PatientAlertServiceTest {
         patientAlertService.updateAlertData(alertId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.toString(), USER_NAME);
 
         Map<String, String> data = new HashMap<String, String>();
-        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
+        data.put(PatientAlert.ALERT_STATUS, "Open");
         data.put(PatientAlert.DOCTORS_NOTES, doctorsNotes);
         data.put(PatientAlert.NOTES, notes);
         verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().data(data))));
@@ -115,7 +114,7 @@ public class PatientAlertServiceTest {
     @Test
     public void shouldUpdateAppointmentReminderAlert() {
         final String alertId = "alertId";
-        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, null) {{
             setId(alertId);
         }});
 
@@ -136,11 +135,11 @@ public class PatientAlertServiceTest {
         final String symptomsAlertStatus = "Open";
 
         final Map<String, String> data = new HashMap<String, String>();
-        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
+        data.put(PatientAlert.ALERT_STATUS, symptomsAlertStatus);
         data.put(PatientAlert.DOCTORS_NOTES, doctorsNotes);
         data.put(PatientAlert.NOTES, notes);
 
-        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, null) {{
             setData(data);
             setId(alertId);
         }});
@@ -154,7 +153,7 @@ public class PatientAlertServiceTest {
     public void shouldNotUpdateAlertDataWhenValuesAreNullOrEmpty() {
         final String alertId = "alertId";
 
-        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, AlertStatus.NEW, 2, null) {{
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, null) {{
             setData(new HashMap<String, String>());
             setId(alertId);
         }});
@@ -187,10 +186,10 @@ public class PatientAlertServiceTest {
             final HashMap<String, String> symptomReportingAlertTypeData = new HashMap<String, String>() {{
                 put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
             }};
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, adherenceFallingAlertTypeData), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, adherenceFallingAlertTypeData), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 1, adherenceFallingAlertTypeData), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 1, adherenceFallingAlertTypeData), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
         }});
 
         final PatientAlerts fallingAdherenceAlerts = patientAlertService.getFallingAdherenceAlerts(patientId, startDate, endDate);
@@ -213,10 +212,10 @@ public class PatientAlertServiceTest {
             final HashMap<String, String> symptomReportingAlertTypeData = new HashMap<String, String>() {{
                 put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
             }};
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, data), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
-            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 1, data), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 1, data), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
+            add(PatientAlert.newPatientAlert(new Alert(patientId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 1, symptomReportingAlertTypeData), null));
         }});
 
 
@@ -234,12 +233,12 @@ public class PatientAlertServiceTest {
         final Patient patient = PatientBuilder.startRecording().withClinic(clinic).withPatientId("patientId_1").build();
 
         PatientAlerts readAlerts = new PatientAlerts() {{
-            add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, null), patient));
-            add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, null), patient));
+            add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 2, null), patient));
+            add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 3, null), patient));
         }};
 
         when(allPatients.findByPatientIdAndClinicId("patientId_1", "testClinicId")).thenReturn(patient);
-        when(patientAlertSearchService.search(patient.getId(), null, null, AlertStatus.READ)).thenReturn(readAlerts);
+        when(patientAlertSearchService.search(patient.getId(), null, null, org.motechproject.server.alerts.domain.AlertStatus.READ)).thenReturn(readAlerts);
 
         PatientAlerts readAlertsForClinic = patientAlertService.getReadAlertsFor("testClinicId", "patientId_1", null, null, null);
 
@@ -254,8 +253,8 @@ public class PatientAlertServiceTest {
         final Patient patient = PatientBuilder.startRecording().withClinic(clinic).withPatientId("patientId_1").build();
 
         PatientAlerts readAlerts = new PatientAlerts() {{
-            add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, null), patient));
-            add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, null), patient));
+            add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 2, null), patient));
+            add(PatientAlert.newPatientAlert(new Alert(patient.getId(), AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 3, null), patient));
         }};
 
         when(allPatients.findByPatientIdAndClinicId("patientId_1", "testClinicId")).thenReturn(patient);
@@ -290,14 +289,14 @@ public class PatientAlertServiceTest {
             put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.FallingAdherence.name());
         }};
         PatientAlerts readAlerts = new PatientAlerts() {{
-            add(PatientAlert.newPatientAlert(new Alert(patient_1.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, adherenceInRedAlertData), patient_1));
-            add(PatientAlert.newPatientAlert(new Alert(patient_1.getId(), AlertType.HIGH, AlertStatus.READ, 2, adherenceInRedAlertData), patient_1));
-            add(PatientAlert.newPatientAlert(new Alert(patient_1.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, fallingAdherenceAlertData), patient_1));
-            add(PatientAlert.newPatientAlert(new Alert(patient_2.getId(), AlertType.MEDIUM, AlertStatus.READ, 2, adherenceInRedAlertData), patient_2));
-            add(PatientAlert.newPatientAlert(new Alert(patient_2.getId(), AlertType.MEDIUM, AlertStatus.READ, 3, fallingAdherenceAlertData), patient_2));
+            add(PatientAlert.newPatientAlert(new Alert(patient_1.getId(), AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 2, adherenceInRedAlertData), patient_1));
+            add(PatientAlert.newPatientAlert(new Alert(patient_1.getId(), AlertType.HIGH, org.motechproject.server.alerts.domain.AlertStatus.READ, 2, adherenceInRedAlertData), patient_1));
+            add(PatientAlert.newPatientAlert(new Alert(patient_1.getId(), AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 3, fallingAdherenceAlertData), patient_1));
+            add(PatientAlert.newPatientAlert(new Alert(patient_2.getId(), AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 2, adherenceInRedAlertData), patient_2));
+            add(PatientAlert.newPatientAlert(new Alert(patient_2.getId(), AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.READ, 3, fallingAdherenceAlertData), patient_2));
         }};
 
-        when(patientAlertSearchService.search(null, null, null, AlertStatus.NEW)).thenReturn(readAlerts);
+        when(patientAlertSearchService.search(null, null, null, org.motechproject.server.alerts.domain.AlertStatus.NEW)).thenReturn(readAlerts);
 
         PatientAlerts readAlertsForClinic = patientAlertService.getUnreadAlertsFor("testClinicId", null, PatientAlertType.AdherenceInRed, null, null);
 

@@ -16,7 +16,7 @@
         <field:display field="alertPriority" id="s_org_motechproject_tama_alert_priority" object="${alertInfo}" label="Alert Priority"/>
         <field:display field="symptomReported" id="s_org_motechproject_tama_alert_SymptomReported" object="${alertInfo}" label="Symptoms Reported"/>
         <field:display field="adviceGiven" id="s_org_motechproject_tama_alert_name" object="${alertInfo}" label="TAMA Advice"/>
-        <field:display field="symptomsAlertStatus" id="s_org_motechproject_tama_alert_symptomsStatus" object="${alertInfo}" label="Symptoms Call Status"/>
+        <field:display field="alertStatus" id="s_org_motechproject_tama_alert_status" object="${alertInfo}" label="Alert Status"/>
         <field:display field="connectedToDoctor" id="s_org_motechproject_tama_alert_connectedToDoctor" object="${alertInfo}" label="Connected to Doctor"/>
         <field:display field="doctorsNotes" id="s_org_motechproject_tama_alert_doctorsNotes" object="${alertInfo}" label="Doctor’s Notes based on direct contact"/>
         <field:display field="notes" id="s_org_motechproject_tama_alert_notes" object="${alertInfo}" label="Notes"/>

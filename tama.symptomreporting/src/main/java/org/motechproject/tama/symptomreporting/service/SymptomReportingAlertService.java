@@ -2,7 +2,6 @@ package org.motechproject.tama.symptomreporting.service;
 
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.server.alerts.contract.UpdateCriteria;
-import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.contract.AlertService;
 import org.motechproject.tama.common.TAMAConstants;
@@ -46,9 +45,9 @@ public class SymptomReportingAlertService {
         Map<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
         data.put(PatientAlert.PATIENT_CALL_PREFERENCE, patient.getPatientPreferences().getDisplayCallPreference());
-        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, SymptomsAlertStatus.Open.name());
+        data.put(PatientAlert.ALERT_STATUS, TamaAlertStatus.Open.name());
         data.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.NA.name());
-        alertService.create(patientDocId, "", "", AlertType.MEDIUM, AlertStatus.NEW, TAMAConstants.NO_ALERT_PRIORITY, data);
+        alertService.create(patientDocId, "", "", AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, TAMAConstants.NO_ALERT_PRIORITY, data);
     }
 
     public void updateDoctorConnectedToDuringSymptomCall(String patientDocId, String doctorName) {
@@ -67,7 +66,7 @@ public class SymptomReportingAlertService {
         String description = lastReportedAlert.getDescription();
         String symptomDescription = symptomReportingProperties.symptomDescription(symptomId);
         String newDescription = StringUtils.isEmpty(description) ? symptomDescription : StringUtils.join(Arrays.asList(description, symptomDescription), ", ");
-        UpdateCriteria updateCriteria = new UpdateCriteria().description(newDescription).status(AlertStatus.NEW);
+        UpdateCriteria updateCriteria = new UpdateCriteria().description(newDescription).status(org.motechproject.server.alerts.domain.AlertStatus.NEW);
         allAuditEvents.recordAlertEvent(patientDocId, String.format(AUDIT_FORMAT, lastReportedAlert.getAlertId(), updateCriteria));
         alertService.update(lastReportedAlert.getAlertId(), updateCriteria);
     }
@@ -75,7 +74,7 @@ public class SymptomReportingAlertService {
     public void updateAdviceOnSymptomsReportingAlert(String patientDocId, String adviceGiven, int priority) {
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId);
         PatientAlert lastReportedAlert = allAlerts.lastSymptomReportedAlert();
-        UpdateCriteria updateCriteria = new UpdateCriteria().name(adviceGiven).status(AlertStatus.NEW).priority(priority);
+        UpdateCriteria updateCriteria = new UpdateCriteria().name(adviceGiven).status(org.motechproject.server.alerts.domain.AlertStatus.NEW).priority(priority);
         allAuditEvents.recordAlertEvent(patientDocId, String.format(AUDIT_FORMAT, lastReportedAlert.getAlertId(), updateCriteria));
         alertService.update(lastReportedAlert.getAlertId(), updateCriteria);
     }
@@ -85,7 +84,7 @@ public class SymptomReportingAlertService {
         PatientAlert lastReportedAlert = allAlerts.lastSymptomReportedAlert();
         HashMap<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.CONNECTED_TO_DOCTOR, reportedType.name());
-        UpdateCriteria updateCriteria = new UpdateCriteria().status(AlertStatus.NEW).data(data);
+        UpdateCriteria updateCriteria = new UpdateCriteria().status(org.motechproject.server.alerts.domain.AlertStatus.NEW).data(data);
         allAuditEvents.recordAlertEvent(patientDocId, String.format(AUDIT_FORMAT, lastReportedAlert.getAlertId(), updateCriteria));
         alertService.update(lastReportedAlert.getAlertId(), updateCriteria);
     }
