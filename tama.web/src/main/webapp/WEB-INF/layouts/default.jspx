@@ -40,6 +40,34 @@
 		    <tiles:insertAttribute name="header" ignore="true" />
                <jsp:include page="../views/version.jsp" />
                <spring:url value="/" var="home"/>
+
+               <div id="searchPatient">
+                   <c:if test="${pageContext['request'].userPrincipal != null and sessionScope.loggedInUser.clinicName != ''}">
+                       <spring:url value="/patients/findByPatientId" var="find_by_patient_id_url" />
+                       <form:form name="searchPatientForm" action="${fn:escapeXml(find_by_patient_id_url)}" method="GET">
+                           <div>
+                            <span>
+                                <input id="patientId" type='text' name='patientId' style="width:150px" value="${param.patientIdNotFound}" />
+                                <spring:message code="global_patient_search_enter" var="patientId_msg" htmlEscape="false" />
+                            </span>
+                            <span class="submit">
+                                <spring:message code="button_search_patient" var="submit_search_patient" htmlEscape="false" />
+                                <input id="searchPatient" type="submit" value="${submit_search_patient}" onClick="return validatePatientId();"/>
+                            </span>
+                           </div>
+                           <div>
+                              <span id="patientSearchError" class="error">
+                                  <c:if test="${param.patientIdNotFound!=null}">
+                                      <c:out value="${patient_not_found}" />
+                                  </c:if>
+                              </span>
+                           </div>
+                       </form:form>
+                       <br />
+                   </c:if>
+               </div>
+
+
                <div id="links">
                    <a href="${home}" align="right">
                         <spring:message code="button_home"/>
@@ -89,30 +117,7 @@
                </c:choose>
 
 		    <div id="main">
-                <c:if test="${pageContext['request'].userPrincipal != null and sessionScope.loggedInUser.clinicName != ''}">
-                    <spring:url value="/patients/findByPatientId" var="find_by_patient_id_url" />
-                    <form:form name="searchPatientForm" action="${fn:escapeXml(find_by_patient_id_url)}" method="GET">
-                      <div>
-                        <span>
-                            <input id="patientId" type='text' name='patientId' style="width:150px" value="${param.patientIdNotFound}" />
-                            <spring:message code="global_patient_search_enter" var="patientId_msg" htmlEscape="false" />
-                        </span>
-                        <span class="submit">
-                            <spring:message code="button_search_patient" var="submit_search_patient" htmlEscape="false" />
-                            <input id="searchPatient" type="submit" value="${submit_search_patient}" onClick="return validatePatientId();"/>
-                        </span>
-                      </div>
-                      <div>
-                          <span id="patientSearchError" class="error">
-                              <c:if test="${param.patientIdNotFound!=null}">
-                                 <c:out value="${patient_not_found}" />
-                              </c:if>
-                          </span>
-                      </div>
-                    </form:form>
-                    <br />
-                </c:if>
-	    		<tiles:insertAttribute name="body"/>
+ 	    		<tiles:insertAttribute name="body"/>
 		    	<tiles:insertAttribute name="footer" ignore="true"/>
 		    </div>
 		</div>

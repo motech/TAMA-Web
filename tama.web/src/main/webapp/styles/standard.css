@@ -13,6 +13,12 @@ body {
 
 #header {
 	margin-bottom: 1em;
+    float: left;
+}
+
+#version {
+    float: left;
+    clear: left;
 }
 
 #tama-logo {
@@ -36,6 +42,12 @@ body {
 
 #links {
     text-align: right;
+    float: right;
+    margin-bottom: 5px;
+}
+
+#searchPatient{
+    margin-top: 20px;
 }
 
 /* header and footer elements */
@@ -52,6 +64,7 @@ body {
 	left:0px;
 	width:220px;
 	margin-right:15px;
+    clear:both;
 }
 
 #menu ul{

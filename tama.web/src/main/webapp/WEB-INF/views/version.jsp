@@ -14,5 +14,7 @@
     version = prop.getProperty("Implementation-Build");
  }
 %>
-Version: 5.1.<% out.println(version); %>
+<div id="version">
+ Version: 5.1.<% out.println(version); %>
+</div>
 
