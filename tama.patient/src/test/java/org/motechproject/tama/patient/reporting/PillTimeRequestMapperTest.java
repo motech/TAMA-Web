@@ -11,6 +11,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class PillTimeRequestMapperTest {
 
@@ -39,6 +40,38 @@ public class PillTimeRequestMapperTest {
         PillTimeRequest pillTimeRequest = pillTimeRequestMapper.map();
         assertEquals("09:10:00", pillTimeRequest.getMorningPillTime());
         assertEquals("14:10:00", pillTimeRequest.getEveningPillTime());
+    }
+
+    @Test
+    public void testTimesWithDoseHavingOnlyMorningTime() {
+        List<DrugDosage> dosages = asList(
+                dosage("09:10am", null)
+        );
+
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+        treatmentAdvice.setDrugDosages(dosages);
+
+        PillTimeRequestMapper pillTimeRequestMapper = new PillTimeRequestMapper(treatmentAdvice);
+
+        PillTimeRequest pillTimeRequest = pillTimeRequestMapper.map();
+        assertEquals("09:10:00", pillTimeRequest.getMorningPillTime());
+        assertNull(pillTimeRequest.getEveningPillTime());
+    }
+
+    @Test
+    public void testTimesWithDoseHavingOnlyEveningTime() {
+        List<DrugDosage> dosages = asList(
+                dosage(null, "09:10pm")
+        );
+
+        TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
+        treatmentAdvice.setDrugDosages(dosages);
+
+        PillTimeRequestMapper pillTimeRequestMapper = new PillTimeRequestMapper(treatmentAdvice);
+
+        PillTimeRequest pillTimeRequest = pillTimeRequestMapper.map();
+        assertNull(pillTimeRequest.getMorningPillTime());
+        assertEquals("21:10:00", pillTimeRequest.getEveningPillTime());
     }
 
     @Test
