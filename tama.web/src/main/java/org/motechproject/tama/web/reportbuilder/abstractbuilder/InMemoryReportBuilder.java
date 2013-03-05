@@ -13,7 +13,6 @@ public abstract class InMemoryReportBuilder<T> extends ReportBuilder<T> {
     public InMemoryReportBuilder(List<T> objects) {
         super();
         this.objects = objects;
-        initializeColumns();
     }
 
     @Override
