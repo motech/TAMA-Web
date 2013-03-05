@@ -1,11 +1,11 @@
 package org.motechproject.tama.patient.domain;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.tama.common.TAMAConstants;
 
 import javax.persistence.Temporal;
@@ -18,7 +18,7 @@ public class PatientAlert {
     public static final String DOCTOR_NAME = "DoctorName";
     public static final String NOTES = "Notes";
     public static final String DOCTORS_NOTES = "Doctor's Notes";
-    public static final String ALERT_STATUS = "Symptoms Alert Status";
+    public static final String SYMPTOMS_ALERT_STATUS = "Symptoms Alert Status";
     public static final String PATIENT_CALL_PREFERENCE = "Patient Call Preference";
     public static final String ADHERENCE = "Adherence";
     public static final String APPOINTMENT_DATE = "AppointmentDate";
@@ -78,7 +78,11 @@ public class PatientAlert {
     }
 
     private String getFormattedDateTime(String format){
-        return DateTimeFormat.forPattern(format).print(this.alert.getDateTime());
+        return DateTimeFormat.forPattern(format).print(getGeneratedOnAsDateTime());
+    }
+
+    public DateTime getGeneratedOnAsDateTime(){
+        return this.alert.getDateTime();
     }
 
     public String getSymptomReported() {
@@ -126,7 +130,11 @@ public class PatientAlert {
     }
 
     public String getAlertStatus() {
-        return this.alert.getData().get(ALERT_STATUS);
+        return AlertStatus.NEW.equals(this.alert.getStatus()) ? TamaAlertStatus.Open.name() : TamaAlertStatus.Closed.name();
+    }
+
+    public String getSymptomAlertStatus() {
+        return this.alert.getData().get(SYMPTOMS_ALERT_STATUS);
     }
 
     @Temporal(TemporalType.DATE)

@@ -99,7 +99,7 @@ public class AlertsControllerTest {
         PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
 
-        when(patientAlertService.readAlert(alertId, USER_NAME)).thenReturn(patientAlert);
+        when(patientAlertService.readAlert(alertId)).thenReturn(patientAlert);
         assertEquals("alerts/show" + PatientAlertType.SymptomReporting.name(), alertsController.show(alertId, uiModel, request));
         verify(uiModel, times(1)).addAttribute("alertInfo", patientAlert);
     }
@@ -111,7 +111,7 @@ public class AlertsControllerTest {
         }});
         PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
-        when(patientAlertService.readAlert(alertId, USER_NAME)).thenReturn(patientAlert);
+        when(patientAlertService.readAlert(alertId)).thenReturn(patientAlert);
         assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel, request));
     }
 
@@ -128,7 +128,7 @@ public class AlertsControllerTest {
         }});
         PatientAlert patientAlert = new PatientAlert();
         patientAlert.setAlert(alert);
-        when(patientAlertService.readAlert(alertId, USER_NAME)).thenReturn(patientAlert);
+        when(patientAlertService.readAlert(alertId)).thenReturn(patientAlert);
         alertsController.update(uiModel, alertId, symptomsAlertStatus, notes, doctorsNotes, type, request);
         assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel, request));
     }

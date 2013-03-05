@@ -58,7 +58,7 @@ public class PatientAlertServiceTest {
         when(alertService.get(alertId)).thenReturn(alertForPatient);
         when(allPatients.get(patient.getId())).thenReturn(patient);
 
-        PatientAlert symptomReportingAlert = patientAlertService.readAlert(alertId, USER_NAME);
+        PatientAlert symptomReportingAlert = patientAlertService.readAlert(alertId);
         assertEquals(patient.getPatientId(), symptomReportingAlert.getPatientId());
         verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().status(org.motechproject.server.alerts.domain.AlertStatus.READ))));
     }
@@ -75,7 +75,7 @@ public class PatientAlertServiceTest {
         patientAlertService.createAlert(testPatientId, 2, adviceGiven, symptomReported, PatientAlertType.SymptomReporting, new HashMap<String, String>());
         HashMap<String, String> data = new HashMap<String, String>() {{
             put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
-            put(PatientAlert.ALERT_STATUS, TamaAlertStatus.Open.name());
+            put(PatientAlert.SYMPTOMS_ALERT_STATUS, TamaAlertStatus.Open.name());
             put(PatientAlert.PATIENT_CALL_PREFERENCE, CallPreference.DailyPillReminder.displayName());
         }};
         verify(alertService).create(testPatientId, adviceGiven, symptomReported, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, data);
@@ -105,7 +105,7 @@ public class PatientAlertServiceTest {
         patientAlertService.updateAlertData(alertId, "Open", notes, doctorsNotes, PatientAlertType.SymptomReporting.toString(), USER_NAME);
 
         Map<String, String> data = new HashMap<String, String>();
-        data.put(PatientAlert.ALERT_STATUS, "Open");
+        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, "Open");
         data.put(PatientAlert.DOCTORS_NOTES, doctorsNotes);
         data.put(PatientAlert.NOTES, notes);
         verify(alertService, times(1)).update(eq(alertId), argThat(new UpdateCriteriaMatcher(new UpdateCriteria().data(data))));
@@ -135,7 +135,7 @@ public class PatientAlertServiceTest {
         final String symptomsAlertStatus = "Open";
 
         final Map<String, String> data = new HashMap<String, String>();
-        data.put(PatientAlert.ALERT_STATUS, symptomsAlertStatus);
+        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, symptomsAlertStatus);
         data.put(PatientAlert.DOCTORS_NOTES, doctorsNotes);
         data.put(PatientAlert.NOTES, notes);
 

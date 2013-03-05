@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -119,5 +120,26 @@ public class PatientAlertsTest {
         assertEquals(2, alertsForAlertType.size());
         assertEquals(PatientAlertType.AdherenceInRed.name(), alertsForAlertType.get(0).getType().name());
         assertEquals(PatientAlertType.FallingAdherence.name(), alertsForAlertType.get(1).getType().name());
+    }
+
+    @Test
+    public void shouldSortByAlertStatus() {
+
+        Alert alert1  = new Alert(null, null, AlertStatus.READ, 0, null);
+        Alert alert2  = new Alert(null, null, AlertStatus.NEW, 0, null);
+
+        alert1.getData().put(PatientAlert.SYMPTOMS_ALERT_STATUS, AlertStatus.READ.name());
+        alert2.getData().put(PatientAlert.SYMPTOMS_ALERT_STATUS, AlertStatus.NEW.name());
+
+        patientAlerts.add(PatientAlert.newPatientAlert(alert1, null));
+        patientAlerts.add(PatientAlert.newPatientAlert(alert2, null));
+        patientAlerts.add(PatientAlert.newPatientAlert(alert2, null));
+
+        PatientAlerts sortedPatientAlerts = patientAlerts.sortByAlertStatusAndTimeOfAlert();
+
+        assertNotNull(sortedPatientAlerts);
+        assertEquals(AlertStatus.NEW.name(), sortedPatientAlerts.get(0).getAlertStatus());
+        assertEquals(AlertStatus.NEW.name(), sortedPatientAlerts.get(1).getAlertStatus());
+        assertEquals(AlertStatus.READ.name(), sortedPatientAlerts.get(2).getAlertStatus());
     }
 }

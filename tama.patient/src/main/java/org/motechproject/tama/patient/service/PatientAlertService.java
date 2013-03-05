@@ -48,31 +48,26 @@ public class PatientAlertService {
             data.put(PatientAlert.PATIENT_CALL_PREFERENCE, patient.getPatientPreferences().getDisplayCallPreference());
         }
         if (PatientAlertType.SymptomReporting.equals(patientAlertType)) {
-            data.put(PatientAlert.ALERT_STATUS, TamaAlertStatus.Open.name());
+            data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, TamaAlertStatus.Open.name());
         }
         alertService.create(patientDocId, name, description, AlertType.MEDIUM, AlertStatus.NEW, priority, data);
     }
 
-    public PatientAlert readAlert(String alertId, String userName) {
+    public PatientAlert readAlert(String alertId) {
         final Alert alert = alertService.get(alertId);
-        if (alert.getStatus() != AlertStatus.READ) {
-            UpdateCriteria updateCriteria = new UpdateCriteria().status(AlertStatus.READ);
-            allAuditEvents.recordAlertEvent(userName, String.format(AUDIT_FORMAT, alertId, updateCriteria));
-            alertService.update(alertId, updateCriteria);
-        }
         return PatientAlert.newPatientAlert(alert, allPatients.get(alert.getExternalId()));
     }
 
-    public boolean updateAlertData(String alertId, String symptomsAlertStatus, String notes, String doctorsNotes, String patientAlertType, String userName) {
+    public boolean updateAlertData(String alertId, String alertStatus, String notes, String doctorsNotes, String patientAlertType, String userName) {
         Alert alert = alertService.get(alertId);
+
         try {
             Map<String, String> newData = new HashMap<String, String>();
             if (PatientAlertType.SymptomReporting.toString().equals(patientAlertType)) {
-                addData(alert, PatientAlert.ALERT_STATUS, symptomsAlertStatus, newData);
                 addData(alert, PatientAlert.DOCTORS_NOTES, doctorsNotes, newData);
             }
             addData(alert, PatientAlert.NOTES, notes, newData);
-            updateData(alert, newData, userName);
+            updateData(alert, newData, userName, alertStatus);
         } catch (RuntimeException e) {
             logger.error(e);
             return false;
@@ -94,6 +89,17 @@ public class PatientAlertService {
         }
     }
 
+    public void updateData(Alert alert, Map<String, String> data, String userName, String alertStatus) {
+        AlertStatus status = TamaAlertStatus.Open.name().equals(alertStatus) ? AlertStatus.NEW : AlertStatus.READ;
+
+        UpdateCriteria updateCriteria = new UpdateCriteria().status(status);
+        if (!data.isEmpty()) {
+            updateCriteria.data(data);
+        }
+        allAuditEvents.recordAlertEvent(userName, String.format(AUDIT_FORMAT, alert.getId(), updateCriteria));
+        alertService.update(alert.getId(), updateCriteria);
+    }
+
     public PatientAlerts getReadAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
         return getAlertsFor(clinicId, patientId, patientAlertType, startDate, endDate, AlertStatus.READ);
     }
@@ -108,12 +114,12 @@ public class PatientAlertService {
 
     public PatientAlerts getFallingAdherenceAlerts(String patientDocumentId, final DateTime startDate, final DateTime endDate) {
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocumentId, startDate, endDate, null);
-        return allAlerts.filterByAlertType(PatientAlertType.FallingAdherence);
+        return allAlerts.filterByAlertType(PatientAlertType.FallingAdherence).sortByAlertStatusAndTimeOfAlert();
     }
 
     public PatientAlerts getAdherenceInRedAlerts(String patientDocumentId, final DateTime startDate, final DateTime endDate) {
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocumentId, startDate, endDate, null);
-        return allAlerts.filterByAlertType(PatientAlertType.AdherenceInRed);
+        return allAlerts.filterByAlertType(PatientAlertType.AdherenceInRed).sortByAlertStatusAndTimeOfAlert();
     }
 
     private PatientAlerts getAlertsFor(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
@@ -123,6 +129,6 @@ public class PatientAlertService {
         }
         String patientDocId = StringUtils.isEmpty(patientId) ? null : patient.getId();
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, alertStatus);
-        return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType);
+        return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType).sortByAlertStatusAndTimeOfAlert();
     }
 }

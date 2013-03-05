@@ -4,10 +4,10 @@ package org.motechproject.tama.patient.domain;
 import ch.lambdaj.Lambda;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.comparators.ComparatorChain;
+import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static java.util.Collections.reverseOrder;
@@ -37,6 +37,51 @@ public class PatientAlerts extends ArrayList<PatientAlert> {
         ArrayList<PatientAlert> filteredAlerts = new ArrayList<PatientAlert>();
         CollectionUtils.select(this, getSelectorForClinicId(clinicId), filteredAlerts);
         return new PatientAlerts(filteredAlerts);
+    }
+
+    public PatientAlerts sortByAlertStatusAndTimeOfAlert(){
+
+        Comparator<PatientAlert> statusComparator = new Comparator<PatientAlert>() {
+            @Override
+            public int compare(PatientAlert one, PatientAlert two) {
+                String alertStatusOne = one.getAlertStatus();
+                String alertStatusTwo = two.getAlertStatus();
+
+                if (alertStatusTwo == null && alertStatusOne == null) {
+                    return 0;
+                }
+
+                if (alertStatusTwo == null ^ alertStatusOne == null) {
+                    return (alertStatusTwo == null) ? -1 : 1;
+                }
+
+                return alertStatusTwo.compareTo(alertStatusOne);
+            }
+        };
+
+        Comparator<PatientAlert> dateComparator = new Comparator<PatientAlert>() {
+            @Override
+            public int compare(PatientAlert one, PatientAlert two) {
+                DateTime dateTimeOne = one.getGeneratedOnAsDateTime();
+                DateTime dateTimeTwo = two.getGeneratedOnAsDateTime();
+
+                if (dateTimeTwo == null && dateTimeOne == null) {
+                    return 0;
+                }
+
+                if (dateTimeTwo == null ^ dateTimeOne == null) {
+                    return (dateTimeTwo == null) ? -1 : 1;
+                }
+
+                return dateTimeTwo.compareTo(dateTimeOne);
+            }
+        };
+
+        ComparatorChain comparatorChain = new ComparatorChain();
+        comparatorChain.addComparator(statusComparator);
+        comparatorChain.addComparator(dateComparator);
+        Collections.sort(this, comparatorChain);
+        return this;
     }
 
     private Predicate getSelectorForAlertType(final PatientAlertType patientAlertType) {

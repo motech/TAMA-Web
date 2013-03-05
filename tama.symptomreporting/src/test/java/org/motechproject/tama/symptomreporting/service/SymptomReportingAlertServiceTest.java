@@ -131,7 +131,7 @@ public class SymptomReportingAlertServiceTest {
         Map<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
         data.put(PatientAlert.PATIENT_CALL_PREFERENCE, patient.getPatientPreferences().getDisplayCallPreference());
-        data.put(PatientAlert.ALERT_STATUS, TamaAlertStatus.Open.name());
+        data.put(PatientAlert.SYMPTOMS_ALERT_STATUS, TamaAlertStatus.Open.name());
         data.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.NA.name());
         verify(alertService).create(patientDocId, "", "", AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, TAMAConstants.NO_ALERT_PRIORITY, data);
     }
