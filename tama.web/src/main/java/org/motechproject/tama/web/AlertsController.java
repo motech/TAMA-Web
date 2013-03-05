@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.patient.domain.PatientAlert;
 import org.motechproject.tama.patient.domain.PatientAlerts;
 import org.motechproject.tama.patient.domain.TamaAlertStatus;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 public class AlertsController extends BaseController {
 
     private PatientAlertService patientAlertService;
+    private String baseUrlFormat = "%s://%s:%d/tama/";
 
     @Autowired
     public AlertsController(PatientAlertService patientAlertService) {
@@ -53,7 +55,10 @@ public class AlertsController extends BaseController {
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         PatientAlert patientAlert = patientAlertService.readAlert(id);
-        initUIModel(uiModel, patientAlert);
+        String referrerUrl = request.getHeader("referer");
+        String baseUrl = String.format(baseUrlFormat,request.getScheme(),  request.getServerName(), request.getServerPort());
+        referrerUrl = StringUtils.isBlank(referrerUrl) ? baseUrl : referrerUrl;
+        initUIModel(uiModel, patientAlert, referrerUrl);
         return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
 
@@ -73,6 +78,10 @@ public class AlertsController extends BaseController {
     private void initUIModel(Model uiModel, PatientAlert patientAlert) {
         uiModel.addAttribute("alertInfo", patientAlert);
         uiModel.addAttribute("alertStatuses", Arrays.asList(TamaAlertStatus.values()));
+    }
+    private void initUIModel(Model uiModel, PatientAlert patientAlert, String referrerUrl) {
+        initUIModel(uiModel, patientAlert);
+        uiModel.addAttribute("referrerUrl", referrerUrl);
     }
 
     private PatientAlerts getFilteredAlerts(AlertFilter filter, String clinicId) {

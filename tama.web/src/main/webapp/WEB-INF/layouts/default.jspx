@@ -37,84 +37,85 @@
 
   	<body class="tundra spring">
    		<div id="wrapper">
-		    <tiles:insertAttribute name="header" ignore="true" />
-               <jsp:include page="../views/version.jsp" />
-               <spring:url value="/" var="home"/>
+            <div>
+                <tiles:insertAttribute name="header" ignore="true" />
+                   <jsp:include page="../views/version.jsp" />
+                   <spring:url value="/" var="home"/>
 
-               <div id="searchPatient">
-                   <c:if test="${pageContext['request'].userPrincipal != null and sessionScope.loggedInUser.clinicName != ''}">
-                       <spring:url value="/patients/findByPatientId" var="find_by_patient_id_url" />
-                       <form:form name="searchPatientForm" action="${fn:escapeXml(find_by_patient_id_url)}" method="GET">
-                           <div>
-                            <span>
-                                <input id="patientId" type='text' name='patientId' style="width:150px" value="${param.patientIdNotFound}" />
-                                <spring:message code="global_patient_search_enter" var="patientId_msg" htmlEscape="false" />
-                            </span>
-                            <span class="submit">
-                                <spring:message code="button_search_patient" var="submit_search_patient" htmlEscape="false" />
-                                <input id="searchPatient" type="submit" value="${submit_search_patient}" onClick="return validatePatientId();"/>
-                            </span>
-                           </div>
-                           <div>
-                              <span id="patientSearchError" class="error">
-                                  <c:if test="${param.patientIdNotFound!=null}">
-                                      <c:out value="${patient_not_found}" />
-                                  </c:if>
-                              </span>
-                           </div>
-                       </form:form>
-                       <br />
-                   </c:if>
-               </div>
-
-
-               <div id="links">
-                   <a href="${home}" align="right">
-                        <spring:message code="button_home"/>
-                   </a>
-                   <c:if test="${pageContext['request'].userPrincipal != null}">
-                         <c:out value=" | "/>
-                         <span>
-                             <spring:url value="/security/j_spring_security_logout" var="logout"/>
-                             <a href="${logout}">
-                                 <spring:message code="security_logout"/>
-                             </a>
-                         </span>
-                   </c:if>
-                   <div class="logged_in_clinic">
-                       <c:if test="${sessionScope.loggedInUser != null}">
-                           <span><c:out value="${sessionScope.loggedInUser.name}"/></span>
-                           <tiles:useAttribute id="enableChangePassword" name="enableChangePassword" ignore="true"/>
-                           <c:if test="${enableChangePassword != 'false'}">
-                                <c:if test="${sessionScope.loggedInUser.clinicName != ''}">
-                                   <c:out value=" |  ${sessionScope.loggedInUser.clinicName} "/>
-                                </c:if>
+                   <div id="searchPatient">
+                       <c:if test="${pageContext['request'].userPrincipal != null and sessionScope.loggedInUser.clinicName != ''}">
+                           <spring:url value="/patients/findByPatientId" var="find_by_patient_id_url" />
+                           <form:form name="searchPatientForm" action="${fn:escapeXml(find_by_patient_id_url)}" method="GET">
+                               <div>
                                 <span>
-                                <spring:url value="/security/changePassword" var="changepassword"/>
-                                    <c:out value=" | "/>
-                                    <a id="changePasswordLink" href="${changepassword}">
-                                       <spring:message code="security_change_password"/>
-                                    </a>
+                                    <input id="patientId" type='text' name='patientId' style="width:150px" value="${param.patientIdNotFound}" />
+                                    <spring:message code="global_patient_search_enter" var="patientId_msg" htmlEscape="false" />
                                 </span>
-                            </c:if>
+                                <span class="submit">
+                                    <spring:message code="button_search_patient" var="submit_search_patient" htmlEscape="false" />
+                                    <input id="searchPatient" type="submit" value="${submit_search_patient}" onClick="return validatePatientId();"/>
+                                </span>
+                               </div>
+                               <div>
+                                  <span id="patientSearchError" class="error">
+                                      <c:if test="${param.patientIdNotFound!=null}">
+                                          <c:out value="${patient_not_found}" />
+                                      </c:if>
+                                  </span>
+                               </div>
+                           </form:form>
+                           <br />
                        </c:if>
                    </div>
-               </div>
-               <br />
 
-               <c:choose>
-                   <c:when test="${empty sessionScope.loggedInUser.clinicName}">
-                       <sec:authorize access="hasRole('ADMIN')">
-                       <tiles:insertAttribute name="adminMenu" ignore="true" />
-                       </sec:authorize>
-                       <sec:authorize access="hasRole('ANALYST')">
-                       <tiles:insertAttribute name="analystMenu" ignore="true" />
-                       </sec:authorize>
-                   </c:when>
-                   <c:otherwise>
-                       <tiles:insertAttribute name="clinicianMenu" ignore="true" />
-                   </c:otherwise>
-               </c:choose>
+
+                   <div id="links">
+                       <a href="${home}" align="right">
+                            <spring:message code="button_home"/>
+                       </a>
+                       <c:if test="${pageContext['request'].userPrincipal != null}">
+                             <c:out value=" | "/>
+                             <span>
+                                 <spring:url value="/security/j_spring_security_logout" var="logout"/>
+                                 <a href="${logout}">
+                                     <spring:message code="security_logout"/>
+                                 </a>
+                             </span>
+                       </c:if>
+                       <div class="logged_in_clinic">
+                           <c:if test="${sessionScope.loggedInUser != null}">
+                               <span><c:out value="${sessionScope.loggedInUser.name}"/></span>
+                               <tiles:useAttribute id="enableChangePassword" name="enableChangePassword" ignore="true"/>
+                               <c:if test="${enableChangePassword != 'false'}">
+                                    <c:if test="${sessionScope.loggedInUser.clinicName != ''}">
+                                       <c:out value=" |  ${sessionScope.loggedInUser.clinicName} "/>
+                                    </c:if>
+                                    <span>
+                                    <spring:url value="/security/changePassword" var="changepassword"/>
+                                        <c:out value=" | "/>
+                                        <a id="changePasswordLink" href="${changepassword}">
+                                           <spring:message code="security_change_password"/>
+                                        </a>
+                                    </span>
+                                </c:if>
+                           </c:if>
+                       </div>
+                   </div>
+                   <br />
+            </div>
+            <c:choose>
+               <c:when test="${empty sessionScope.loggedInUser.clinicName}">
+                   <sec:authorize access="hasRole('ADMIN')">
+                   <tiles:insertAttribute name="adminMenu" ignore="true" />
+                   </sec:authorize>
+                   <sec:authorize access="hasRole('ANALYST')">
+                   <tiles:insertAttribute name="analystMenu" ignore="true" />
+                   </sec:authorize>
+               </c:when>
+               <c:otherwise>
+                   <tiles:insertAttribute name="clinicianMenu" ignore="true" />
+               </c:otherwise>
+            </c:choose>
 
 		    <div id="main">
  	    		<tiles:insertAttribute name="body"/>

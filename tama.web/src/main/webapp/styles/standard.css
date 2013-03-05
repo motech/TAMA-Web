@@ -50,6 +50,10 @@ body {
     margin-top: 20px;
 }
 
+#referrerUrlLink{
+    margin-right: 50px;
+}
+
 /* header and footer elements */
 
 #main {

@@ -23,10 +23,11 @@
                 <field:textarea field="notes" label= "Notes" id="s_org_motechproject_tama_alert_notes" required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
                 <form:hidden path="alertId" value="${alertInfo.alertId}"/>
                 <div class="submit">
+                    <a id="referrerUrlLink" href="${referrerUrl}">Go Back</a>
                     <spring:message code="button_save" var="save_button" htmlEscape="false" />
                     <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
                     <input id="proceed" type="submit" value="Save" />
                 </div>
             </form:form>
-    </util:panel>
+        </util:panel>
 </div>
