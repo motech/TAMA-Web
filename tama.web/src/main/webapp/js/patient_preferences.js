@@ -13,17 +13,16 @@ dojo.addOnLoad(function() {
         if (element.value == 'FourDayRecall'){
             selectDayElementWidget.set('required', true);
             showElement([selectDayContainer]);
-            bestCallTimeYes.click();
+            bestCallTimeYes.disabled = false
+            dojo.attr(bestCallTimeYes,'checked', true);
             bestCallTimeNo.disabled = true;
         } else {
             selectDayElementWidget.setValue('');
             selectDayElementWidget.set('required', false);
             hideElement([selectDayContainer]);
             bestCallTimeNo.disabled = false;
-            if (bestCallTimeElementWidget.value == '')
-                bestCallTimeNo.click();
-            else
-                bestCallTimeYes.click();
+            dojo.attr(bestCallTimeNo,'checked', true);
+            bestCallTimeYes.disabled = true;
         }
     }
 
@@ -47,7 +46,7 @@ dojo.addOnLoad(function() {
     });
 
     dojo.forEach(dojo.query(".best_call_time_radio input[type='radio']"), function(element, index) {
-        dojo.connect(element, "onclick", function() {
+        dojo.connect(element, "onchange", function() {
             toggleBestCallElement(element);
         });
     });
