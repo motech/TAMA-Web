@@ -68,9 +68,9 @@ public class DailyPillReminderReportBuilder extends InMemoryReportBuilder<DailyP
         List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
         buildSummaryRow(worksheet, cellStyles, "Patient Id", patientReport.getPatientId());
         buildSummaryRow(worksheet, cellStyles, "Clinic Name", patientReport.getClinicName());
-        buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(patientReport.getARTStartedOn()).toString("MMM dd, yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(patientReport.getARTStartedOn()).toString("yyyy-MM-dd"));
         buildSummaryRow(worksheet, cellStyles, "Current Regimen", patientReport.getCurrentRegimenName());
-        buildSummaryRow(worksheet, cellStyles, "Start Date of Current Regimen", DateUtil.newDate(patientReport.getCurrentRegimenStartDate()).toString("MMM dd, yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Start Date of Current Regimen", DateUtil.newDate(patientReport.getCurrentRegimenStartDate()).toString("yyyy-MM-dd hh:mm:ss"));
         buildSummaryRow(worksheet, cellStyles, "Report Start Date", startDate.toString(TAMAConstants.DATE_FORMAT));
         buildSummaryRow(worksheet, cellStyles, "Report End Date", endDate.toString(TAMAConstants.DATE_FORMAT));
     }

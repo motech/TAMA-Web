@@ -50,11 +50,16 @@ public class AllOutboxReportsBuilder extends InMemoryReportBuilder<OutboxMessage
     protected List<Object> getRowData(Object object) {
         OutboxMessageSummary messageSummary = (OutboxMessageSummary) object;
         List<Object> row = new ArrayList<>();
-        row.add(getPatientReport(messageSummary).getPatientId());
-        row.add(getPatientReport(messageSummary).getClinicName());
-        row.add(getPatientReport(messageSummary).getARTStartedOn());
-        row.add(getPatientReport(messageSummary).getCurrentRegimenName());
-        row.add(getPatientReport(messageSummary).getCurrentRegimenStartDate());
+        PatientReport patientReportSummary = getPatientReport(messageSummary);
+
+        String artStartDate = patientReportSummary.getARTStartedOn() != null ? DateUtil.newDate(patientReportSummary.getARTStartedOn()).toString("yyyy-MM-dd") : null;
+        String currentRegimenStartDate = patientReportSummary.getCurrentRegimenStartDate() != null ? DateUtil.newDate(patientReportSummary.getCurrentRegimenStartDate()).toString("yyyy-MM-dd hh:mm:ss") : null;
+
+        row.add(patientReportSummary.getPatientId());
+        row.add(patientReportSummary.getClinicName());
+        row.add(artStartDate);
+        row.add(patientReportSummary.getCurrentRegimenName());
+        row.add(currentRegimenStartDate);
         row.add(messageSummary.getCreatedOn());
         row.add(messageSummary.getTypeName());
         row.add(messageSummary.getPlayedOn());
