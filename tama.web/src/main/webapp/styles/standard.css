@@ -46,8 +46,9 @@ body {
     margin-bottom: 5px;
 }
 
-#searchPatient{
+#searchPatientControl{
     margin-top: 20px;
+    margin-left: 230px;
 }
 
 #referrerUrlLink{
