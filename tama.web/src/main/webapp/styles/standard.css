@@ -58,7 +58,7 @@ body {
 
 #main {
 	overflow:hidden;
-	display:box;
+	clear: right;
 }
 
 #menu {
