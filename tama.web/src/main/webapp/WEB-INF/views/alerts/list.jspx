@@ -22,6 +22,7 @@
                     <table:column id="org_motechproject_tama_domain_patientalert" property="alertPriority" label="Alert Priority" />
                     <table:column id="org_motechproject_tama_domain_patientalert" property="generatedOnDate" label="Date" />
                     <table:column id="org_motechproject_tama_domain_patientalert" property="generatedOnTime" label="Time" />
+                    <table:column id="org_motechproject_tama_domain_patientalert" property="symptomReported" label="Symptom Reported" />
                     <table:column id="org_motechproject_tama_domain_patientalert" property="notes" label="Notes" />
                     <table:column id="org_motechproject_tama_domain_patientalert" property="alertStatus" label="Alert Status" />
                 </table:table>

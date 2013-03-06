@@ -84,6 +84,7 @@ body {
 #menu a.selected {
     background: #FFFFFF;
     font-weight:bold;
+    color: #0000FF;
 }
 
 #menu a, #menu h2 {
