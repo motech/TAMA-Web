@@ -115,16 +115,6 @@ public class ReportsController {
         writeExcelToResponse(response, createExcelReport(outboxReportBuilder), "OutboxReport.xls");
     }
 
-    @RequestMapping(value = "/analysisData/callLogReport.xls", method = RequestMethod.GET)
-    public void buildCallLogExcelAnalystReport(@DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                        @RequestParam LocalDate startDate,
-                                        @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-                                        @RequestParam LocalDate endDate,
-                                        HttpServletResponse response) {
-        HSSFWorkbook callLogReport = callLogExcelReportService.buildReport(startDate, endDate, true);
-        writeExcelToResponse(response, callLogReport, getReportNameWithDate("CallSummaryAnalystReport"));
-    }
-
     private String getReportNameWithDate(String baseName) {
         final String fileDateTag = new SimpleDateFormat("yyyy.MM.dd").format(new Date());
         return baseName + "-" + fileDateTag + ".xls";

@@ -19,6 +19,7 @@ import org.motechproject.tama.web.reportbuilder.AllDailyPillReminderReportsBuild
 import org.motechproject.tama.web.reportbuilder.AllOutboxReportsBuilder;
 import org.motechproject.tama.web.reportbuilder.ClinicVisitReportBuilder;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
+import org.motechproject.tama.web.service.CallLogExcelReportService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class AnalysisDataController extends BaseController {
     private OutboxMessageReportService outboxMessageReportService;
     private DailyPillReminderReportService dailyPillReminderReportService;
     private ClinicVisitReportService clinicVisitReportService;
+    private CallLogExcelReportService callLogExcelReportService;
     private ClinicService clinicService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -56,13 +58,15 @@ public class AnalysisDataController extends BaseController {
                                   AppointmentCalenderReportService appointmentCalenderReportService,
                                   OutboxMessageReportService outboxMessageReportService,
                                   DailyPillReminderReportService dailyPillReminderReportService,
-                                  ClinicVisitReportService clinicVisitReportService, ClinicService clinicService) {
+                                  ClinicVisitReportService clinicVisitReportService, CallLogExcelReportService callLogExcelReportService,
+                                  ClinicService clinicService) {
         this.callSummaryController = callSummaryController;
         this.reportingProperties = reportingProperties;
         this.appointmentCalenderReportService = appointmentCalenderReportService;
         this.outboxMessageReportService = outboxMessageReportService;
         this.dailyPillReminderReportService = dailyPillReminderReportService;
         this.clinicVisitReportService = clinicVisitReportService;
+        this.callLogExcelReportService = callLogExcelReportService;
         this.clinicService = clinicService;
     }
 
@@ -182,6 +186,22 @@ public class AnalysisDataController extends BaseController {
         }
     }
 
+    @RequestMapping(value = "/callLogReport.xls", method = RequestMethod.GET)
+    public String downloadCallLogExcelReport(DateFilter filter, Model model,HttpServletResponse response) {
+        if (filter.isMoreThanOneYear()) {
+            return error(model, "callLogReport_warning");
+        }
+
+        HSSFWorkbook callLogReport = callLogExcelReportService.buildReport(filter.startDate, filter.endDate, true);
+        try {
+            writeExcelToResponse(response, callLogReport, "CallSummaryReport.xls");
+        } catch (Exception e) {
+            logger.error("Error while generating excel report: " + e.getMessage());
+        }
+
+        return null;
+    }
+
     @RequestMapping(value = "/clinicianReport.xls", method = RequestMethod.GET)
     public String downloadClinicianReport(Model uiModel) {
         return "redirect:/tama-reports/clinician/report";
@@ -217,5 +237,23 @@ public class AnalysisDataController extends BaseController {
         HSSFWorkbook excelWorkbook = appointmentCalendarBuilder.getExcelWorkbook();
         excelWorkbook.write(outputStream);
         outputStream.flush();
+    }
+
+    private void writeExcelToResponse(HttpServletResponse response, HSSFWorkbook excelWorkbook, String fileName) {
+        try {
+            initializeExcelResponse(response, fileName);
+            ServletOutputStream outputStream = response.getOutputStream();
+            if (null != excelWorkbook) {
+                excelWorkbook.write(outputStream);
+            }
+            outputStream.flush();
+        } catch (IOException e) {
+            logger.error("Error while writing excel report to response: " + e.getMessage());
+        }
+    }
+
+    private void initializeExcelResponse(HttpServletResponse response, String fileName) {
+        response.setHeader("Content-Disposition", "inline; filename=" + fileName);
+        response.setContentType("application/vnd.ms-excel");
     }
 }

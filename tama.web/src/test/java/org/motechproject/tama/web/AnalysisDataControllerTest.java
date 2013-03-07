@@ -1,6 +1,7 @@
 package org.motechproject.tama.web;
 
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.web.model.*;
+import org.motechproject.tama.web.service.CallLogExcelReportService;
 import org.motechproject.util.DateUtil;
 import org.springframework.ui.Model;
 
@@ -48,6 +50,8 @@ public class AnalysisDataControllerTest {
     private ClinicService clinicService;
     @Mock
     private ClinicVisitReportService clinicVisitReportService;
+    @Mock
+    private CallLogExcelReportService callLogExcelReportService;
 
     private AnalysisDataController analysisDataController;
 
@@ -59,7 +63,7 @@ public class AnalysisDataControllerTest {
                 appointmentCalenderReportService,
                 outboxMessageReportService,
                 dailyPillReminderReportService,
-                clinicVisitReportService, clinicService
+                clinicVisitReportService, callLogExcelReportService, clinicService
         );
     }
 
@@ -103,6 +107,30 @@ public class AnalysisDataControllerTest {
         when(reportingProperties.reportingURL()).thenReturn("url");
         assertEquals("analysisData/show", analysisDataController.show(model));
         verify(model).addAttribute(eq("healthTipsReportFilter"), any(ReportsFilterForPatientWithClinicName.class));
+    }
+
+    @Test
+    public void shouldDownloadCallLogsGivenStartAndEndDate() throws IOException {
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        DateFilter dateFilter = setupDateFilter();
+
+        when(callLogExcelReportService.buildReport(dateFilter.startDate, dateFilter.endDate, true)).thenReturn(new HSSFWorkbook());
+
+        analysisDataController.downloadCallLogExcelReport(dateFilter, model, response);
+        verify(response).setContentType("application/vnd.ms-excel");
+        verify(response).setHeader("Content-Disposition", "inline; filename=CallSummaryReport.xls");
+    }
+
+    @Test
+    public void shouldAddWarningMessageOnErrorForCallLogReport() {
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        DateFilter filter = mock(DateFilter.class);
+        when(filter.isMoreThanOneYear()).thenReturn(true);
+
+        String view = analysisDataController.downloadCallLogExcelReport(filter, model, response);
+        verify(model).addAttribute(eq("callLogReport_warning"), anyString());
+        assertEquals("analysisData/show", view);
     }
 
     @Test
@@ -237,5 +265,13 @@ public class AnalysisDataControllerTest {
         analysisDataController.downloadClinicVisitReport(patientId, response);
         verify(response).setContentType("application/vnd.ms-excel");
         verify(response).setHeader("Content-Disposition", "inline; filename=ClinicVisitReport.xls");
+    }
+
+    private DateFilter setupDateFilter() {
+        LocalDate startDate = DateUtil.today().minusDays(3);
+        LocalDate endDate = DateUtil.today();
+        DateFilter filter = new DateFilter();
+        filter.setDates(startDate, endDate);
+        return filter;
     }
 }
