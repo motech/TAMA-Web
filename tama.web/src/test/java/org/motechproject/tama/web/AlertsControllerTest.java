@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.server.alerts.domain.AlertStatus;
+import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.tama.patient.domain.PatientAlert;
 import org.motechproject.tama.patient.domain.PatientAlertType;
 import org.motechproject.tama.patient.domain.PatientAlerts;
@@ -34,6 +36,8 @@ public class AlertsControllerTest {
     private AuthenticatedUser authenticatedUser;
     @Mock
     private PatientAlertService patientAlertService;
+    @Mock
+    private PatientAlert patientAlert;
 
     private AlertsController alertsController;
 
@@ -117,7 +121,13 @@ public class AlertsControllerTest {
 
     @Test
     public void shouldUpdate() {
+        when(patientAlertService.readAlert(alertId)).thenReturn(patientAlert);
+        when(patientAlert.getAlert()).thenReturn(new Alert("id", AlertType.MEDIUM, AlertStatus.NEW, 0, new HashMap<String, String>() {{
+            put(PatientAlert.PATIENT_ALERT_TYPE, "SymptomReporting");
+        }}));
+
         alertsController.update(uiModel, alertId, symptomsAlertStatus, notes, doctorsNotes, type, request);
+
         verify(patientAlertService).updateAlertData(alertId, symptomsAlertStatus, notes, doctorsNotes, type, USER_NAME);
     }
 

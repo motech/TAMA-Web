@@ -55,6 +55,14 @@ body {
     margin-right: 50px;
 }
 
+.highlightOpenAlert {
+    background-color: #98fb98;
+}
+
+.highlightClosedAlert {
+    background-color: #db7093;
+}
+
 /* header and footer elements */
 
 #main {

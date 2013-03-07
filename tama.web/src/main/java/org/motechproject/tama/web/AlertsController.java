@@ -55,24 +55,26 @@ public class AlertsController extends BaseController {
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         PatientAlert patientAlert = patientAlertService.readAlert(id);
-        String referrerUrl = request.getHeader("referer");
-        String baseUrl = String.format(baseUrlFormat,request.getScheme(),  request.getServerName(), request.getServerPort());
-        referrerUrl = StringUtils.isBlank(referrerUrl) ? baseUrl : referrerUrl;
+
+        String referrerUrl = getReferrerUrl(request);
+
         initUIModel(uiModel, patientAlert, referrerUrl);
+        uiModel.addAttribute("referrerUrl", getReferrerUrl(request)) ;
         return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public String update(Model uiModel, String alertId, String alertStatus, String notes, String doctorsNotes, String type, HttpServletRequest request) {
-        try {
-            patientAlertService.updateAlertData(alertId, alertStatus, notes, doctorsNotes, type, loggedInUserId(request));
-            uiModel.asMap().clear();
-        } catch (RuntimeException e) {
-            PatientAlert patientAlert = patientAlertService.readAlert(alertId);
-            initUIModel(uiModel, patientAlert);
-            return "alerts/update";
-        }
-        return "redirect:/alerts/" + encodeUrlPathSegment(alertId, request);
+
+        Boolean isUpdatedSuccessfully = patientAlertService.updateAlertData(alertId, alertStatus, notes, doctorsNotes, type, loggedInUserId(request));
+        uiModel.asMap().clear();
+
+        PatientAlert patientAlert = patientAlertService.readAlert(alertId);
+        initUIModel(uiModel, patientAlert);
+
+        uiModel.addAttribute("alertSaveStatus", isUpdatedSuccessfully.toString());
+
+        return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
 
     private void initUIModel(Model uiModel, PatientAlert patientAlert) {
@@ -81,6 +83,7 @@ public class AlertsController extends BaseController {
     }
     private void initUIModel(Model uiModel, PatientAlert patientAlert, String referrerUrl) {
         initUIModel(uiModel, patientAlert);
+
         uiModel.addAttribute("referrerUrl", referrerUrl);
     }
 
@@ -98,14 +101,16 @@ public class AlertsController extends BaseController {
     public String closeAlert(@PathVariable String id, HttpServletRequest request) {
         updateAlert(id, request, TamaAlertStatus.Closed.name());
 
-        return getReferrerUrl(request);
+        String referrerUrl = getReferrerUrl(request);
+        return "redirect:" +referrerUrl;
     }
 
     @RequestMapping(value = "**/openAlert/{id}", method = RequestMethod.POST)
     public String openAlert(@PathVariable String id, HttpServletRequest request) {
         updateAlert(id, request, TamaAlertStatus.Open.name());
 
-        return getReferrerUrl(request);
+        String referrerUrl = getReferrerUrl(request);
+        return "redirect:" +referrerUrl;
     }
 
     private void updateAlert(String id, HttpServletRequest request, String alert){
@@ -117,6 +122,6 @@ public class AlertsController extends BaseController {
         String baseUrl = String.format(baseUrlFormat,request.getScheme(),  request.getServerName(), request.getServerPort());
         referrerUrl = StringUtils.isBlank(referrerUrl) ? baseUrl : referrerUrl;
 
-        return "redirect:" + referrerUrl;
+        return referrerUrl;
     }
 }
