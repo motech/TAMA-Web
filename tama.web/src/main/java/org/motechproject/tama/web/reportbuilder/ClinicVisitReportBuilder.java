@@ -1,6 +1,5 @@
 package org.motechproject.tama.web.reportbuilder;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
@@ -11,6 +10,7 @@ import org.motechproject.tama.patient.contract.DrugDosageContract;
 import org.motechproject.tama.patient.domain.LabResults;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
+import org.motechproject.tama.web.reportbuilder.model.DosageRow;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumnGroup;
 import org.motechproject.util.DateUtil;
@@ -45,7 +45,7 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         columns.add(new ExcelColumn("Regimen", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Drug Composition Group", Cell.CELL_TYPE_STRING));
 
-        columns.add(new ExcelColumn("Drug Name", Cell.CELL_TYPE_STRING));
+
         columns.add(new ExcelColumn("Dosage", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Morning Time", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Evening Time", Cell.CELL_TYPE_STRING));
@@ -54,7 +54,6 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         columns.add(new ExcelColumn("Advice", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Meal Advice", Cell.CELL_TYPE_STRING));
 
-        columns.add(new ExcelColumn("Drug Name", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Dosage", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Morning Time", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Evening Time", Cell.CELL_TYPE_STRING));
@@ -155,41 +154,22 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         row.add(pvlCount);
     }
 
-    private String getFormattedDate(LocalDate date){
-        if(date == null)
+    private String getFormattedDate(LocalDate date) {
+        if (date == null)
             return null;
         return date.toString("dd/MM/yyyy");
     }
 
 
     private void populateDosage(List<Object> row, DrugDosageContract dosage) {
-        String drugName = StringUtils.EMPTY;
-        String dosageTypeId = StringUtils.EMPTY;
-        String morningTime = StringUtils.EMPTY;
-        String eveningTime = StringUtils.EMPTY;
-        Integer offsetDays = null;
-        String startDate = null;
-        String advice = StringUtils.EMPTY;
-        String mealAdviceId = StringUtils.EMPTY;
-
-        if (dosage != null) {
-            drugName = dosage.getDrugName();
-            dosageTypeId = dosage.getDosageType();
-            morningTime = dosage.getMorningTime();
-            eveningTime = dosage.getEveningTime();
-            offsetDays = dosage.getOffsetDays();
-            startDate = format(dosage.getStartDate(), "dd/MM/yyyy");
-            advice = dosage.getAdvice();
-            mealAdviceId = dosage.getMealAdvice();
-        }
-        row.add(drugName);
-        row.add(dosageTypeId);
-        row.add(morningTime);
-        row.add(eveningTime);
-        row.add(offsetDays);
-        row.add(startDate);
-        row.add(advice);
-        row.add(mealAdviceId);
+        DosageRow dosageRow = new DosageRow(dosage);
+        row.add(dosageRow.getDosageTypeId());
+        row.add(dosageRow.getMorningTime());
+        row.add(dosageRow.getEveningTime());
+        row.add(dosageRow.getOffsetDays());
+        row.add(dosageRow.getStartDate());
+        row.add(dosageRow.getAdvice());
+        row.add(dosageRow.getMealAdviceId());
     }
 
 
