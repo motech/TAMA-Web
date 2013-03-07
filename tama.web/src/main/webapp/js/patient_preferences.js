@@ -16,6 +16,7 @@ dojo.addOnLoad(function() {
             bestCallTimeYes.disabled = false
             dojo.attr(bestCallTimeYes,'checked', true);
             bestCallTimeNo.disabled = true;
+            toggleBestCallElement(bestCallTimeYes);
         } else {
             selectDayElementWidget.setValue('');
             selectDayElementWidget.set('required', false);
@@ -23,6 +24,7 @@ dojo.addOnLoad(function() {
             bestCallTimeNo.disabled = false;
             dojo.attr(bestCallTimeNo,'checked', true);
             bestCallTimeYes.disabled = true;
+            toggleBestCallElement(bestCallTimeNo);
         }
     }
 
@@ -42,12 +44,6 @@ dojo.addOnLoad(function() {
     dojo.forEach(dojo.query(".daily_reminder input[type='radio']"), function(element, index) {
         dojo.connect(element, "onclick", function() {
             toggleSelectDayElement(element);
-        });
-    });
-
-    dojo.forEach(dojo.query(".best_call_time_radio input[type='radio']"), function(element, index) {
-        dojo.connect(element, "onchange", function() {
-            toggleBestCallElement(element);
         });
     });
 
