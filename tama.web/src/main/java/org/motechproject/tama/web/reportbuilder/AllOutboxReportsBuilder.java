@@ -52,8 +52,8 @@ public class AllOutboxReportsBuilder extends InMemoryReportBuilder<OutboxMessage
         List<Object> row = new ArrayList<>();
         PatientReport patientReportSummary = getPatientReport(messageSummary);
 
-        String artStartDate = patientReportSummary.getARTStartedOn() != null ? DateUtil.newDate(patientReportSummary.getARTStartedOn()).toString("yyyy-MM-dd") : null;
-        String currentRegimenStartDate = patientReportSummary.getCurrentRegimenStartDate() != null ? DateUtil.newDate(patientReportSummary.getCurrentRegimenStartDate()).toString("yyyy-MM-dd hh:mm:ss") : null;
+        String artStartDate = patientReportSummary.getARTStartedOn() != null ? DateUtil.newDate(patientReportSummary.getARTStartedOn()).toString("dd/MM/yyyy") : null;
+        String currentRegimenStartDate = patientReportSummary.getCurrentRegimenStartDate() != null ? DateUtil.newDate(patientReportSummary.getCurrentRegimenStartDate()).toString("dd/MM/yyyy") : null;
 
         row.add(patientReportSummary.getPatientId());
         row.add(patientReportSummary.getClinicName());
@@ -78,6 +78,6 @@ public class AllOutboxReportsBuilder extends InMemoryReportBuilder<OutboxMessage
     @Override
     protected void buildSummary(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
-        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("yyyy-MM-dd"));
+        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("dd/MM/yyyy"));
     }
 }
