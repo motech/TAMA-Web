@@ -56,9 +56,7 @@ public class AlertsController extends BaseController {
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         PatientAlert patientAlert = patientAlertService.readAlert(id);
 
-        String referrerUrl = getReferrerUrl(request);
-
-        initUIModel(uiModel, patientAlert, referrerUrl);
+        initUIModel(uiModel, patientAlert);
         uiModel.addAttribute("referrerUrl", getReferrerUrl(request)) ;
         return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
@@ -71,7 +69,7 @@ public class AlertsController extends BaseController {
 
         PatientAlert patientAlert = patientAlertService.readAlert(alertId);
         initUIModel(uiModel, patientAlert);
-
+        uiModel.addAttribute("referrerUrl", getReferrerUrl(request)) ;
         uiModel.addAttribute("alertSaveStatus", isUpdatedSuccessfully.toString());
 
         return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
@@ -80,11 +78,6 @@ public class AlertsController extends BaseController {
     private void initUIModel(Model uiModel, PatientAlert patientAlert) {
         uiModel.addAttribute("alertInfo", patientAlert);
         uiModel.addAttribute("alertStatuses", Arrays.asList(TamaAlertStatus.values()));
-    }
-    private void initUIModel(Model uiModel, PatientAlert patientAlert, String referrerUrl) {
-        initUIModel(uiModel, patientAlert);
-
-        uiModel.addAttribute("referrerUrl", referrerUrl);
     }
 
     private PatientAlerts getFilteredAlerts(AlertFilter filter, String clinicId) {
@@ -118,7 +111,10 @@ public class AlertsController extends BaseController {
     }
 
     private String getReferrerUrl(HttpServletRequest request){
-        String referrerUrl = request.getHeader("referer");
+        String referrerUrl = request.getParameter("backPage");
+        if(StringUtils.isBlank(referrerUrl))
+              referrerUrl = request.getHeader("referer");
+
         String baseUrl = String.format(baseUrlFormat,request.getScheme(),  request.getServerName(), request.getServerPort());
         referrerUrl = StringUtils.isBlank(referrerUrl) ? baseUrl : referrerUrl;
 

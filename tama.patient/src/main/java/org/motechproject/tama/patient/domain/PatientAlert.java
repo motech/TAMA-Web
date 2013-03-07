@@ -24,6 +24,8 @@ public class PatientAlert {
     public static final String APPOINTMENT_DATE = "AppointmentDate";
     public static final String CONFIRMED_APPOINTMENT_DATE = "ConfirmedAppointmentDate";
 
+    private String backPage;
+
     private Patient patient;
     private Alert alert;
 
@@ -172,6 +174,14 @@ public class PatientAlert {
 
     public boolean isClosed() {
         return TamaAlertStatus.Closed.name().equals(this.getAlertStatus());
+    }
+
+    public String getBackPage() {
+        return backPage;
+    }
+
+    public void setBackPage(String backPage) {
+        this.backPage = backPage;
     }
 
 
