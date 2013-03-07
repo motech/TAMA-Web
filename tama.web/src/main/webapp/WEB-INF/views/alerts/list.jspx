@@ -6,16 +6,30 @@
      xmlns:form="http://www.springframework.org/tags/form"
      xmlns:c="http://java.sun.com/jsp/jstl/core"
      version="2.0">
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <spring:url value="/alerts/list/filter" var="filter_url"/>
+
+    <spring:url value="/resources-${applicationVersion}/js/list_alerts.js" var="list_alerts_js"/>
+    <script src="${list_alerts_js}" type="text/javascript"><!--required--></script>
+
     <form:form action="${filter_url}" method="GET" modelAttribute="alertFilter">
         <jsp:include page="search.jspx" />
     </form:form>
     <c:if test="${alerts != null}" >
         <div id="_title_pl_org_motechproject_tama_domain_patientalert_id_pane">
             <page:plainlist id="pl_org_motechproject_tama_domain_patientalert" items="${alerts}" labelPlural="Alerts" label="Alert">
-                <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="/alerts" delete="false" create="false" show="flase" update="true" typeIdFieldName="alertId" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields">
+                <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="/alerts"
+                             show="false" create="false" update="true" delete="false"
+                             typeIdFieldName="alertId" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields"
+                             customAction="true"
+                             customActionPath="closeAlert" customActionLabel="Mark Closed"
+                             customActionCondition="item.opened"
+                             customActionPath2="openAlert" customActionLabel2="Mark Open"
+                             customActionCondition2="item.closed"
+                             show_label="Alert Dashboard">
                     <table:column id="org_motechproject_tama_domain_patientalert" property="patientId" label="Patient ID" />
                     <table:column id="org_motechproject_tama_domain_patientalert" property="patientPhoneNumber" label="Phone Number" />
                     <table:column id="org_motechproject_tama_domain_patientalert" property="typeName" label="Alert Type" />

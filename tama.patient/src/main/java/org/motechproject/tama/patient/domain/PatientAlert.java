@@ -165,4 +165,14 @@ public class PatientAlert {
         return patientAlert;
     }
 
+
+    public boolean isOpened() {
+        return TamaAlertStatus.Open.name().equals(this.getAlertStatus());
+    }
+
+    public boolean isClosed() {
+        return TamaAlertStatus.Closed.name().equals(this.getAlertStatus());
+    }
+
+
 }

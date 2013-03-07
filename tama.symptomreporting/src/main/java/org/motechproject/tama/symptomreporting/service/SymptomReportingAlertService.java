@@ -57,7 +57,7 @@ public class SymptomReportingAlertService {
         Map<String, String> data = new HashMap<String, String>();
         data.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.Yes.toString());
         data.put(PatientAlert.DOCTOR_NAME, doctorName);
-        patientAlertService.updateData(lastReportedAlert.getAlert(), data, patientDocId);
+        patientAlertService.updateAlert(lastReportedAlert.getAlert(), patientDocId, data);
     }
 
     public void appendSymptomToAlert(String patientDocId, String symptomId) {

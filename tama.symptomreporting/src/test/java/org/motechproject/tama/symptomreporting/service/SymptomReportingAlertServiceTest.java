@@ -79,7 +79,7 @@ public class SymptomReportingAlertServiceTest {
         Map<String, String> updatedData = new HashMap<String, String>();
         updatedData.put(PatientAlert.CONNECTED_TO_DOCTOR, TAMAConstants.ReportedType.Yes.toString());
         updatedData.put(PatientAlert.DOCTOR_NAME, doctorName);
-        verify(patientAlertService, times(1)).updateData(Matchers.<Alert>any(), eq(updatedData), eq(patientDocId));
+        verify(patientAlertService, times(1)).updateAlert(Matchers.<Alert>any(), eq(patientDocId), eq(updatedData));
     }
 
     @Test

@@ -7,7 +7,6 @@
 
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-
     <spring:url value="/resources-${applicationVersion}/js/list_patients.js" var="list_patients_js"/>
     <script src="${list_patients_js}" type="text/javascript"/>
 

@@ -67,8 +67,20 @@ public class PatientAlertService {
                 addData(alert, PatientAlert.DOCTORS_NOTES, doctorsNotes, newData);
             }
             addData(alert, PatientAlert.NOTES, notes, newData);
-            updateData(alert, newData, userName, alertStatus);
+            updateAlert(alert, userName, newData, alertStatus);
         } catch (RuntimeException e) {
+            logger.error(e);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean updateAlertStatus(String alertId, String userName, String alertStatus) {
+        Alert alert = alertService.get(alertId);
+
+        try {
+            updateAlert(alert, userName, alertStatus);
+        } catch (Exception e) {
             logger.error(e);
             return false;
         }
@@ -81,25 +93,25 @@ public class PatientAlertService {
         }
     }
 
-    public void updateData(Alert alert, Map<String, String> data, String userName) {
-        if (!data.isEmpty()) {
-            UpdateCriteria updateCriteria = new UpdateCriteria().data(data);
-            allAuditEvents.recordAlertEvent(userName, String.format(AUDIT_FORMAT, alert.getId(), updateCriteria));
-            alertService.update(alert.getId(), updateCriteria);
-        }
+    public void updateAlert(Alert alert, String userName, Map<String, String> data) {
+        updateAlert(alert, userName, data, null);
     }
 
-    public void updateData(Alert alert, Map<String, String> data, String userName, String alertStatus) {
+    public void updateAlert(Alert alert, String userName, String alertStatus) {
+        updateAlert(alert, userName, new HashMap<String, String>(), alertStatus);
+    }
+
+    public void updateAlert(Alert alert, String userName, Map<String, String> data, String alertStatus) {
         AlertStatus status = TamaAlertStatus.Open.name().equals(alertStatus) ? AlertStatus.NEW : AlertStatus.READ;
 
-        if(data.isEmpty() && status.equals(alert.getStatus()))
+        if (data.isEmpty() && (status.equals(alert.getStatus()) || StringUtils.isBlank(alertStatus)))
             return;
 
         UpdateCriteria updateCriteria = new UpdateCriteria();
         if (!data.isEmpty()) {
             updateCriteria.data(data);
         }
-        if(!status.equals(alert.getStatus())){
+        if (!StringUtils.isBlank(alertStatus) && !status.equals(alert.getStatus())) {
             updateCriteria.status(status);
         }
         allAuditEvents.recordAlertEvent(userName, String.format(AUDIT_FORMAT, alert.getId(), updateCriteria));

@@ -132,4 +132,26 @@ public class AlertsControllerTest {
         alertsController.update(uiModel, alertId, symptomsAlertStatus, notes, doctorsNotes, type, request);
         assertEquals("alerts/update" + PatientAlertType.SymptomReporting.name(), alertsController.updateForm(alertId, uiModel, request));
     }
+
+    @Test
+    public void shouldCloseAnAlert() {
+        String expectedReferrerfUrl = "redirect:referef";
+        String referrerfUrl = "referef";
+        when(request.getHeader("referer")).thenReturn(referrerfUrl);
+
+        String returnedViewUrl = alertsController.closeAlert("fakeId", request);
+
+        assertEquals(expectedReferrerfUrl, returnedViewUrl);
+    }
+
+    @Test
+    public void shouldOpenAnAlert() {
+        String expectedReferrerfUrl = "redirect:referef";
+        String referrerfUrl = "referef";
+        when(request.getHeader("referer")).thenReturn(referrerfUrl);
+
+        String returnedViewUrl = alertsController.openAlert("fakeId", request);
+
+        assertEquals(expectedReferrerfUrl, returnedViewUrl);
+    }
 }

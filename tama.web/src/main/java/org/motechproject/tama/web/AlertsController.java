@@ -93,4 +93,30 @@ public class AlertsController extends BaseController {
             return patientAlertService.getAllAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
         }
     }
+
+    @RequestMapping(value = "**/closeAlert/{id}", method = RequestMethod.POST)
+    public String closeAlert(@PathVariable String id, HttpServletRequest request) {
+        updateAlert(id, request, TamaAlertStatus.Closed.name());
+
+        return getReferrerUrl(request);
+    }
+
+    @RequestMapping(value = "**/openAlert/{id}", method = RequestMethod.POST)
+    public String openAlert(@PathVariable String id, HttpServletRequest request) {
+        updateAlert(id, request, TamaAlertStatus.Open.name());
+
+        return getReferrerUrl(request);
+    }
+
+    private void updateAlert(String id, HttpServletRequest request, String alert){
+        patientAlertService.updateAlertStatus(id, loggedInUserId(request), alert);
+    }
+
+    private String getReferrerUrl(HttpServletRequest request){
+        String referrerUrl = request.getHeader("referer");
+        String baseUrl = String.format(baseUrlFormat,request.getScheme(),  request.getServerName(), request.getServerPort());
+        referrerUrl = StringUtils.isBlank(referrerUrl) ? baseUrl : referrerUrl;
+
+        return "redirect:" + referrerUrl;
+    }
 }

@@ -8,6 +8,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.motechproject.server.alerts.contract.UpdateCriteria;
 import org.motechproject.server.alerts.domain.Alert;
+import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.server.alerts.contract.AlertService;
 import org.motechproject.tama.common.repository.AllAuditEvents;
@@ -145,6 +146,41 @@ public class PatientAlertServiceTest {
         patientAlertService.updateAlertData(alertId, symptomsAlertStatus, notes, doctorsNotes, PatientAlertType.SymptomReporting.name(), USER_NAME);
 
         verify(alertService, never()).update(Matchers.<String>any(), Matchers.<UpdateCriteria>any());
+    }
+
+    @Test
+    public void shouldUpdateAlertStatusWhenAlertStatusIsChanged(){
+        final String alertId = "alertId";
+        final String symptomsAlertStatus = "Open";
+
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, null) {{
+            setStatus(AlertStatus.READ);
+            setId(alertId);
+        }});
+
+        patientAlertService.updateAlertStatus(alertId, USER_NAME, symptomsAlertStatus);
+
+        UpdateCriteria updateCriteria = new UpdateCriteria();
+        updateCriteria.status(AlertStatus.NEW);
+        verify(alertService, times(1)).update(eq(alertId), refEq(updateCriteria));
+        verify(allAuditEvents, times(1)).recordAlertEvent(USER_NAME, String.format(PatientAlertService.AUDIT_FORMAT, alertId, updateCriteria));
+
+    }
+
+    @Test
+    public void shouldNotUpdateAlertStatusWhenThereAreNoChanges() {
+        final String alertId = "alertId";
+        final String symptomsAlertStatus = "Open";
+
+        when(alertService.get(alertId)).thenReturn(new Alert(alertId, AlertType.MEDIUM, org.motechproject.server.alerts.domain.AlertStatus.NEW, 2, null) {{
+            setStatus(AlertStatus.NEW);
+            setId(alertId);
+        }});
+
+        patientAlertService.updateAlertStatus(alertId, USER_NAME, symptomsAlertStatus);
+
+        verify(alertService, never()).update(Matchers.<String>any(), Matchers.<UpdateCriteria>any());
+        verify(allAuditEvents, never()).recordAlertEvent(Matchers.<String>any(), Matchers.<String>any());
     }
 
     @Test
