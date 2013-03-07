@@ -39,12 +39,9 @@
    		<div id="wrapper">
             <div>
                 <tiles:insertAttribute name="header" ignore="true" />
-                   <jsp:include page="../views/version.jsp" />
                    <spring:url value="/" var="home"/>
-
-
                    <c:if test="${pageContext['request'].userPrincipal != null and sessionScope.loggedInUser.clinicName != ''}">
-                       <div id="searchPatientControl">
+                       <div id="searchPatientControl" class="inline-block">
                            <spring:url value="/patients/findByPatientId" var="find_by_patient_id_url" />
                            <form:form name="searchPatientForm" action="${fn:escapeXml(find_by_patient_id_url)}" method="GET">
                                <div>
@@ -68,10 +65,7 @@
                            <br />
                        </div>
                    </c:if>
-
-
-
-                   <div id="links">
+                   <div id="links" class="inline-block">
                        <a href="${home}" align="right">
                             <spring:message code="button_home"/>
                        </a>

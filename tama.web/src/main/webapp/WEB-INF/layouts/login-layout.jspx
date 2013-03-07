@@ -31,7 +31,6 @@
     <body class="tundra spring">
         <div id="wrapper">
             <tiles:insertAttribute name="header" ignore="true"/>
-            <jsp:include page="../views/version.jsp"/>
             <br/>
             <br/>
             <div id="main">

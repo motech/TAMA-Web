@@ -30,7 +30,7 @@ public class AlertsController extends BaseController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(Model uiModel, HttpServletRequest request) {
-        AlertFilter allAlertsFilter = new AlertFilter().setAlertStatus(AlertFilter.STATUS_ALL);
+        AlertFilter allAlertsFilter = new AlertFilter().setAlertStatus(AlertFilter.STATUS_OPEN);
         final String clinicId = loggedInClinic(request);
         uiModel.addAttribute("alerts", getFilteredAlerts(allAlertsFilter, clinicId));
         uiModel.addAttribute("alertFilter", allAlertsFilter);

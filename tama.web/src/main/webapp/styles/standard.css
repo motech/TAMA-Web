@@ -13,12 +13,15 @@ body {
 
 #header {
 	margin-bottom: 1em;
-    float: left;
+}
+
+.inline-block{
+    display:inline-block;
+    vertical-align:middle;
 }
 
 #version {
-    float: left;
-    clear: left;
+    margin-top: 10px;
 }
 
 #tama-logo {
@@ -32,6 +35,7 @@ body {
 	max-width: 1200px;
 	margin-right: auto;
 	margin-left: auto;
+    position: relative;
 
 	/* fix max-width incompatibility in IE6 */
 	width:expression(document.body.clientWidth > 800? "800px": "auto" );
@@ -41,14 +45,16 @@ body {
 }
 
 #links {
+    margin-bottom: 12px;
+    position: absolute;
+    right: 0;
     text-align: right;
-    float: right;
-    margin-bottom: 5px;
+    top: 34px;
 }
 
 #searchPatientControl{
     margin-top: 20px;
-    margin-left: 230px;
+    margin-left: 86px;
 }
 
 #referrerUrlLink{
