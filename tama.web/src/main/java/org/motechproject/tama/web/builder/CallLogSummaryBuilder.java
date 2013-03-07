@@ -5,13 +5,13 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.domain.CallLog;
+import org.motechproject.tama.ivr.log.CallFlowDetailMap;
+import org.motechproject.tama.ivr.log.CallFlowDetails;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Patients;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.mapper.CallLogViewMapper;
-import org.motechproject.tama.ivr.log.CallFlowDetailMap;
-import org.motechproject.tama.ivr.log.CallFlowDetails;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.view.CallLogView;
 
@@ -123,7 +123,10 @@ public class CallLogSummaryBuilder {
 
     public Map<String, CallFlowDetails> getCallFlowDetails(CallLog callLog) {
         CallFlowDetailMap callFlowDetailMap = new CallFlowDetailMap();
-        callFlowDetailMap.populateFlowDetails(mapCallLogToCallLogView(callLog).getFlowGroupViews());
+        CallLogView callLogView = mapCallLogToCallLogView(callLog);
+        if (null != callLogView) {
+            callFlowDetailMap.populateFlowDetails(callLogView.getFlowGroupViews());
+        }
         return callFlowDetailMap.getCallFlowDetailsMap();
     }
 

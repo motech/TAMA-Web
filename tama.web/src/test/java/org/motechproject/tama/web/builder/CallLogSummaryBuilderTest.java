@@ -8,7 +8,6 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.facility.domain.Clinic;
-import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
@@ -33,20 +32,22 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CallLogSummaryBuilderTest {
 
-    CallLogSummaryBuilder callLogSummaryBuilder;
-
     @Mock
     AllPatients allPatients;
+
     @Mock
     CallLogViewMapper callLogViewMapper;
-    @Mock
-    AllClinics allClinics;
+
     @Mock
     AllIVRLanguagesCache allIVRLanguages;
 
     private CallLog callLog;
+
     private DateTime startTime;
+
     private DateTime initiatedTime;
+
+    private CallLogSummaryBuilder callLogSummaryBuilder;
 
     @Before
     public void setUp() {
@@ -79,7 +80,6 @@ public class CallLogSummaryBuilderTest {
         clinic.setName("clinicName");
 
         when(allIVRLanguages.getByCode("en")).thenReturn(IVRLanguage.newIVRLanguage("English", "en"));
-        when(allClinics.getAll()).thenReturn(Arrays.asList(clinic));
         when(allPatients.getAll()).thenReturn(Arrays.asList(patient));
         when(callLogViewMapper.toCallLogView(Arrays.asList(callLog))).thenReturn(Arrays.asList(callLogView));
 
@@ -102,6 +102,17 @@ public class CallLogSummaryBuilderTest {
         assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());
         assertEquals("40", callLogSummary.getAge());
         assertEquals("Male", callLogSummary.getGender());
+    }
+
+    @Test
+    public void shouldBuildCallSummaryWithEmptyCallFlowDetailsWhenCallLogDoesNotHaveAnyFlows() {
+        DateTime callStartTime = DateUtil.now();
+        CallLog callLog = new CallLog();
+        callLog.setStartTime(callStartTime);
+        callLog.setEndTime(callStartTime.plusMinutes(1));
+
+        CallLogSummary logSummary = new CallLogSummaryBuilder(allPatients, new Patients(allPatients.getAll()), allIVRLanguages).build(callLog);
+        assertNotNull(logSummary.getFlowDetailsMap());
     }
 
     @Test
