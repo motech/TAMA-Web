@@ -1,16 +1,18 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags">
-    <spring:message code="alerts_save_success" var="save_success" htmlEscape="false" />
-    <spring:message code="alerts_save_failed" var="save_failed" htmlEscape="false" />
-    <div>
-        <c:if test="${alertSaveStatus == 'true'}">
-          <span id="alertSaveMessage" class="bold ">
+    <spring:message code="alerts_save_success" var="save_success" htmlEscape="false"/>
+    <spring:message code="alerts_save_failed" var="save_failed" htmlEscape="false"/>
+    <c:if test="${alertSaveStatus == 'true'}">
+        <div class="center warning ">
+          <span id="alertSaveMessage">
             <c:out value="${save_success}"/>
           </span>
-        </c:if>
-        <c:if test="${alertSaveStatus == 'false'}">
-          <span id="alertSaveMessage" class="error-inline">
+        </div>
+    </c:if>
+    <c:if test="${alertSaveStatus == 'false'}">
+        <div class="center warning ">
+          <span id="alertSaveMessage">
             <c:out value="${save_failed}"/>
           </span>
-        </c:if>
-    </div>
+        </div>
+    </c:if>
 </div>

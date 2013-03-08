@@ -61,19 +61,19 @@ public class PatientAlerts extends ArrayList<PatientAlert> {
 
         Comparator<PatientAlert> dateComparator = new Comparator<PatientAlert>() {
             @Override
-            public int compare(PatientAlert one, PatientAlert two) {
-                DateTime dateTimeOne = one.getGeneratedOnAsDateTime();
-                DateTime dateTimeTwo = two.getGeneratedOnAsDateTime();
+            public int compare(PatientAlert two, PatientAlert one) {
+                DateTime dateTimeTwo = one.getGeneratedOnAsDateTime();
+                DateTime dateTimeOne = two.getGeneratedOnAsDateTime();
 
-                if (dateTimeTwo == null && dateTimeOne == null) {
+                if (dateTimeOne == null && dateTimeTwo == null) {
                     return 0;
                 }
 
-                if (dateTimeTwo == null ^ dateTimeOne == null) {
-                    return (dateTimeTwo == null) ? -1 : 1;
+                if (dateTimeOne == null ^ dateTimeTwo == null) {
+                    return (dateTimeOne == null) ? -1 : 1;
                 }
 
-                return dateTimeTwo.compareTo(dateTimeOne);
+                return dateTimeOne.compareTo(dateTimeTwo);
             }
         };
 

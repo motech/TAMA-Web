@@ -35,7 +35,8 @@
         <![CDATA[
             function canAlertListBePossiblyLarge(patientId, startDate, endDate){
                 var oneMonthInMillis = 24*60*60*1000*30;
-                var maxDateRangeInMillis = oneMonthInMillis * parseInt("${maxDateRangeForAlerts}");
+                var threeMonthInMillis = oneMonthInMillis*3;
+                var maxDateRangeInMillis = threeMonthInMillis * parseInt("${maxDateRangeForAlerts}");
                 if (patientId != "") return false;
                 return Math.abs(endDate - startDate) > maxDateRangeInMillis;
             }

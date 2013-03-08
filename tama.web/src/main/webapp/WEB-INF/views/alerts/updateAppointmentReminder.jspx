@@ -7,6 +7,7 @@
     <spring:message code="label_org_motechproject_tama_domain_patient_alert_title" var="alert_title" htmlEscape="false" />
     <jsp:output omit-xml-declaration="yes"/>
         <util:panel id="ps_org_motechproject_tama_alert" title="${alert_title} " openPane="true" >
+            <jsp:include page="/WEB-INF/views/alerts/showMessages.jspx"/>
             <field:display field="patientId" id="s_org_motechproject_tama_alert_id" object="${alertInfo}" label="Patient Id"/>
             <field:display field="patientPhoneNumber" id="s_org_motechproject_tama_alert_patientPhoneNumber" object="${alertInfo}" label="Patient Phone number"/>
             <field:display field="generatedOn" id="s_org_motechproject_tama_alert_generatedOn" object="${alertInfo}" label="Date and Time"/>
@@ -21,12 +22,11 @@
                 <form:hidden path="alertId" value="${alertInfo.alertId}"/>
                 <form:hidden path="backPage" value="${referrerUrl}" />
                 <div class="submit">
-                    <a id="referrerUrlLink" href="${referrerUrl}">Go Back</a>
+                    <a id="referrerUrlLink" href="${referrerUrl}">Back to alerts listing</a>
                     <spring:message code="button_save" var="save_button" htmlEscape="false" />
                     <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
                     <input id="proceed" type="submit" value="Save" />
                 </div>
-                <jsp:include page="/WEB-INF/views/alerts/showMessages.jspx"/>
             </form:form>
     </util:panel>
 </div>
