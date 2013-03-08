@@ -62,11 +62,16 @@ body {
 }
 
 .highlightOpenAlert {
-    background-color: #98fb98;
+    /*background-color: #98fb98;*/
+    font-weight: bold;
 }
 
 .highlightClosedAlert {
-    background-color: #db7093;
+    /*background-color: #db7093;*/
+}
+
+.blueText {
+    color: #0CB3E9;
 }
 
 /* header and footer elements */

@@ -16,13 +16,17 @@
             <form:form action="" method="POST" modelAttribute="alertInfo" enctype="${enctype}">
                 <form:hidden path="type" value="${alertInfo.type}"/>
                 <form:errors cssClass="errors" delimiter="&lt;p/&gt;" />
+                <field:select field="alertStatus" label= "Alert Status" id="s_org_motechproject_tama_alert_alertStatus" required="true" items="${alertStatuses}" path="/alertStatuses" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
                 <field:textarea field="notes" label= "Notes" id="s_org_motechproject_tama_alert_notes" required="false" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" />
                 <form:hidden path="alertId" value="${alertInfo.alertId}"/>
+                <form:hidden path="backPage" value="${referrerUrl}" />
                 <div class="submit">
+                    <a id="referrerUrlLink" href="${referrerUrl}">Go Back</a>
                     <spring:message code="button_save" var="save_button" htmlEscape="false" />
                     <script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
                     <input id="proceed" type="submit" value="Save" />
                 </div>
+                <jsp:include page="/WEB-INF/views/alerts/showMessages.jspx"/>
             </form:form>
     </util:panel>
 </div>
