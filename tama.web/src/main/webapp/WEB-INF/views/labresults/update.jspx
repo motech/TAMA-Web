@@ -6,6 +6,7 @@
      xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields"
      xmlns:form="urn:jsptagdir:/WEB-INF/tags/form">
 
+
     <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
     <spring:url value="/resources-${applicationVersion}/images/favicon.ico" var="favicon"/>
@@ -15,12 +16,17 @@
     <spring:url value="/resources-${applicationVersion}/styles/create-lab-result.css" var="create_labresult_css_url"/>
     <link rel="stylesheet" type="text/css" media="screen" href="${create_labresult_css_url}"/>
     <spring:url value="/resources-${applicationVersion}/js/update_labresult.js" var="labresultjs"/>
-    <script src="${labresultjs}" type="text/javascript"></script>
+    <script src="${labresultjs}" type="text/javascript"><!-- This is required for JSP processing. Do not remove this comment --></script>
 
-
+    <jsp:include page="../patients/showPatientPageLinks.jspx">
+        <jsp:param name="patientId" value="${patient.id}" />
+        <jsp:param name="patientInactive" value="${patient.status.inactive}" />
+        <jsp:param name="selectedIndex" value="2"/>
+    </jsp:include>
 
     <form:update id="fu_org_motechproject_tama_web_model_LabResultsUIModel" modelAttribute="labResultsUIModel"
                  path="/labresults" versionField="Version" z="Hk/ZBmhBuKfNYpbIxKEW0r18k4A=">
+
         <div>
             <div id="lab_results_error" class="error"/>
         </div>

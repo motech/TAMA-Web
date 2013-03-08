@@ -142,6 +142,17 @@ body {
 
 #footer a:link {color: #7db223;}
 
+
+.tab-header.tab-selected-true{
+    font-weight: bold;
+}
+
+
+.tab-container{
+    margin-top: 10px;
+    display: inline;
+}
+
 .quicklinks {
 	clear:both; 
 	padding-bottom: 15px

@@ -22,6 +22,12 @@
         });
     </script>
 
+    <jsp:include page="showPatientPageLinks.jspx">
+        <jsp:param name="patientId" value="${patient.id}"/>
+        <jsp:param name="patientInactive" value="${patient.status.inactive}"/>
+        <jsp:param name="selectedIndex" value="1"/>
+    </jsp:include>
+
     <c:if test="${warning != null}">
         <div class="warning">
             <ul>
@@ -42,10 +48,6 @@
         <jsp:include page="showMedicalHistory.jspx"/>
         <jsp:include page="showPatientPreferences.jspx"/>
         <jsp:include page="showTAMAStatus.jspx"/>
-        <jsp:include page="showPatientPageLinks.jspx">
-            <jsp:param name="patientId" value="${patient.id}"/>
-            <jsp:param name="patientInactive" value="${patient.status.inactive}"/>
-        </jsp:include>
     </page:show>
 
 </div>

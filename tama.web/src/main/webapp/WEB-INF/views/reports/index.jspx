@@ -7,6 +7,12 @@
      xmlns:c="http://java.sun.com/jsp/jstl/core"
      version="2.0">
 
+    <jsp:include page="../patients/showPatientPageLinks.jspx">
+        <jsp:param name="patientId" value="${report.patient.id}" />
+        <jsp:param name="patientInactive" value="${report.patient.status.inactive}" />
+        <jsp:param name="selectedIndex" value="3"/>
+    </jsp:include>
+
     <spring:url value="/patients/${report.patientDocId}" var="patient_form_url"/>
     <spring:url value="/patients/summary/${report.patientDocId}" var="patient_summary"><!-- required--> </spring:url>
 
@@ -28,10 +34,5 @@
                 <div class="bold"><br/>No Reports to generate.<br/><br/></div>
             </c:otherwise>
         </c:choose>
-        <br />
-        <jsp:include page="../patients/showPatientPageLinks.jspx">
-            <jsp:param name="patientId" value="${report.patient.id}" />
-            <jsp:param name="patientInactive" value="${report.patient.status.inactive}" />
-        </jsp:include>
     </util:panel>
 </div>

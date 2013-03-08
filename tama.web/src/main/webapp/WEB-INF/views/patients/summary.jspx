@@ -23,6 +23,12 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="${patient_summary_css}"></link>
 
+    <jsp:include page="showPatientPageLinks.jspx">
+        <jsp:param name="patientId" value="${patient.id}" />
+        <jsp:param name="patientInactive" value="${patient.status.inactive}" />
+        <jsp:param name="selectedIndex" value="0"/>
+    </jsp:include>
+
     <c:if test="${patient.warning != null}">
         <div class="warning">
             <ul>
@@ -67,10 +73,6 @@
                 <div style="clear:both"></div>
             </util:panel>
         </div>
-        <jsp:include page="showPatientPageLinks.jspx">
-            <jsp:param name="patientId" value="${patient.id}" />
-            <jsp:param name="patientInactive" value="${patient.status.inactive}" />
-        </jsp:include>
         <jsp:include page="showSymptomTimeline.jspx" />
         <jsp:include page="showAdherenceOverTime.jspx" />
         <jsp:include page="showCD4CountOverTime.jspx" />

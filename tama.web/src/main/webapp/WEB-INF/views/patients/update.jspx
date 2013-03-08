@@ -15,6 +15,12 @@
     <spring:url value="/resources-${applicationVersion}/styles/create-patient.css" var="create_patient_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${create_patient_css_url}"></link>
 
+    <jsp:include page="showPatientPageLinks.jspx">
+        <jsp:param name="patientId" value="${patient.id}" />
+        <jsp:param name="patientInactive" value="${patient.status.inactive}" />
+        <jsp:param name="selectedIndex" value="1"/>
+    </jsp:include>
+
     <c:if test="${patientInsertError != null}">
         <div class="errorBanner"> <c:out value="${patientInsertError}"/> </div>
     </c:if>

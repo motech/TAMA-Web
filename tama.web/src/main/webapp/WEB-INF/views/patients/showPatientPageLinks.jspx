@@ -3,22 +3,22 @@
      xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" version="2.0">
     <spring:url value="/patients/summary/${param.patientId}" var="patient_dashboard"><!-- required--> </spring:url>
-    <div style="margin-top: 10px;display: inline;"><a id="patient_dashboard" href="${patient_dashboard}">Patient Dashboard</a></div>
+    <div class="tab-container"><a class="tab-header tab-selected-${param.selectedIndex == 0}" id="patient_dashboard" href="${patient_dashboard}">Patient Dashboard</a></div>
     |
     <spring:url value="/patients/${param.patientId}" var="patient_registration_details"><!-- required--> </spring:url>
-    <div style="margin-top: 10px;display: inline;"><a id="patient_registration_details" href="${patient_registration_details}">Patient Registration Details</a></div>
+    <div class="tab-container"><a class="tab-header tab-selected-${param.selectedIndex == 1}" id="patient_registration_details" href="${patient_registration_details}">Patient Registration Details</a></div>
     |
     <c:choose>
         <c:when test="${not param.patientInactive}">
             <spring:url value="/clinicvisits/list" var="clinic_visits_url">
                 <spring:param name="patientId" value="${param.patientId}"/>
             </spring:url>
-            <div style="margin-top: 10px;display: inline;"><a id="clinic_visits" href="${clinic_visits_url}">Clinic Visits / Appointment Details</a></div>
+            <div class="tab-container"><a id="clinic_visits" class="tab-header tab-selected-${param.selectedIndex == 2}" href="${clinic_visits_url}">Clinic Visits / Appointment Details</a></div>
              |
         </c:when>
     </c:choose>
     <spring:url value="/patients/${param.patientId}/reports" var="reports_url"><!-- required--> </spring:url>
-    <div style="margin-top: 10px;display: inline;"><a id="reports_link" href="${reports_url}">Reports</a></div>
+    <div class="tab-container"><a id="reports_link" class="tab-header tab-selected-${param.selectedIndex == 3}" href="${reports_url}">Reports</a></div>
     <br/>
     <br/>
 </div>

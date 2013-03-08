@@ -9,6 +9,12 @@
      xmlns:field="http://www.springframework.org/tags/form"
      xmlns:formfield="urn:jsptagdir:/WEB-INF/tags/form/fields">
 
+    <jsp:include page="../patients/showPatientPageLinks.jspx">
+        <jsp:param name="patientId" value="${patient.id}" />
+        <jsp:param name="patientInactive" value="${patient.status.inactive}" />
+        <jsp:param name="selectedIndex" value="2"/>
+    </jsp:include>
+
     <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
     <spring:url value="/resources-${applicationVersion}/images/favicon.ico" var="favicon"/>

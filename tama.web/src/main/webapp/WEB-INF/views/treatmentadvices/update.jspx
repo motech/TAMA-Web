@@ -6,6 +6,12 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
+    <jsp:include page="../patients/showPatientPageLinks.jspx">
+        <jsp:param name="patientId" value="${patient.id}" />
+        <jsp:param name="patientInactive" value="${patient.status.inactive}" />
+        <jsp:param name="selectedIndex" value="2"/>
+    </jsp:include>
+
     <c:if test="${flashError != null}">
         <div class="error"> <c:out value="${flashError}"/> </div>
     </c:if>
