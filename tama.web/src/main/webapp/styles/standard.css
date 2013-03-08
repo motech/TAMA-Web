@@ -62,12 +62,7 @@ body {
 }
 
 .highlightOpenAlert {
-    /*background-color: #98fb98;*/
     font-weight: bold;
-}
-
-.highlightClosedAlert {
-    /*background-color: #db7093;*/
 }
 
 .blueText {
@@ -104,7 +99,7 @@ body {
 #menu a.selected {
     background: #FFFFFF;
     font-weight:bold;
-    color: #0000FF;
+    color: #0CB3E9;
 }
 
 #menu a, #menu h2 {
