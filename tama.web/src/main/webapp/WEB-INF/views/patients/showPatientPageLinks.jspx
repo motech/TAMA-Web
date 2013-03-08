@@ -5,8 +5,8 @@
     <spring:url value="/patients/summary/${param.patientId}" var="patient_dashboard"><!-- required--> </spring:url>
     <div class="tab-container"><a class="tab-header tab-selected-${param.selectedIndex == 0}" id="patient_dashboard" href="${patient_dashboard}">Patient Dashboard</a></div>
     |
-    <spring:url value="/patients/${param.patientId}" var="patient_registration_details"><!-- required--> </spring:url>
-    <div class="tab-container"><a class="tab-header tab-selected-${param.selectedIndex == 1}" id="patient_registration_details" href="${patient_registration_details}">Patient Registration Details</a></div>
+    <spring:url value="/patients/${param.patientId}/alerts/list/" var="patient_alerts"><!-- required--> </spring:url>
+    <div class="tab-container"><a class="tab-header tab-selected-${param.selectedIndex == 4}" id="patient_alerts" href="${patient_alerts}">Patient Alerts</a></div>
     |
     <c:choose>
         <c:when test="${not param.patientInactive}">

@@ -57,7 +57,7 @@ public class AlertsController extends BaseController {
         PatientAlert patientAlert = patientAlertService.readAlert(id);
 
         initUIModel(uiModel, patientAlert);
-        uiModel.addAttribute("referrerUrl", getReferrerUrl(request)) ;
+        uiModel.addAttribute("referrerUrl", getReferrerUrl(request));
         return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
     }
 
@@ -69,7 +69,7 @@ public class AlertsController extends BaseController {
 
         PatientAlert patientAlert = patientAlertService.readAlert(alertId);
         initUIModel(uiModel, patientAlert);
-        uiModel.addAttribute("referrerUrl", getReferrerUrl(request)) ;
+        uiModel.addAttribute("referrerUrl", getReferrerUrl(request));
         uiModel.addAttribute("alertSaveStatus", isUpdatedSuccessfully.toString());
 
         return "alerts/update" + patientAlert.getAlert().getData().get(PatientAlert.PATIENT_ALERT_TYPE);
@@ -81,9 +81,9 @@ public class AlertsController extends BaseController {
     }
 
     private PatientAlerts getFilteredAlerts(AlertFilter filter, String clinicId) {
-        if (filter.getAlertStatus().equals(AlertFilter.STATUS_OPEN)) {
+        if (AlertFilter.STATUS_OPEN.equals(filter.getAlertStatus())) {
             return patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
-        } else if (filter.getAlertStatus().equals(AlertFilter.STATUS_CLOSED)) {
+        } else if (AlertFilter.STATUS_CLOSED.equals(filter.getAlertStatus())) {
             return patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
         } else {
             return patientAlertService.getAllAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
@@ -95,7 +95,7 @@ public class AlertsController extends BaseController {
         updateAlert(id, request, TamaAlertStatus.Closed.name());
 
         String referrerUrl = getReferrerUrl(request);
-        return "redirect:" +referrerUrl;
+        return "redirect:" + referrerUrl;
     }
 
     @RequestMapping(value = "**/openAlert/{id}", method = RequestMethod.POST)
@@ -103,19 +103,19 @@ public class AlertsController extends BaseController {
         updateAlert(id, request, TamaAlertStatus.Open.name());
 
         String referrerUrl = getReferrerUrl(request);
-        return "redirect:" +referrerUrl;
+        return "redirect:" + referrerUrl;
     }
 
-    private void updateAlert(String id, HttpServletRequest request, String alert){
+    private void updateAlert(String id, HttpServletRequest request, String alert) {
         patientAlertService.updateAlertStatus(id, loggedInUserId(request), alert);
     }
 
-    private String getReferrerUrl(HttpServletRequest request){
+    private String getReferrerUrl(HttpServletRequest request) {
         String referrerUrl = request.getParameter("backPage");
-        if(StringUtils.isBlank(referrerUrl))
-              referrerUrl = request.getHeader("referer");
+        if (StringUtils.isBlank(referrerUrl))
+            referrerUrl = request.getHeader("referer");
 
-        String baseUrl = String.format(baseUrlFormat,request.getScheme(),  request.getServerName(), request.getServerPort());
+        String baseUrl = String.format(baseUrlFormat, request.getScheme(), request.getServerName(), request.getServerPort());
         referrerUrl = StringUtils.isBlank(referrerUrl) ? baseUrl : referrerUrl;
 
         return referrerUrl;

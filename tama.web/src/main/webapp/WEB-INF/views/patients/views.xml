@@ -20,4 +20,56 @@
     <definition extends="default" name="patients/revive">
         <put-attribute name="body" value="/WEB-INF/views/patients/revive.jspx"/>
     </definition>
+    <definition extends="default" name="patients/alerts/list">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="list" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/showAdherenceInRed">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="showAdherenceInRed" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/showAppointmentReminder">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="showAppointmentReminder" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/showVisitMissed">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="showVisitMissed" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/showAppointmentConfirmationMissed">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="showAppointmentConfirmationMissed" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/showFallingAdherence">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="showFallingAdherence" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/showSymptomReporting">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="showSymptomReporting"  cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/updateAdherenceInRed">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="updateAdherenceInRed" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/updateFallingAdherence">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="updateFallingAdherence" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/updateSymptomReporting">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="updateSymptomReporting" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/updateAppointmentReminder">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="updateAppointmentReminder" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/updateVisitMissed">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="updateVisitMissed" cascade="true"/>
+    </definition>
+    <definition extends="default" name="patients/alerts/updateAppointmentConfirmationMissed">
+        <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
+        <put-attribute name="resourceName" value="updateAppointmentConfirmationMissed" cascade="true"/>
+    </definition>
 </tiles-definitions>

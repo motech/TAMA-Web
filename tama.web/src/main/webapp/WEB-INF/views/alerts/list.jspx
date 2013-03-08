@@ -10,7 +10,7 @@
 
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/alerts/list/filter" var="filter_url"/>
+    <spring:url value="${param.prefix}/alerts/list/filter" var="filter_url"/>
 
     <spring:url value="/resources-${applicationVersion}/js/list_alerts.js" var="list_alerts_js"/>
     <script src="${list_alerts_js}" type="text/javascript"><!--required--></script>
@@ -21,13 +21,13 @@
     <c:if test="${alerts != null}" >
         <div id="_title_pl_org_motechproject_tama_domain_patientalert_id_pane">
             <page:plainlist id="pl_org_motechproject_tama_domain_patientalert" items="${alerts}" labelPlural="Alerts" label="Alert">
-                <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="/alerts"
+                <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="${param.prefix}/alerts"
                              show="false" create="false" update="true" delete="false"
                              typeIdFieldName="alertId" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields"
                              customAction="true"
-                             customActionPath="closeAlert" customActionLabel="Mark Closed"
+                             customActionPath="${param.actionPrefix}/closeAlert" customActionLabel="Mark Closed"
                              customActionCondition="item.opened"
-                             customActionPath2="openAlert" customActionLabel2="Mark Open"
+                             customActionPath2="${param.actionPrefix}/openAlert" customActionLabel2="Mark Open"
                              customActionCondition2="item.closed"
                              show_label="Alert Dashboard">
                     <table:column id="org_motechproject_tama_domain_patientalert" property="patientId" label="Patient ID" />
