@@ -11,6 +11,7 @@ import org.motechproject.tama.ivr.repository.AllSMSLogs;
 import org.motechproject.tama.outbox.domain.OutboxMessageSummary;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxMessageSummaries;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
+import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.web.reportbuilder.DailyPillReminderReportBuilder;
 import org.motechproject.tama.web.reportbuilder.OutboxReportBuilder;
@@ -23,12 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -66,8 +63,11 @@ public class ReportsController {
     }
 
     @RequestMapping(value = "/patients/{patientDocId}/reports", method = RequestMethod.GET)
-    public ModelAndView index(@PathVariable String patientDocId) {
-        return new ModelAndView("reports/index", "report", patientService.getPatientReport(patientDocId));
+    public String index(@PathVariable String patientDocId, Model uiModel) {
+        PatientReport patientReport = patientService.getPatientReport(patientDocId);
+        uiModel.addAttribute("report", patientReport);
+        uiModel.addAttribute("patient", patientReport.getPatient());
+        return "reports/index";
     }
 
 

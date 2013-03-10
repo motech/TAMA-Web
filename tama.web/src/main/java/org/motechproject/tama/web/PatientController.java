@@ -140,9 +140,10 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/revive/{id}")
-    public String revive(@PathVariable String id, Model model) {
+    public String revive(@PathVariable String id, Model model, HttpServletRequest request) {
         List<DoseStatus> doseStatuses = Arrays.asList(DoseStatus.values());
         model.addAttribute("patientId", id);
+        model.addAttribute("patient", allPatients.findByIdAndClinicId(id, loggedInClinic(request)));
         model.addAttribute("pastDosageStatus", doseStatuses);
         return REVIVE_VIEW;
     }

@@ -20,15 +20,13 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.web.service.CallLogExcelReportService;
 import org.motechproject.util.DateUtil;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.ui.Model;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -51,6 +49,8 @@ public class ReportsControllerTest {
     private CallLogExcelReportService callLogExcelReportService;
     @Mock
     private AllSMSLogs allSMSLogs;
+    @Mock
+    private Model uiModel;
 
     private ReportsController reportsController;
 
@@ -74,10 +74,10 @@ public class ReportsControllerTest {
     public void shouldReturnIndexPage() throws IOException {
         String patientDocumentId = "patientDocumentId";
         initializePatientService(patientDocumentId);
-        ModelAndView modelAndView = reportsController.index(patientDocumentId);
+        String view = reportsController.index(patientDocumentId, uiModel);
 
-        assertEquals("reports/index", modelAndView.getViewName());
-        assertNotNull(modelAndView.getModel().get("report"));
+        assertEquals("reports/index", view);
+        verify(uiModel).addAttribute(eq("report"), any(PatientReport.class));
         verify(patientService).getPatientReport(patientDocumentId);
     }
 

@@ -93,6 +93,7 @@ public class PatientAlertsController extends BaseController {
     private AlertFilter initializeFilterForPatient(Patient patient) {
         AlertFilter filter = new AlertFilter();
         filter.setPatientId(patient.getPatientId());
+        filter.setAlertStatus(AlertFilter.STATUS_OPEN);
         return filter;
     }
 

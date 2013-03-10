@@ -48,9 +48,10 @@ public class PatientAlertsControllerTest {
     public void shouldFilterAllAltersForPatient() {
         String patientId = "patientId";
 
+        when(altersController.list(any(AlertFilter.class), eq(uiModel), eq(request))).thenReturn("alerts/list");
         String view = patientAltersController.list(patientId, uiModel, request);
         verify(altersController).list(any(AlertFilter.class), eq(uiModel), eq(request));
-        assertEquals("patients/alerts", view);
+        assertEquals("patients/alerts/list", view);
     }
 
     private void setupSession() {

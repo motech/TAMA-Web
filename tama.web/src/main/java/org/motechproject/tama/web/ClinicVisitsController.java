@@ -109,6 +109,7 @@ public class ClinicVisitsController extends BaseController {
         List<String> warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
         uiModel.addAttribute("patientId", patientDocId);
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
+        uiModel.addAttribute("patient", clinicVisit.getPatient());
         uiModel.addAttribute(PatientController.WARNING, warning);
         labResultsController.createForm(patientDocId, uiModel);
         vitalStatisticsController.createForm(patientDocId, uiModel);
@@ -164,6 +165,7 @@ public class ClinicVisitsController extends BaseController {
         opportunisticInfectionsController.show(clinicVisit, uiModel);
         List<String> warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
+        uiModel.addAttribute("patient", clinicVisit.getPatient());
         uiModel.addAttribute(PatientController.WARNING, warning);
         return "clinicvisits/show";
     }

@@ -6,6 +6,12 @@
      xmlns:c="http://java.sun.com/jsp/jstl/core"
      class="clinic-visit-list">
 
+    <jsp:include page="../patients/showPatientPageLinks.jspx">
+        <jsp:param name="patientId" value="${patient.id}"/>
+        <jsp:param name="patientInactive" value="${patient.status.inactive}"/>
+        <jsp:param name="selectedIndex" value="2"/>
+    </jsp:include>
+
     <c:if test="${warning != null}">
         <div class="warning">
             <ul>
@@ -85,9 +91,6 @@
             </c:forEach>
         </table>
         <br/>
-        <jsp:include page="../patients/showPatientPageLinks.jspx">
-            <jsp:param name="patientId" value="${patient.id}"/>
-            <jsp:param name="patientInactive" value="${patient.status.inactive}"/>
-        </jsp:include>
+
     </util:panel>
 </div>

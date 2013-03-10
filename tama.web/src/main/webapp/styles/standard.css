@@ -109,6 +109,12 @@ body {
 	color:#FFFFFF;
 }
 
+#menu li div.side-information {
+    color: #0CB3E9;
+    font-weight: bold;
+    padding: 2px 12px;
+}
+
 #menu h2 {
 	color: #fff;
 	background: #648C1D;
