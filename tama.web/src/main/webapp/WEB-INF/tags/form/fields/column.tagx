@@ -10,7 +10,7 @@
   <jsp:directive.attribute name="dateTimePattern" type="java.lang.String" required="false" rtexprvalue="true" description="The date / time pattern to use if the field is a date or calendar type" />
   <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
   <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
-  <jsp:directive.attribute name="hyperlink" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Include 'hyper link' to view page" />
+  <jsp:directive.attribute name="url" type="java.lang.String" required="false" rtexprvalue="true" description="The column will be rendered as a hyperlink pointing the url backed by this property." />
 
 
     <c:if test="${empty render or render}">
@@ -22,9 +22,20 @@
       <c:set value="MM/dd/yyyy" var="dateTimePattern" />
     </c:if>
 
-    <c:if test="${hyperlink}">
-        <c:set var="columnHyperlinks" value="true" scope="request"/>
-    </c:if>
+    <c:choose>
+        <c:when test="${url ne null and empty columnUrls}">
+            <c:set var="columnUrls" value="${url}" scope="request"/>
+        </c:when>
+        <c:when test="${url ne null and not empty columnUrls}">
+            <c:set var="columnUrls" value="${columnUrls},${url}" scope="request"/>
+        </c:when>
+        <c:when test="${empty columnUrls}">
+            <c:set var="columnUrls" value="none" scope="request"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="columnUrls" value="${columnUrls},none" scope="request"/>
+        </c:otherwise>
+    </c:choose>
       
     <c:choose>
       <c:when test="${date and empty columnTypes}">

@@ -5,8 +5,6 @@ import org.motechproject.tama.patient.domain.Status;
 
 public class ListPatientViewModel extends Patient {
 
-    private Patient patient;
-
     public ListPatientViewModel(Patient patient) {
         this.setId(patient.getId());
         this.setDateOfBirth(patient.getDateOfBirth());
@@ -20,7 +18,7 @@ public class ListPatientViewModel extends Patient {
     }
 
     public Patient getPatient() {
-        return patient;
+        return this;
     }
 
     public boolean isActivateEnabled() {
@@ -29,5 +27,9 @@ public class ListPatientViewModel extends Patient {
 
     public boolean isReviveEnabled() {
         return (getStatus().equals(Status.Temporary_Deactivation) || getStatus().equals(Status.Suspended));
+    }
+
+    public String getPatientSummaryLink() {
+        return "patients/summary/"+getId();
     }
 }

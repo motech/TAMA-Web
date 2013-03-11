@@ -31,6 +31,7 @@
     <c:set var="columnMaxLengths" scope="request" />
     <c:set var="columnTypes" scope="request" />
     <c:set var="columnDatePatterns" scope="request" />
+    <c:set var="columnUrls" scope="request"/>
 
     <jsp:doBody />
 
@@ -38,6 +39,7 @@
     <c:set var="lengths" value="${fn:split(columnMaxLengths, ',')}" scope="request" />
     <c:set var="types" value="${fn:split(columnTypes, ',')}" scope="request" />
     <c:set var="patterns" value="${fn:split(columnDatePatterns, ',')}" scope="request" />
+    <c:set var="urls" value="${fn:split(columnUrls, ',')}" scope="request" />
 
     <c:if test="${empty typeIdFieldName}">
       <c:set var="typeIdFieldName" value="id" />
@@ -91,6 +93,7 @@
             <c:set var="columnMaxLength" value="${lengths[num.count-1]}" />
             <c:set var="columnType" value="${types[num.count-1]}" />
             <c:set var="columnDatePattern" value="${patterns[num.count-1]}" />
+            <c:set var="columnUrl" value="${urls[num.count-1]}" />
             <td>
               <c:choose>
                 <c:when test="${columnType eq 'date'}">
@@ -107,22 +110,21 @@
                   <spring:eval expression="item[column]" var="colTxt"/>
                 </c:otherwise>
               </c:choose>
+
+              <c:if test="${ columnMaxLength gt 0 and fn:length(fn:toLowerCase(colTxt)) gt columnMaxLength}">
+                <c:set var="colTxt" value="${fn:substring(colTxt, 0, columnMaxLength - 4)}..."/>
+              </c:if>
+
               <c:choose>
-                <c:when test="${columnMaxLength lt 0}">
-                  <c:out value="${colTxt}" />
-                </c:when>
-                <c:otherwise>
-                    <c:choose>
-                        <c:when test="${fn:length(fn:toLowerCase(colTxt)) gt columnMaxLength}">
-                            <c:out value="${fn:substring(colTxt, 0, columnMaxLength - 4)}" />
-                            <c:out value=" ..."/>
-                        </c:when>
-                        <c:otherwise>
-                            <c:out value="${colTxt}" />
-                        </c:otherwise>
-                    </c:choose>
-                </c:otherwise>
+                  <c:when test="${not empty columnUrl and columnUrl != 'none'}">
+                      <a href="${item[columnUrl]}"> ${colTxt} </a>
+                  </c:when>
+                  <c:otherwise>
+                      <c:out value="${colTxt}" />
+                  </c:otherwise>
               </c:choose>
+
+
             </td>
           </c:forTokens>
           <c:set var="itemId"><spring:eval expression="item[typeIdFieldName]"/></c:set>
