@@ -17,6 +17,7 @@
   <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
 
   <jsp:directive.attribute name="customAction" type="java.lang.Boolean" required="false" rtexprvalue="true" description="" />
+  <jsp:directive.attribute name="customActionHeader" type="java.lang.String" required="false" rtexprvalue="true" description="" />
   <jsp:directive.attribute name="customActionPath" type="java.lang.String" required="false" rtexprvalue="true" description="" />
   <jsp:directive.attribute name="customActionLabel" type="java.lang.String" required="false" rtexprvalue="true" description="" />
   <jsp:directive.attribute name="customActionCondition" type="java.lang.String" required="false" rtexprvalue="true" description="" />
@@ -76,7 +77,11 @@
               <spring:eval var="colCounter" expression="colCounter  + 1" />
             </th>
           </c:forTokens>
-          <th></th>
+
+          <c:if test="${customAction}">
+              <th><c:out value="${customActionHeader}" /></th>
+          </c:if>
+
           <c:if test="${update}">
             <th></th>
             <spring:eval var="colCounter" expression="colCounter  + 1" />

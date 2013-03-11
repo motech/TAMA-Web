@@ -17,7 +17,7 @@
         </c:if>
 
         <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients/summary"
-                     z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE=" customAction="true"
+                     z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE=" customAction="true" customActionHeader="Actions"
                      customActionPath="patients/activate" customActionLabel="Activate"
                      customActionCondition="item.activateEnabled"
                      customActionPath2="patients/revive" customActionLabel2="Reactivate"
