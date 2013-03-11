@@ -5,6 +5,7 @@ import org.joda.time.LocalDate;
 import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientEventLog;
 import org.motechproject.tama.patient.domain.Status;
@@ -21,6 +22,7 @@ import java.util.List;
 
 public class PatientSummary {
 
+    public static final String NOT_APPLICABLE = "NA";
     private Patient patient;
     private TreatmentAdvice earliestTreatmentAdvice, currentTreatmentAdvice;
     private Regimen currentRegimen;
@@ -126,11 +128,12 @@ public class PatientSummary {
     }
 
     public String getBestCallTime() {
-        return patient.getBestCallTime().toString();
+        TimeOfDay bestCallTime = patient.getBestCallTime();
+        return (null == bestCallTime || patient.isOnDailyPillReminder()) ? NOT_APPLICABLE : bestCallTime.toString();
     }
 
     public String getDayOfWeeklyCall() {
         DayOfWeek dayOfWeeklyCall = patient.getDayOfWeeklyCall();
-        return dayOfWeeklyCall == null ? StringUtils.EMPTY : patient.getDayOfWeeklyCall().name();
+        return dayOfWeeklyCall == null ? NOT_APPLICABLE : patient.getDayOfWeeklyCall().name();
     }
 }

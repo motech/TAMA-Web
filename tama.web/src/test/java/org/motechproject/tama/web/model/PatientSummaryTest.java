@@ -18,7 +18,7 @@ public class PatientSummaryTest {
     @Test
     public void shouldHaveBestCallTime() {
         TimeOfDay bestCallTime = new TimeOfDay(10, 10, TimeMeridiem.AM);
-        Patient patient = PatientBuilder.startRecording().withDefaults().withBestCallTime(bestCallTime).build();
+        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).withBestCallTime(bestCallTime).build();
         PatientSummary patientSummary = new PatientSummary(patient, null, null, null, null, Collections.<PatientEventLog>emptyList(), 10d, null);
 
         assertEquals("10:10 AM", patientSummary.getBestCallTime());
@@ -33,11 +33,19 @@ public class PatientSummaryTest {
     }
 
     @Test
-    public void shouldHaveEmptyDayOfPreferenceForDailyPillReminderPatient() {
+    public void shouldHaveNAAsDayOfPreferenceForDailyPillReminderPatient() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         PatientSummary patientSummary = new PatientSummary(patient, null, null, null, null, Collections.<PatientEventLog>emptyList(), 10d, null);
 
-        assertEquals("", patientSummary.getDayOfWeeklyCall());
+        assertEquals("NA", patientSummary.getDayOfWeeklyCall());
+    }
+
+    @Test
+    public void shouldReturnNAAsBestCallTimeForPatientOnDailyPillReminder() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withBestCallTime(null).build();
+        PatientSummary patientSummary = new PatientSummary(patient, null, null, null, null, Collections.<PatientEventLog>emptyList(), 10d, null);
+
+        assertEquals("NA", patientSummary.getBestCallTime());
     }
 
     @Test
