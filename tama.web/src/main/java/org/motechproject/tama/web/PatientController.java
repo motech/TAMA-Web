@@ -136,6 +136,7 @@ public class PatientController extends BaseController {
         patientPreferences.setCallPreference(CallPreference.DailyPillReminder);
         patient.setPatientPreferences(patientPreferences);
         initUIModel(uiModel, patient);
+        uiModel.addAttribute("selectedMenuItem","NEW_PATIENT");
         return CREATE_VIEW;
     }
 
@@ -222,6 +223,7 @@ public class PatientController extends BaseController {
             listPatientViewModels.add(listPatientViewModel);
         }
         uiModel.addAttribute(PATIENTS, listPatientViewModels);
+        uiModel.addAttribute("selectedMenuItem","ALL_PATIENTS");
         addDateTimeFormat(uiModel);
         return LIST_VIEW;
     }

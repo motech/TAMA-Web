@@ -34,6 +34,7 @@ public class AlertsController extends BaseController {
         final String clinicId = loggedInClinic(request);
         uiModel.addAttribute("alerts", getFilteredAlerts(allAlertsFilter, clinicId));
         uiModel.addAttribute("alertFilter", allAlertsFilter);
+        uiModel.addAttribute("selectedMenuItem","ALL_ALERTS");
         return "alerts/list";
     }
 
@@ -42,6 +43,7 @@ public class AlertsController extends BaseController {
         final String clinicId = loggedInClinic(request);
         uiModel.addAttribute("alerts", getFilteredAlerts(filter, clinicId));
         uiModel.addAttribute("alertFilter", filter);
+        uiModel.addAttribute("selectedMenuItem","ALL_ALERTS");
         return "alerts/list";
     }
 

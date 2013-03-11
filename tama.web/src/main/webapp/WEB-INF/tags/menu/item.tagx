@@ -6,6 +6,7 @@
   <jsp:directive.attribute name="label" type="java.lang.String" required="false" rtexprvalue="true" description="The label used for this menu item" />
   <jsp:directive.attribute name="messageCode" type="java.lang.String" required="false" rtexprvalue="true" description="The global message code to be used (works in conjunction with label)" />
   <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+  <jsp:directive.attribute name="selected" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the item is selected in the menu" />
   <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
 
   <c:if test="${empty render or render}">
@@ -18,9 +19,16 @@
       <spring:message code="${messageCode}" var="label" arguments="${label}" htmlEscape="false" />
     </c:if>
 
+
+    <c:choose>
+        <c:when test="${selected}">
+            <spring:message text="selected" var="selectedClass" htmlEscape="false"/>
+        </c:when>
+    </c:choose>
+
     <li id="${fn:escapeXml(id)}">
       <spring:url value="${url}" var="menu_item_url"/>
-      <a href="${menu_item_url}" title="${fn:escapeXml(label)}">
+      <a href="${menu_item_url}" title="${fn:escapeXml(label)}" class="${selectedClass}">
         <c:out value="${label}"/>
       </a>
     </li>
