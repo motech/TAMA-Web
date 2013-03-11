@@ -19,8 +19,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <util:panel id="report" title="Reports" openPane="true">
-        <field:display field="patientId" label="Patient Id" id="patientSummaryPatientId" object="${report}"/>
-        <field:display field="clinicName" label="Clinic Name" id="patientSummaryClinicName" object="${report}"/>
+        <jsp:include page="../patients/showSummary.jspx"/>
         <c:choose>
             <c:when test="${report.canBeGenerated}">
                 <field:display date="true" dateTimePattern="MMM dd, yyyy" field="ARTStartedOn" label="ART Started On" id="patientSummaryARTStartDate" object="${report}"/>

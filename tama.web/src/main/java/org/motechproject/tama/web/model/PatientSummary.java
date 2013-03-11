@@ -68,10 +68,18 @@ public class PatientSummary {
     }
 
     public Date getDateOfBirth() {
+        return getDateOfBirthAsDate();
+    }
+
+    public Date getDateOfBirthAsDate() {
         return patient.getDateOfBirthAsDate();
     }
 
     public Date getRegistrationDate() {
+        return getRegistrationDateAsDate();
+    }
+
+    public Date getRegistrationDateAsDate() {
         return patient.getRegistrationDateAsDate();
     }
 

@@ -35,9 +35,7 @@
     </spring:url>
 
     <util:panel id="clinicVisitListPanel" title="Clinic Visits / Appointment Details" openPane="true">
-        <br/>
-        <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
-        <br/>
+        <jsp:include page="../patients/showSummary.jspx"/>
         <spring:url value="/clinicvisits/newVisit" var="create_visit_url">
             <spring:param name="patientDocId" value="${patient.id}"/>
         </spring:url>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div class='show_patient_summary'
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     version="2.0">
+
+    <util:panel id="fc_org_motechproject_tama_domain_patient_Patient_Summary" title="Patient Summary" openPane="true" update="false">
+        <table id="fc_org_motechproject_tama_domain_patient_Patient_Summary">
+        <thead>
+            <tr>
+                <th>Patient Id</th>
+                <th>Mobile Phone Number</th>
+                <th>Date of Birth</th>
+                <th>Gender</th>
+                <th>Registration Date</th>
+                <th>Current Status</th>
+            </tr>
+        </thead>
+        <tr>
+            <td><spring:eval expression="patient.patientId"/></td>
+            <td><spring:eval expression="patient.mobilePhoneNumber"/></td>
+            <td><fmt:formatDate value="${patient.dateOfBirthAsDate}" type="both" pattern="dd/MM/yyyy" /></td>
+            <td><spring:eval expression="patient.gender"/></td>
+            <td><fmt:formatDate value="${patient.registrationDateAsDate}" type="both" pattern="dd/MM/yyyy" /></td>
+            <td><spring:eval expression="patient.status"/></td>
+        </tr>
+        </table>
+
+    </util:panel>
+</div>

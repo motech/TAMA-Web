@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:tiles="http://tiles.apache.org/tags-tiles">
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:tiles="http://tiles.apache.org/tags-tiles"  xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <jsp:include page="../showPatientPageLinks.jspx">
         <jsp:param name="patientId" value="${patient.id}" />
         <jsp:param name="patientInactive" value="${patient.status.inactive}" />
         <jsp:param name="selectedIndex" value="4"/>
     </jsp:include>
+
+    <tiles:useAttribute id="showPatientSummary" name="showPatientSummary"/>
+    <c:if test="${showPatientSummary}">
+        <jsp:include page="../showSummary.jspx"/>
+    </c:if>
+
 
     <tiles:useAttribute id="resourceName" name="resourceName"/>
     <jsp:include page="../../alerts/${resourceName}.jspx">

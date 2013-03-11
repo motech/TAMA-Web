@@ -44,6 +44,7 @@
 
     <page:show id="ps_org_motechproject_tama_domain_patient" object="${patient}" path="/patients" create="false"
                list="false" delete="false" update="false" label="Patient Registration Details">
+        <jsp:include page="showSummary.jspx"/>
         <jsp:include page="showBasicInformation.jspx"/>
         <jsp:include page="showMedicalHistory.jspx"/>
         <jsp:include page="showPatientPreferences.jspx"/>

@@ -23,6 +23,7 @@
     <definition extends="default" name="patients/alerts/list">
         <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
         <put-attribute name="resourceName" value="list" cascade="true"/>
+        <put-attribute name="showPatientSummary" value="true" cascade="true"/>
     </definition>
     <definition extends="default" name="patients/alerts/showAdherenceInRed">
         <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
