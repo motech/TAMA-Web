@@ -8,9 +8,12 @@ import org.motechproject.server.alerts.domain.Alert;
 import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.server.alerts.domain.AlertType;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
+
+import static junit.framework.Assert.assertEquals;
 
 public class PatientAlertTest {
 
@@ -77,4 +80,15 @@ public class PatientAlertTest {
         patientAlert.setAlert(alert);
         Assert.assertEquals("n/a", patientAlert.getAlertPriority());
     }
+
+    @Test
+    public void shouldReturnPatientSummaryLink() {
+        PatientAlert patientAlert = new PatientAlert();
+        Patient patient = PatientBuilder.startRecording().withId("id").build();
+        patientAlert.setPatient(patient);
+
+        String patientSummaryLink = patientAlert.getPatientSummaryLink();
+        assertEquals("patients/summary/id", patientSummaryLink);
+    }
+
 }

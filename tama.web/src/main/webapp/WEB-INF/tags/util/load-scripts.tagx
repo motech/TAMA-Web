@@ -11,6 +11,9 @@
   <spring:url value="/resources-${applicationVersion}/spring/Spring.js" var="spring_url" />
   <spring:url value="/resources-${applicationVersion}/spring/Spring-Dojo.js" var="spring_dojo_url" />
   <spring:url value="/resources-${applicationVersion}/images/favicon.ico" var="favicon" />
+  <spring:url value="/resources-${applicationVersion}/js/utils.js" var="utilsjs" />
+  <spring:url value="/resources-${applicationVersion}/js/common.js" var="commonjs" />
+
   <link rel="stylesheet" type="text/css" href="${tundra_url}"><!-- required for FF3 and Opera --></link>
   <link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}"><!-- required for FF3 and Opera --></link>
   <link rel="SHORTCUT ICON" href="${favicon}" />
@@ -25,11 +28,9 @@
   <script src="${dojo_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
   <script src="${spring_url}" type="text/javascript"><!-- /required for FF3 and Opera --></script>
   <script src="${spring_dojo_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
-  <spring:url value="/resources-${applicationVersion}/js/utils.js" var="utilsjs" />
-  <spring:url value="/resources-${applicationVersion}/js/menuSelection.js" var="menuselectionjs" />
 
-  <script src="${menuselectionjs}" type="text/javascript"><!-- required for FF3 and Opera --></script>
   <script src="${utilsjs}" type="text/javascript"><!-- required for FF3 and Opera --></script>
+  <script src="${commonjs}" type="text/javascript"><!-- required for FF3 and Opera --></script>
 
   <script language="JavaScript" type="text/javascript">dojo.require("dojo.parser");</script>
 

@@ -7,8 +7,6 @@
 
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    <spring:url value="/resources-${applicationVersion}/js/list_patients.js" var="list_patients_js"/>
-    <script src="${list_patients_js}" type="text/javascript"/>
 
     <page:list id="pl_org_motechproject_tama_domain_patient" items="${patients}" z="L3I+a9K75zBL/mAhB/RvaBuiT6g=">
 
@@ -17,11 +15,7 @@
         </c:if>
 
         <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients/summary"
-                     z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE=" customAction="true" customActionHeader="Actions"
-                     customActionPath="patients/activate" customActionLabel="Activate"
-                     customActionCondition="item.activateEnabled"
-                     customActionPath2="patients/revive" customActionLabel2="Reactivate"
-                     customActionCondition2="item.reviveEnabled"
+                     z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE="
                      create="false" update="false" delete="false" show_label="Patient Dashboard">
             <table:column id="c_org_motechproject_tama_domain_patient_patientId" property="patientId"
                           z="4I1LBMUNYSxNw1zomaU2BkBlauc=" url="patientSummaryLink"/>
@@ -36,6 +30,7 @@
                           id="c_org_motechproject_tama_domain_patient_registrationDate"
                           property="registrationDateAsDate" z="user-managed"/>
             <table:column id="c_org_motechproject_tama_domain_patient_status" property="status" z="user-managed"/>
+            <table:column id="c_org_motechproject_tama_domain_patient_action" property="statusAction" actionUrl="statusActionUrl" z="user-managed"/>
         </table:table>
 
     </page:list>

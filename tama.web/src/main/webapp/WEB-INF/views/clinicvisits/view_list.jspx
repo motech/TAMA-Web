@@ -36,9 +36,7 @@
     </spring:url>
 
     <util:panel id="clinicVisitListPanel" title="Clinic Visits / Appointment Details" openPane="true">
-        <br/>
-        <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}"/>
-        <br/>
+        <jsp:include page="../patients/showSummary.jspx"/>
 
         <div style="margin-bottom: 10px">
             <a id="downloadAppointmentCalendarAsExcelLink" href="${clinic_visits_excel_download_url}">Download Appointment Calendar as Excel</a>

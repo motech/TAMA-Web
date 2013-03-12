@@ -4,10 +4,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
+import org.motechproject.tama.web.model.PatientViewModel;
 import org.motechproject.tama.web.view.AlertFilter;
 import org.springframework.ui.Model;
 
@@ -31,13 +33,15 @@ public class PatientAlertsControllerTest {
     private AllPatients allPatients;
 
     private Patient patient;
+    private PatientViewModel patientViewModel;
 
     private PatientAlertsController patientAltersController;
 
     @Before
     public void setup() {
         initMocks(this);
-        patient = new Patient();
+        patient = PatientBuilder.startRecording().withDefaults().withId("id").build();
+        patientViewModel = new PatientViewModel(patient);
 
         when(allPatients.findByIdAndClinicId(anyString(), anyString())).thenReturn(patient);
         setupSession();
@@ -64,6 +68,6 @@ public class PatientAlertsControllerTest {
 
     @After
     public void tearDown() {
-        verify(uiModel).addAttribute("patient", patient);
+        verify(uiModel).addAttribute("patient", patientViewModel);
     }
 }

@@ -3,6 +3,7 @@
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      xmlns:spring="http://www.springframework.org/tags"
      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:form="http://www.springframework.org/tags/form"
      version="2.0">
 
     <util:panel id="fc_org_motechproject_tama_domain_patient_Patient_Summary" title="Patient Summary" openPane="true" update="false">
@@ -10,11 +11,12 @@
         <thead>
             <tr>
                 <th>Patient Id</th>
-                <th>Mobile Phone Number</th>
+                <th>Phone</th>
                 <th>Date of Birth</th>
                 <th>Gender</th>
                 <th>Registration Date</th>
                 <th>Current Status</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tr>
@@ -24,6 +26,12 @@
             <td><spring:eval expression="patient.gender"/></td>
             <td><fmt:formatDate value="${patient.registrationDateAsDate}" type="both" pattern="dd/MM/yyyy" /></td>
             <td><spring:eval expression="patient.status"/></td>
+            <td>
+                <spring:url value="${patient.statusActionUrl}/${patient.id}" var="custom_action_form_url"/>
+                <form:form action="${custom_action_form_url}" method="POST">
+                    <a class="post_anchor" href="#">${patient.statusAction}</a>
+                </form:form>
+            </td>
         </tr>
         </table>
 

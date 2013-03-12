@@ -16,6 +16,7 @@ import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
+import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
 import org.motechproject.tama.ivr.service.AdherenceService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -35,6 +36,7 @@ import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.model.DoseStatus;
 import org.motechproject.tama.web.model.PatientSummary;
+import org.motechproject.tama.web.model.PatientViewModel;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -315,6 +317,8 @@ public class PatientControllerTest {
         public void shouldRenderShowPage_WhenPatientBelongsToClinic() {
             when(request.getSession()).thenReturn(session);
             Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withStatus(Status.Active).build();
+            PatientViewModel patientViewModel = new PatientViewModel(patient);
+
             when(allPatients.findByIdAndClinicId(PATIENT_ID, patient.getClinic_id())).thenReturn(patient);
             when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
@@ -325,7 +329,7 @@ public class PatientControllerTest {
             assertEquals("patients/show", returnPage);
 
             verify(uiModel).addAttribute(PatientController.DATE_OF_BIRTH_FORMAT, DateTimeFormat.patternForStyle("S-", LocaleContextHolder.getLocale()));
-            verify(uiModel).addAttribute(PatientController.PATIENT, patient);
+            verify(uiModel).addAttribute(PatientController.PATIENT, patientViewModel);
             verify(uiModel).addAttribute(PatientController.ITEM_ID, PATIENT_ID);
             verify(uiModel).addAttribute(PatientController.DEACTIVATION_STATUSES, Status.deactivationStatuses());
             verify(uiModel).addAttribute(eq(PatientController.WARNING), anyString());
@@ -346,11 +350,14 @@ public class PatientControllerTest {
         @Test
         public void shouldGoToPatientSummaryPage_WhenPatientViewedFromListPatientPage() {
             Patient patient = mock(Patient.class);
+            Clinic clinic = mock(Clinic.class);
 
             when(request.getSession()).thenReturn(session);
             when(user.getClinicId()).thenReturn(CLINIC_ID);
             when(patient.getId()).thenReturn(PATIENT_ID);
             when(patient.getStatus()).thenReturn(Status.Inactive);
+            when(patient.getGender()).thenReturn(Gender.newGender("male"));
+            when(patient.getClinic()).thenReturn(clinic);
             when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.earliestTreatmentAdvice(PATIENT_ID)).thenReturn(null);

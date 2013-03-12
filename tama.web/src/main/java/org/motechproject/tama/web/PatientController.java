@@ -24,7 +24,7 @@ import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 import org.motechproject.tama.web.model.DoseStatus;
 import org.motechproject.tama.web.model.IncompletePatientDataWarning;
-import org.motechproject.tama.web.model.ListPatientViewModel;
+import org.motechproject.tama.web.model.PatientViewModel;
 import org.motechproject.tama.web.model.PatientSummary;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +56,7 @@ public class PatientController extends BaseController {
     public static final String LIST_VIEW = "patients/list";
     public static final String UPDATE_VIEW = "patients/update";
     private static final String REVIVE_VIEW = "patients/revive";
+    private static final String DEACTIVATE_VIEW = "patients/deactivate";
     public static final String REDIRECT_TO_LIST_VIEW = "redirect:/patients";
     public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/patients/";
     public static final String REDIRECT_TO_SUMMARY_VIEW = "redirect:/patients/summary/";
@@ -129,6 +130,15 @@ public class PatientController extends BaseController {
         return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/deactivate/{id}")
+    public String redirectToDeactivatePage(@PathVariable String id, Model model,  HttpServletRequest request) {
+        model.addAttribute("patientId", id);
+        model.addAttribute("patient", allPatients.findByIdAndClinicId(id, loggedInClinic(request)));
+        model.addAttribute(DEACTIVATION_STATUSES, Status.deactivationStatuses());
+        model.addAttribute("prefix", "/patients");
+        return DEACTIVATE_VIEW;
+    }
+
     @RequestMapping(params = "form", method = RequestMethod.GET)
     public String createForm(Model uiModel) {
         Patient patient = new Patient();
@@ -177,7 +187,7 @@ public class PatientController extends BaseController {
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         if (patient == null) return "authorizationFailure";
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
-        uiModel.addAttribute(PATIENT, patient);
+        uiModel.addAttribute(PATIENT, new PatientViewModel(patient));
         uiModel.addAttribute(ITEM_ID, id);  // TODO: is this even used?
         uiModel.addAttribute(DEACTIVATION_STATUSES, Status.deactivationStatuses());
         uiModel.addAttribute(WARNING, warning);
@@ -198,7 +208,7 @@ public class PatientController extends BaseController {
         ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patient.getId());
         Double runningAdherencePercentage = getRunningAdherencePercentage(patient);
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
-        PatientSummary patientSummary = new PatientSummary(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen,
+        PatientSummary patientSummary = new PatientSummary(new PatientViewModel(patient), earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen,
                 clinicVisits, patientStatusChangeHistory, runningAdherencePercentage, warning);
         //Do not change name of form bean - currently used by graphs to get data.
         //TODO : Change <graph>.jspx partials to accept patient form bean name as parameter/variable.
@@ -217,9 +227,9 @@ public class PatientController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model uiModel, HttpServletRequest request) {
         String clinicId = loggedInClinic(request);
-        List<ListPatientViewModel> listPatientViewModels = new ArrayList<ListPatientViewModel>();
+        List<PatientViewModel> listPatientViewModels = new ArrayList<PatientViewModel>();
         for (Patient patient : allPatients.findByClinic(clinicId)) {
-            ListPatientViewModel listPatientViewModel = new ListPatientViewModel(patient);
+            PatientViewModel listPatientViewModel = new PatientViewModel(patient);
             listPatientViewModels.add(listPatientViewModel);
         }
         uiModel.addAttribute(PATIENTS, listPatientViewModels);

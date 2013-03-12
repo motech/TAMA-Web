@@ -2,6 +2,7 @@ package org.motechproject.tama.web;
 
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.tama.web.model.PatientViewModel;
 import org.motechproject.tama.web.view.AlertFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -98,6 +99,6 @@ public class PatientAlertsController extends BaseController {
     }
 
     private void setPatientInModel(Model uiModel, Patient patient) {
-        uiModel.addAttribute("patient", patient);
+        uiModel.addAttribute("patient", new PatientViewModel(patient));
     }
 }

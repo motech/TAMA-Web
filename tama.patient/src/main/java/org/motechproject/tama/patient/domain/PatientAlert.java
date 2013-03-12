@@ -49,6 +49,10 @@ public class PatientAlert {
         return this.patient.getPatientId();
     }
 
+    public String getPatientSummaryLink() {
+        return "patients/summary/"+this.patient.getId();
+    }
+
     public String getPatientPhoneNumber() {
         return this.patient.getMobilePhoneNumber();
     }

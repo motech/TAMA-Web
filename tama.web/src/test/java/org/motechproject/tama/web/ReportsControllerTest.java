@@ -14,6 +14,8 @@ import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportS
 import org.motechproject.tama.ivr.repository.AllSMSLogs;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxMessageSummaries;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
@@ -62,6 +64,9 @@ public class ReportsControllerTest {
 
     private void initializePatientService(String patientDocumentId) {
         PatientReport patientReport = mock(PatientReport.class);
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId("id").build();
+
+        when(patientReport.getPatient()).thenReturn(patient);
         when(patientService.getPatientReport(patientDocumentId)).thenReturn(patientReport);
         when(patientReport.getARTStartedOn()).thenReturn(DateUtil.today().toDate());
         when(patientReport.getPatientId()).thenReturn("patientId");

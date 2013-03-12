@@ -20,6 +20,9 @@
     <definition extends="default" name="patients/revive">
         <put-attribute name="body" value="/WEB-INF/views/patients/revive.jspx"/>
     </definition>
+    <definition extends="default" name="patients/deactivate">
+        <put-attribute name="body" value="/WEB-INF/views/patients/showTAMAStatus.jspx"/>
+    </definition>
     <definition extends="default" name="patients/alerts/list">
         <put-attribute name="body" value="/WEB-INF/views/patients/alerts/patientAlertView.jspx"/>
         <put-attribute name="resourceName" value="list" cascade="true"/>

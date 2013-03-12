@@ -16,10 +16,7 @@ import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
-import org.motechproject.tama.web.model.ClinicVisitUIModel;
-import org.motechproject.tama.web.model.IncompletePatientDataWarning;
-import org.motechproject.tama.web.model.LabResultsUIModel;
-import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
+import org.motechproject.tama.web.model.*;
 import org.motechproject.tama.web.reportbuilder.AppointmentCalendarBuilder;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.util.DateUtil;
@@ -176,7 +173,7 @@ public class ClinicVisitsController extends BaseController {
         Patient patient = clinicVisitUIModels.get(0).getPatient();
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
         uiModel.addAttribute("clinicVisits", clinicVisitUIModels);
-        uiModel.addAttribute("patient", patient);
+        uiModel.addAttribute("patient", new PatientViewModel(patient));
         uiModel.addAttribute(PatientController.WARNING, warning);
         if (!patient.getStatus().isActive())
             return "clinicvisits/view_list";

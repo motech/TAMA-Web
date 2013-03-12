@@ -6,7 +6,6 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TimeOfDay;
-import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientEventLog;
 import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
@@ -23,7 +22,7 @@ import java.util.List;
 public class PatientSummary {
 
     public static final String NOT_APPLICABLE = "NA";
-    private Patient patient;
+    private PatientViewModel patient;
     private TreatmentAdvice earliestTreatmentAdvice, currentTreatmentAdvice;
     private Regimen currentRegimen;
     private ClinicVisits clinicVisits;
@@ -31,7 +30,7 @@ public class PatientSummary {
     private List<PatientEventLog> statusChangeHistory;
     private Double runningAdherencePercentage;
 
-    public PatientSummary(Patient patient, TreatmentAdvice earliestTreatmentAdvice, TreatmentAdvice currentTreatmentAdvice,
+    public PatientSummary(PatientViewModel patient, TreatmentAdvice earliestTreatmentAdvice, TreatmentAdvice currentTreatmentAdvice,
                           Regimen currentRegimen, ClinicVisits clinicVisits, List<PatientEventLog> statusChangeHistory,
                           Double runningAdherencePercentage, List<String> warning) {
         this.patient = patient;
@@ -143,5 +142,17 @@ public class PatientSummary {
     public String getDayOfWeeklyCall() {
         DayOfWeek dayOfWeeklyCall = patient.getDayOfWeeklyCall();
         return dayOfWeeklyCall == null ? NOT_APPLICABLE : patient.getDayOfWeeklyCall().name();
+    }
+
+    public String getPatientSummaryLink() {
+        return patient.getPatientSummaryLink();
+    }
+
+    public String getStatusAction(){
+        return patient.getStatusAction();
+    }
+
+    public String getStatusActionUrl(){
+        return patient.getStatusActionUrl();
     }
 }

@@ -10,7 +10,7 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class ListPatientViewModelTest {
+public class PatientViewModelTest {
 
     @Test
     public void shouldReturnSummaryLinkWithPatientId() {
@@ -21,7 +21,7 @@ public class ListPatientViewModelTest {
         when(patient.getGender()).thenReturn(Gender.newGender("male"));
         when(patient.getClinic()).thenReturn(clinic);
 
-        ListPatientViewModel listPatientViewModel = new ListPatientViewModel(patient);
+        PatientViewModel listPatientViewModel = new PatientViewModel(patient);
         String patientSummaryLink = listPatientViewModel.getPatientSummaryLink();
         assertEquals("patients/summary/123", patientSummaryLink);
     }

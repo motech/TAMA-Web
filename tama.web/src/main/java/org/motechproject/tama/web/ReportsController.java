@@ -13,6 +13,7 @@ import org.motechproject.tama.outbox.integration.repository.AllOutboxMessageSumm
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.service.PatientService;
+import org.motechproject.tama.web.model.PatientViewModel;
 import org.motechproject.tama.web.reportbuilder.DailyPillReminderReportBuilder;
 import org.motechproject.tama.web.reportbuilder.OutboxReportBuilder;
 import org.motechproject.tama.web.reportbuilder.SMSReportBuilder;
@@ -66,7 +67,7 @@ public class ReportsController {
     public String index(@PathVariable String patientDocId, Model uiModel) {
         PatientReport patientReport = patientService.getPatientReport(patientDocId);
         uiModel.addAttribute("report", patientReport);
-        uiModel.addAttribute("patient", patientReport.getPatient());
+        uiModel.addAttribute("patient", new PatientViewModel(patientReport.getPatient()));
         return "reports/index";
     }
 

@@ -33,6 +33,7 @@
     <c:set var="columnTypes" scope="request" />
     <c:set var="columnDatePatterns" scope="request" />
     <c:set var="columnUrls" scope="request"/>
+    <c:set var="columnActionUrls" scope="request"/>
 
     <jsp:doBody />
 
@@ -41,6 +42,7 @@
     <c:set var="types" value="${fn:split(columnTypes, ',')}" scope="request" />
     <c:set var="patterns" value="${fn:split(columnDatePatterns, ',')}" scope="request" />
     <c:set var="urls" value="${fn:split(columnUrls, ',')}" scope="request" />
+    <c:set var="actionUrls" value="${fn:split(columnActionUrls, ',')}" scope="request" />
 
     <c:if test="${empty typeIdFieldName}">
       <c:set var="typeIdFieldName" value="id" />
@@ -99,6 +101,7 @@
             <c:set var="columnType" value="${types[num.count-1]}" />
             <c:set var="columnDatePattern" value="${patterns[num.count-1]}" />
             <c:set var="columnUrl" value="${urls[num.count-1]}" />
+            <c:set var="columnActionUrl" value="${actionUrls[num.count-1]}" />
             <td>
               <c:choose>
                 <c:when test="${columnType eq 'date'}">
@@ -124,12 +127,16 @@
                   <c:when test="${not empty columnUrl and columnUrl != 'none'}">
                       <a href="${item[columnUrl]}"> ${colTxt} </a>
                   </c:when>
+                  <c:when test="${not empty columnActionUrl and columnActionUrl != 'none'}">
+                      <spring:url value="${item[columnActionUrl]}/${item[typeIdFieldName]}" var="custom_action_form_url"/>
+                      <form:form action="${fn:escapeXml(custom_action_form_url)}" method="POST">
+                          <a class="post_anchor" href="#">${colTxt}</a>
+                      </form:form>
+                  </c:when>
                   <c:otherwise>
                       <c:out value="${colTxt}" />
                   </c:otherwise>
               </c:choose>
-
-
             </td>
           </c:forTokens>
           <c:set var="itemId"><spring:eval expression="item[typeIdFieldName]"/></c:set>
