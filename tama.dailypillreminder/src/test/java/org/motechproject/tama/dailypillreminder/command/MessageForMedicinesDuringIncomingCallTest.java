@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
@@ -52,12 +53,12 @@ public class MessageForMedicinesDuringIncomingCallTest {
     }
 
     @Test
-    public void shouldReturnMessages_timeWithinDosagePillWindow() {
+    public void shouldReturnEmptyMessages_timeWithinDosagePillWindow() {
         int dosageHour = 16;
         DateTime timeWithinPillWindow = now.withHourOfDay(dosageHour).withMinuteOfHour(5);
         context.callStartTime(timeWithinPillWindow).callDirection(CallDirection.Outbound);
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-        assertArrayEquals(new String[]{TamaIVRMessage.ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW}, messages);
+        assertEquals(0, messages.length);
     }
 
     @Test
