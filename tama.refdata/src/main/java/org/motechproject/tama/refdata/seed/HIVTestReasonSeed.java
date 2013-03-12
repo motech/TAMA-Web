@@ -2,6 +2,7 @@ package org.motechproject.tama.refdata.seed;
 
 import org.motechproject.deliverytools.seed.Seed;
 import org.motechproject.tama.refdata.domain.HIVTestReason;
+import org.motechproject.tama.refdata.objectcache.AllHIVTestReasonsCache;
 import org.motechproject.tama.refdata.repository.AllHIVTestReasons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,9 @@ public class HIVTestReasonSeed {
 
     @Autowired
     private AllHIVTestReasons allHIVTestReasons;
+
+    @Autowired
+    private AllHIVTestReasonsCache allHIVTestReasonsCache;
 
     @Seed(version = "1.0", priority = 0)
     public void load() {
@@ -23,5 +27,6 @@ public class HIVTestReasonSeed {
         allHIVTestReasons.add(HIVTestReason.newHIVTestReason("Symptomatic"));
         allHIVTestReasons.add(HIVTestReason.newHIVTestReason("Blood Donation"));
         allHIVTestReasons.add(HIVTestReason.newHIVTestReason("Spouse Detected"));
+        allHIVTestReasonsCache.refresh();
     }
 }

@@ -2,6 +2,7 @@ package org.motechproject.tama.refdata.seed;
 
 import org.motechproject.deliverytools.seed.Seed;
 import org.motechproject.tama.refdata.domain.ModeOfTransmission;
+import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 import org.motechproject.tama.refdata.repository.AllModesOfTransmission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,9 @@ public class ModeOfTransmissionSeed {
 
     @Autowired
     private AllModesOfTransmission allModesOfTransmission;
+
+    @Autowired
+    private AllModesOfTransmissionCache allModesOfTransmissionCache;
 
     @Seed(version = "1.0", priority = 0)
     public void load() {
@@ -23,5 +27,6 @@ public class ModeOfTransmissionSeed {
         allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Vertical"));
         allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Bisexual"));
         allModesOfTransmission.add(ModeOfTransmission.newModeOfTransmission("Others"));
+        allModesOfTransmissionCache.refresh();
     }
 }

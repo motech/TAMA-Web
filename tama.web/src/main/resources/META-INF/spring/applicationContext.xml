@@ -7,6 +7,7 @@
 
     <import resource="classpath:applicationPlatformServerAPI.xml"/>
     <import resource="classpath:applicationMigration0_6To0_7Context.xml"/>
+    <import resource="classpath:applicationMigration0_6To0_7Context.xml"/>
     <import resource="classpath:applicationDailyPillReminderContext.xml"/>
     <import resource="classpath:applicationFourDayRecallContext.xml"/>
     <import resource="classpath:applicationSymptomReportingContext.xml"/>

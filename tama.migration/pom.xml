@@ -14,6 +14,7 @@
 
     <modules>
         <module>migration_from_0.6_to_0.7</module>
+        <module>test_data</module>
     </modules>
     <packaging>pom</packaging>
 

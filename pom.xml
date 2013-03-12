@@ -529,6 +529,11 @@
             <!-- Child modules -->
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
+                <artifactId>test_data</artifactId>
+                <version>0.7-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.motechproject.tama</groupId>
                 <artifactId>migration_from_0.6_to_0.7</artifactId>
                 <version>0.7-SNAPSHOT</version>
             </dependency>
@@ -542,7 +547,6 @@
                 <artifactId>tama.common</artifactId>
                 <version>0.7-SNAPSHOT</version>
                 <classifier>tests</classifier>
-                <scope>test</scope>
                 <type>jar</type>
             </dependency>
             <dependency>
@@ -568,7 +572,6 @@
                 <artifactId>tama.facility</artifactId>
                 <version>0.7-SNAPSHOT</version>
                 <classifier>tests</classifier>
-                <scope>test</scope>
                 <type>jar</type>
             </dependency>
             <dependency>
@@ -586,7 +589,6 @@
                 <artifactId>tama.patient</artifactId>
                 <version>0.7-SNAPSHOT</version>
                 <classifier>tests</classifier>
-                <scope>test</scope>
                 <type>jar</type>
             </dependency>
             <dependency>
