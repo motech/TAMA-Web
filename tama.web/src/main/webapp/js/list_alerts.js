@@ -5,14 +5,8 @@ dojo.addOnLoad(function () {
         if (element['cells'].length < 8 || element['cells'][0].nodeName !== "TD")
             return;
 
-        var cssStyle = "highlightClosedAlert";
-
-        if (element['cells'][8].innerText === "Open")
-            cssStyle = "highlightOpenAlert";
-
         dojo.forEach(element.childNodes, function (cell, index) {
-            dojo.addClass(cell, cssStyle);
-            if (cell.innerText === "Open") {
+            if (index === 8 && cell.innerText === "Open") {
                 dojo.addClass(cell, "blueText");
             }
         });

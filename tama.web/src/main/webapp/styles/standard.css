@@ -69,6 +69,10 @@ body {
     color: #0CB3E9;
 }
 
+.greyText a:link {
+    color : #6b6b6b;
+}
+
 /* header and footer elements */
 
 #main {
@@ -111,6 +115,7 @@ body {
 
 #menu li div.side-information {
     color: #0CB3E9;
+    background: #FFFFFF;
     font-weight: bold;
     padding: 2px 12px;
 }
@@ -333,7 +338,6 @@ table td,table th {
 }
 
 table td form {
-	text-align:center;
 	vertical-align: middle;
 	margin: 0px;
 }
@@ -352,7 +356,7 @@ table thead {
 	background-color: #BBBBBB;
 }
 
-table a:link {color: #303030;}
+table a:link {color: #7db223;}
 
 .utilbox {width: 18px;}
 

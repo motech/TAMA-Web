@@ -9,7 +9,7 @@
             <menu:item id="i_alert_list" selected="${not patientExists and selectedMenuItem == 'ALL_ALERTS'}" messageCode="alerts_menu" url="/alerts/list" />
             <menu:item id="i_patient_list" selected="${selectedMenuItem == 'ALL_PATIENTS'}" messageCode="global_menu_list" url="/patients"/>
             <c:if test="${patientExists}">
-                <menu:item id="i_patient_info" selected="true" label="Patient ${patient.patientId}" url="#"/>
+                <div class="side-information"><c:out value="Patient ${patient.patientId}"/></div>
             </c:if>
             <menu:item id="i_patient_new" selected="${selectedMenuItem == 'NEW_PATIENT'}" messageCode="global_menu_new" url="/patients?form" z="/FWw96bQNbLZGfOq6+cGeWYQz8Y="/>
         </menu:category>
