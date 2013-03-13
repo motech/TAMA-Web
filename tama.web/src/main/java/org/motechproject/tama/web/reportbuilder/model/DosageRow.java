@@ -8,6 +8,7 @@ import static org.motechproject.tama.common.util.DateFormat.format;
 @Data
 public class DosageRow {
 
+    private String drugName;
     private String dosageTypeId;
     private String morningTime;
     private String eveningTime;
@@ -18,6 +19,7 @@ public class DosageRow {
 
     public DosageRow(DrugDosageContract dosageContract) {
         if (null != dosageContract) {
+            setDrugName(dosageContract.getDrugName());
             setAdvice(dosageContract.getAdvice());
             setDosageTypeId(dosageContract.getDosageType());
             setEveningTime(dosageContract.getEveningTime());

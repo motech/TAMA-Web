@@ -45,7 +45,7 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         columns.add(new ExcelColumn("Regimen", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Drug Composition Group", Cell.CELL_TYPE_STRING));
 
-
+        columns.add(new ExcelColumn("Drug Name", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Dosage", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Morning Time", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Evening Time", Cell.CELL_TYPE_STRING));
@@ -54,6 +54,7 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
         columns.add(new ExcelColumn("Advice", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Meal Advice", Cell.CELL_TYPE_STRING));
 
+        columns.add(new ExcelColumn("Drug Name", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Dosage", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Morning Time", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Evening Time", Cell.CELL_TYPE_STRING));
@@ -163,6 +164,7 @@ public class ClinicVisitReportBuilder extends InMemoryReportBuilder<ClinicVisitS
 
     private void populateDosage(List<Object> row, DrugDosageContract dosage) {
         DosageRow dosageRow = new DosageRow(dosage);
+        row.add(dosageRow.getDrugName());
         row.add(dosageRow.getDosageTypeId());
         row.add(dosageRow.getMorningTime());
         row.add(dosageRow.getEveningTime());

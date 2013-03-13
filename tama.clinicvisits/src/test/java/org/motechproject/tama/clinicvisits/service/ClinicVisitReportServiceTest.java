@@ -19,10 +19,7 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.*;
-import org.motechproject.tama.refdata.repository.AllDosageTypes;
-import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
-import org.motechproject.tama.refdata.repository.AllOpportunisticInfections;
-import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tama.refdata.repository.*;
 
 import java.util.List;
 
@@ -56,11 +53,13 @@ public class ClinicVisitReportServiceTest {
     private AllMealAdviceTypes allMealAdviceTypes;
     @Mock
     private AllOpportunisticInfections allOpportunisticInfections;
+    @Mock
+    private AllDrugs allDrugs;
 
     @Before
     public void setup() {
         initMocks(this);
-        clinicVisitReportService = new ClinicVisitReportService(patientService, allClinicVisits, allTreatmentAdvices, allLabResults, allVitalStatistics, allReportedOpportunisticInfections, allRegimens, allDosageTypes, allMealAdviceTypes, allOpportunisticInfections);
+        clinicVisitReportService = new ClinicVisitReportService(patientService, allClinicVisits, allTreatmentAdvices, allLabResults, allVitalStatistics, allReportedOpportunisticInfections, allRegimens, allDosageTypes, allMealAdviceTypes, allOpportunisticInfections, allDrugs);
     }
 
     @Test
@@ -154,6 +153,9 @@ public class ClinicVisitReportServiceTest {
 
         when(allMealAdviceTypes.get("MA1")).thenReturn(new MealAdviceType("MealAdvice1"));
         when(allMealAdviceTypes.get("MA2")).thenReturn(new MealAdviceType("MealAdvice2"));
+
+        when(allDrugs.get(drugDosage1.getDrugId())).thenReturn(new Drug(){{setName("Drug");}});
+        when(allDrugs.get(drugDosage2.getDrugId())).thenReturn(new Drug(){{setName("Drug");}});
 
         assertEquals(clinicVisitSummaries, clinicVisitReportService.getClinicVisitReport(patientId));
     }

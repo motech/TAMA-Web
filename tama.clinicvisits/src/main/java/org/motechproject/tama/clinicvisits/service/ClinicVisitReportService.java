@@ -15,10 +15,7 @@ import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.DrugCompositionGroup;
 import org.motechproject.tama.refdata.domain.Regimen;
-import org.motechproject.tama.refdata.repository.AllDosageTypes;
-import org.motechproject.tama.refdata.repository.AllMealAdviceTypes;
-import org.motechproject.tama.refdata.repository.AllOpportunisticInfections;
-import org.motechproject.tama.refdata.repository.AllRegimens;
+import org.motechproject.tama.refdata.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,9 +37,10 @@ public class ClinicVisitReportService {
     private final AllDosageTypes allDosageTypes;
     private final AllMealAdviceTypes allMealAdviceTypes;
     private final AllOpportunisticInfections allOpportunisticInfections;
+    private final AllDrugs allDrugs;
 
     @Autowired
-    public ClinicVisitReportService(PatientService patientService, AllClinicVisits allClinicVisits, AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults, AllVitalStatistics allVitalStatistics, AllReportedOpportunisticInfections allReportedOpportunisticInfections, AllRegimens allRegimens, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, AllOpportunisticInfections allOpportunisticInfections) {
+    public ClinicVisitReportService(PatientService patientService, AllClinicVisits allClinicVisits, AllTreatmentAdvices allTreatmentAdvices, AllLabResults allLabResults, AllVitalStatistics allVitalStatistics, AllReportedOpportunisticInfections allReportedOpportunisticInfections, AllRegimens allRegimens, AllDosageTypes allDosageTypes, AllMealAdviceTypes allMealAdviceTypes, AllOpportunisticInfections allOpportunisticInfections, AllDrugs allDrugs) {
         this.patientService = patientService;
         this.allClinicVisits = allClinicVisits;
         this.allTreatmentAdvices = allTreatmentAdvices;
@@ -53,6 +51,7 @@ public class ClinicVisitReportService {
         this.allDosageTypes = allDosageTypes;
         this.allMealAdviceTypes = allMealAdviceTypes;
         this.allOpportunisticInfections = allOpportunisticInfections;
+        this.allDrugs = allDrugs;
     }
 
     public List<ClinicVisitSummary> getClinicVisitReport(String patientId){
@@ -136,7 +135,7 @@ public class ClinicVisitReportService {
 
     private DrugDosageContract getDrugDosage(DrugDosage dosage) {
         DrugDosageContract drugDosage = new DrugDosageContract();
-        drugDosage.setDrugName(dosage.getDrugName());
+        drugDosage.setDrugName(allDrugs.get(dosage.getDrugId()).getName());
         drugDosage.setDosageType(allDosageTypes.get(dosage.getDosageTypeId()).getType());
         drugDosage.setMorningTime(dosage.getMorningTime());
         drugDosage.setEveningTime(dosage.getEveningTime());
