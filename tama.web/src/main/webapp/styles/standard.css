@@ -154,16 +154,6 @@ body {
 #footer a:link {color: #7db223;}
 
 
-.tab-header.tab-selected-true{
-    font-weight: bold;
-}
-
-
-.tab-container{
-    margin-top: 10px;
-    display: inline;
-}
-
 .quicklinks {
 	clear:both; 
 	padding-bottom: 15px
@@ -663,4 +653,33 @@ fieldset th {
 .control-group.expanded-control-group{
     margin-top:5px;
     margin-bottom:6px;
+}
+
+.tab-container{
+    display: inline;
+    vertical-align: middle;
+}
+
+
+.tab-header.tab-selected-false {
+    background-color:#d3d3d3;
+    color:#000000;
+    padding:10px;
+    padding-bottom: 5px;
+    top: 5px;
+    position:relative;
+    text-decoration:none;
+    margin: 1px;
+}
+
+.tab-header.tab-selected-true {
+    background-color: #0CB3E9;
+    color:#ffffff;
+    padding: 10px;
+    padding-bottom: 5px;
+    top: 5px;
+    position:relative;
+    font-weight: bolder;
+    text-decoration:none;
+    margin: 1px;
 }
