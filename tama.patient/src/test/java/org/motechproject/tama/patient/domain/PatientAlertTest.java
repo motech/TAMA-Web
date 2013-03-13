@@ -91,7 +91,7 @@ public class PatientAlertTest {
         patientAlert.setPatient(patient);
 
         String patientSummaryLink = patientAlert.getPatientSummaryLink();
-        assertEquals("patients/summary/id", patientSummaryLink);
+        assertEquals("/tama/patients/summary/id", patientSummaryLink);
     }
 
     @Test

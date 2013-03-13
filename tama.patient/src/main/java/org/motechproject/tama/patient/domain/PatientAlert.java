@@ -50,7 +50,7 @@ public class PatientAlert {
     }
 
     public String getPatientSummaryLink() {
-        return "patients/summary/"+this.patient.getId();
+        return "/tama/patients/summary/"+this.patient.getId();
     }
 
     public String getPatientPhoneNumber() {
