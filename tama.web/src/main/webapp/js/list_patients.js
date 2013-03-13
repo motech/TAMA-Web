@@ -7,7 +7,8 @@ dojo.addOnLoad(function () {
 
         dojo.forEach(element.childNodes, function (cell, index) {
             if (index === 6 && cell.innerText.replace(/\s+/g, '') === "Deactivate") {
-                dojo.addClass(cell.children[0].children[0], "greyText");
+                if (cell != null && cell.children != null && cell.children.length > 0 && cell.children[0].children != null && cell.children[0].children.length > 0)
+                    dojo.addClass(cell.children[0].children[0], "greyText");
             }
         });
     });

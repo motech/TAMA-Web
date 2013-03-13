@@ -92,7 +92,7 @@ public class PatientAlert {
     }
 
     public String getSymptomReported() {
-        return this.alert.getDescription();
+        return isSymptomReportingAlert() ? getDescription() : StringUtils.EMPTY;
     }
 
     public String getDescription() {

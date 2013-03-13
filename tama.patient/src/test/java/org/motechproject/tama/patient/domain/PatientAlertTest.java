@@ -2,6 +2,7 @@ package org.motechproject.tama.patient.domain;
 
 
 import junit.framework.Assert;
+import org.drools.core.util.StringUtils;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.motechproject.server.alerts.domain.Alert;
@@ -14,6 +15,8 @@ import org.motechproject.util.DateUtil;
 import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class PatientAlertTest {
 
@@ -91,4 +94,31 @@ public class PatientAlertTest {
         assertEquals("patients/summary/id", patientSummaryLink);
     }
 
+    @Test
+    public void shouldReturnSymptomReportedIfSymptomReportingAlertDescriptionIsNotEmpty() {
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+        Alert alert = mock(Alert.class);
+        PatientAlert patientAlert = new PatientAlert();
+        patientAlert.setAlert(alert);
+
+        when(alert.getData()).thenReturn(data);
+        when(alert.getDescription()).thenReturn("alert description");
+
+        assertEquals("alert description", patientAlert.getSymptomReported());
+    }
+
+    @Test
+    public void shouldReturnSymptomReportedAsEmptyIfSymptomReportingAlertDescriptionIsEmpty() {
+        HashMap<String, String> data = new HashMap<String, String>();
+        data.put(PatientAlert.PATIENT_ALERT_TYPE, PatientAlertType.SymptomReporting.name());
+        Alert alert = mock(Alert.class);
+        PatientAlert patientAlert = new PatientAlert();
+        patientAlert.setAlert(alert);
+
+        when(alert.getData()).thenReturn(data);
+        when(alert.getDescription()).thenReturn("");
+
+        assertEquals(StringUtils.EMPTY, patientAlert.getSymptomReported());
+    }
 }
