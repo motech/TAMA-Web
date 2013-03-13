@@ -69,7 +69,7 @@ body {
     color: #0CB3E9;
 }
 
-.greyText a:link {
+.post_anchor.greyText{
     color : #6b6b6b;
 }
 
