@@ -17,5 +17,6 @@
     <jsp:include page="../../alerts/${resourceName}.jspx">
         <jsp:param name="prefix" value="/patients/${patient.id}" />
         <jsp:param name="actionPrefix" value="/patients/${patient.id}/alerts" />
+        <jsp:param name="isPatientIdReadOnly" value="true" />
     </jsp:include>
 </div>
