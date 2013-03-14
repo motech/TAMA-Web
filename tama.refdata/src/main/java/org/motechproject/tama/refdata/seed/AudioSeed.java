@@ -91,7 +91,7 @@ public class AudioSeed {
 
     public static void main(String[] args) {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationRefDataContext.xml");
-        AudioSeed audioSeed = (AudioSeed) context.getBean("AudioSeed");
+        AudioSeed audioSeed = (AudioSeed) context.getBean("audioSeed");
         audioSeed.load();
     }
 }
