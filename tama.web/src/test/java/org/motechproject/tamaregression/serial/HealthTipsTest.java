@@ -3,6 +3,7 @@ package org.motechproject.tamaregression.serial;
 import org.joda.time.LocalDate;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.motechproject.tamadatasetup.service.TAMADateTimeService;
 import org.motechproject.tamafunctionalframework.ivr.BaseIVRTest;
@@ -25,6 +26,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.motechproject.tama.ivr.TamaIVRMessage.*;
 
+@Ignore
 public class HealthTipsTest extends BaseIVRTest {
 
     private TestPatient patient;
@@ -76,7 +78,7 @@ public class HealthTipsTest extends BaseIVRTest {
         caller = caller(patient);
         caller.call();
         IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW, DOSE_TAKEN_MENU_OPTION, SYMPTOMS_REPORTING_MENU_OPTION);
         ivrResponse = caller.enter("1");
         IVRAssert.assertAudioFilesPresent(ivrResponse, DOSE_TAKEN_ON_TIME);
         caller.hangup();
@@ -87,7 +89,7 @@ public class HealthTipsTest extends BaseIVRTest {
         caller = caller(patient);
         caller.call();
         IVRResponse ivrResponse = caller.enter(patient.patientPreferences().passcode());
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, YOUR_NEXT_DOSE_IS, TOMORROW, SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, YOUR_NEXT_DOSE_IS, TOMORROW, SYMPTOMS_REPORTING_MENU_OPTION);
 
         Map<String, List<String>> healthTips = getExpectedHealthTips();
 

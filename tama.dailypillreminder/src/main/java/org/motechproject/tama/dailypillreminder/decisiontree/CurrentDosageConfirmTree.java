@@ -41,8 +41,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                         new AudioPrompt().setCommand(incomingWelcomeMessage),
                         new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),
                         new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_TAKEN_MENU_OPTION),
-                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand),
-                        new MenuAudioPrompt().setName(TamaIVRMessage.HEALTH_TIPS_MENU_OPTION))
+                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand))
                 .setTransitions(new Object[][]{
                         {"1", new Transition()
                                 .setDestinationNode(
@@ -55,7 +54,6 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                         },
                         {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
                         {"3", TAMATransitionFactory.createCallStateTransition(CallState.OUTBOX)},
-                        {"5", TAMATransitionFactory.createCallStateTransition(CallState.HEALTH_TIPS)}
                 });
     }
 }

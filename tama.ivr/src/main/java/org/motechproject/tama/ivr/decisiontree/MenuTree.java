@@ -3,7 +3,6 @@ package org.motechproject.tama.ivr.decisiontree;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
-import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
 import org.motechproject.tama.ivr.domain.CallState;
@@ -29,12 +28,11 @@ public class MenuTree extends TamaDecisionTree {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(incomingWelcomeMessage),
-                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand),
-                        new MenuAudioPrompt().setName(TamaIVRMessage.HEALTH_TIPS_MENU_OPTION))
+                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand)
+                )
                 .setTransitions(new Object[][]{
                         {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
                         {"3", TAMATransitionFactory.createCallStateTransition(CallState.OUTBOX)},
-                        {"5", TAMATransitionFactory.createCallStateTransition(CallState.HEALTH_TIPS)}
                 }
                 );
     }

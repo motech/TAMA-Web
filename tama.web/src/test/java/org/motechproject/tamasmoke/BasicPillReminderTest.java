@@ -176,7 +176,7 @@ public class BasicPillReminderTest extends BaseTest {
 
     private void verifyRepeatMenuPlayed(Caller caller) {
         assertAudioFilesPresent(caller.enter(""), HANGUP_OR_MAIN_MENU);
-        assertAudioFilesPresent(caller.enter(""), SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
+        assertAudioFilesPresent(caller.enter(""), SYMPTOMS_REPORTING_MENU_OPTION);
     }
 
     private void enter1ForPreviousDoseTakenAndVerifyAdherence(Caller caller) {

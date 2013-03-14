@@ -53,6 +53,6 @@ public class CurrentDosageConfirmTest extends BaseIVRTest {
         ivrResponse = caller.listenMore();
         IVRAssert.assertAudioFilesPresent(ivrResponse, HANGUP_OR_MAIN_MENU);
         ivrResponse = caller.listenMore();
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, SYMPTOMS_REPORTING_MENU_OPTION, HEALTH_TIPS_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, SYMPTOMS_REPORTING_MENU_OPTION);
     }
 }
