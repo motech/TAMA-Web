@@ -11,6 +11,7 @@ import org.motechproject.deliverytools.seed.Seed;
 import org.motechproject.tama.common.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -86,5 +87,11 @@ public class AudioSeed {
                 }
             }
         }
+    }
+
+    public static void main(String[] args) {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationRefDataContext.xml");
+        AudioSeed audioSeed = (AudioSeed) context.getBean("AudioSeed");
+        audioSeed.load();
     }
 }
