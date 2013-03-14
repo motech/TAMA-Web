@@ -21,13 +21,13 @@
     <c:if test="${alerts != null}" >
         <div id="_title_pl_org_motechproject_tama_domain_patientalert_id_pane">
             <page:plainlist id="pl_org_motechproject_tama_domain_patientalert" items="${alerts}" labelPlural="Alerts" label="Alert">
-                <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="${param.prefix}/alerts"
+                <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="${param.prefix}alerts"
                              show="false" create="false" update="true" delete="false"
                              typeIdFieldName="alertId" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields"
                              customAction="true"
-                             customActionPath="${param.actionPrefix}/closeAlert" customActionLabel="Mark Closed"
+                             customActionPath="${param.actionPrefix}closeAlert" customActionLabel="Mark Closed"
                              customActionCondition="item.opened"
-                             customActionPath2="${param.actionPrefix}/openAlert" customActionLabel2="Mark Open"
+                             customActionPath2="${param.actionPrefix}openAlert" customActionLabel2="Mark Open"
                              customActionCondition2="item.closed"
                              show_label="Alert Dashboard">
                     <table:column id="org_motechproject_tama_domain_patientalert" property="patientId" label="Patient ID" url="patientSummaryLink" />
