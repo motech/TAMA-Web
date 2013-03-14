@@ -3,7 +3,7 @@ package org.motechproject.tamafunctionalframework.framework;
 import org.motechproject.tamafunctionalframework.page.Page;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.TimeoutException;
+import org.openqa.selenium.TimeoutException;
 
 import java.lang.reflect.InvocationTargetException;
 

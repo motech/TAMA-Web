@@ -10,7 +10,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.TimeoutException;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -120,7 +119,7 @@ public abstract class Page extends FunctionalTestObject {
                 });
                 if (foundElement) break;
             }
-            catch (TimeoutException e) {
+            catch (Exception e) {
                 logInfo(String.format("Retried %s time(s) ...", i));
                 if (i == RetryTimes)
                     throw e;

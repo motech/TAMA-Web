@@ -20,7 +20,9 @@ public class WebDriverFactory {
         FIREFOX("firefox") {
             @Override
             WebDriver give() {
-                return new FirefoxDriver();
+                FirefoxDriver firefoxDriver = new FirefoxDriver();
+                firefoxDriver.manage().window().maximize();
+                return firefoxDriver;
             }
         },
 

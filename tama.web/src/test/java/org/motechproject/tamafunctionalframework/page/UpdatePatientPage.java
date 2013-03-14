@@ -22,7 +22,11 @@ public class UpdatePatientPage extends Page {
     @FindBy(how = How.ID, using = "dailyReminderCall")
     private WebElement dailyReminderCallRadioButton;
 
+    @FindBy(how = How.ID, using = "proceed")
+    private WebElement submit;
+
     private ConfirmCreationDialog confirmCreationDialog;
+
     private CreatePatientPreferencesSection createPatientPreferencesSection;
 
     public UpdatePatientPage(WebDriver webDriver) {
@@ -33,7 +37,7 @@ public class UpdatePatientPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-       waitForElementWithIdToLoad("four_week_warning_confirm");
+        waitForElementWithIdToLoad("four_week_warning_confirm");
     }
 
     @Override
@@ -42,6 +46,7 @@ public class UpdatePatientPage extends Page {
         dailyReminderCallRadioButton = WebDriverFactory.createWebElement(dailyReminderCallRadioButton);
         dayOfWeeklyCallBox = WebDriverFactory.createWebElement(dayOfWeeklyCallBox);
         bestCallTimeBox = WebDriverFactory.createWebElement(bestCallTimeBox);
+        submit = WebDriverFactory.createWebElement(submit);
 
         createPatientPreferencesSection.postInitialize();
         confirmCreationDialog.postInitialize();
@@ -60,7 +65,7 @@ public class UpdatePatientPage extends Page {
 
     public ShowPatientPage changePatientToDailyCallPlan() {
         dailyReminderCallRadioButton.click();
-        bestCallTimeBox.submit();
+        submit.click();
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
 }

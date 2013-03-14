@@ -18,7 +18,6 @@ import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestTr
 import org.motechproject.tamafunctionalframework.testdataservice.PatientDataService;
 import org.motechproject.util.DateUtil;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class DailyPillReminderReportsTest extends BaseIVRTest {
@@ -47,19 +46,11 @@ public class DailyPillReminderReportsTest extends BaseIVRTest {
         recordDoseAsTaken();
         ShowPatientReportsPage showPatientReportsPage = goToPatientReportsPage();
 
-        assertPatientSummary(showPatientReportsPage);
-
         showPatientReportsPage.generateDailyPillReminderReport(DateUtil.today(), DateUtil.tomorrow());
 
         String dailyPillReminderReportText = showPatientReportsPage.getDailyPillReminderReportText();
         assertTrue(dailyPillReminderReportText.contains("TAKEN"));
         assertTrue(dailyPillReminderReportText.contains(DateUtil.today().toString()));
-    }
-
-    private void assertPatientSummary(ShowPatientReportsPage showPatientReportsPage) {
-        assertEquals(patient.patientId(), showPatientReportsPage.getPatientId());
-        assertEquals(clinician.clinic().name(), showPatientReportsPage.getClinicName());
-        assertEquals(regimenStartDate.toString("MMM dd, yyyy"), showPatientReportsPage.getPatientARTStartDate());
     }
 
     private ShowPatientReportsPage goToPatientReportsPage() {

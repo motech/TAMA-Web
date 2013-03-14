@@ -3,11 +3,11 @@ package org.motechproject.tamafunctionalframework.page;
 import org.motechproject.tamafunctionalframework.framework.MyPageFactory;
 import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
-import org.openqa.selenium.support.ui.TimeoutException;
 
 import java.util.List;
 
@@ -17,6 +17,9 @@ import static junit.framework.Assert.assertTrue;
 public class AlertsPage extends Page {
 
     public static final String LIST_ALERT_PANE_ID = "_title_pl_org_motechproject_tama_domain_patientalert_id_pane";
+
+    @FindBy(how = How.CLASS_NAME, using = "dijitTitlePaneTextNode")
+    private WebElement pane;
 
     @FindBy(how = How.ID, using = "_startDate_id")
     private WebElement startDate;
@@ -32,6 +35,8 @@ public class AlertsPage extends Page {
     public void postInitialize() {
         startDate = WebDriverFactory.createWebElement(startDate);
         alertStatus = WebDriverFactory.createWebElement(alertStatus);
+        pane = WebDriverFactory.createWebElement(pane);
+        pane.click();
     }
 
     @Override
@@ -49,7 +54,7 @@ public class AlertsPage extends Page {
         WebElement trElement = alertsTable().get(rowId);
         //open
         List<WebElement> elementsWithLinks = trElement.findElements(By.xpath("td/a"));
-        elementsWithLinks.get(0).click();
+        elementsWithLinks.get(elementsWithLinks.size() - 1).click();
         return MyPageFactory.initElements(webDriver, ShowAlertPage.class);
     }
 
@@ -77,14 +82,14 @@ public class AlertsPage extends Page {
     }
 
     public AlertsPage filterUnreadAlerts() {
-        alertStatus.sendKeys("Unread");
+        alertStatus.sendKeys("Open");
         startDate.submit();
         waitForElementWithIdToLoad(LIST_ALERT_PANE_ID);
         return MyPageFactory.initElements(webDriver, AlertsPage.class);
     }
 
     public AlertsPage filterReadAlerts() {
-        alertStatus.sendKeys("Read");
+        alertStatus.sendKeys("Closed");
         startDate.submit();
         waitForElementWithIdToLoad(LIST_ALERT_PANE_ID);
         return MyPageFactory.initElements(webDriver, AlertsPage.class);

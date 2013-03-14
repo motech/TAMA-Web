@@ -197,8 +197,6 @@ public class BasicPillReminderTest extends BaseTest {
                 DOSE_NOT_RECORDED,
                 YESTERDAY,
                 YOU_WERE_SUPPOSED_TO_TAKE,
-                "pillazt3tc_combivir",
-                "pillefv_efferven",
                 FROM_THE_BOTTLE_FOR_PREVIOUS_DOSAGE,
                 PREVIOUS_DOSE_MENU);
     }
@@ -219,8 +217,6 @@ public class BasicPillReminderTest extends BaseTest {
         assertAudioFilesPresent(caller.enter(PATIENT_PIN),
                 DEFAULT_OUTBOUND_CLINIC_MESSAGE,
                 ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE,
-                "pillazt3tc_combivir",
-                "pillefv_efferven",
                 FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE,
                 "001_02_05_pilltimemenu"
         );

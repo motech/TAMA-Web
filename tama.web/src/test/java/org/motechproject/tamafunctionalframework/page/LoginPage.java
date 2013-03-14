@@ -62,7 +62,7 @@ public class LoginPage extends Page {
 
     public ListPatientsPage loginWithClinicianUserNamePassword(String clinicianUsername, String clinicianPassword) {
         login(clinicianUsername, clinicianPassword);
-        return MyPageFactory.initElements(webDriver, ListPatientsPage.class);
+        return MyPageFactory.initElements(webDriver, ListPatientsPage.class).goToListPatientsPage();
     }
 
     @Override

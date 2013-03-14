@@ -6,7 +6,8 @@ import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.TypeOfVisit;
 import org.motechproject.tama.patient.domain.Patient;
 
-import static org.openqa.selenium.support.testing.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
+
 
 public class ClinicVisitUIModelTest {
 

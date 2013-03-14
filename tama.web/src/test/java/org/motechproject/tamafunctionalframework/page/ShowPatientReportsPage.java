@@ -11,16 +11,8 @@ import org.openqa.selenium.support.How;
 public class ShowPatientReportsPage extends Page {
 
     public static final String DAILY_PILL_REMINDER_REPORT_GRID = "dailyPillReminderReportGrid";
-    private final String PAGE_LOAD_MARKER = "_patientSummaryPatientId_id";
+    private final String PAGE_LOAD_MARKER = "fc_org_motechproject_tama_domain_patient_Patient_Summary";
 
-    @FindBy(how = How.ID, using = "_patientSummaryPatientId_patientId_id")
-    private WebElement patientId;
-
-    @FindBy(how = How.ID, using = "_patientSummaryClinicName_clinicName_id")
-    private WebElement clinicName;
-
-    @FindBy(how = How.ID, using = "_patientSummaryARTStartDate_ARTStartedOn_id")
-    private WebElement patientARTStartDate;
 
     @FindBy(how = How.ID, using = "dailyPillReminderReportStartDate")
     private WebElement dailyPillReminderReportStartDate;
@@ -48,18 +40,6 @@ public class ShowPatientReportsPage extends Page {
     @Override
     protected void waitForPageToLoad() {
         waitForElementWithIdToLoad(PAGE_LOAD_MARKER);
-    }
-
-    public String getClinicName() {
-        return clinicName.getText();
-    }
-
-    public String getPatientId() {
-        return patientId.getText();
-    }
-
-    public String getPatientARTStartDate() {
-        return patientARTStartDate.getText();
     }
 
     public void generateDailyPillReminderReport(LocalDate startDate, LocalDate endDate){

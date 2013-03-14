@@ -172,11 +172,23 @@
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium</artifactId>
+            <artifactId>selenium-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-support</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-firefox-driver</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-server</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -396,36 +408,33 @@
     <profiles>
         <profile>
             <id>smoke</id>
+            <dependencies>
+                <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
             <build>
                 <plugins>
                     <plugin>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.6</version>
+                        <version>1.7</version>
                         <executions>
                             <execution>
-                                <id>start-activemq</id>
+                                <id>loadSeedDataInDb</id>
                                 <phase>pre-integration-test</phase>
                                 <configuration>
-                                    <target name="start.activemq" unless="skipTests">
-                                        <condition property="script.interpreter" value="bash" else="cmd">
-                                            <os family="unix"/>
-                                        </condition>
-                                        <condition property="script.switch" value="/c" else="">
-                                            <not>
-                                                <os family="unix"/>
-                                            </not>
-                                        </condition>
-                                        <condition property="script.suffix" value="sh" else="bat">
-                                            <os family="unix"/>
-                                        </condition>
-                                        <condition property="activemq.home" value="${activemq.unix.home}"
-                                                   else="${activemq.windows.home}">
-                                            <os family="unix"/>
-                                        </condition>
-                                        <echo message="Waiting for ActiveMQ to start on ${os.name}"/>
-                                        <exec executable="${script.interpreter}" dir="${activemq.home}" spawn="true">
-                                            <arg line="${script.switch} ${activemq.home}/bin/activemq.${script.suffix}"/>
-                                        </exec>
+                                    <target name="load" unless="skipTests">
+                                        <ant antfile="build.xml" target="drop.all.dbs" dir="${build.dir}"/>
+                                        <echo message="Seed data loading: START"/>
+                                        <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                        <java classname="org.motechproject.deliverytools.seed.SetupSeedData">
+                                            <classpath>
+                                                <pathelement path="${compile_classpath}"/>
+                                            </classpath>
+                                        </java>
+                                        <echo message="Seed data loading: END"/>
                                     </target>
                                 </configuration>
                                 <goals>

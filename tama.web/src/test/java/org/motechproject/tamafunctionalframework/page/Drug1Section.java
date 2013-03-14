@@ -9,7 +9,6 @@ public class Drug1Section extends DrugDosageSection {
         super(webDriver);
         drugDosageTypeElement = webDriver.findElement(By.id("_treatmentAdvice.drugDosages[0].dosageTypeId_id"));
         drugStartDateElement = webDriver.findElement(By.id("_treatmentAdvice.drugDosages[0].startDateAsDate_id"));
-        drugBrandElement = webDriver.findElement(By.id("_treatmentAdvice.drugDosages[0].brandId_id"));
         drugMorningDosageTimeElement = webDriver.findElement(By.id("_treatmentAdvice.drugDosages[0].morningTime_id"));
         drugEveningDosageTimeElement = webDriver.findElement(By.id("_treatmentAdvice.drugDosages[0].eveningTime_id"));
         drugOffsetDaysElement = webDriver.findElement(By.id("_treatmentAdvice.drugDosages[0].offsetDays_id"));
