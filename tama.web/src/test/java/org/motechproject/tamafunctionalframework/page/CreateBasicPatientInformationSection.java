@@ -43,5 +43,10 @@ public class CreateBasicPatientInformationSection {
         travelTimeInHrs.sendKeys((patient.travelTimeToClinicInHours()));
         travelTimeInMins.sendKeys((String.valueOf(patient.travelTimeToClinicInMinutes())));
         nextToMedicalHistory.click();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

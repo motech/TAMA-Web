@@ -16,7 +16,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public abstract class Page extends FunctionalTestObject {
     protected WebDriver webDriver;
-    private static final long MaxPageLoadTime = 30;
+    private static final long MaxPageLoadTime = 60;
     private static final long RetryTimes = 5;
     private static final long RetryInterval = 5;
     protected WebDriverWait wait;
@@ -43,7 +43,7 @@ public abstract class Page extends FunctionalTestObject {
 
     public ShowPatientSummaryPage searchPatientBy(String id) {
         searchById(id);
-        this.waitForElementWithIdToLoad(ShowPatientSummaryPage.PATIENT_ID_ID);
+        this.waitForElementWithIdToLoad(ShowPatientSummaryPage.PATIENT_SUMMARY_ID);
         return MyPageFactory.initElements(webDriver, ShowPatientSummaryPage.class);
     }
 
@@ -114,12 +114,15 @@ public abstract class Page extends FunctionalTestObject {
                 Boolean foundElement = waitWithRetry.until(new ExpectedCondition<Boolean>() {
                     @Override
                     public Boolean apply(WebDriver webDriver) {
-                        return webDriver.findElement(by) != null;
+                        try {
+                            return webDriver.findElement(by) != null;
+                        } catch (Exception e) {
+                            return false;
+                        }
                     }
                 });
                 if (foundElement) break;
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logInfo(String.format("Retried %s time(s) ...", i));
                 if (i == RetryTimes)
                     throw e;
@@ -128,11 +131,30 @@ public abstract class Page extends FunctionalTestObject {
         }
     }
 
+    protected void waitForElementToBeVisible(final By by) {
+        wait.until(new ExpectedCondition<Boolean>() {
+            @Override
+            public Boolean apply(WebDriver webDriver) {
+                try {
+                    WebElement element = webDriver.findElement(by);
+                    return element != null && element.isDisplayed();
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+        });
+    }
+
+
     private void waitForElementToLoad(final By by) {
         wait.until(new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver webDriver) {
-                return webDriver.findElement(by) != null;
+                try {
+                    return webDriver.findElement(by) != null;
+                } catch (Exception e) {
+                    return false;
+                }
             }
         });
     }

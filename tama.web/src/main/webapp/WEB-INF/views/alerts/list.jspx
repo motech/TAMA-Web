@@ -18,10 +18,19 @@
     <form:form action="${filter_url}" method="GET" modelAttribute="alertFilter">
         <jsp:include page="search.jspx" />
     </form:form>
+
+    <c:if test="${param.prefix == null}">
+        <c:set var="pathPrefix" value="/"/>
+    </c:if>
+
+    <c:if test="${param.prefix != null}">
+        <c:set var="pathPrefix" value="${param.prefix}"/>
+    </c:if>
+
     <c:if test="${alerts != null}" >
         <div id="_title_pl_org_motechproject_tama_domain_patientalert_id_pane">
             <page:plainlist id="pl_org_motechproject_tama_domain_patientalert" items="${alerts}" labelPlural="Alerts" label="Alert">
-                <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="${param.prefix}alerts"
+                <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="${pathPrefix}alerts"
                              show="false" create="false" update="true" delete="false"
                              typeIdFieldName="alertId" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields"
                              customAction="true"

@@ -24,6 +24,9 @@ public class ListClinicsPage extends Page {
     @FindBy(how = How.XPATH, using = "//li[@id='i_clinician_list']/a")
     private WebElement listCliniciansLink;
 
+    @FindBy(how = How.XPATH, using = "//li[@id='i_logs_list']/a")
+    private WebElement showCallLogsLink;
+
     public ListClinicsPage(WebDriver webDriver) {
         super(webDriver);
     }
@@ -31,6 +34,11 @@ public class ListClinicsPage extends Page {
     @Override
     protected void waitForPageToLoad() {
         waitForElementWithXPATHToLoad(CLINICS_LISTING_LINK_XPATH);
+    }
+
+    public FilterCallLogsPage goToFilterCallLogsPage() {
+        showCallLogsLink.click();
+        return MyPageFactory.initElements(webDriver, FilterCallLogsPage.class);
     }
 
     public ClinicianRegistrationPage goToClinicianRegistrationPage() {

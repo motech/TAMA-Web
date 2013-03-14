@@ -75,7 +75,7 @@ public class BackfillAdherenceTest extends BaseIVRTest {
     private void suspendPatientThroughSymptomsFlow() {
         caller.call();
         IVRResponse ivrResponse = caller.enter("5678");
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, DEFAULT_INBOUND_CLINIC_MESSAGE, ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW, FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, DEFAULT_INBOUND_CLINIC_MESSAGE);
 
         caller.enter("2");
 

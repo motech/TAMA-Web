@@ -12,7 +12,7 @@ public class ShowAlertPage extends Page {
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_alert_id_patientId_id")
     private WebElement patientId;
 
-    @FindBy(how = How.ID, using = "_s_org_motechproject_tama_alert_symptomsStatus_symptomsAlertStatus_id")
+    @FindBy(how = How.ID, using = "_alertStatus_id")
     private WebElement alertStatus;
 
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_alert_connectedToDoctor_connectedToDoctor_id")
@@ -27,7 +27,7 @@ public class ShowAlertPage extends Page {
     @FindBy(how = How.ID, using = "_s_org_motechproject_tama_alert_CallPreference_patientCallPreference_id")
     private WebElement callPreference;
 
-    @FindBy(how = How.ID, using = "_s_org_motechproject_tama_alert_notes_notes_id")
+    @FindBy(how = How.ID, using = "_notes_id")
     private WebElement notes;
 
     public ShowAlertPage(WebDriver webDriver) {
@@ -48,7 +48,7 @@ public class ShowAlertPage extends Page {
     }
 
     public String alertStatus() {
-        return alertStatus.getText();
+        return alertStatus.getAttribute("value");
     }
 
     public String connectedToDoctor() {

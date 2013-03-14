@@ -9,7 +9,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
 public class UpdateAlertPage extends Page {
-    public static final String SYMPTOMS_ALERT_STATUS_ID = "_symptomsAlertStatus_id";
+    public static final String SYMPTOMS_ALERT_STATUS_ID = "_alertStatus_id";
     public static final String NOTES_ID = "_notes_id";
 
     @FindBy(how = How.ID, using = SYMPTOMS_ALERT_STATUS_ID)

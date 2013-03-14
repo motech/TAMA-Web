@@ -305,25 +305,31 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
                 <scope>test</scope>
-                <version>2.25.0</version>
+                <version>2.31.0</version>
+            </dependency>
+            <dependency>
+                <groupId>xml-apis</groupId>
+                <artifactId>xml-apis</artifactId>
+                <version>1.4.01</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-support</artifactId>
                 <scope>test</scope>
-                <version>2.25.0</version>
+                <version>2.31.0</version>
             </dependency>
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-firefox-driver</artifactId>
                 <scope>test</scope>
-                <version>2.25.0</version>
+                <version>2.31.0</version>
             </dependency>
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-server</artifactId>
                 <scope>test</scope>
-                <version>2.25.0</version>
+                <version>2.31.0</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -523,22 +529,22 @@
             <dependency>
                 <groupId>org.motechproject</groupId>
                 <artifactId>motech-kookoo-automation</artifactId>
-                <version>0.3-SNAPSHOT</version>
+                <version>0.3.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject</groupId>
                 <artifactId>motech-deliverytools-common</artifactId>
-                <version>0.3-SNAPSHOT</version>
+                <version>0.3.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject</groupId>
                 <artifactId>motech-datetime-simulator</artifactId>
-                <version>0.3-SNAPSHOT</version>
+                <version>0.3.1-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject</groupId>
                 <artifactId>motech-job-handler-invoker</artifactId>
-                <version>0.3-SNAPSHOT</version>
+                <version>0.3.1-SNAPSHOT</version>
             </dependency>
             <!-- Child modules -->
             <dependency>

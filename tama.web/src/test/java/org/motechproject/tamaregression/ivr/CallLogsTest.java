@@ -31,6 +31,6 @@ public class CallLogsTest extends BaseIVRTest {
         caller.hangup();
         LoginPage loginPage = MyPageFactory.initElements(webDriver, LoginPage.class);
         Date today = DateUtil.today().toDate();
-        loginPage.loginWithClinicianUserNamePassword(clinician.userName(), clinician.password()).goToFilterCallLogsPage().filterCallLogs(today, today);
+        loginPage.loginWithCorrectAdminUserNamePassword().goToFilterCallLogsPage().filterCallLogs(today, today);
     }
 }

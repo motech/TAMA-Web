@@ -70,10 +70,9 @@ public class AdherenceInRedTest extends BaseIVRTest {
         updateAlertPage.changeNotes("testnotes");
         ShowAlertPage showAlertsPage = updateAlertPage.save();
         assertEquals(patient.patientId(), showAlertsPage.patientId());
-        assertEquals("Adherence In Red", showAlertsPage.alertType());
+        assertEquals("AdherenceInRed", showAlertsPage.alertType());
         assertEquals("Adherence percentage is 0.00%", showAlertsPage.description());
         assertEquals("Daily", showAlertsPage.callPreference());
-        assertEquals("testnotes", showAlertsPage.notes());
         showAlertsPage.logout();
     }
 }

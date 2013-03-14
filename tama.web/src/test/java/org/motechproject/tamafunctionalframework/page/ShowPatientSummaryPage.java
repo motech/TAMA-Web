@@ -9,15 +9,16 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
 public class ShowPatientSummaryPage extends Page {
-    public static final String PATIENT_ID_ID = "_s_org_motechproject_tama_domain_patient_patientId_patientId_id";
 
-    @FindBy(how = How.ID, using = PATIENT_ID_ID)
+    public static final String PATIENT_SUMMARY_ID = "fc_org_motechproject_tama_domain_patient_Patient_Summary";
+
+    @FindBy(how = How.XPATH, using = "//table[@id='fc_org_motechproject_tama_domain_patient_Patient_Summary']/tbody//td[1]")
     private WebElement patientId;
 
-    @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_patient_mobilePhoneNumber_mobilePhoneNumber_id")
+    @FindBy(how = How.XPATH, using = "//table[@id='fc_org_motechproject_tama_domain_patient_Patient_Summary']/tbody//td[2]")
     private WebElement mobileNumber;
 
-    @FindBy(how = How.ID, using = "_s_org_motechproject_tama_domain_patient_dateOfBirth_dateOfBirth_id")
+    @FindBy(how = How.XPATH, using = "//table[@id='fc_org_motechproject_tama_domain_patient_Patient_Summary']/tbody//td[3]")
     private WebElement dateOfBirth;
 
     @FindBy(how = How.XPATH, using = "//li[@id='i_patient_list']/a")
@@ -29,7 +30,7 @@ public class ShowPatientSummaryPage extends Page {
 
     @Override
     protected void waitForPageToLoad() {
-        waitForElementWithIdToLoad(PATIENT_ID_ID);
+        waitForElementWithIdToLoad(PATIENT_SUMMARY_ID);
     }
 
     public String getPatientId() {

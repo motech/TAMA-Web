@@ -50,7 +50,7 @@ public class RegimenOneTest extends BaseIVRTest {
     }
 
     @Test
-    public void verifyPatientIsTakenToSymptomReportingCallFlow_WhenTAMACallsPatient_AndPatientSaysCannotTakeDose(){
+    public void verifyPatientIsTakenToSymptomReportingCallFlow_WhenTAMACallsPatient_AndPatientSaysCannotTakeDose() {
         create_50_yrsOldPatientWithRegimenOne();
         assertTransitionToSymptomReportingCallFlow();
     }
@@ -80,7 +80,7 @@ public class RegimenOneTest extends BaseIVRTest {
         logInfo("****************************************************************************************************");
         logInfo(xStream.toXML(ivrResponse));
         logInfo("****************************************************************************************************");
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, "greeting2generic", "pilltdf3tc_tavin-l", "pillnvp_nevir", TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, "greeting2generic", TamaIVRMessage.DOSE_TAKEN_MENU_OPTION, TamaIVRMessage.SYMPTOMS_REPORTING_MENU_OPTION);
 
         // Regimen1
         caller.enter("2");

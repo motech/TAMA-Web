@@ -176,6 +176,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-support</artifactId>
             <scope>test</scope>
@@ -234,6 +239,18 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                    <testSource>1.7</testSource>
+                    <testTarget>1.7</testTarget>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.6</version>
@@ -551,8 +568,46 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>2.3.2</version>
+                        <configuration>
+                            <source>1.7</source>
+                            <target>1.7</target>
+                            <testSource>1.7</testSource>
+                            <testTarget>1.7</testTarget>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <version>1.7</version>
+                        <executions>
+                            <execution>
+                                <id>loadSeedDataInDb</id>
+                                <phase>pre-integration-test</phase>
+                                <configuration>
+                                    <target name="load" unless="skipTests">
+                                        <ant antfile="build.xml" target="drop.all.dbs" dir="${build.dir}"/>
+                                        <echo message="Seed data loading: START"/>
+                                        <property name="compile_classpath" refid="maven.compile.classpath"/>
+                                        <java classname="org.motechproject.deliverytools.seed.SetupSeedData">
+                                            <classpath>
+                                                <pathelement path="${compile_classpath}"/>
+                                            </classpath>
+                                        </java>
+                                        <echo message="Seed data loading: END"/>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <version>2.9</version>
+                        <version>2.13</version>
                         <executions>
                             <execution>
                                 <id>serial-regression-tests</id>
@@ -561,7 +616,8 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <argLine>-XX:MaxPermSize=256M</argLine>
+                                    <argLine>-XX:MaxPermSize=256M -XX:-UseSplitVerifier</argLine>
+                                    <forkMode>once</forkMode>
                                     <systemProperties>
                                         <property>
                                             <name>jetty.port</name>
@@ -590,7 +646,8 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <argLine>-XX:MaxPermSize=256M</argLine>
+                                    <argLine>-XX:MaxPermSize=256M -XX:-UseSplitVerifier</argLine>
+                                    <forkMode>once</forkMode>
                                     <systemProperties>
                                         <property>
                                             <name>jetty.port</name>

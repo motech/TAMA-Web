@@ -3,7 +3,6 @@ package org.motechproject.tamafunctionalframework.page;
 import org.motechproject.tamafunctionalframework.framework.ExtendedWebElement;
 import org.motechproject.tamafunctionalframework.framework.WebDriverFactory;
 import org.motechproject.tamafunctionalframework.testdata.treatmentadvice.TestDrugDosage;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -36,7 +35,7 @@ public class DrugDosageSection {
         logDosage(testDrugDosage, page);
 
         ((ExtendedWebElement) drugDosageTypeElement).select(testDrugDosage.dosageType());
-        ((ExtendedWebElement) drugStartDateElement).select(testDrugDosage.startDate());
+        drugStartDateElement.sendKeys(testDrugDosage.startDate());
 
         drugMealAdviceTypeElement.sendKeys(testDrugDosage.mealAdvice());
         if (testDrugDosage.isMorningDosage()) {
@@ -51,13 +50,11 @@ public class DrugDosageSection {
     private void addDetailsForMorningDose(TestDrugDosage testDrugDosage, Page page) {
         page.waitForElementWithIdToLoad(drugMorningDosageTimeElement.getAttribute("id"));
         drugMorningDosageTimeElement.sendKeys(testDrugDosage.dosageSchedule());
-        drugEveningDosageTimeElement.sendKeys(Keys.TAB);
     }
 
     private void addDetailsForEveningDose(TestDrugDosage testDrugDosage, Page page) {
         page.waitForElementWithIdToLoad(drugEveningDosageTimeElement.getAttribute("id"));
         drugEveningDosageTimeElement.sendKeys(testDrugDosage.dosageSchedule());
-        drugEveningDosageTimeElement.sendKeys(Keys.TAB);
     }
 
     private void addDetailsForVariableDose(TestDrugDosage testDrugDosage, Page page) {

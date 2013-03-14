@@ -5,7 +5,7 @@
   <spring:message code="security_login_title" var="title" htmlEscape="false" />
   <util:panel id="title" title="${title}">
     <c:if test="${not empty param.login_error}">
-      <div class="errors">
+      <div id="login-errors" class="errors">
         <p>
           <spring:message code="security_login_unsuccessful" />
           <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" />.

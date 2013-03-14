@@ -1,7 +1,6 @@
 package org.motechproject.tamafunctionalframework.framework;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.internal.Locatable;
 
 import java.util.List;
 
@@ -17,7 +16,6 @@ public class TamaWebElement implements ExtendedWebElement {
     @Override
     public void click() {
         try {
-            ((Locatable)webElement).getLocationOnScreenOnceScrolledIntoView();
             webElement.click();
         } catch (Exception e) {
             webElement.click();
@@ -26,21 +24,19 @@ public class TamaWebElement implements ExtendedWebElement {
 
     @Override
     public void submit() {
-        ((Locatable)webElement).getLocationOnScreenOnceScrolledIntoView();
         webElement.sendKeys(Keys.ENTER);
     }
 
     @Override
     public void sendKeys(CharSequence... charSequences) {
-        ((Locatable)webElement).getLocationOnScreenOnceScrolledIntoView();
-        click();
-        clear();
+        webElement.click();
+        webElement.clear();
         webElement.sendKeys(charSequences);
+        webElement.click();
     }
 
     @Override
     public void clear() {
-        ((Locatable)webElement).getLocationOnScreenOnceScrolledIntoView();
         webElement.clear();
     }
 
@@ -108,12 +104,11 @@ public class TamaWebElement implements ExtendedWebElement {
     @Override
     public void select(String value) {
         sendKeys(value);
-        click(); // required to simulate onKeyPress that sets the dojo backing element
     }
 
     @Override
     public void sendKey(CharSequence charSequence) {
-        ((Locatable)webElement).getLocationOnScreenOnceScrolledIntoView();
+        webElement.clear();
         webElement.sendKeys(charSequence);
     }
 }

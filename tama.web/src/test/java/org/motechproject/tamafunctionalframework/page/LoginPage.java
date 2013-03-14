@@ -42,6 +42,7 @@ public class LoginPage extends Page {
 
     public LoginPage loginWithIncorrectAdminUserNamePassword() {
         login(INCORRECT_USERNAME, INCORRECT_PASSWORD);
+        waitForElementWithIdToLoad("login-errors");
         return this;
     }
 

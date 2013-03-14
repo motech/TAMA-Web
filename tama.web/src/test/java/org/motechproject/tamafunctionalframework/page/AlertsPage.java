@@ -37,6 +37,7 @@ public class AlertsPage extends Page {
         alertStatus = WebDriverFactory.createWebElement(alertStatus);
         pane = WebDriverFactory.createWebElement(pane);
         pane.click();
+        waitForElementToBeVisible(By.id("_startDate_id"));
     }
 
     @Override
@@ -103,8 +104,7 @@ public class AlertsPage extends Page {
         List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
         String actualPhoneNumber = td_collection.get(1).getText();
         assertEquals(phoneNumber, actualPhoneNumber);
-        assertEquals(status, td_collection.get(6).getText());
-        assertEquals(notes, td_collection.get(7).getText());
+        assertEquals(status, td_collection.get(8).getText());
     }
 
     public boolean hasAlertOfType(String alertType) {

@@ -7,7 +7,7 @@
         <jsp:param name="selectedIndex" value="4"/>
     </jsp:include>
 
-    <tiles:useAttribute id="showPatientSummary" name="showPatientSummary"/>
+    <tiles:useAttribute id="showPatientSummary" name="showPatientSummary" ignore="true"/>
     <c:if test="${showPatientSummary}">
         <jsp:include page="../showSummary.jspx"/>
     </c:if>

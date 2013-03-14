@@ -131,7 +131,7 @@ public class BasicPillReminderTest extends BaseTest {
     private void verifyAdherenceInRedAlertIsRaised(TestPatient patient) {
         final AlertsPage alertsPage = gotoListPatientPage()
                 .goToAlertsPage();
-        alertsPage.assertTableContainsAlert(patient.patientId(), patient.mobileNumber(), "", "");
+        alertsPage.assertTableContainsAlert(patient.patientId(), patient.mobileNumber(), "Open", "");
         alertsPage.logout();
     }
 

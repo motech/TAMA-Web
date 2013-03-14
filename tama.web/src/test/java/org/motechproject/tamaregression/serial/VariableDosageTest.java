@@ -76,7 +76,7 @@ public class VariableDosageTest extends BaseIVRTest {
         tamaDateTimeService.adjustDateTime(time);
 
         IVRResponse ivrResponse = authenticate(caller.call());
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.NOT_REPORTED_IF_TAKEN, "pilld4t3tcnvp_triomune");
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.NOT_REPORTED_IF_TAKEN);
 
         ivrResponse = caller.enter(TOOK_THE_DOSE);
         assertAdherenceIs("Num_100", ivrResponse);
@@ -88,13 +88,13 @@ public class VariableDosageTest extends BaseIVRTest {
         tamaDateTimeService.adjustDateTime(time);
 
         IVRResponse ivrResponse = authenticate(caller.replyToCall(new PillReminderCallInfo(3)));
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE, "pilld4t3tcnvp_triomune");
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE);
 
         ivrResponse = caller.enter(TOOK_THE_DOSE);
         IVRAssert.assertAudioFilesPresent(ivrResponse, TamaIVRMessage.DOSE_RECORDED);
 
         ivrResponse = caller.listenMore();
-        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.YOU_WERE_SUPPOSED_TO_TAKE, "pilld4t3tcnvp_triomune", TamaIVRMessage.PREVIOUS_DOSE_MENU);
+        IVRAssert.asksForCollectDtmfWith(ivrResponse, TamaIVRMessage.PREVIOUS_DOSE_MENU);
 
         ivrResponse = caller.enter(DID_NOT_TAKE_THE_DOSE);
         assertAdherenceIs("Num_066", ivrResponse);
