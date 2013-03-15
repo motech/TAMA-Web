@@ -21,7 +21,6 @@ public abstract class BatchReportBuilder<T> extends ReportBuilder<T> {
     protected boolean fillReportData(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForColumns(worksheet);
         List data = null;
-        currentRowIndex = HEADER_ROW_COUNT;
         do {
             data = fetchData();
             for (Object dataObject : data) {
