@@ -26,7 +26,7 @@ public class TAMAIVRContext {
     public static final String IS_OUTBOX_CALL = "outbox_call";
     private static final String LAST_COMPLETED_TREE = "LastCompletedTree";
     private static final String HEALTH_TIPS_PLAYED_COUNT = "healthTipsPlayedCount";
-    private static final String LAST_PLAYED_HEALTH_TIP = "lastPlayedHealthTip";
+    public static final String LAST_PLAYED_HEALTH_TIP = "lastPlayedHealthTip";
     public static final String SWITCH_TO_DIAL_STATE = "switch_to_dial_state";
 
     protected KookooRequest kookooRequest;

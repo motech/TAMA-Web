@@ -4,79 +4,97 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.message.IVRMessage;
-import org.motechproject.tama.messages.PushedHealthTipMessage;
-import org.motechproject.tama.messages.PushedOutboxMessage;
-import org.motechproject.tama.patient.domain.CallPreference;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.PatientPreferences;
-import org.motechproject.tama.patient.domain.PatientReport;
-import org.motechproject.tama.patient.service.PatientService;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.messages.MessagesToBePushed;
+import org.motechproject.tama.messages.domain.PushedMessage;
+import org.motechproject.tama.outbox.context.OutboxContext;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.motechproject.ivr.kookoo.eventlogging.CallEventConstants.CALL_STATE;
+import static org.motechproject.tama.ivr.domain.CallState.PUSH_MESSAGES_COMPLETE;
 
 public class MessagesControllerTest {
 
     @Mock
+    private KooKooIVRContext kookooIVRContext;
+    @Mock
     private IVRMessage ivrMessage;
     @Mock
-    private KookooCallDetailRecordsService callDetailRecordService;
+    private KookooCallDetailRecordsService callDetailRecordsService;
     @Mock
     private StandardResponseController standardResponseController;
     @Mock
-    private PushedOutboxMessage pushedOutboxMessage;
+    private MessagesToBePushed messagesToBePushed;
     @Mock
-    private PushedHealthTipMessage pushedHealthTipMessage;
+    private HttpSession httpSession;
     @Mock
-    private KooKooIVRContext kookooIVRContext;
-    @Mock
-    private PatientService patientService;
+    private Cookies cookies;
 
+    private String patientId = "patientId";
     private MessagesController messagesController;
 
     @Before
     public void setup() {
         initMocks(this);
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        HttpSession httpSession = mock(HttpSession.class);
-        Cookies cookies = mock(Cookies.class);
+        setupCookies();
+        setupSession();
+        messagesController = new MessagesController(ivrMessage, callDetailRecordsService, standardResponseController, messagesToBePushed);
+    }
 
+    private void setupSession() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getSession()).thenReturn(httpSession);
         when(kookooIVRContext.httpRequest()).thenReturn(request);
+        when(httpSession.getAttribute(TAMAIVRContext.PATIENT_ID)).thenReturn(patientId);
+    }
+
+    private void setupCookies() {
         when(kookooIVRContext.cookies()).thenReturn(cookies);
-        messagesController = new MessagesController(ivrMessage, callDetailRecordService, standardResponseController, pushedOutboxMessage, pushedHealthTipMessage, patientService);
-    }
-
-    @Before
-    public void setupPatient() {
-        Patient patient = new Patient();
-        PatientPreferences patientPreferences = new PatientPreferences();
-        patientPreferences.setCallPreference(CallPreference.DailyPillReminder);
-        patient.setPatientPreferences(patientPreferences);
-
-        when(patientService.getPatientReport(anyString())).thenReturn(new PatientReport(patient, null, null, null));
     }
 
     @Test
-    public void shouldPlayOutboxMessages() {
-        when(pushedOutboxMessage.addToResponse(any(KookooIVRResponseBuilder.class), eq(kookooIVRContext))).thenReturn(true);
+    public void shouldAddMessageToResponse() {
+        when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("");
+        when(cookies.getValue(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn("");
+
         messagesController.gotDTMF(kookooIVRContext);
-        verify(pushedHealthTipMessage, never()).addToResponse(any(KookooIVRResponseBuilder.class), eq(kookooIVRContext));
+
+        verify(messagesToBePushed).nextMessage(kookooIVRContext);
     }
 
     @Test
-    public void shouldPlayHealthTipMessageWhenThereAreNoOutboxMessages() {
-        when(pushedOutboxMessage.addToResponse(any(KookooIVRResponseBuilder.class), eq(kookooIVRContext))).thenReturn(false);
+    public void shouldMarkMessageAsReadIfMessageIsAlreadyPlayed() {
+        when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("healthTip");
+
         messagesController.gotDTMF(kookooIVRContext);
-        verify(pushedHealthTipMessage).addToResponse(any(KookooIVRResponseBuilder.class), eq(kookooIVRContext));
+
+        verify(messagesToBePushed).markAsRead(kookooIVRContext, new PushedMessage(kookooIVRContext));
+    }
+
+    @Test
+    public void shouldNotMarkMessageAsReadIfMessageIsNotAlreadyPlayed() {
+        when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("");
+        when(cookies.getValue(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn("");
+
+        messagesController.gotDTMF(kookooIVRContext);
+
+        verify(messagesToBePushed, never()).markAsRead(kookooIVRContext, new PushedMessage(kookooIVRContext));
+    }
+
+    @Test
+    public void shouldSetCallStateToCompleteIfMessageIsAlreadyPlayed() {
+        when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("healthTip");
+
+        messagesController.gotDTMF(kookooIVRContext);
+
+        verify(httpSession).setAttribute(CALL_STATE, PUSH_MESSAGES_COMPLETE.toString());
     }
 }

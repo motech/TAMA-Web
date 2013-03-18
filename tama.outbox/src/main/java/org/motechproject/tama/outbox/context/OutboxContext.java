@@ -1,5 +1,6 @@
 package org.motechproject.tama.outbox.context;
 
+import lombok.EqualsAndHashCode;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.util.Cookies;
@@ -7,10 +8,11 @@ import org.motechproject.util.Cookies;
 import javax.servlet.http.HttpServletRequest;
 
 // This class is created instead of using TAMAIVRContext because we might want to move Outbox IVR to platform
+@EqualsAndHashCode
 public class OutboxContext {
     private Cookies cookies;
 
-    private static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
+    public static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
     private static final String OUTBOX_COMPLETED = "outboxCompleted";
     private KooKooIVRContext kooKooIVRContext;
     private HttpServletRequest request;

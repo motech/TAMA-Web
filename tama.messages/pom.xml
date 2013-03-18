@@ -28,6 +28,24 @@
             <artifactId>tama.common</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.patient</artifactId>
+            <classifier>tests</classifier>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.facility</artifactId>
+            <classifier>tests</classifier>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.common</artifactId>
+            <classifier>tests</classifier>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-platform-ivr</artifactId>
         </dependency>

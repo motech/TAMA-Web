@@ -9,6 +9,8 @@ import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 @Component
 public class PushedHealthTipMessage {
 
@@ -21,6 +23,28 @@ public class PushedHealthTipMessage {
         this.continueToHealthTipsCriteria = continueToHealthTipsCriteria;
     }
 
+    public boolean hasAnyMessage(KooKooIVRContext kooKooIVRContext) {
+        TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(kooKooIVRContext);
+        if (continueToHealthTipsCriteria.shouldContinue(tamaivrContext.patientDocumentId())) {
+            String healthTip = this.healthTipService.nextHealthTip(tamaivrContext.patientDocumentId());
+            return isNotBlank(healthTip);
+        } else {
+            return false;
+        }
+    }
+
+    public KookooIVRResponseBuilder getResponse(KooKooIVRContext kooKooIVRContext) {
+        KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withSid(kooKooIVRContext.callId());
+        addToResponse(response, kooKooIVRContext);
+        return response;
+    }
+
+    public void markAsRead(String patientDocumentId, String lastPlayedHealthTip) {
+        if (isNotBlank(lastPlayedHealthTip)) {
+            healthTipService.markAsPlayed(patientDocumentId, lastPlayedHealthTip);
+        }
+    }
+
     public boolean addToResponse(KookooIVRResponseBuilder ivrResponseBuilder, KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(kooKooIVRContext);
         if (continueToHealthTipsCriteria.shouldContinue(tamaivrContext.patientDocumentId())) {
@@ -31,9 +55,5 @@ public class PushedHealthTipMessage {
         } else {
             return false;
         }
-    }
-
-    public void markAsRead(String patientDocumentId, String lastPlayedHealthTip) {
-        healthTipService.markAsPlayed(patientDocumentId, lastPlayedHealthTip);
     }
 }
