@@ -10,6 +10,11 @@ import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tama.messages.PushedHealthTipMessage;
 import org.motechproject.tama.messages.PushedOutboxMessage;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientPreferences;
+import org.motechproject.tama.patient.domain.PatientReport;
+import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +38,8 @@ public class MessagesControllerTest {
     private PushedHealthTipMessage pushedHealthTipMessage;
     @Mock
     private KooKooIVRContext kookooIVRContext;
+    @Mock
+    private PatientService patientService;
 
     private MessagesController messagesController;
 
@@ -46,7 +53,17 @@ public class MessagesControllerTest {
         when(request.getSession()).thenReturn(httpSession);
         when(kookooIVRContext.httpRequest()).thenReturn(request);
         when(kookooIVRContext.cookies()).thenReturn(cookies);
-        messagesController = new MessagesController(ivrMessage, callDetailRecordService, standardResponseController, pushedOutboxMessage, pushedHealthTipMessage);
+        messagesController = new MessagesController(ivrMessage, callDetailRecordService, standardResponseController, pushedOutboxMessage, pushedHealthTipMessage, patientService);
+    }
+
+    @Before
+    public void setupPatient() {
+        Patient patient = new Patient();
+        PatientPreferences patientPreferences = new PatientPreferences();
+        patientPreferences.setCallPreference(CallPreference.DailyPillReminder);
+        patient.setPatientPreferences(patientPreferences);
+
+        when(patientService.getPatientReport(anyString())).thenReturn(new PatientReport(patient, null, null, null));
     }
 
     @Test
