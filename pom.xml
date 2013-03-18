@@ -22,6 +22,7 @@
         <module>tama.web</module>
         <module>tama.reporting</module>
         <module>tama.migration</module>
+        <module>tama.messages</module>
     </modules>
     <name>tama-all</name>
     <repositories>
@@ -550,6 +551,11 @@
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>test_data</artifactId>
+                <version>0.7-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.motechproject.tama</groupId>
+                <artifactId>tama.messages</artifactId>
                 <version>0.7-SNAPSHOT</version>
             </dependency>
             <dependency>

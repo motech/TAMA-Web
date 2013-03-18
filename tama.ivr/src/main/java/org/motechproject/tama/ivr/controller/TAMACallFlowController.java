@@ -65,8 +65,10 @@ public class TAMACallFlowController implements CallFlowController {
         if (outboxModuleStrategy.hasOutboxCompleted(tamaivrContext)) return ControllerURLs.MENU_REPEAT;
         if (callState.equals(CallState.OUTBOX)) return ControllerURLs.OUTBOX_URL;
         if (callState.equals(CallState.END_OF_FLOW)) return ControllerURLs.MENU_REPEAT;
-        if (callState.equals(CallState.ALL_TREES_COMPLETED))
-            return outboxModuleStrategy.shouldContinueToOutbox(tamaivrContext.patientDocumentId()) ? ControllerURLs.PRE_OUTBOX_URL : ControllerURLs.MENU_REPEAT;
+        if (callState.equals(CallState.PUSH_MESSAGES_COMPLETE)) return ControllerURLs.MENU_REPEAT;
+        if (callState.equals(CallState.ALL_TREES_COMPLETED)) {
+            return tamaivrContext.isOutgoingCall() ? ControllerURLs.PUSH_MESSAGES_URL : ControllerURLs.PRE_OUTBOX_URL;
+        }
         throw new TamaException("No URL found");
     }
 
@@ -93,7 +95,7 @@ public class TAMACallFlowController implements CallFlowController {
                 return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;
             else {
                 if (patient.getStatus().isSuspended())
-                    return TAMATreeRegistry.MENU_TREE;
+                    return TAMATreeRegistry.INCOMING_MENU_TREE;
                 if (pillModuleStrategy.isCurrentDoseTaken(tamaivrContext)) {
                     return TAMATreeRegistry.CURRENT_DOSAGE_TAKEN;
                 } else {

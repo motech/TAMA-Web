@@ -9,4 +9,5 @@ public class ControllerURLs {
     public static final String SYMPTOM_REPORTING_URL = "/ivr/symptomreporting";
     public static final String DIAL_URL = "/ivr/dial";
     public static final String MENU_REPEAT = "/ivr/reset";
+    public static final String PUSH_MESSAGES_URL = "/ivr/messages";
 }

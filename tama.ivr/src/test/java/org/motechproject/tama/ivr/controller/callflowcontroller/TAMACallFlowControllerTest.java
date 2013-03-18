@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr.controller;
+package org.motechproject.tama.ivr.controller.callflowcontroller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +10,7 @@ import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
 import org.motechproject.tama.ivr.context.PillModuleStrategy;
 import org.motechproject.tama.ivr.context.SymptomModuleStrategy;
+import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
@@ -19,7 +20,6 @@ import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -53,7 +53,6 @@ public class TAMACallFlowControllerTest {
         when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaIVRContext);
     }
 
-
     @Test
     public void returnAuthenticationURLWhenTheCallStarts() {
         tamaIVRContext.callState(CallState.STARTED);
@@ -63,18 +62,17 @@ public class TAMACallFlowControllerTest {
     @Test
     public void outboxURLShouldBeReturnedWhenTheDecisionTreesAreComplete() {
         tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
+        tamaIVRContext.callDirection(CallDirection.Outbound);
         String patientId = "1234";
         tamaIVRContext.patientDocumentId(patientId);
-        when(outboxModuleStrategy.shouldContinueToOutbox(patientId)).thenReturn(true);
-        assertEquals(ControllerURLs.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+        assertEquals(ControllerURLs.PUSH_MESSAGES_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test
-    public void menuRepeatURLShouldBeReturnedWhenThereAreNoMessagesInOutbox() {
-        tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
+    public void menuRepeatURLShouldBeReturnedAfterPushOfMessages() {
+        tamaIVRContext.callState(CallState.PUSH_MESSAGES_COMPLETE);
         String patientId = "1234";
         tamaIVRContext.patientDocumentId(patientId);
-        when(outboxModuleStrategy.shouldContinueToOutbox(patientId)).thenReturn(false);
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
@@ -146,7 +144,7 @@ public class TAMACallFlowControllerTest {
         when(allPatients.get(null)).thenReturn(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).withStatus(Status.Suspended).build());
         tamaIVRContext.callDirection(CallDirection.Inbound);
 
-        assertEquals(TAMATreeRegistry.MENU_TREE, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
+        assertEquals(TAMATreeRegistry.INCOMING_MENU_TREE, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
     }
 
     @Test
@@ -156,14 +154,6 @@ public class TAMACallFlowControllerTest {
         tamaIVRContext.callDirection(CallDirection.Inbound);
 
         assertEquals(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL, tamaCallFlowController.decisionTreeName(kooKooIVRContext));
-    }
-
-    @Test
-    public void shouldTransitionToMenuRepetitionOnceAllTreesAreCompletedAndThereAreNoOutboxMessages() {
-        tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
-        when(outboxModuleStrategy.shouldContinueToOutbox(any(String.class))).thenReturn(false);
-
-        assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test

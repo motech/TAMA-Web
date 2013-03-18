@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr.controller;
+package org.motechproject.tama.ivr.controller.callflowcontroller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +8,7 @@ import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
 import org.motechproject.tama.ivr.context.PillModuleStrategy;
+import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.patient.domain.CallPreference;

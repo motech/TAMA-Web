@@ -22,6 +22,7 @@ public class TAMATreeRegistry {
     public static final String FOUR_DAY_RECALL_INCOMING_CALL = "FourDayRecallIncomingCallTree";
     public static final String OUTBOX_CALL = "OutboxCallTree";
     public static final String MENU_TREE = "MenuTree";
+    public static final String INCOMING_MENU_TREE = "IncomingMenuTree";
 
     private List<String> leafTreeNames;
 

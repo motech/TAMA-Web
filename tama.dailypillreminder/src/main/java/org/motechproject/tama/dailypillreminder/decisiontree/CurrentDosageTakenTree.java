@@ -4,6 +4,7 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.tama.dailypillreminder.command.NextCallDetails;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
 import org.motechproject.tama.ivr.decisiontree.TAMATransitionFactory;
@@ -35,10 +36,12 @@ public class CurrentDosageTakenTree extends TamaDecisionTree {
                 .setPrompts(
                         new AudioPrompt().setCommand(incomingWelcomeMessage),
                         new AudioPrompt().setCommand(nextCallDetails),
-                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand))
+                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand),
+                        new MenuAudioPrompt().setName(TamaIVRMessage.HEALTH_TIPS_MENU_OPTION))
                 .setTransitions(new Object[][]{
                         {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
                         {"3", TAMATransitionFactory.createCallStateTransition(CallState.OUTBOX)},
+                        {"5", TAMATransitionFactory.createCallStateTransition(CallState.HEALTH_TIPS)}
                 }
                 );
     }

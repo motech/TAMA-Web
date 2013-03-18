@@ -16,6 +16,10 @@
     <dependencies>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.messages</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
             <artifactId>test_data</artifactId>
         </dependency>
         <dependency>
