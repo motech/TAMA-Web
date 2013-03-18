@@ -41,17 +41,20 @@ public class MessagesController extends SafeIVRController {
         KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withSid(tamaivrContext.callId());
         if (markMessageLastAsRead(kooKooIVRContext)) {
             tamaivrContext.callState(CallState.PUSH_MESSAGES_COMPLETE);
-            return new KookooIVRResponseBuilder().withSid(tamaivrContext.callId());
+            return response;
         } else {
             return playNextMessage(kooKooIVRContext, response);
         }
     }
 
     private KookooIVRResponseBuilder playNextMessage(KooKooIVRContext kooKooIVRContext, KookooIVRResponseBuilder response) {
+        TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(kooKooIVRContext);
         if (pushedOutboxMessage.addToResponse(response, kooKooIVRContext)) {
             return response;
+        } else if (pushedHealthTipMessage.addToResponse(response, kooKooIVRContext)) {
+            return response;
         } else {
-            pushedHealthTipMessage.addToResponse(response, kooKooIVRContext);
+            tamaivrContext.callState(CallState.PUSH_MESSAGES_COMPLETE);
             return response;
         }
     }

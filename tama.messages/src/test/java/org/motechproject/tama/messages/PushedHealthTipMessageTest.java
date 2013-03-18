@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.tama.healthtips.criteria.ContinueToHealthTipsCriteria;
 import org.motechproject.tama.healthtips.service.HealthTipService;
 import org.motechproject.util.Cookies;
 
@@ -24,6 +25,8 @@ public class PushedHealthTipMessageTest {
     private HealthTipService healthTipService;
     @Mock
     private KooKooIVRContext kookooIVRContext;
+    @Mock
+    private ContinueToHealthTipsCriteria continueToHealthTipsCriteria;
 
     private PushedHealthTipMessage pushedHealthTipMessage;
 
@@ -37,12 +40,13 @@ public class PushedHealthTipMessageTest {
         when(request.getSession()).thenReturn(httpSession);
         when(kookooIVRContext.httpRequest()).thenReturn(request);
         when(kookooIVRContext.cookies()).thenReturn(cookies);
-        pushedHealthTipMessage = new PushedHealthTipMessage(healthTipService);
+        pushedHealthTipMessage = new PushedHealthTipMessage(healthTipService, continueToHealthTipsCriteria);
     }
 
     @Test
     public void shouldPlayHealthTipsWhenThereAreNoAdherenceMessages() {
         String nextHealthTip = "nextHealthTip";
+        when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(true);
         when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
 
         KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
