@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 public class SecondPriorityFilter extends TreeNodeFilter {
 
     public SecondPriorityFilter() {
-        super("adv_stopmedicineseeclinicasap", "adv_seeclinicasapdepression");
+        super("adv_stopmedicineseeclinicasap", "adv_seeclinicasap");
     }
 }

@@ -116,18 +116,18 @@ public class SymptomReportingTreeInterceptorTest {
 
     @Test
     public void shouldAddDialPrompts_ForSecondPriorityNodes() {
-        Node node1 = node("adv_seeclinicasapdepression");
+        Node node1 = node("adv_seeclinicasap");
         interceptor.addCommands(node1);
         List<Prompt> prompts = node1.getPrompts();
         assertEquals(3, prompts.size());
         assertEquals(TamaIVRMessage.START_SYMPTOM_FLOW, prompts.get(0).getName());
-        assertEquals("adv_seeclinicasapdepression", prompts.get(1).getName());
+        assertEquals("adv_seeclinicasap", prompts.get(1).getName());
         assertEquals(dialStateCommand.getClass(), prompts.get(2).getCommand().getClass());
     }
 
     @Test
     public void shouldAddSymptomStartWavFile_ToTheBeginningOfTheRootNode() {
-        Node node1 = node("adv_seeclinicasapdepression");
+        Node node1 = node("adv_seeclinicasap");
         interceptor.addCommands(node1);
         List<Prompt> prompts = node1.getPrompts();
         assertEquals(3, prompts.size());
