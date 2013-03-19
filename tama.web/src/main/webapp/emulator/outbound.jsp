@@ -10,7 +10,6 @@ System.out.println("############################################################
 application.setAttribute("phone_no", request.getParameter("phone_no"));
 String dataMap = request.getParameter("url");
 System.out.println("\n" + dataMap + "\n");
-dataMap = URLDecoder.decode(dataMap, "UTF8");
 System.out.println("\n" + dataMap + "\n");
 int idx = dataMap.indexOf("dataMap=");
 dataMap  = dataMap.substring(idx + "dataMap=".length());
