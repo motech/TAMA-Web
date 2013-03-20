@@ -59,9 +59,8 @@ public class MessageForMedicinesTest {
         context.callStartTime(timeWithinPillWindow);
         String[] messages = messageForMedicines.executeCommand(context);
 
-        assertEquals(3, messages.length);
+        assertEquals(2, messages.length);
         assertEquals("test_clinic", messages[0]);
         assertEquals(TamaIVRMessage.ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE, messages[1]);
-        assertEquals(TamaIVRMessage.FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE, messages[2]);
     }
 }
