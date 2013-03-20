@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 public class SuspendAdherenceCallsFilter extends TreeNodeFilter {
 
     public SuspendAdherenceCallsFilter() {
-        super("adv_crocin01", "adv_noteatanythg", "adv_stopmedicineseeclinicasap");
+        super("adv_noteatanythg", "adv_stopmedicineseeclinicasap");
     }
 }
