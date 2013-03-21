@@ -72,9 +72,9 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
 
     private void setupVisit() {
         VisitResponse visitResponse = new VisitResponse().setName("visitName")
-                                                         .setAppointmentDueDate(monday.minusDays(3))
-                                                         .setOriginalAppointmentDueDate(monday.minusDays(3))
-                                                         .setAppointmentConfirmDate(monday);
+                .setAppointmentDueDate(monday.minusDays(3))
+                .setOriginalAppointmentDueDate(monday.minusDays(3))
+                .setAppointmentConfirmDate(monday);
         when(allClinicVisits.get("patientId", "visitName")).thenReturn(new ClinicVisit(patientWithLanguagePreference, visitResponse));
     }
 
@@ -102,6 +102,16 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
     @Test
     public void shouldHandleVisitReminderMessage() {
         assertTrue(visitReminderMessageBuilder.canHandle(visitReminderVoiceMessage));
+    }
+
+    @Test
+    public void shouldHandlePushedVisitReminderMessage() {
+        VoiceMessageType voiceMessageType = new VoiceMessageType();
+        voiceMessageType.setVoiceMessageTypeName(TAMAConstants.PUSHED_VISIT_REMINDER_VOICE_MESSAGE);
+        OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
+        outboundVoiceMessage.setVoiceMessageType(voiceMessageType);
+
+        assertTrue(visitReminderMessageBuilder.canHandle(outboundVoiceMessage));
     }
 
     @Test

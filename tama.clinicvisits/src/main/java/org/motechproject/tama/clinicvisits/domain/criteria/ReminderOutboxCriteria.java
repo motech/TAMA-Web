@@ -37,6 +37,15 @@ public class ReminderOutboxCriteria {
                 && (!DateUtil.today().isAfter(clinicVisit.getEffectiveDueDate()));
     }
 
+    public boolean shouldAddPushedOutboxMessageForVisits(Patient patient, ClinicVisit clinicVisit) {
+        return (patient.getPatientPreferences().getActivateAppointmentReminders())
+                && (!outboxService.hasPendingOutboxMessages(patient.getId(), PUSHED_VISIT_REMINDER_VOICE_MESSAGE))
+                && (!outboxService.hasMessages(patient.getId(), PUSHED_VISIT_REMINDER_VOICE_MESSAGE, TAMAReminderConfiguration.visitReminderStartDate(clinicVisit)))
+                && (clinicVisit.getConfirmedAppointmentDate() != null)
+                && (DateUtil.now().isBefore(clinicVisit.getConfirmedAppointmentDate())
+                && clinicVisit.getVisitDate() == null);
+    }
+
     public boolean shouldAddOutboxMessageForVisits(Patient patient, ClinicVisit clinicVisit) {
         return (patient.getPatientPreferences().getActivateAppointmentReminders())
                 && (!outboxService.hasPendingOutboxMessages(patient.getId(), VISIT_REMINDER_VOICE_MESSAGE))

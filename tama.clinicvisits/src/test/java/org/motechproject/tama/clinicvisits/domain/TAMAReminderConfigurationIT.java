@@ -29,7 +29,12 @@ public class TAMAReminderConfigurationIT {
     }
 
     @Test
-    public void shouldReturnTheNumberOfTimesToPushOutboxMessage() {
+    public void shouldReturnTheNumberOfTimesToPushAppointmentReminderOutboxMessage() {
         assertEquals(2, tamaReminderConfiguration.getPushedAppointmentReminderVoiceMessageCount());
+    }
+
+    @Test
+    public void shouldReturnTheNumberOfTimesToPushVisitReminderOutboxMessage() {
+        assertEquals(2, tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount());
     }
 }

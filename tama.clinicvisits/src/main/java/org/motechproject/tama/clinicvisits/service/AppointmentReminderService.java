@@ -43,14 +43,8 @@ public class AppointmentReminderService {
     }
 
     public void addOutboxMessage(Patient patient, ClinicVisit clinicVisit) {
-        if(reminderOutboxCriteria.shouldAddPushedOutboxMessageForAppointments(patient, clinicVisit)){
-            for(int i=0; i< TAMAReminderConfiguration.getPushedAppointmentReminderVoiceMessageCount(); i++){
-                outboxService.addMessage(patient.getId(), TAMAConstants.PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE);
-            }
-        }
-        if (reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, clinicVisit)) {
-            outboxService.addMessage(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
-        }
+        addPushedOutboxMessages(patient, clinicVisit);
+        addPulledOutboxMessages(patient, clinicVisit);
     }
 
     public void raiseAlert(Patient patient, ClinicVisit clinicVisit) {
@@ -67,5 +61,19 @@ public class AppointmentReminderService {
         data.put(PatientAlert.APPOINTMENT_DATE, clinicVisit.getEffectiveDueDate().toString());
         patientAlertService.createAlert(patient.getId(), TAMAConstants.NO_ALERT_PRIORITY,
                 alertName, "", alertType, data);
+    }
+
+    private void addPushedOutboxMessages(Patient patient, ClinicVisit clinicVisit) {
+        if (reminderOutboxCriteria.shouldAddPushedOutboxMessageForAppointments(patient, clinicVisit)) {
+            for (int i = 0; i < TAMAReminderConfiguration.getPushedAppointmentReminderVoiceMessageCount(); i++) {
+                outboxService.addMessage(patient.getId(), TAMAConstants.PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE);
+            }
+        }
+    }
+
+    private void addPulledOutboxMessages(Patient patient, ClinicVisit clinicVisit) {
+        if (reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, clinicVisit)) {
+            outboxService.addMessage(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
+        }
     }
 }

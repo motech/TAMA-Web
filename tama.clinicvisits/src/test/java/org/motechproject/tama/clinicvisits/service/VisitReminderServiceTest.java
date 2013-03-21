@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
 import org.motechproject.tama.clinicvisits.domain.criteria.VisitMissedAlertCriteria;
 import org.motechproject.tama.common.TAMAConstants;
@@ -36,6 +37,8 @@ public class VisitReminderServiceTest {
     private OutboxService outboxService;
     @Mock
     private PatientAlertService patientAlertService;
+    @Mock
+    private TAMAReminderConfiguration tamaReminderConfiguration;
 
     VisitReminderService visitReminderService;
     private Patient patient;
@@ -51,11 +54,11 @@ public class VisitReminderServiceTest {
     @Before
     public void setup() {
         initMocks(this);
-        visitReminderService = new VisitReminderService(reminderOutboxCriteria, outboxService, visitMissedAlertCriteria, patientAlertService);
+        visitReminderService = new VisitReminderService(reminderOutboxCriteria, outboxService, visitMissedAlertCriteria, patientAlertService, tamaReminderConfiguration);
     }
 
     @Test
-    public void shouldAddOutboxMessageWhenReminderOutboxCriteriaIsTrue() {
+    public void shouldAddPulledOutboxMessageWhenReminderOutboxCriteriaIsTrue() {
         when(reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, clinicVisit)).thenReturn(true);
         visitReminderService.addOutboxMessage(patient, clinicVisit);
 
@@ -65,8 +68,39 @@ public class VisitReminderServiceTest {
     }
 
     @Test
-    public void shouldNotAddOutboxMessageWhenReminderOutboxCriteriaIsFalse() {
+    public void shouldAddPushedOutboxMessageWhenReminderOutboxCriteriaIsTrue() {
+        when(reminderOutboxCriteria.shouldAddPushedOutboxMessageForVisits(patient, clinicVisit)).thenReturn(true);
+        when(tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount()).thenReturn(1);
+        visitReminderService.addOutboxMessage(patient, clinicVisit);
+
+        ArgumentCaptor<HashMap> paramCaptor = ArgumentCaptor.forClass(HashMap.class);
+        verify(outboxService).addMessage(eq(patient.getId()), eq(TAMAConstants.PUSHED_VISIT_REMINDER_VOICE_MESSAGE), paramCaptor.capture());
+        assertEquals(visitName, paramCaptor.getValue().get(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME));
+    }
+
+    @Test
+    public void shouldAddPushedOutboxMessageAsPerValueInPropertiesFile() {
+        when(reminderOutboxCriteria.shouldAddPushedOutboxMessageForVisits(patient, clinicVisit)).thenReturn(true);
+        when(tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount()).thenReturn(2);
+        visitReminderService.addOutboxMessage(patient, clinicVisit);
+
+        ArgumentCaptor<HashMap> paramCaptor = ArgumentCaptor.forClass(HashMap.class);
+        verify(outboxService, times(2)).addMessage(eq(patient.getId()), eq(TAMAConstants.PUSHED_VISIT_REMINDER_VOICE_MESSAGE), paramCaptor.capture());
+        assertEquals(visitName, paramCaptor.getValue().get(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME));
+    }
+
+    @Test
+    public void shouldNotAddPulledOutboxMessageWhenReminderOutboxCriteriaIsFalse() {
         when(reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, clinicVisit)).thenReturn(false);
+        visitReminderService.addOutboxMessage(patient, clinicVisit);
+        verifyZeroInteractions(outboxService);
+    }
+
+    @Test
+    public void shouldNotAddPushedOutboxMessageWhenReminderOutboxCriteriaIsFalse() {
+        when(reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, clinicVisit)).thenReturn(false);
+        when(tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount()).thenReturn(1);
+
         visitReminderService.addOutboxMessage(patient, clinicVisit);
         verifyZeroInteractions(outboxService);
     }

@@ -20,6 +20,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.motechproject.tama.common.TAMAConstants.PUSHED_VISIT_REMINDER_VOICE_MESSAGE;
+import static org.motechproject.tama.common.TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE;
+
 @Component
 public class VisitReminderMessageBuilder implements OutboxMessageBuilder {
 
@@ -35,7 +38,10 @@ public class VisitReminderMessageBuilder implements OutboxMessageBuilder {
     @Override
     public boolean canHandle(OutboundVoiceMessage voiceMessage) {
         VoiceMessageType voiceMessageType = voiceMessage.getVoiceMessageType();
-        return voiceMessageType != null && TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE.equals(voiceMessageType.getVoiceMessageTypeName());
+        return voiceMessageType != null && (
+                VISIT_REMINDER_VOICE_MESSAGE.equals(voiceMessageType.getVoiceMessageTypeName())
+                        || PUSHED_VISIT_REMINDER_VOICE_MESSAGE.equals(voiceMessageType.getVoiceMessageTypeName())
+        );
     }
 
     @Override
