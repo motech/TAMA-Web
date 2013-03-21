@@ -4,7 +4,6 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.motechproject.outbox.api.domain.VoiceMessageType;
-import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.outbox.context.OutboxContext;
 import org.motechproject.tama.outbox.factory.OutboxMessageBuilder;
@@ -13,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static org.motechproject.tama.common.TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE;
+import static org.motechproject.tama.common.TAMAConstants.PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE;
 
 @Component
 public class AppointmentReminderMessageBuilder implements OutboxMessageBuilder {
@@ -27,7 +29,7 @@ public class AppointmentReminderMessageBuilder implements OutboxMessageBuilder {
     @Override
     public boolean canHandle(OutboundVoiceMessage voiceMessage) {
         VoiceMessageType voiceMessageType = voiceMessage.getVoiceMessageType();
-        return voiceMessageType != null && TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE.equals(voiceMessageType.getVoiceMessageTypeName());
+        return voiceMessageType != null && (APPOINTMENT_REMINDER_VOICE_MESSAGE.equals(voiceMessageType.getVoiceMessageTypeName()) || PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE.equals(voiceMessageType.getVoiceMessageTypeName()));
     }
 
     @Override

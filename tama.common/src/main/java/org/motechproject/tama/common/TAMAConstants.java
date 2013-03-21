@@ -36,6 +36,7 @@ public class TAMAConstants {
     public static final String APPOINTMENT_REMINDER_VOICE_MESSAGE = APPOINTMENT_REMINDER;
     public static final String VISIT_REMINDER_VOICE_MESSAGE = "Visit Reminder";
     public static final String MESSAGE_PARAMETER_VISIT_NAME = "visitName";
+    public static final String PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE = "PUSHED" + APPOINTMENT_REMINDER_VOICE_MESSAGE;
 
     public enum Time {
         MAX_DAYS_IN_A_MONTH(31),

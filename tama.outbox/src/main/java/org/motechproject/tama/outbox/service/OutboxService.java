@@ -1,5 +1,6 @@
 package org.motechproject.tama.outbox.service;
 
+import org.joda.time.DateTime;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.outbox.api.domain.OutboundVoiceMessage;
 import org.motechproject.outbox.api.domain.VoiceMessageType;
@@ -68,6 +69,10 @@ public class OutboxService implements Outbox {
 
     public boolean hasPendingOutboxMessages(String patientDocumentId, String voiceMessageTypeName) {
         return voiceOutboxService.getNumberOfMessages(patientDocumentId, PENDING, voiceMessageTypeName) != 0;
+    }
+
+    public boolean hasMessages(String patientDocumentId, String voiceMessageType, DateTime creationTime) {
+        return voiceOutboxService.getNumberOfMessages(patientDocumentId, voiceMessageType, creationTime.toDate()) != 0;
     }
 
     public String addMessage(String patientId, String voiceMessageTypeName) {

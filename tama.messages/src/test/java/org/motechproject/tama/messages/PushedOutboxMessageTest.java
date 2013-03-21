@@ -78,8 +78,8 @@ public class PushedOutboxMessageTest {
         OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
         OutboxContext outboxContext = new OutboxContext(kookooIVRContext);
 
-        when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(1);
-        when(voiceOutboxService.nextMessage(null, patientId, APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(outboundVoiceMessage);
+        when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(1);
+        when(voiceOutboxService.nextMessage(null, patientId, PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(outboundVoiceMessage);
 
         pushedOutboxMessage.getResponse(kookooIVRContext);
 
@@ -88,7 +88,7 @@ public class PushedOutboxMessageTest {
 
     @Test
     public void shouldNotAddAppointmentReminderVoiceMessageToResponseIfNotPresent() {
-        when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(0);
+        when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(0);
 
         pushedOutboxMessage.getResponse(kookooIVRContext);
 
@@ -145,11 +145,11 @@ public class PushedOutboxMessageTest {
         OutboundVoiceMessage appointmentReminderMessage = new OutboundVoiceMessage();
         appointmentReminderMessage.setId("id");
 
-        when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(1);
+        when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(1);
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(VISIT_REMINDER_VOICE_MESSAGE))).thenReturn(1);
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(VOICE_MESSAGE_COMMAND_AUDIO))).thenReturn(1);
 
-        when(voiceOutboxService.nextMessage(null, patientId, APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(appointmentReminderMessage);
+        when(voiceOutboxService.nextMessage(null, patientId, PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(appointmentReminderMessage);
         when(voiceOutboxService.nextMessage(null, patientId, VISIT_REMINDER_VOICE_MESSAGE)).thenReturn(new OutboundVoiceMessage());
         when(voiceOutboxService.nextMessage(null, patientId, VOICE_MESSAGE_COMMAND_AUDIO)).thenReturn(new OutboundVoiceMessage());
 
@@ -180,8 +180,8 @@ public class PushedOutboxMessageTest {
         OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
         outboundVoiceMessage.setId("id");
 
-        when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(1);
-        when(voiceOutboxService.nextMessage(null, patientId, APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(outboundVoiceMessage);
+        when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(1);
+        when(voiceOutboxService.nextMessage(null, patientId, PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(outboundVoiceMessage);
 
         pushedOutboxMessage.getResponse(kookooIVRContext);
 

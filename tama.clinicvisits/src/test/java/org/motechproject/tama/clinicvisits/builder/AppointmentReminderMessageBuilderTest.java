@@ -29,7 +29,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(value = Suite.class)
 @Suite.SuiteClasses({
         AppointmentReminderMessageBuilderTest.VoiceMessageTypeIsAppointmentReminder.class,
-        AppointmentReminderMessageBuilderTest.VoiceMessageTypeIsNotAppointmentReminder.class
+        AppointmentReminderMessageBuilderTest.VoiceMessageTypeIsNotAppointmentReminder.class,
+        AppointmentReminderMessageBuilderTest.VoiceMessageTypeIsPushedAppointmentReminder.class
 })
 public class AppointmentReminderMessageBuilderTest {
 
@@ -84,6 +85,28 @@ public class AppointmentReminderMessageBuilderTest {
             super.setup();
             VoiceMessageType voiceMessageType = new VoiceMessageType();
             voiceMessageType.setVoiceMessageTypeName(TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
+            when(outboundVoiceMessage.getVoiceMessageType()).thenReturn(voiceMessageType);
+        }
+
+        @Test
+        public void shouldReturnCanHandleVoiceMessage() {
+            assertTrue(appointmentReminderMessageBuilder.canHandle(outboundVoiceMessage));
+        }
+
+        @Test
+        public void shouldAddAppointmentReminderToResponse() {
+            appointmentReminderMessageBuilder.buildVoiceMessageResponse(kookooIVRContext, outboxContext, outboundVoiceMessage, ivrResponseBuilder);
+            assertThat(ivrResponseBuilder.getPlayAudios(), is(ExpectedAppointmentMessage.For(patient)));
+        }
+    }
+
+    public static class VoiceMessageTypeIsPushedAppointmentReminder extends Basis {
+
+        @Before
+        public void setup() {
+            super.setup();
+            VoiceMessageType voiceMessageType = new VoiceMessageType();
+            voiceMessageType.setVoiceMessageTypeName(TAMAConstants.PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE);
             when(outboundVoiceMessage.getVoiceMessageType()).thenReturn(voiceMessageType);
         }
 

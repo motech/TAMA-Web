@@ -29,7 +29,7 @@ public class PushedOutboxMessage {
         this.voiceOutboxService = voiceOutboxService;
         this.voiceMessageResponseFactory = voiceMessageResponseFactory;
         this.voiceMessageTypes = asList(
-                TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE,
+                TAMAConstants.PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE,
                 TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE,
                 TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO
         );

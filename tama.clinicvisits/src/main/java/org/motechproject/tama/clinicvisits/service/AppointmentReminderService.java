@@ -1,6 +1,7 @@
 package org.motechproject.tama.clinicvisits.service;
 
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
+import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
 import org.motechproject.tama.clinicvisits.domain.criteria.AppointmentConfirmationMissedAlertCriteria;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderAlertCriteria;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
@@ -21,20 +22,32 @@ public class AppointmentReminderService {
     private ReminderOutboxCriteria reminderOutboxCriteria;
     private ReminderAlertCriteria reminderAlertCriteria;
     private AppointmentConfirmationMissedAlertCriteria appointmentConfirmationMissedAlertCriteria;
+    private TAMAReminderConfiguration TAMAReminderConfiguration;
 
     private OutboxService outboxService;
     private PatientAlertService patientAlertService;
 
     @Autowired
-    public AppointmentReminderService(ReminderOutboxCriteria reminderOutboxCriteria, ReminderAlertCriteria reminderAlertCriteria, PatientAlertService patientAlertService, OutboxService outboxService, AppointmentConfirmationMissedAlertCriteria appointmentConfirmationMissedAlertCriteria) {
+    public AppointmentReminderService(ReminderOutboxCriteria reminderOutboxCriteria,
+                                      ReminderAlertCriteria reminderAlertCriteria,
+                                      PatientAlertService patientAlertService,
+                                      OutboxService outboxService,
+                                      AppointmentConfirmationMissedAlertCriteria appointmentConfirmationMissedAlertCriteria,
+                                      TAMAReminderConfiguration TAMAReminderConfiguration) {
         this.reminderOutboxCriteria = reminderOutboxCriteria;
         this.reminderAlertCriteria = reminderAlertCriteria;
         this.patientAlertService = patientAlertService;
         this.outboxService = outboxService;
         this.appointmentConfirmationMissedAlertCriteria = appointmentConfirmationMissedAlertCriteria;
+        this.TAMAReminderConfiguration = TAMAReminderConfiguration;
     }
 
     public void addOutboxMessage(Patient patient, ClinicVisit clinicVisit) {
+        if(reminderOutboxCriteria.shouldAddPushedOutboxMessageForAppointments(patient, clinicVisit)){
+            for(int i=0; i< TAMAReminderConfiguration.getPushedAppointmentReminderVoiceMessageCount(); i++){
+                outboxService.addMessage(patient.getId(), TAMAConstants.PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE);
+            }
+        }
         if (reminderOutboxCriteria.shouldAddOutboxMessageForAppointments(patient, clinicVisit)) {
             outboxService.addMessage(patient.getId(), TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE);
         }
