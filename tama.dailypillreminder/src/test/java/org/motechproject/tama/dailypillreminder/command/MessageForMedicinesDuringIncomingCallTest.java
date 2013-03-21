@@ -74,6 +74,6 @@ public class MessageForMedicinesDuringIncomingCallTest {
         context.pillRegimen(new PillRegimen(pillRegimenResponse)).callDirection(CallDirection.Outbound);
 
         String[] messages = messageForMedicinesDuringIncomingCall.executeCommand(context);
-        assertArrayEquals(new String[]{TamaIVRMessage.NOT_REPORTED_IF_TAKEN, TamaIVRMessage.FROM_THE_BOTTLE_INCOMING_CALL_AFTER_PILL_WINDOW}, messages);
+        assertArrayEquals(new String[]{TamaIVRMessage.NOT_REPORTED_IF_TAKEN}, messages);
     }
 }
