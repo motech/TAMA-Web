@@ -136,12 +136,6 @@ public class SymptomReportingTreeInterceptorTest {
 
     @Test
     public void shouldSetSuspendAdherenceCallsCommandOnlyOnTheFollowingNodes() {
-        Node node1 = new Node().setPrompts(
-                new AudioPrompt().setName("cn_swellfacelegs"),
-                new AudioPrompt().setName("cy_fever"),
-                new AudioPrompt().setName("adv_crocin01"));
-        interceptor.addCommands(node1);
-        Assert.assertTrue(node1.getTreeCommands().contains(suspendAdherenceCallsCommand));
 
         Node node2 = new Node().setPrompts(
                 new AudioPrompt().setName("cn_swellfacelegs"),
@@ -165,6 +159,13 @@ public class SymptomReportingTreeInterceptorTest {
                 new AudioPrompt().setName("cy_fever"));
         interceptor.addCommands(node);
         assertFalse(node.getTreeCommands().contains(suspendAdherenceCallsCommand));
+
+        Node node1 = new Node().setPrompts(
+                new AudioPrompt().setName("cn_swellfacelegs"),
+                new AudioPrompt().setName("cy_fever"),
+                new AudioPrompt().setName("adv_crocin01"));
+        interceptor.addCommands(node1);
+        assertFalse(node1.getTreeCommands().contains(suspendAdherenceCallsCommand));
     }
 
     @Test
