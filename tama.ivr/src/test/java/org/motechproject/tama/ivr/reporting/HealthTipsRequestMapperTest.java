@@ -70,7 +70,7 @@ public class HealthTipsRequestMapperTest extends BaseUnitTest {
     }
 
     private CallEvent endOfCallEvent() {
-        CallEvent event = new CallEvent(CallState.END_OF_FLOW.name());
+        CallEvent event = new CallEvent(CallState.END_OF_HEALTH_TIPS_FLOW.name());
         CallEventCustomData data = new CallEventCustomData();
         event.setTimeStamp(DateUtil.now().plusMinutes(1));
         event.setData(data);

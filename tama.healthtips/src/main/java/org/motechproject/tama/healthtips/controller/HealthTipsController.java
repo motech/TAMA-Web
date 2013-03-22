@@ -108,7 +108,7 @@ public class HealthTipsController extends SafeIVRController {
     }
 
     private void endHealthTipFlow(TAMAIVRContext tamaivrContext) {
-        tamaivrContext.callState(CallState.END_OF_FLOW);
+        tamaivrContext.callState(CallState.END_OF_HEALTH_TIPS_FLOW);
         tamaivrContext.setPlayedHealthTipsCount(0);
     }
 }

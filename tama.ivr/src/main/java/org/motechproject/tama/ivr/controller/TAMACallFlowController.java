@@ -64,7 +64,7 @@ public class TAMACallFlowController implements CallFlowController {
         }
         if (outboxModuleStrategy.hasOutboxCompleted(tamaivrContext)) return ControllerURLs.MENU_REPEAT;
         if (callState.equals(CallState.OUTBOX)) return ControllerURLs.OUTBOX_URL;
-        if (callState.equals(CallState.END_OF_FLOW)) return ControllerURLs.MENU_REPEAT;
+        if (callState.equals(CallState.END_OF_HEALTH_TIPS_FLOW)) return ControllerURLs.MENU_REPEAT;
         if (callState.equals(CallState.PUSH_MESSAGES_COMPLETE)) return ControllerURLs.MENU_REPEAT;
         if (callState.equals(CallState.ALL_TREES_COMPLETED)) {
             return tamaivrContext.isOutgoingCall() ? ControllerURLs.PUSH_MESSAGES_URL : ControllerURLs.PRE_OUTBOX_URL;

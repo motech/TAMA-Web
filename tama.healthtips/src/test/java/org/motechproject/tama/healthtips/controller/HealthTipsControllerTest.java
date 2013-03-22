@@ -79,7 +79,7 @@ public class HealthTipsControllerTest {
         when(continueToHealthTipsCriteria.shouldContinue(patientId)).thenReturn(true);
 
         assertEquals("010_11_04_NoHealthTips", healthTipsController.gotDTMF(kookooIVRContext).getPlayAudios().get(0));
-        verify(tamaIVRContext).callState(CallState.END_OF_FLOW);
+        verify(tamaIVRContext).callState(CallState.END_OF_HEALTH_TIPS_FLOW);
         verify(tamaIVRContext).setPlayedHealthTipsCount(0);
     }
 
@@ -89,7 +89,7 @@ public class HealthTipsControllerTest {
         when(continueToHealthTipsCriteria.shouldContinue(patientId)).thenReturn(false);
 
         assertTrue(healthTipsController.gotDTMF(kookooIVRContext).isEmpty());
-        verify(tamaIVRContext).callState(CallState.END_OF_FLOW);
+        verify(tamaIVRContext).callState(CallState.END_OF_HEALTH_TIPS_FLOW);
         verify(tamaIVRContext).setPlayedHealthTipsCount(0);
     }
 }

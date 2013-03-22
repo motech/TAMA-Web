@@ -197,7 +197,7 @@ public class TAMACallFlowControllerTest {
 
     @Test
     public void shouldTransitionToMenuRepeatWhenCallStateIs_EndOfFlow() {
-        tamaIVRContext.callState(CallState.END_OF_FLOW);
+        tamaIVRContext.callState(CallState.END_OF_HEALTH_TIPS_FLOW);
         tamaIVRContext.callDirection(CallDirection.Outbound);
 
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
