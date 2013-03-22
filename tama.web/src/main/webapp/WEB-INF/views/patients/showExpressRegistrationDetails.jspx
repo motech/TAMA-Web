@@ -3,6 +3,7 @@
      xmlns:jsp="http://java.sun.com/JSP/Page"
      xmlns:spring="http://www.springframework.org/tags"
      xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
      xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:springform="http://www.springframework.org/tags/form"
      version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
@@ -29,7 +30,7 @@
     </c:if>
 
     <c:set value="/patients/expressActivate" var="form_url"/>
-    <c:set value="/patients" var="next_url"/>
+    <c:set value="/clinicvisits" var="next_url"/>
     <div>
 
         <jsp:include page="showBasicInformation.jspx">
@@ -46,12 +47,19 @@
 
         <c:if test="${patient.status.inactive}">
             <spring:url value="${form_url}/${patient.id}" var="activate_form_url"/>
+            <c:set value="patients/${patient.id}" var="next_url"/>
+
             <form:form action="${activate_form_url}" method="POST" cssClass="inline-block">
                 <input type="submit" id="activatePatient" value="Activate"/>
             </form:form>
         </c:if>
-        <spring:url value="${next_url}/${patient.id}" var="next_form_url"/>
+        <spring:url value="${next_url}" var="next_form_url" htmlEscape="false"/>
         <form:form action="${next_form_url}" method="GET"  cssClass="inline-block">
+            <c:if test="${not patient.status.inactive}">
+                <input type="hidden" name="form" />
+                <input type="hidden" name="clinicVisitId" value="baseline" />
+                <input type="hidden" name="patientId" value="${patient.id}" />
+            </c:if>
             <input type="submit" id="nextPage" value="Next"/>
         </form:form>
     </div>
