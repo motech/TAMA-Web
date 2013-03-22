@@ -46,13 +46,14 @@
         <c:if test="${patient.status.inactive}">
             <spring:url value="${form_url}/${patient.id}" var="activate_form_url"/>
             <spring:url value="patients/summary" var="next_url"/>
-            <form:form action="${activate_form_url}" method="POST">
+            <form:form action="${activate_form_url}" method="POST" cssClass="inline-block">
                 <input type="submit" id="activatePatient" value="Activate"/>
             </form:form>
         </c:if>
         <spring:url value="${next_url}/${patient.id}" var="next_form_url"/>
-        <a href="${next_form_url}" type="submit">Next</a>
-        <c:out value="${pageContext.request.contextPath}"/>
+        <form:form action="${next_form_url}" method="GET"  cssClass="inline-block">
+            <input type="submit" id="nextPage" value="Next"/>
+        </form:form>
     </div>
 
     <script type="text/javascript">
