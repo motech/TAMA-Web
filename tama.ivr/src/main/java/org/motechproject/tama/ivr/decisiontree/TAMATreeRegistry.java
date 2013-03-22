@@ -28,7 +28,7 @@ public class TAMATreeRegistry {
     private List<String> leafTreeNames;
 
     public TAMATreeRegistry() {
-        leafTreeNames = Arrays.asList(PREVIOUS_DOSAGE_REMINDER, REGIMEN_1_TO_6, FOUR_DAY_RECALL);
+        leafTreeNames = Arrays.asList(PREVIOUS_DOSAGE_REMINDER, FOUR_DAY_RECALL);
     }
 
     public void register(String treeName, TamaDecisionTree tamaDecisionTree) {

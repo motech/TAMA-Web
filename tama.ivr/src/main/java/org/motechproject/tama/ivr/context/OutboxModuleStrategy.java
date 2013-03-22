@@ -10,7 +10,5 @@ public abstract class OutboxModuleStrategy {
         symptomAndOutboxMenuCommand.registerOutboxModule(this);
     }
 
-    public abstract boolean hasOutboxCompleted(TAMAIVRContext tamaivrContext);
-
     public abstract boolean shouldContinueToOutbox(String patientDocumentId);
 }

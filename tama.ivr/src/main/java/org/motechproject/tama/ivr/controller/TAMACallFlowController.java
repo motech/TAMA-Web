@@ -3,9 +3,7 @@ package org.motechproject.tama.ivr.controller;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.decisiontree.model.Tree;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
-import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.ivr.kookoo.extensions.CallFlowController;
-import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
 import org.motechproject.tama.ivr.context.PillModuleStrategy;
@@ -55,21 +53,11 @@ public class TAMACallFlowController implements CallFlowController {
     public String urlFor(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
         CallState callState = tamaivrContext.callState();
-        if (callState.equals(CallState.STARTED)) return ControllerURLs.AUTHENTICATION_URL;
-        if (tamaivrContext.isDialState()) return ControllerURLs.DIAL_URL;
-        if (callState.equals(CallState.SYMPTOM_REPORTING)) return ControllerURLs.SYMPTOM_REPORTING_URL;
-        if (callState.equals(CallState.HEALTH_TIPS)) return ControllerURLs.HEALTH_TIPS_URL;
-        if (callState.equals(CallState.AUTHENTICATED) || callState.equals(CallState.SYMPTOM_REPORTING_TREE) || callState.equals(CallState.PULL_MESSAGES)) {
-            return AllIVRURLs.DECISION_TREE_URL;
+        if (null != callState) {
+            return callState.nextURL(tamaivrContext);
+        } else {
+            throw new TamaException("No URL found");
         }
-        if (outboxModuleStrategy.hasOutboxCompleted(tamaivrContext)) return ControllerURLs.MENU_REPEAT;
-        if (callState.equals(CallState.OUTBOX)) return ControllerURLs.OUTBOX_URL;
-        if (callState.equals(CallState.END_OF_HEALTH_TIPS_FLOW)) return ControllerURLs.MENU_REPEAT;
-        if (callState.equals(CallState.PUSH_MESSAGES_COMPLETE)) return ControllerURLs.MENU_REPEAT;
-        if (callState.equals(CallState.ALL_TREES_COMPLETED)) {
-            return tamaivrContext.isOutgoingCall() ? ControllerURLs.PUSH_MESSAGES_URL : ControllerURLs.PRE_OUTBOX_URL;
-        }
-        throw new TamaException("No URL found");
     }
 
     @Override

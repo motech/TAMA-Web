@@ -72,7 +72,7 @@ public class TAMACallFlowControllerTest {
     }
 
     @Test
-    public void shouldReturnDecisionTreeURLWhenCallStateIsPullMessages(){
+    public void shouldReturnDecisionTreeURLWhenCallStateIsPullMessages() {
         tamaIVRContext.callState(CallState.PULL_MESSAGES);
         assertEquals(AllIVRURLs.DECISION_TREE_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
@@ -92,15 +92,14 @@ public class TAMACallFlowControllerTest {
     }
 
     @Test
-    public void shouldReturnHealthTipURLWhenCallState_AndOutboxHasNotCompleted() {
-        when(outboxModuleStrategy.hasOutboxCompleted(tamaIVRContext)).thenReturn(true);
+    public void shouldReturnHealthTipURLWhenCallState() {
         tamaIVRContext.callState(CallState.HEALTH_TIPS);
         assertEquals(ControllerURLs.HEALTH_TIPS_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test
     public void dialPromptsShouldLeadToDialURL() {
-        tamaIVRContext.isDialState(true).callState(CallState.SYMPTOM_REPORTING);
+        tamaIVRContext.callState(CallState.DIAL);
         assertEquals(ControllerURLs.DIAL_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
@@ -117,15 +116,6 @@ public class TAMACallFlowControllerTest {
         when(pillModuleStrategy.previousDosageCaptured(tamaIVRContext)).thenReturn(true);
         tamaCallFlowController.treeComplete(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, kooKooIVRContext);
         assertEquals(CallState.ALL_TREES_COMPLETED, tamaIVRContext.callState());
-    }
-
-    @Test
-    public void completionOfOutboxShouldLeadToMenuRepeat() {
-        tamaIVRContext.callState(CallState.OUTBOX);
-        when(outboxModuleStrategy.hasOutboxCompleted(tamaIVRContext)).thenReturn(true);
-        String patientId = "1234";
-        tamaIVRContext.patientDocumentId(patientId);
-        assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test

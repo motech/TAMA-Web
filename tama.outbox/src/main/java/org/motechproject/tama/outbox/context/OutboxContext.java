@@ -3,6 +3,7 @@ package org.motechproject.tama.outbox.context;
 import lombok.EqualsAndHashCode;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +53,6 @@ public class OutboxContext {
     }
 
     public void outboxCompleted() {
-        cookies.add(OUTBOX_COMPLETED, Boolean.toString(true));
+        new TAMAIVRContext(kooKooIVRContext).callState(CallState.MAIN_MENU);
     }
 }
