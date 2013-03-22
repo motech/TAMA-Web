@@ -8,6 +8,8 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
+    <util:panel id="fc_org_motechproject_tama_domain_patient_Express_Registration" title="Express Registration" openPane="true">
+
     <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
     <spring:url value="/resources-${applicationVersion}/styles/create-patient.css" var="create_patient_css_url" />
@@ -62,5 +64,6 @@
 
     <spring:url value="/resources-${applicationVersion}/js/createPatient.js" var="createPatientScriptUrl"/>
     <script src="${createPatientScriptUrl}"><!--required--></script>
+    </util:panel>
 
 </div>

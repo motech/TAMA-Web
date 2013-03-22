@@ -13,6 +13,7 @@
     <spring:url value="/resources-${applicationVersion}/styles/create-patient.css" var="create_patient_css_url" />
     <link rel="stylesheet" type="text/css" media="screen" href="${create_patient_css_url}"></link>
 
+    <util:panel id="fc_org_motechproject_tama_domain_patient_Express_Registration" title="Express Registration" openPane="true">
     <c:if test="${patientInsertError != null}">
         <div class="errorBanner"> <c:out value="${patientInsertError}"/> </div>
     </c:if>
@@ -28,7 +29,7 @@
     </c:if>
 
     <c:set value="/patients/expressActivate" var="form_url"/>
-    <c:set value="/patients/summary" var="next_url"/>
+    <c:set value="/patients" var="next_url"/>
     <div>
 
         <jsp:include page="showBasicInformation.jspx">
@@ -45,7 +46,6 @@
 
         <c:if test="${patient.status.inactive}">
             <spring:url value="${form_url}/${patient.id}" var="activate_form_url"/>
-            <spring:url value="patients/summary" var="next_url"/>
             <form:form action="${activate_form_url}" method="POST" cssClass="inline-block">
                 <input type="submit" id="activatePatient" value="Activate"/>
             </form:form>
@@ -60,4 +60,5 @@
         dojo.require("dijit.form.Button");
         dojo.require("dijit.Dialog");
     </script>
+    </util:panel>
 </div>
