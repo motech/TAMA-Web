@@ -45,7 +45,7 @@ public class CurrentDosageConfirmTreeTest {
 
     @Test
     public void shouldTransitionToOutboxTreeWhenDTMFInputIs3() {
-        assertCallStateTransitionForKeyPress("3", transitions, CallState.OUTBOX);
+        assertCallStateTransitionForKeyPress("3", transitions, CallState.PULL_MESSAGES);
     }
 
     @Test

@@ -54,7 +54,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                                                 ))
                         },
                         {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
-                        {"3", TAMATransitionFactory.createCallStateTransition(CallState.OUTBOX)},
+                        {"3", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES)},
                         {"5", TAMATransitionFactory.createCallStateTransition(CallState.HEALTH_TIPS)}
                 });
     }

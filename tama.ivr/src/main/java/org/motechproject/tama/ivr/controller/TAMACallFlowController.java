@@ -91,19 +91,13 @@ public class TAMACallFlowController implements CallFlowController {
     private String getStartingTree(TAMAIVRContext tamaivrContext) {
         Patient patient = allPatients.get(tamaivrContext.patientDocumentId());
         if (tamaivrContext.isIncomingCall()) {
-            if (patient.isOnWeeklyPillReminder())
-                return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;
-            else {
-                if (patient.getStatus().isSuspended())
-                    return TAMATreeRegistry.INCOMING_MENU_TREE;
-                if (pillModuleStrategy.isCurrentDoseTaken(tamaivrContext)) {
-                    return TAMATreeRegistry.CURRENT_DOSAGE_TAKEN;
-                } else {
-                    return TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM;
-                }
-            }
+            return startingTreeForIncomingCalls(tamaivrContext, patient);
+        } else {
+            return startingTreeForOutgoingCalls(tamaivrContext, patient);
         }
+    }
 
+    private String startingTreeForOutgoingCalls(TAMAIVRContext tamaivrContext, Patient patient) {
         if (tamaivrContext.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER)
                 || tamaivrContext.hasTraversedTree(TAMATreeRegistry.FOUR_DAY_RECALL)
                 || tamaivrContext.hasTraversedTree(TAMATreeRegistry.OUTBOX_CALL)) {
@@ -118,6 +112,20 @@ public class TAMACallFlowController implements CallFlowController {
             return TAMATreeRegistry.CURRENT_DOSAGE_REMINDER;
         } else {
             return TAMATreeRegistry.FOUR_DAY_RECALL;
+        }
+    }
+
+    private String startingTreeForIncomingCalls(TAMAIVRContext tamaivrContext, Patient patient) {
+        if (patient.isOnWeeklyPillReminder())
+            return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;
+        else {
+            if (patient.getStatus().isSuspended())
+                return TAMATreeRegistry.INCOMING_MENU_TREE;
+            if (pillModuleStrategy.isCurrentDoseTaken(tamaivrContext)) {
+                return TAMATreeRegistry.CURRENT_DOSAGE_TAKEN;
+            } else {
+                return TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM;
+            }
         }
     }
 

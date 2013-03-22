@@ -27,7 +27,7 @@ public class FourDayRecallIncomingCallTreeTest {
     private HttpServletRequest httpRequest;
     @Mock
     private HttpSession httpSession;
-    public Map<String,Transition> transitions;
+    public Map<String, Transition> transitions;
 
 
     @Before
@@ -44,16 +44,16 @@ public class FourDayRecallIncomingCallTreeTest {
     }
 
     @Test
-    public void shouldTransitionToOutboxTreeWhenDTMFInputIs3() {
-        assertCallStateTransitionForKeyPress("3", transitions, CallState.OUTBOX);
+    public void shouldTransitionToPullMessagesTreeWhenDTMFInputIs3() {
+        assertCallStateTransitionForKeyPress("3", transitions, CallState.PULL_MESSAGES);
     }
 
     @Test
-    public void shouldTransitionToSymptomsTreeWhenDTMFInputIs2(){
+    public void shouldTransitionToSymptomsTreeWhenDTMFInputIs2() {
         assertCallStateTransitionForKeyPress("2", transitions, CallState.SYMPTOM_REPORTING);
     }
 
-    private void assertCallStateTransitionForKeyPress(String keyPressed, Map<String, Transition> transitions, CallState callState){
+    private void assertCallStateTransitionForKeyPress(String keyPressed, Map<String, Transition> transitions, CallState callState) {
         List<ITreeCommand> treeCommands = transitions.get(keyPressed).getDestinationNode().getTreeCommands();
         for (ITreeCommand treeCommand : treeCommands) {
             treeCommand.execute(kookooIVRContext);

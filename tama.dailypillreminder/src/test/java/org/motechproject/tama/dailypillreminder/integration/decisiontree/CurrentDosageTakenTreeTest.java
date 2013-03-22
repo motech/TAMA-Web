@@ -6,20 +6,27 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.dailypillreminder.command.NextCallDetails;
 import org.motechproject.tama.dailypillreminder.decisiontree.CurrentDosageTakenTree;
 import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
 import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
+import org.motechproject.tama.ivr.domain.CallState;
+import org.motechproject.tama.ivr.util.AssertUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -46,6 +53,20 @@ public class CurrentDosageTakenTreeTest {
         assertTrue(prompts.get(0).getCommand() instanceof IncomingWelcomeMessage);
         assertTrue(prompts.get(1).getCommand() instanceof NextCallDetails);
         assertTrue(prompts.get(2).getCommand() instanceof SymptomAndOutboxMenuCommand);
+    }
+
+    @Test
+    public void shouldTransitionToPullMessagesOnPressOf3() {
+        HttpSession httpSession = mock(HttpSession.class);
+        HttpServletRequest httpRequest = mock(HttpServletRequest.class);
+        KooKooIVRContext kookooIVRContext = mock(KooKooIVRContext.class);
+
+        when(kookooIVRContext.httpRequest()).thenReturn(httpRequest);
+        when(httpRequest.getSession()).thenReturn(httpSession);
+
+        Node nextNode = testConfirmTree.getTree().nextNode("", "");
+
+        new AssertUtil(kookooIVRContext, httpSession).assertCallStateTransitionForKeyPress("3", nextNode.getTransitions(), CallState.PULL_MESSAGES);
     }
 }
 
