@@ -3,7 +3,6 @@ package org.motechproject.tama.symptomreporting.context;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.ivr.domain.CallState;
 
 public class SymptomsReportingContext extends TAMAIVRContext {
 
@@ -17,11 +16,11 @@ public class SymptomsReportingContext extends TAMAIVRContext {
     }
 
     public void startCall() {
-        callState(CallState.DIAL);
+        cookies().add(TAMAIVRContext.SWITCH_TO_DIAL_STATE, String.valueOf(true));
     }
 
     public void endCall() {
-        callState(CallState.ALL_TREES_COMPLETED);
+        cookies().add(TAMAIVRContext.SWITCH_TO_DIAL_STATE, String.valueOf(false));
     }
 
     public int numberOfCliniciansCalled() {

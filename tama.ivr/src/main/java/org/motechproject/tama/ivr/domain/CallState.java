@@ -37,10 +37,14 @@ public enum CallState {
         }
     },
 
-    ALL_TREES_COMPLETED(ControllerURLs.PUSH_MESSAGES_URL, ControllerURLs.PRE_OUTBOX_URL) {
+    ALL_TREES_COMPLETED(ControllerURLs.PUSH_MESSAGES_URL, ControllerURLs.PRE_OUTBOX_URL, ControllerURLs.DIAL_URL) {
         @Override
         public String nextURL(TAMAIVRContext context) {
-            return context.isOutgoingCall() ? possibleTransitionURLs.get(0) : possibleTransitionURLs.get(1);
+            if (context.isDialState()) {
+                return possibleTransitionURLs.get(2);
+            } else {
+                return (context.isOutgoingCall()) ? possibleTransitionURLs.get(0) : possibleTransitionURLs.get(1);
+            }
         }
     },
 

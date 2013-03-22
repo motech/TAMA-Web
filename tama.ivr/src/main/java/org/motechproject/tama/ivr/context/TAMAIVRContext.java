@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 
+import static java.lang.Boolean.valueOf;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 public class TAMAIVRContext {
     static final String CALLER_ID = "caller_id";
     static final String NUMBER_OF_ATTEMPTS = "number_of_attempts";
@@ -28,6 +31,7 @@ public class TAMAIVRContext {
     private static final String HEALTH_TIPS_PLAYED_COUNT = "healthTipsPlayedCount";
     public static final String LAST_PLAYED_HEALTH_TIP = "lastPlayedHealthTip";
     public static final String SWITCH_TO_DIAL_STATE = "switch_to_dial_state";
+    public static final String DO_NOT_PROMPT_FOR_HANG_UP = "do_not_prompt_for_hang_up";
 
     protected KookooRequest kookooRequest;
     protected HttpServletRequest httpRequest;
@@ -177,7 +181,7 @@ public class TAMAIVRContext {
     }
 
     public boolean isDialState() {
-        return Boolean.valueOf(cookies.getValue(SWITCH_TO_DIAL_STATE));
+        return valueOf(cookies.getValue(SWITCH_TO_DIAL_STATE));
     }
 
     public String preferredLanguage() {
@@ -222,6 +226,15 @@ public class TAMAIVRContext {
 
     public void setDataToLog(HashMap<String, String> map) {
         kooKooIVRContext.dataToLog(map);
+    }
+
+    public boolean doNotPromptForHangUp() {
+        String value = this.cookies.getValue(DO_NOT_PROMPT_FOR_HANG_UP);
+        return (isNotBlank(value)) ? valueOf(value) : false;
+    }
+
+    public void doNoPromptForHangUp(boolean value) {
+        this.cookies.add(DO_NOT_PROMPT_FOR_HANG_UP, String.valueOf(value));
     }
 
     public boolean isAnswered() {

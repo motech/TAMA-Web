@@ -21,6 +21,7 @@ import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -99,7 +100,8 @@ public class TAMACallFlowControllerTest {
 
     @Test
     public void dialPromptsShouldLeadToDialURL() {
-        tamaIVRContext.callState(CallState.DIAL);
+        tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
+        tamaIVRContext.isDialState(true);
         assertEquals(ControllerURLs.DIAL_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
@@ -135,6 +137,18 @@ public class TAMACallFlowControllerTest {
         tamaCallFlowController.getTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER, kooKooIVRContext);
 
         verify(treeRegistry).getTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
+    }
+
+    @Test
+    public void shouldReturnPullMessagesTreeWhenCallStateIsPullMessages() {
+        tamaIVRContext.callState(CallState.PULL_MESSAGES);
+        tamaIVRContext.callDirection(CallDirection.Inbound);
+        tamaIVRContext.lastCompletedTree(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM);
+
+        when(allPatients.get(anyString())).thenReturn(PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build());
+
+        String treeName = tamaCallFlowController.decisionTreeName(kooKooIVRContext);
+        assertEquals(TAMATreeRegistry.PULL_MESSAGES_TREE, treeName);
     }
 
     @Test

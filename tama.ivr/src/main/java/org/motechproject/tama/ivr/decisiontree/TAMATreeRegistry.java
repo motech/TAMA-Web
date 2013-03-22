@@ -11,9 +11,9 @@ import java.util.Map;
 @Component
 public class TAMATreeRegistry {
 
-    private Map<String, TamaDecisionTree> decisionTrees = new HashMap<String, TamaDecisionTree>();
-    public static final String CURRENT_DOSAGE_TAKEN = "CurrentDosageTaken";
+    private Map<String, TamaDecisionTree> decisionTrees = new HashMap<>();
 
+    public static final String CURRENT_DOSAGE_TAKEN = "CurrentDosageTaken";
     public static final String PULL_MESSAGES_TREE = "PullMessagesTree";
     public static final String CURRENT_DOSAGE_REMINDER = "CurrentDosageReminder";
     public static final String PREVIOUS_DOSAGE_REMINDER = "PreviousDosageReminder";
@@ -28,7 +28,7 @@ public class TAMATreeRegistry {
     private List<String> leafTreeNames;
 
     public TAMATreeRegistry() {
-        leafTreeNames = Arrays.asList(PREVIOUS_DOSAGE_REMINDER, FOUR_DAY_RECALL);
+        leafTreeNames = Arrays.asList(PREVIOUS_DOSAGE_REMINDER, REGIMEN_1_TO_6, FOUR_DAY_RECALL);
     }
 
     public void register(String treeName, TamaDecisionTree tamaDecisionTree) {

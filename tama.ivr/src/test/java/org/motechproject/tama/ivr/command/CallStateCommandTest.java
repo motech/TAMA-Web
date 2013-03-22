@@ -5,15 +5,16 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
+import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CallStateCommandTest {
@@ -22,6 +23,8 @@ public class CallStateCommandTest {
     private TAMAIVRContextFactory tamaivrContextFactory;
     @Mock
     private KooKooIVRContext kooKooIVRContext;
+    @Mock
+    private Cookies cookies;
 
     private TAMAIVRContextForTest context;
 
@@ -44,7 +47,8 @@ public class CallStateCommandTest {
         CallStateCommand callStateCommand = new CallStateCommand(tamaivrContextFactory);
         callStateCommand.execute(kooKooIVRContext);
 
-        assertEquals(CallState.AUTHENTICATED, context.callState());
+        verify(cookies).add(TAMAIVRContext.DO_NOT_PROMPT_FOR_HANG_UP, "true");
+        assertEquals(CallState.MAIN_MENU, context.callState());
     }
 
     private void setupContext() {
@@ -60,5 +64,6 @@ public class CallStateCommandTest {
 
         when(kooKooIVRContext.httpRequest()).thenReturn(httpRequest);
         when(httpRequest.getSession()).thenReturn(session);
+        when(kooKooIVRContext.cookies()).thenReturn(cookies);
     }
 }

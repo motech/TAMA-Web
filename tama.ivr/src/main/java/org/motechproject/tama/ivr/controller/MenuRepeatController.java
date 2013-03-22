@@ -32,9 +32,13 @@ public class MenuRepeatController extends SafeIVRController {
     @Override
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext ivrContext = ivrContextFactory.create(kooKooIVRContext);
+        KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withSid(ivrContext.callId());
+        if (!ivrContext.doNotPromptForHangUp()) {
+            response.withPlayAudios(TamaIVRMessage.HANGUP_OR_MAIN_MENU);
+        } else {
+            ivrContext.doNoPromptForHangUp(false);
+        }
         ivrContext.resetForMenuRepeat();
-        return new KookooIVRResponseBuilder().withSid(ivrContext.callId()).withPlayAudios(TamaIVRMessage.HANGUP_OR_MAIN_MENU).
-                language(ivrContext.preferredLanguage());
-
+        return response.language(ivrContext.preferredLanguage());
     }
 }

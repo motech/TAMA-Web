@@ -25,6 +25,8 @@ public class CallStateCommand implements ITreeCommand {
         TAMAIVRContext tamaivrContext = contextFactory.create((KooKooIVRContext) o);
         if (null == callState) {
             tamaivrContext.resetForMenuRepeat();
+            tamaivrContext.doNoPromptForHangUp(true);
+            tamaivrContext.callState(CallState.MAIN_MENU);
         } else {
             tamaivrContext.callState(callState);
         }

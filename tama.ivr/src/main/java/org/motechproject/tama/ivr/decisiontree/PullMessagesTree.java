@@ -1,6 +1,7 @@
 package org.motechproject.tama.ivr.decisiontree;
 
-import org.motechproject.decisiontree.model.MenuAudioPrompt;
+import org.motechproject.decisiontree.model.AudioPrompt;
+import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,12 @@ public class PullMessagesTree extends TamaDecisionTree {
     protected Node createRootNode() {
         return new Node()
                 .setPrompts(
-                        new MenuAudioPrompt().setAudioFileUrl("AudioFile")
+                        new AudioPrompt().setCommand(new ITreeCommand() {
+                            @Override
+                            public String[] execute(Object o) {
+                                return new String[]{"AudioFile"};
+                            }
+                        })
                 )
                 .setTransitions(
                         new Object[][]{

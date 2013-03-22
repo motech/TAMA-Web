@@ -46,7 +46,7 @@ public class PullMessagesTreeTest {
 
     @Test
     public void shouldRepeatTheMainMenuOnPressOf9() {
-        assertCallStateTransitionForKeyPress("9", pullMessagesTree.createRootNode().getTransitions(), CallState.AUTHENTICATED);
+        assertCallStateTransitionForKeyPress("9", pullMessagesTree.createRootNode().getTransitions(), CallState.MAIN_MENU);
     }
 
     private void assertCallStateTransitionForKeyPress(String keyPressed, Map<String, Transition> transitions, CallState callState) {

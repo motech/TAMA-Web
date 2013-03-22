@@ -64,16 +64,12 @@ public class TAMACallFlowController implements CallFlowController {
     public String decisionTreeName(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
         if (StringUtils.isEmpty(tamaivrContext.lastCompletedTree())) return getStartingTree(tamaivrContext);
+        if (tamaivrContext.callState().equals(CallState.PULL_MESSAGES)) return TAMATreeRegistry.PULL_MESSAGES_TREE;
         if (tamaivrContext.callState().equals(CallState.SYMPTOM_REPORTING_TREE)) return TAMATreeRegistry.REGIMEN_1_TO_6;
         if (onCurrentDosage(tamaivrContext.lastCompletedTree()) && !pillModuleStrategy.previousDosageCaptured(tamaivrContext)) {
             return TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER;
         }
         throw new TamaException("No trees to serve.");
-    }
-
-    private boolean onCurrentDosage(String treeName) {
-        return TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM.equals(treeName) ||
-                TAMATreeRegistry.CURRENT_DOSAGE_REMINDER.equals(treeName);
     }
 
     private String getStartingTree(TAMAIVRContext tamaivrContext) {
@@ -130,8 +126,11 @@ public class TAMACallFlowController implements CallFlowController {
     public void treeComplete(String treeName, KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext ivrContext = factory.create(kooKooIVRContext);
         ivrContext.lastCompletedTree(treeName);
-        if ((onCurrentDosage(treeName) && pillModuleStrategy.previousDosageCaptured(ivrContext) && CallState.AUTHENTICATED.equals(ivrContext.callState())) ||
-                treeRegistry.isLeafTree(treeName))
+        if ((onCurrentDosage(treeName) && pillModuleStrategy.previousDosageCaptured(ivrContext) && CallState.AUTHENTICATED.equals(ivrContext.callState())) || treeRegistry.isLeafTree(treeName))
             ivrContext.callState(CallState.ALL_TREES_COMPLETED);
+    }
+
+    private boolean onCurrentDosage(String treeName) {
+        return TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM.equals(treeName) || TAMATreeRegistry.CURRENT_DOSAGE_REMINDER.equals(treeName);
     }
 }
