@@ -30,10 +30,11 @@ public class MenuTree extends TamaDecisionTree {
                         new AudioPrompt().setCommand(incomingWelcomeMessage),
                         new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand)
                 )
-                .setTransitions(new Object[][]{
-                        {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
-                        {"3", TAMATransitionFactory.createCallStateTransition(CallState.OUTBOX)},
-                }
+                .setTransitions(
+                        new Object[][]{
+                                {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
+                                {"3", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES)},
+                        }
                 );
     }
 }

@@ -18,14 +18,16 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MenuTreeTest {
 
-    private MenuTree menuTree;
     @Mock
     private KooKooIVRContext kookooIVRContext;
     @Mock
     private HttpServletRequest httpRequest;
     @Mock
     private HttpSession httpSession;
-    public Map<String,Transition> transitions;
+
+    public Map<String, Transition> transitions;
+
+    private MenuTree menuTree;
 
 
     @Before
@@ -42,16 +44,16 @@ public class MenuTreeTest {
     }
 
     @Test
-    public void shouldTransitionToOutboxTreeWhenDTMFInputIs3() {
-        assertCallStateTransitionForKeyPress("3", transitions, CallState.OUTBOX);
+    public void shouldTransitionToPullMessagesDTMFInputIs3() {
+        assertCallStateTransitionForKeyPress("3", transitions, CallState.PULL_MESSAGES);
     }
 
     @Test
-    public void shouldTransitionToSymptomsTreeWhenDTMFInputIs2(){
+    public void shouldTransitionToSymptomsTreeWhenDTMFInputIs2() {
         assertCallStateTransitionForKeyPress("2", transitions, CallState.SYMPTOM_REPORTING);
     }
 
-    private void assertCallStateTransitionForKeyPress(String keyPressed, Map<String, Transition> transitions, CallState callState){
+    private void assertCallStateTransitionForKeyPress(String keyPressed, Map<String, Transition> transitions, CallState callState) {
         List<ITreeCommand> treeCommands = transitions.get(keyPressed).getDestinationNode().getTreeCommands();
         for (ITreeCommand treeCommand : treeCommands) {
             treeCommand.execute(kookooIVRContext);

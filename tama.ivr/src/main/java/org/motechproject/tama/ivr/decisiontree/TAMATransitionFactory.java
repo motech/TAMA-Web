@@ -7,13 +7,25 @@ import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 
 public class TAMATransitionFactory {
+
     public static Transition createCallStateTransition(CallState callState) {
         TAMAIVRContextFactory contextFactory = new TAMAIVRContextFactory();
         return new Transition().setDestinationNode(
-                        new Node()
-                            .setTreeCommands(
+                new Node()
+                        .setTreeCommands(
                                 new CallStateCommand(callState, contextFactory)
-                            )
-                    );
+                        )
+        );
     }
+
+    public static Transition createResetTransition() {
+        TAMAIVRContextFactory contextFactory = new TAMAIVRContextFactory();
+        return new Transition().setDestinationNode(
+                new Node()
+                        .setTreeCommands(
+                                new CallStateCommand(contextFactory)
+                        )
+        );
+    }
+
 }

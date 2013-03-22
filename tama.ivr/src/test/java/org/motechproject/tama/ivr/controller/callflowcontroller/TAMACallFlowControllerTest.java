@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
@@ -39,8 +40,10 @@ public class TAMACallFlowControllerTest {
     private SymptomModuleStrategy symptomModuleStrategy;
     @Mock
     private KooKooIVRContext kooKooIVRContext;
-    private TAMACallFlowController tamaCallFlowController;
+
     private TAMAIVRContextForTest tamaIVRContext;
+
+    private TAMACallFlowController tamaCallFlowController;
 
     @Before
     public void setUp() {
@@ -66,6 +69,12 @@ public class TAMACallFlowControllerTest {
         String patientId = "1234";
         tamaIVRContext.patientDocumentId(patientId);
         assertEquals(ControllerURLs.PUSH_MESSAGES_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+    }
+
+    @Test
+    public void shouldReturnDecisionTreeURLWhenCallStateIsPullMessages(){
+        tamaIVRContext.callState(CallState.PULL_MESSAGES);
+        assertEquals(AllIVRURLs.DECISION_TREE_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
     @Test

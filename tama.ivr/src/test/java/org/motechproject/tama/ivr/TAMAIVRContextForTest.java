@@ -1,6 +1,7 @@
 package org.motechproject.tama.ivr;
 
 import org.joda.time.DateTime;
+import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallState;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TAMAIVRContextForTest extends TAMAIVRContext {
+
     private String dtmfInput;
     private String callerId;
     private int numberOfLoginAttempts;
@@ -35,6 +37,14 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     private boolean isDialState;
     private List<String> completedTrees = new ArrayList<String>();
     private boolean hasTraversedAnyTree;
+
+    public TAMAIVRContextForTest() {
+        super();
+    }
+
+    public TAMAIVRContextForTest(KooKooIVRContext kooKooIVRContext) {
+        super(kooKooIVRContext);
+    }
 
     @Override
     public String dtmfInput() {
@@ -168,7 +178,7 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
 
     @Override
     public boolean hasTraversedAnyTree() {
-        return hasTraversedAnyTree;        
+        return hasTraversedAnyTree;
     }
 
     public void hasTraversedAnyTree(boolean hasTraversedAnyTree) {

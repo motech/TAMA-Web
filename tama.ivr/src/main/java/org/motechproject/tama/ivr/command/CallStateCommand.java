@@ -7,6 +7,7 @@ import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 
 public class CallStateCommand implements ITreeCommand {
+
     private CallState callState;
     private TAMAIVRContextFactory contextFactory;
 
@@ -15,10 +16,18 @@ public class CallStateCommand implements ITreeCommand {
         this.contextFactory = contextFactory;
     }
 
+    public CallStateCommand(TAMAIVRContextFactory contextFactory) {
+        this.contextFactory = contextFactory;
+    }
+
     @Override
     public String[] execute(Object o) {
         TAMAIVRContext tamaivrContext = contextFactory.create((KooKooIVRContext) o);
-        tamaivrContext.callState(callState);
+        if (null == callState) {
+            tamaivrContext.resetForMenuRepeat();
+        } else {
+            tamaivrContext.callState(callState);
+        }
         return new String[0];
     }
 }
