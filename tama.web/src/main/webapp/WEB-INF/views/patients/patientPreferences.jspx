@@ -5,10 +5,10 @@
     <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
     <spring:url value="/resources-${applicationVersion}/js/patient_preferences.js" var="patient_preferences_js" />
-    <script src="${patient_preferences_js}" type="text/javascript" />
+    <script src="${patient_preferences_js}" type="text/javascript"><!--required--></script>
 
     <spring:message code="label_org_motechproject_tama_domain_patient_tama_preferences" var="tama_preferences" htmlEscape="false" />
-    <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="${tama_preferences}" openPane="${param.section == tama_preferences}">
+    <util:panel id="fc_org_motechproject_tama_domain_patient_Preferences" title="${tama_preferences}" openPane="true">
         <field:input field="patientPreferences.passcode" id="c_org_motechproject_tama_domain_patient_passcode" required="true" max="4"/>
         <field:select field="patientPreferences.ivrLanguage" id="c_org_motechproject_tama_domain_patient_ivrLanguage" itemValue="id" items="${ivrlanguages}" path="/ivrlanguages" z="user-managed" required="true"/>
 

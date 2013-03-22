@@ -231,6 +231,7 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
             patient.setClinic(allClinics.get(patient.getClinic_id()));
         MedicalHistory medicalHistory = patient.getMedicalHistory();
         if (medicalHistory != null) {
+            if (null == medicalHistory.getHivMedicalHistory()) return;
             HIVMedicalHistory hivMedicalHistory = medicalHistory.getHivMedicalHistory();
             if (!StringUtils.isBlank(hivMedicalHistory.getTestReasonId()))
                 hivMedicalHistory.setTestReason(allHIVTestReasons.getBy(hivMedicalHistory.getTestReasonId()));

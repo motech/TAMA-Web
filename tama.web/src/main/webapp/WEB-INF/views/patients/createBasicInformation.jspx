@@ -6,17 +6,20 @@
         <field:input field="mobilePhoneNumber" id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" required="true" z="gmcuYHuO+a1vLUecSdW2Tkpjyww=" max="10"/>
         <field:datetime dateTimePattern="dd/MM/yyyy" field="dateOfBirthAsDate" id="c_org_motechproject_tama_domain_patient_dateOfBirth" past="true" future="false" required="true" z="ZMYvZl1UvMJf8nNJ35FkPqJ8ke8=" />
         <field:select field="gender" id="c_org_motechproject_tama_domain_patient_gender" itemValue="id" items="${genders}" path="/genders" z="UytwzRvSgSWKSQBGQHPBm3IPGfE=" required="true" />
-        <label for="_travelTimeToClinic_id">Travel Time To Clinic :</label>
-        In day(s) <springform:select path="travelTimeToClinicInDays" id="_travelTimeToClinicInDays_id" items="${daysInAMonth}" />
-        In hour(s) <springform:select path="travelTimeToClinicInHours" id="_travelTimeToClinicInHours_id" items="${hoursInADay}" />
-        In minute(s) <springform:select path="travelTimeToClinicInMinutes" id="_travelTimeToClinicInMinutes_id" items="${minutesInAnHour}" />
+        <c:if test="${param.context != 'expressRegistration'}">
+            <label for="_travelTimeToClinic_id">Travel Time To Clinic :</label>
+            In day(s) <springform:select path="travelTimeToClinicInDays" id="_travelTimeToClinicInDays_id" items="${daysInAMonth}" />
+            In hour(s) <springform:select path="travelTimeToClinicInHours" id="_travelTimeToClinicInHours_id" items="${hoursInADay}" />
+            In minute(s) <springform:select path="travelTimeToClinicInMinutes" id="_travelTimeToClinicInMinutes_id" items="${minutesInAnHour}" />
+        </c:if>
     </util:panel>
 
-    <span class="submit" id="nextToMedicalHistorySpan">
-        <spring:message code="button_next" var="next_button" htmlEscape="false" />
-        <input id="nextToMedicalHistory" type="button" value="${next_button}" onClick="showMedicalHistory();"/>
-    </span>
-
+    <c:if test="${param.context != 'expressRegistration'}">
+        <span class="submit" id="nextToMedicalHistorySpan">
+            <spring:message code="button_next" var="next_button" htmlEscape="false" />
+            <input id="nextToMedicalHistory" type="button" value="${next_button}" onClick="showMedicalHistory();"/>
+        </span>
+    </c:if>
     <span class="submit" id="fillAllSpan">
         <input id="fillAll" type="button" value="Fill All" onClick="fillAllDetails();"/>
     </span>

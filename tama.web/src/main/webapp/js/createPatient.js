@@ -36,8 +36,6 @@ function fillAllDetails() {
     dijit.byId('_patientId_id').setValue('rand' + Math.random().toString().substring(2, 8));
     dijit.byId('_mobilePhoneNumber_id').setValue('0000' + Math.random().toString().substring(2, 8));
     dijit.byId('_dateOfBirthAsDate_id').attr('value', new Date('10/10/2010'));
-    showMedicalHistory();
-    showPatientPreferences();
     dijit.byId('_patientPreferences.passcode_id').setValue('1111');
 }
 
@@ -63,9 +61,6 @@ dojo.addOnLoad(function() {
         hideElement([fillAllButton]);
         hideElement([nextToPatientPreferencesButton]);
         openAllPanels();
-    }
-    else {
-        hideElement([preferencesPanel, medicalHistoryPanel, nextToPatientPreferencesButton, submitButtonDiv]);
     }
 
     dojo.connect(dojo.byId('proceed'), 'onclick', openAllPanels);

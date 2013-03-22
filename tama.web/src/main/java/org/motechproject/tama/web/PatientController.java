@@ -45,12 +45,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 @RequestMapping("/patients")
 @Controller
 public class PatientController extends BaseController {
-    public static final String CREATE_VIEW = "patients/create";
+    public static final String CREATE_VIEW = "patients/expressCreate";
     public static final String SHOW_VIEW = "patients/show";
     public static final String SUMMARY_VIEW = "patients/summary";
     public static final String LIST_VIEW = "patients/list";
@@ -59,6 +60,7 @@ public class PatientController extends BaseController {
     private static final String DEACTIVATE_VIEW = "patients/deactivate";
     public static final String REDIRECT_TO_LIST_VIEW = "redirect:/patients";
     public static final String REDIRECT_TO_SHOW_VIEW = "redirect:/patients/";
+    public static final String EXPRESS_SHOW_VIEW = "patients/expressShow";
     public static final String REDIRECT_TO_SUMMARY_VIEW = "redirect:/patients/summary/";
 
     public static String DEACTIVATION_STATUSES = "deactivation_statuses";
@@ -66,6 +68,7 @@ public class PatientController extends BaseController {
     public static final String PATIENTS = "patients";
     public static final String WARNING = "warning";
     public static final String ITEM_ID = "itemId";
+    public static final String EXPRESS_REGISTRATION = "express_registration";
     public static final String PATIENT_HAS_STARTED_TREATMENT = "patient_has_started_treatment";
     public static final String PATIENT_ID = "patientIdNotFound";
     public static final String DATE_OF_BIRTH_FORMAT = "patient_dateofbirth_date_format";
@@ -115,6 +118,29 @@ public class PatientController extends BaseController {
         return activatePatient(id, REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request), request);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/saveAndActivate")
+    public String saveAndActivate(@Valid Patient patient, Model uiModel, HttpServletRequest request) {
+        patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
+        activatePatient(patient.getId(), REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request), request);
+        Patient savedPatient = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), loggedInClinic(request));
+        List<String> warning = new IncompletePatientDataWarning(savedPatient, null, null, null, null).value();
+        uiModel.addAttribute("warning", warning);
+        uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
+        initUIModel(uiModel, savedPatient);
+        return EXPRESS_SHOW_VIEW;
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/expressActivate/{id}")
+    public String expressActivate(@PathVariable String id, Model uiModel, HttpServletRequest request) {
+        activatePatient(id, null, request);
+        Patient activatedPatient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
+        List<String> warning = new IncompletePatientDataWarning(activatedPatient, null, null, null, null).value();
+        uiModel.addAttribute("warning", warning);
+        uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
+        initUIModel(uiModel, activatedPatient);
+        return EXPRESS_SHOW_VIEW;
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/activate/{id}")
     public String activateAndRedirectToListPatient(@PathVariable String id, HttpServletRequest request) {
         return activatePatient(id, REDIRECT_TO_LIST_VIEW, request);
@@ -145,6 +171,7 @@ public class PatientController extends BaseController {
         final PatientPreferences patientPreferences = new PatientPreferences();
         patientPreferences.setCallPreference(CallPreference.DailyPillReminder);
         patient.setPatientPreferences(patientPreferences);
+        uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
         initUIModel(uiModel, patient);
         uiModel.addAttribute("selectedMenuItem","NEW_PATIENT");
         return CREATE_VIEW;
@@ -240,28 +267,57 @@ public class PatientController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST)
     public String create(@Valid Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
+        uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
         if (bindingResult.hasErrors()) {
             initUIModel(uiModel, patient);
             return CREATE_VIEW;
         }
         try {
             patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
-            uiModel.asMap().clear();
+            Patient savedPatient = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), loggedInClinic(request));
+            List<String> warning = new IncompletePatientDataWarning(savedPatient, null, null, null, null).value();
+            uiModel.addAttribute("warning", warning);
+            initUIModel(uiModel, savedPatient);
         } catch (RuntimeException e) {
             decorateViewWithUniqueConstraintError(patient, bindingResult, uiModel, e);
             return CREATE_VIEW;
         }
-        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
+        return EXPRESS_SHOW_VIEW ;//    + encodeUrlPathSegment(patient.getId(), request);
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         if (patient == null) return "authorizationFailure";
+        List<SystemCategory> allSystemCategories = SystemCategoryDefinition.all();
+        List<SystemCategory> patientSystemCategories = patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories();
+        List<SystemCategory> systemCategories = getSystemCategories(allSystemCategories, patientSystemCategories);
+
+        patient.getMedicalHistory().getNonHivMedicalHistory().setSystemCategories(systemCategories);
         initUIModel(uiModel, patient);
-        uiModel.addAttribute("systemCategories", patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories());
+
+        uiModel.addAttribute("systemCategories", systemCategories);
+
         uiModel.addAttribute("canTransitionToWeekly", patient.canTransitionToWeekly(minNumberOfDaysOnDailyBeforeTransitioningToWeekly));
         return UPDATE_VIEW;
+    }
+
+    private List<SystemCategory> getSystemCategories(List<SystemCategory> allSystemCategories, List<SystemCategory> patientSystemCategories){
+        if(allSystemCategories.size() == patientSystemCategories.size())
+            return patientSystemCategories;
+
+        for(SystemCategory category: patientSystemCategories){
+            int index = allSystemCategories.indexOf(category);
+            if(index > -1){
+                SystemCategory systemCategory = allSystemCategories.get(index);
+                if(systemCategory.getAilments().hasOtherAilments() && !category.getAilments().hasOtherAilments()){
+                    category.getAilments().setOtherAilments(systemCategory.getAilments().getOtherAilments());
+                }
+                allSystemCategories.set(index, category);
+
+            }
+        }
+        return allSystemCategories;
     }
 
     @RequestMapping(method = RequestMethod.PUT)
@@ -313,10 +369,10 @@ public class PatientController extends BaseController {
 
     private void decorateViewWithUniqueConstraintError(Patient patient, BindingResult bindingResult, Model uiModel, RuntimeException e) {
         String message = e.getMessage();
-        if (message.contains(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT)) {
+        if (message != null && message.contains(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT)) {
             bindingResult.addError(new FieldError("Patient", "patientId", patient.getPatientId(), false,
                     new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
-        } else if (message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)) {
+        } else if (message != null && message.contains(Patient.PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT)) {
             bindingResult.addError(new FieldError("Patient", "mobilePhoneNumber", patient.getMobilePhoneNumber(), false,
                     new String[]{"phone_number_and_passcode_not_unique"}, new Object[]{}, PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE));
         } else {
@@ -352,11 +408,15 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("modesOfTransmission", allModesOfTransmission.getAll());
         uiModel.addAttribute("drugAllergies", TAMAConstants.DrugAllergy.values());
         uiModel.addAttribute("nnrtiRashes", TAMAConstants.NNRTIRash.values());
-        uiModel.addAttribute("systemCategories", SystemCategoryDefinition.all());
         uiModel.addAttribute("options", AilmentState.values());
         uiModel.addAttribute("questions", MedicalHistoryQuestions.all());
         uiModel.addAttribute("daysOfWeek", Arrays.asList(DayOfWeek.values()));
         uiModel.addAttribute("timeMeridiems", Arrays.asList(TimeMeridiem.values()));
+
+        if(uiModel.asMap().containsKey(EXPRESS_REGISTRATION))
+            uiModel.addAttribute("systemCategories", SystemCategoryDefinition.allExpressRegistration());
+        else
+            uiModel.addAttribute("systemCategories", SystemCategoryDefinition.all());
     }
 
     private void addDateTimeFormat(Model uiModel) {

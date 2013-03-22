@@ -557,6 +557,7 @@ fieldset th {
 
 .system_categories .category .ailments .ailment {
     padding: 5px 0;
+    clear: both;
 }
 
 .system_categories .category .ailments .ailment .title {

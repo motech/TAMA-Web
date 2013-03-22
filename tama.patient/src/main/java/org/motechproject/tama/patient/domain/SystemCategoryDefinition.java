@@ -88,12 +88,17 @@ public enum SystemCategoryDefinition {
     }
 
     public static List<SystemCategory> all() {
-        List<SystemCategory> systemCategories = new LinkedList<SystemCategory>();
+        List<SystemCategory> systemCategories = new LinkedList<>();
         for (SystemCategoryDefinition definiton : SystemCategoryDefinition.values()) {
             systemCategories.add(definiton.getSystemCategory());
         }
         return systemCategories;
     }
 
-
+    public static List<SystemCategory> allExpressRegistration() {
+        List<SystemCategory> systemCategories = new LinkedList<>();
+        systemCategories.add(Psychiatric.getSystemCategory());
+        systemCategories.add(Other.getSystemCategory());
+        return systemCategories;
+    }
 }

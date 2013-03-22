@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:springform="http://www.springframework.org/tags/form"
+     version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
+    <spring:url value="/resources-${applicationVersion}/styles/create-patient.css" var="create_patient_css_url" />
+    <link rel="stylesheet" type="text/css" media="screen" href="${create_patient_css_url}"></link>
+
+    <c:if test="${patientInsertError != null}">
+        <div class="errorBanner"> <c:out value="${patientInsertError}"/> </div>
+    </c:if>
+    <spring:url value="/patients" var="form_url"/>
+    <form:form name="express_registration_form" modelAttribute="patient" method="POST" id="express_registration_form" action="${form_url}" z="HkT/39qeIawAHTgF7FpZDeoTr94=" enctype="application/x-www-form-urlencoded">
+
+        <jsp:include page="createBasicInformation.jspx">
+            <jsp:param name="context" value="expressRegistration"/>
+        </jsp:include>
+
+        <jsp:include page="medicalHistoryForm.jspx">
+            <jsp:param name="context" value="expressRegistration"/>
+        </jsp:include>
+
+        <jsp:include page="patientPreferences.jspx" />
+
+        <div class="submit">
+            <script type="text/javascript">
+                Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'savePatient', event:'onclick'}));
+                Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'activatePatient', event:'onclick'}));
+            </script>
+            <input type="submit" id="activatePatient" value="Save And Activate"/>
+            <input type="submit" id="savePatient" value="Save"/>
+        </div>
+
+        <script type="text/javascript">
+            dojo.connect(dojo.byId("activatePatient"), "onclick", function(evt) {
+                dojo.byId("express_registration_form").action =  "${form_url}" + "/saveAndActivate";
+            });
+            dojo.connect(dojo.byId("savePatient"), "onclick", function(evt) {
+                dojo.byId("express_registration_form").action = "${form_url}";
+            });
+        </script>
+    </form:form>
+
+    <script type="text/javascript">
+        dojo.require("dijit.form.Button");
+        dojo.require("dijit.Dialog");
+    </script>
+
+    <div id="patientPreferences.fourWeekWarningDialog" title="Warning" data-dojo-type="dijit.Dialog">
+        The patient has not been on 'Daily Pill Reminder' calls for sufficient amount of time. <br/>
+        Are you sure you want to enroll him/her on 'Weekly Adherence'? <br/>
+		<button dojoType="dijit.form.Button" type="submit" id="four_week_warning_confirm">Yes</button>
+		<button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="four_week_warning_cancel">Cancel</button>
+	</div>
+
+    <spring:url value="/resources-${applicationVersion}/js/createPatient.js" var="createPatientScriptUrl"/>
+    <script src="${createPatientScriptUrl}"><!--required--></script>
+
+</div>

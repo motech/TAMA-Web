@@ -30,6 +30,11 @@ public class Ailments {
     }
 
     @JsonIgnore
+    public boolean hasOtherAilments() {
+        return !otherAilments.isEmpty();
+    }
+
+    @JsonIgnore
     public boolean isNotEmpty() {
         return !ailments.isEmpty();
     }

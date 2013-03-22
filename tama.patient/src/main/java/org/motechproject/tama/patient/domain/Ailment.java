@@ -32,9 +32,8 @@ public class Ailment extends BaseEntity {
 
         Ailment ailment = (Ailment) o;
 
-        if (definition != ailment.definition) return false;
+        return definition == ailment.definition;
 
-        return true;
     }
 
     @Override

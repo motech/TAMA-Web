@@ -31,8 +31,10 @@ public class MedicalHistoryRequestMapper {
         try {
             request.setPatientId(patient.getPatientId());
             request.setPatientDoucmentId(patient.getId());
-            request.setHivTestReason(getTestReasonName(patient));
-            request.setModesOfTransmission(getModeOfTransmissionType(patient));
+            if (null != patient.getMedicalHistory().getHivMedicalHistory()) {
+                request.setHivTestReason(getTestReasonName(patient));
+                request.setModesOfTransmission(getModeOfTransmissionType(patient));
+            }
             request.setNonHivMedicalHistory(toJson(patient.getMedicalHistory().getNonHivMedicalHistory()));
         } catch (IOException e) {
             throw new RuntimeException(e);

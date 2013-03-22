@@ -31,6 +31,7 @@
                                </span>
                            </div>
                        </c:forEach>
+                       <c:if test="${param.context != 'expressRegistration'}">
                        <div class='ailment'>
                            <c:forEach items="${category.ailments.otherAilments}" varStatus="otherAilmentItemStatus" var="otherAilment">
                                <c:if test="${otherAilment.state.displayName != 'None'}">
@@ -46,6 +47,7 @@
                                </c:if>
                            </c:forEach>
                        </div>
+                       </c:if>
                    </div>
                </c:if>
            </div>

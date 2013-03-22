@@ -5,6 +5,9 @@ dojo.addOnLoad(function() {
     var displayDescriptionIfAllergySelected = function (index) {
     return function() {
         var allergyCheckbox = dojo.byId('c_org_motechproject_tama_domain_Patient_allergy' + index);
+        if(allergyCheckbox == null)
+            return;
+
         var allergyDescription = dojo.byId('_c_org_motechproject_tama_domain_Patient_allergy_arv_description' + index + '_id');
         var allergyDescriptionWidget = dijit.byId('_medicalHistory.nonHivMedicalHistory.allergiesHistory[' + index + '].description_id');
         if (allergyCheckbox.checked) {

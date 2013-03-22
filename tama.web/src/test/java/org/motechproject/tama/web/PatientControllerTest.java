@@ -391,8 +391,7 @@ public class PatientControllerTest {
 
             String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
-            assertTrue(modelMap.isEmpty());
-            assertEquals("redirect:/patients/" + PATIENT_ID, createPage);
+            assertEquals("patients/expressCreate", createPage);
         }
 
         @Test
@@ -413,7 +412,7 @@ public class PatientControllerTest {
 
             verify(bindingResult).addError(new FieldError("Patient", "patientId", patientFromUI.getPatientId(), false,
                     new String[]{"clinic_and_patient_id_not_unique"}, new Object[]{}, PatientController.CLINIC_AND_PATIENT_ID_ALREADY_IN_USE));
-            assertEquals("patients/create", createPage);
+            assertEquals("patients/expressCreate", createPage);
         }
     }
 

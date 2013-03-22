@@ -73,7 +73,7 @@ public class IncompletePatientDataWarning {
     }
 
     private void findBaseLineLabResults() {
-        ClinicVisit baselineVisit = allClinicVisits.getBaselineVisit(patient.getId());
+        ClinicVisit baselineVisit = allClinicVisits == null ? null : allClinicVisits.getBaselineVisit(patient.getId());
         HashSet<String> requiredFor = new HashSet<String>(asList("Symptoms Reporting"));
         LabResult cd4Result = null;
         if (baselineVisit != null) {
@@ -87,20 +87,20 @@ public class IncompletePatientDataWarning {
 
     private void findLatestLabResults() {
         HashSet<String> requiredFor = new HashSet<String>(asList("Health Tips"));
-        int cd4Result = allLabResults.allLabResults(patient.getId()).latestCountOf(TAMAConstants.LabTestType.CD4);
+        int cd4Result = allLabResults == null ? LabResult.INVALID_COUNT : allLabResults.allLabResults(patient.getId()).latestCountOf(TAMAConstants.LabTestType.CD4);
         if (cd4Result == LabResult.INVALID_COUNT) {
             requiredPatientDetails.add(new RequiredPatientDetail(cd4Result == LabResult.INVALID_COUNT ? null : cd4Result, "Latest CD4 count", requiredFor));
         }
     }
 
     private void findRequiredTreatmentAdvice() {
-        TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        TreatmentAdvice treatmentAdvice = allTreatmentAdvices == null ? null : allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         HashSet<String> requiredFor = new HashSet<String>(asList("Symptoms Reporting", "Health Tips"));
         requiredPatientDetails.add(new RequiredPatientDetail(treatmentAdvice, "Regimen details", requiredFor));
     }
 
     private void findRequiredVitalStatistics() {
-        VitalStatistics vitalStats = allVitalStatistics.findLatestVitalStatisticByPatientId(patient.getId());
+        VitalStatistics vitalStats = allVitalStatistics == null ? null : allVitalStatistics.findLatestVitalStatisticByPatientId(patient.getId());
         vitalStats = (vitalStats != null && (vitalStats.getWeightInKg() != null && vitalStats.getHeightInCm() != null)) ? vitalStats : null;
         HashSet<String> requiredFor = new HashSet<String>(asList("Symptoms Reporting"));
         requiredPatientDetails.add(new RequiredPatientDetail(vitalStats, "Vital Statistics(Height, Weight)", requiredFor));
