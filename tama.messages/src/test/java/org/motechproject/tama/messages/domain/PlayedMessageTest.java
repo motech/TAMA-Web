@@ -13,44 +13,44 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class PushedMessageTest {
+public class PlayedMessageTest {
 
     @Mock
     private KooKooIVRContext kookooIVRContext;
     @Mock
     private Cookies cookies;
 
-    private PushedMessage pushedMessage;
+    private PlayedMessage playedMessage;
 
     @Before
     public void setup() {
         initMocks(this);
         setupIVRSession(kookooIVRContext);
-        pushedMessage = new PushedMessage(kookooIVRContext);
+        playedMessage = new PlayedMessage(kookooIVRContext);
     }
 
     @Test
     public void pushedMessageExistsWhenAnOutboxMessageWasPushed() {
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("message");
-        assertTrue(pushedMessage.exists());
+        assertTrue(playedMessage.exists());
     }
 
     @Test
     public void pushedMessageExistsWhenHealthTipMessageWasPushed() {
         when(cookies.getValue(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn("message");
-        assertTrue(pushedMessage.exists());
+        assertTrue(playedMessage.exists());
     }
 
     @Test
     public void messageTypeIsOutboxWhenNoMessageWasPlayed() {
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn(null);
-        assertEquals(PushedMessage.Types.OUTBOX, pushedMessage.type());
+        assertEquals(PlayedMessage.Types.OUTBOX, playedMessage.type());
     }
 
     @Test
     public void messageTypeIsHealthTipWhenAHealthTipMessageWasPlayed() {
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("message");
-        assertEquals(PushedMessage.Types.HEALTH_TIPS, pushedMessage.type());
+        assertEquals(PlayedMessage.Types.HEALTH_TIPS, playedMessage.type());
     }
 
     private void setupIVRSession(KooKooIVRContext kookooIVRContext) {

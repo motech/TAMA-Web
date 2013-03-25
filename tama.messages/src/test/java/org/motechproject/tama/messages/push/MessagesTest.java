@@ -1,4 +1,4 @@
-package org.motechproject.tama.messages;
+package org.motechproject.tama.messages.push;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,7 +7,7 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.messages.domain.PushedMessage;
+import org.motechproject.tama.messages.domain.PlayedMessage;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
@@ -22,14 +22,14 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class MessagesToBePushedTest {
+public class MessagesTest {
 
     @Mock
     private PatientService patientService;
     @Mock
-    private PushedHealthTipMessage pushedHealthTipsMessage;
+    private HealthTipMessage pushedHealthTipsMessage;
     @Mock
-    private PushedOutboxMessage pushedOutboxMessage;
+    private OutboxMessage outboxMessage;
     @Mock
     private KooKooIVRContext kookooIVRContext;
     @Mock
@@ -37,7 +37,7 @@ public class MessagesToBePushedTest {
     @Mock
     private Cookies cookies;
 
-    private MessagesToBePushed messagesToBePushed;
+    private Messages messages;
 
     @Before
     public void setup() {
@@ -45,12 +45,12 @@ public class MessagesToBePushedTest {
         setupPatient(CallPreference.FourDayRecall);
         setupCookies();
         setupSession();
-        messagesToBePushed = new MessagesToBePushed(pushedOutboxMessage, pushedHealthTipsMessage, patientService);
+        messages = new Messages(outboxMessage, pushedHealthTipsMessage, patientService);
     }
 
     @Test
     public void fourDayRecallPatientsHaveADefaultMessage() {
-        KookooIVRResponseBuilder response = messagesToBePushed.nextMessage(kookooIVRContext);
+        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
         assertTrue(response.getPlayAudios().contains(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY));
     }
 
@@ -58,10 +58,10 @@ public class MessagesToBePushedTest {
     public void shouldAddOutboxMessageToResponse() {
         KookooIVRResponseBuilder outboxMessage = new KookooIVRResponseBuilder().withPlayAudios("outboxMessage");
 
-        when(pushedOutboxMessage.hasAnyMessage(kookooIVRContext)).thenReturn(true);
-        when(pushedOutboxMessage.getResponse(kookooIVRContext)).thenReturn(outboxMessage);
+        when(this.outboxMessage.hasAnyMessage(kookooIVRContext)).thenReturn(true);
+        when(this.outboxMessage.getResponse(kookooIVRContext)).thenReturn(outboxMessage);
 
-        KookooIVRResponseBuilder response = messagesToBePushed.nextMessage(kookooIVRContext);
+        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
         assertTrue(response.getPlayAudios().contains("outboxMessage"));
     }
 
@@ -72,32 +72,32 @@ public class MessagesToBePushedTest {
         when(pushedHealthTipsMessage.hasAnyMessage(kookooIVRContext)).thenReturn(true);
         when(pushedHealthTipsMessage.getResponse(kookooIVRContext)).thenReturn(healthTipMessage);
 
-        KookooIVRResponseBuilder response = messagesToBePushed.nextMessage(kookooIVRContext);
+        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
         assertTrue(response.getPlayAudios().contains("healthTipMessage"));
     }
 
     @Test
     public void shouldReturnEmptyResponseWhenThereAreNoMessages() {
         setupPatient(CallPreference.DailyPillReminder);
-        KookooIVRResponseBuilder response = messagesToBePushed.nextMessage(kookooIVRContext);
+        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
         assertTrue(response.getPlayAudios().isEmpty());
     }
 
     @Test
     public void shouldMarkOutboxMessageAsReadWhenLastPlayedMessageIsOutboxMessage() {
-        PushedMessage pushedMessage = new PushedMessage(kookooIVRContext);
+        PlayedMessage playedMessage = new PlayedMessage(kookooIVRContext);
 
-        messagesToBePushed.markAsRead(kookooIVRContext, pushedMessage);
-        verify(pushedOutboxMessage).markAsRead(kookooIVRContext);
+        messages.markAsRead(kookooIVRContext, playedMessage);
+        verify(outboxMessage).markAsRead(kookooIVRContext);
     }
 
     @Test
     public void shouldMarkHealthTipAsReadWhenLastPlayedMessageIsHealthTip() {
-        PushedMessage pushedMessage = new PushedMessage(kookooIVRContext);
+        PlayedMessage playedMessage = new PlayedMessage(kookooIVRContext);
         String playedHealthTip = "healthTip";
 
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn(playedHealthTip);
-        messagesToBePushed.markAsRead(kookooIVRContext, pushedMessage);
+        messages.markAsRead(kookooIVRContext, playedMessage);
         verify(pushedHealthTipsMessage).markAsRead(anyString(), eq(playedHealthTip));
     }
 

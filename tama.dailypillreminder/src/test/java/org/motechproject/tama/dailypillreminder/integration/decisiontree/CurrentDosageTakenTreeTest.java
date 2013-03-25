@@ -66,7 +66,7 @@ public class CurrentDosageTakenTreeTest {
 
         Node nextNode = testConfirmTree.getTree().nextNode("", "");
 
-        new AssertUtil(kookooIVRContext, httpSession).assertCallStateTransitionForKeyPress("3", nextNode.getTransitions(), CallState.PULL_MESSAGES);
+        new AssertUtil(kookooIVRContext, httpSession).assertCallStateTransitionForKeyPress("3", nextNode.getTransitions(), CallState.PULL_MESSAGES_TREE);
     }
 }
 

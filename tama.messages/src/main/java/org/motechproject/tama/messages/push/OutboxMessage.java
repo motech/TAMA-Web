@@ -1,4 +1,4 @@
-package org.motechproject.tama.messages;
+package org.motechproject.tama.messages.push;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
@@ -18,14 +18,14 @@ import static java.util.Arrays.asList;
 import static org.motechproject.outbox.api.domain.OutboundVoiceMessageStatus.PENDING;
 
 @Component
-public class PushedOutboxMessage {
+public class OutboxMessage {
 
     private VoiceOutboxService voiceOutboxService;
     private VoiceMessageResponseFactory voiceMessageResponseFactory;
     private List<String> voiceMessageTypes;
 
     @Autowired
-    public PushedOutboxMessage(VoiceOutboxService voiceOutboxService, VoiceMessageResponseFactory voiceMessageResponseFactory) {
+    public OutboxMessage(VoiceOutboxService voiceOutboxService, VoiceMessageResponseFactory voiceMessageResponseFactory) {
         this.voiceOutboxService = voiceOutboxService;
         this.voiceMessageResponseFactory = voiceMessageResponseFactory;
         this.voiceMessageTypes = asList(

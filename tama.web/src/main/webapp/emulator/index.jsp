@@ -364,7 +364,7 @@
         var is_outbound_call = $('#is_outbound_call').is(":checked") ? "true" : "";
         var outbox_call = $('#outbox_call').is(":checked") ? "true" : "";
         var dataMap = "";
-        var event = "event=GotDTMF&";
+        var event = "event=GotDTMF&data=&";
         if (collectdtmf) event = "event=GotDTMF&" + '&data=' + dtmf + "&";
         if (is_outbound_call == 'true')
             dataMap = ($('#symptoms_reporting').is(":checked")) ? "" : ('&dataMap={%27dosage_id%27:%27' + dosageId + '%27, %27regimen_id%27:%27' + regimen_id + '%27, %27times_sent%27:%27' + times_sent + '%27, %27retry_interval%27:%27' + retry_interval +'%27, %27total_times_to_send%27:%27' + total + '%27, %27outbox_call%27:%27' + outbox_call + '%27, %27is_outbound_call%27:%27' + is_outbound_call + '%27}');

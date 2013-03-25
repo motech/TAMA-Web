@@ -1,4 +1,4 @@
-package org.motechproject.tama.messages;
+package org.motechproject.tama.messages.push;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Component;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @Component
-public class PushedHealthTipMessage {
+public class HealthTipMessage {
 
     private HealthTipService healthTipService;
     private ContinueToHealthTipsCriteria continueToHealthTipsCriteria;
 
     @Autowired
-    public PushedHealthTipMessage(HealthTipService healthTipService, ContinueToHealthTipsCriteria continueToHealthTipsCriteria) {
+    public HealthTipMessage(HealthTipService healthTipService, ContinueToHealthTipsCriteria continueToHealthTipsCriteria) {
         this.healthTipService = healthTipService;
         this.continueToHealthTipsCriteria = continueToHealthTipsCriteria;
     }

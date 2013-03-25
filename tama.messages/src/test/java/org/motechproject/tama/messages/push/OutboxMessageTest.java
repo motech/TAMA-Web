@@ -1,4 +1,4 @@
-package org.motechproject.tama.messages;
+package org.motechproject.tama.messages.push;
 
 
 import org.junit.Before;
@@ -26,7 +26,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.outbox.api.domain.OutboundVoiceMessageStatus.PENDING;
 import static org.motechproject.tama.common.TAMAConstants.*;
 
-public class PushedOutboxMessageTest {
+public class OutboxMessageTest {
 
     @Mock
     private VoiceOutboxService voiceOutboxService;
@@ -40,14 +40,14 @@ public class PushedOutboxMessageTest {
     private Cookies cookies;
 
     private String patientId = "patientId";
-    private PushedOutboxMessage pushedOutboxMessage;
+    private OutboxMessage outboxMessage;
 
     @Before
     public void setup() {
         initMocks(this);
         setupSession();
         setupCookies();
-        pushedOutboxMessage = new PushedOutboxMessage(voiceOutboxService, voiceMessageResponseFactory);
+        outboxMessage = new OutboxMessage(voiceOutboxService, voiceMessageResponseFactory);
     }
 
     private void setupSession() {
@@ -64,13 +64,13 @@ public class PushedOutboxMessageTest {
     @Test
     public void shouldReturnTrueIfAnyMessageIsPresent() {
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), anyString())).thenReturn(1);
-        assertTrue(pushedOutboxMessage.hasAnyMessage(kookooIVRContext));
+        assertTrue(outboxMessage.hasAnyMessage(kookooIVRContext));
     }
 
     @Test
     public void shouldReturnFalseIfNoMessageIsPresent() {
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), anyString())).thenReturn(0);
-        assertFalse(pushedOutboxMessage.hasAnyMessage(kookooIVRContext));
+        assertFalse(outboxMessage.hasAnyMessage(kookooIVRContext));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class PushedOutboxMessageTest {
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(1);
         when(voiceOutboxService.nextMessage(null, patientId, PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(outboundVoiceMessage);
 
-        pushedOutboxMessage.getResponse(kookooIVRContext);
+        outboxMessage.getResponse(kookooIVRContext);
 
         verify(voiceMessageResponseFactory).voiceMessageResponse(eq(kookooIVRContext), eq(outboxContext), eq(outboundVoiceMessage), any(KookooIVRResponseBuilder.class));
     }
@@ -90,7 +90,7 @@ public class PushedOutboxMessageTest {
     public void shouldNotAddAppointmentReminderVoiceMessageToResponseIfNotPresent() {
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(0);
 
-        pushedOutboxMessage.getResponse(kookooIVRContext);
+        outboxMessage.getResponse(kookooIVRContext);
 
         verifyZeroInteractions(voiceMessageResponseFactory);
     }
@@ -103,7 +103,7 @@ public class PushedOutboxMessageTest {
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(PUSHED_VISIT_REMINDER_VOICE_MESSAGE))).thenReturn(1);
         when(voiceOutboxService.nextMessage(null, patientId, PUSHED_VISIT_REMINDER_VOICE_MESSAGE)).thenReturn(outboundVoiceMessage);
 
-        pushedOutboxMessage.getResponse(kookooIVRContext);
+        outboxMessage.getResponse(kookooIVRContext);
 
         verify(voiceMessageResponseFactory).voiceMessageResponse(eq(kookooIVRContext), eq(outboxContext), eq(outboundVoiceMessage), any(KookooIVRResponseBuilder.class));
     }
@@ -112,7 +112,7 @@ public class PushedOutboxMessageTest {
     public void shouldNotAddVisitReminderVoiceMessageToResponseIfNotPresent() {
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(VOICE_MESSAGE_COMMAND_AUDIO))).thenReturn(0);
 
-        pushedOutboxMessage.getResponse(kookooIVRContext);
+        outboxMessage.getResponse(kookooIVRContext);
 
         verifyZeroInteractions(voiceMessageResponseFactory);
     }
@@ -125,7 +125,7 @@ public class PushedOutboxMessageTest {
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(VOICE_MESSAGE_COMMAND_AUDIO))).thenReturn(1);
         when(voiceOutboxService.nextMessage(null, patientId, VOICE_MESSAGE_COMMAND_AUDIO)).thenReturn(outboundVoiceMessage);
 
-        pushedOutboxMessage.getResponse(kookooIVRContext);
+        outboxMessage.getResponse(kookooIVRContext);
 
         verify(voiceMessageResponseFactory).voiceMessageResponse(eq(kookooIVRContext), eq(outboxContext), eq(outboundVoiceMessage), any(KookooIVRResponseBuilder.class));
     }
@@ -134,7 +134,7 @@ public class PushedOutboxMessageTest {
     public void shouldNotAddVoiceMessageCommandToResponseIfNotPresent() {
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(VOICE_MESSAGE_COMMAND_AUDIO))).thenReturn(0);
 
-        pushedOutboxMessage.getResponse(kookooIVRContext);
+        outboxMessage.getResponse(kookooIVRContext);
 
         verifyZeroInteractions(voiceMessageResponseFactory);
     }
@@ -153,7 +153,7 @@ public class PushedOutboxMessageTest {
         when(voiceOutboxService.nextMessage(null, patientId, PUSHED_VISIT_REMINDER_VOICE_MESSAGE)).thenReturn(new OutboundVoiceMessage());
         when(voiceOutboxService.nextMessage(null, patientId, VOICE_MESSAGE_COMMAND_AUDIO)).thenReturn(new OutboundVoiceMessage());
 
-        pushedOutboxMessage.getResponse(kookooIVRContext);
+        outboxMessage.getResponse(kookooIVRContext);
 
         verify(voiceMessageResponseFactory).voiceMessageResponse(eq(kookooIVRContext), eq(outboxContext), eq(appointmentReminderMessage), any(KookooIVRResponseBuilder.class));
     }
@@ -170,7 +170,7 @@ public class PushedOutboxMessageTest {
         when(voiceOutboxService.nextMessage(null, patientId, PUSHED_VISIT_REMINDER_VOICE_MESSAGE)).thenReturn(visitReminderMessage);
         when(voiceOutboxService.nextMessage(null, patientId, VOICE_MESSAGE_COMMAND_AUDIO)).thenReturn(new OutboundVoiceMessage());
 
-        pushedOutboxMessage.getResponse(kookooIVRContext);
+        outboxMessage.getResponse(kookooIVRContext);
 
         verify(voiceMessageResponseFactory).voiceMessageResponse(eq(kookooIVRContext), eq(outboxContext), eq(visitReminderMessage), any(KookooIVRResponseBuilder.class));
     }
@@ -183,7 +183,7 @@ public class PushedOutboxMessageTest {
         when(voiceOutboxService.getNumberOfMessages(eq(patientId), eq(PENDING), eq(PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE))).thenReturn(1);
         when(voiceOutboxService.nextMessage(null, patientId, PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE)).thenReturn(outboundVoiceMessage);
 
-        pushedOutboxMessage.getResponse(kookooIVRContext);
+        outboxMessage.getResponse(kookooIVRContext);
 
         verify(cookies).add(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID, "id");
     }
@@ -192,7 +192,7 @@ public class PushedOutboxMessageTest {
     public void shouldNotAddLastPlayedMessageToCookieIfLastPlayedMessageIsNotPresent() {
         when(voiceOutboxService.nextMessage(anyString(), eq(patientId), anyString())).thenReturn(null);
 
-        pushedOutboxMessage.getResponse(kookooIVRContext);
+        outboxMessage.getResponse(kookooIVRContext);
 
         verify(cookies, never()).add(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID, "id");
     }

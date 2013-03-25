@@ -74,7 +74,7 @@ public class TAMACallFlowControllerTest {
 
     @Test
     public void shouldReturnDecisionTreeURLWhenCallStateIsPullMessages() {
-        tamaIVRContext.callState(CallState.PULL_MESSAGES);
+        tamaIVRContext.callState(CallState.PULL_MESSAGES_TREE);
         assertEquals(AllIVRURLs.DECISION_TREE_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 
@@ -141,7 +141,7 @@ public class TAMACallFlowControllerTest {
 
     @Test
     public void shouldReturnPullMessagesTreeWhenCallStateIsPullMessages() {
-        tamaIVRContext.callState(CallState.PULL_MESSAGES);
+        tamaIVRContext.callState(CallState.PULL_MESSAGES_TREE);
         tamaIVRContext.callDirection(CallDirection.Inbound);
         tamaIVRContext.lastCompletedTree(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM);
 

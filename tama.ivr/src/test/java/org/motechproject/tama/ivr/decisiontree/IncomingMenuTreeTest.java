@@ -44,7 +44,7 @@ public class IncomingMenuTreeTest {
 
     @Test
     public void shouldTransitionToPullMessagesTreeWhenDTMFInputIs3() {
-        assertCallStateTransitionForKeyPress("3", transitions, CallState.PULL_MESSAGES);
+        assertCallStateTransitionForKeyPress("3", transitions, CallState.PULL_MESSAGES_TREE);
     }
 
     @Test

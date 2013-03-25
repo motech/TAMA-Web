@@ -4,12 +4,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.message.IVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.messages.MessagesToBePushed;
-import org.motechproject.tama.messages.domain.PushedMessage;
+import org.motechproject.tama.messages.domain.PlayedMessage;
+import org.motechproject.tama.messages.push.Messages;
 import org.motechproject.tama.outbox.context.OutboxContext;
 import org.motechproject.util.Cookies;
 
@@ -32,7 +33,7 @@ public class MessagesControllerTest {
     @Mock
     private StandardResponseController standardResponseController;
     @Mock
-    private MessagesToBePushed messagesToBePushed;
+    private Messages messages;
     @Mock
     private HttpSession httpSession;
     @Mock
@@ -46,7 +47,7 @@ public class MessagesControllerTest {
         initMocks(this);
         setupCookies();
         setupSession();
-        messagesController = new MessagesController(ivrMessage, callDetailRecordsService, standardResponseController, messagesToBePushed);
+        messagesController = new MessagesController(ivrMessage, callDetailRecordsService, standardResponseController, messages);
     }
 
     private void setupSession() {
@@ -64,10 +65,11 @@ public class MessagesControllerTest {
     public void shouldAddMessageToResponse() {
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("");
         when(cookies.getValue(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn("");
+        when(messages.nextMessage(kookooIVRContext)).thenReturn(new KookooIVRResponseBuilder());
 
         messagesController.gotDTMF(kookooIVRContext);
 
-        verify(messagesToBePushed).nextMessage(kookooIVRContext);
+        verify(messages).nextMessage(kookooIVRContext);
     }
 
     @Test
@@ -76,17 +78,18 @@ public class MessagesControllerTest {
 
         messagesController.gotDTMF(kookooIVRContext);
 
-        verify(messagesToBePushed).markAsRead(kookooIVRContext, new PushedMessage(kookooIVRContext));
+        verify(messages).markAsRead(kookooIVRContext, new PlayedMessage(kookooIVRContext));
     }
 
     @Test
     public void shouldNotMarkMessageAsReadIfMessageIsNotAlreadyPlayed() {
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("");
         when(cookies.getValue(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn("");
+        when(messages.nextMessage(kookooIVRContext)).thenReturn(new KookooIVRResponseBuilder());
 
         messagesController.gotDTMF(kookooIVRContext);
 
-        verify(messagesToBePushed, never()).markAsRead(kookooIVRContext, new PushedMessage(kookooIVRContext));
+        verify(messages, never()).markAsRead(kookooIVRContext, new PlayedMessage(kookooIVRContext));
     }
 
     @Test

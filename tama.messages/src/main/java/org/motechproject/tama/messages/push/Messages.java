@@ -1,11 +1,11 @@
-package org.motechproject.tama.messages;
+package org.motechproject.tama.messages.push;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
-import org.motechproject.tama.messages.domain.PushedMessage;
+import org.motechproject.tama.messages.domain.PlayedMessage;
 import org.motechproject.tama.patient.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,16 +13,16 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class MessagesToBePushed {
+public class Messages {
 
-    private PushedOutboxMessage pushedOutboxMessage;
-    private PushedHealthTipMessage pushedHealthTipMessage;
+    private OutboxMessage outboxMessage;
+    private HealthTipMessage healthTipMessage;
     private PatientService patientService;
 
     @Autowired
-    public MessagesToBePushed(PushedOutboxMessage pushedOutboxMessage, PushedHealthTipMessage pushedHealthTipMessage, PatientService patientService) {
-        this.pushedOutboxMessage = pushedOutboxMessage;
-        this.pushedHealthTipMessage = pushedHealthTipMessage;
+    public Messages(OutboxMessage outboxMessage, HealthTipMessage healthTipMessage, PatientService patientService) {
+        this.outboxMessage = outboxMessage;
+        this.healthTipMessage = healthTipMessage;
         this.patientService = patientService;
     }
 
@@ -34,12 +34,12 @@ public class MessagesToBePushed {
         return response;
     }
 
-    public void markAsRead(KooKooIVRContext kookooIVRContext, PushedMessage pushedMessage) {
+    public void markAsRead(KooKooIVRContext kookooIVRContext, PlayedMessage playedMessage) {
         TAMAIVRContext context = new TAMAIVRContextFactory().create(kookooIVRContext);
-        if (PushedMessage.Types.HEALTH_TIPS.equals(pushedMessage.type())) {
-            pushedHealthTipMessage.markAsRead(context.patientDocumentId(), pushedMessage.id());
+        if (PlayedMessage.Types.HEALTH_TIPS.equals(playedMessage.type())) {
+            healthTipMessage.markAsRead(context.patientDocumentId(), playedMessage.id());
         } else {
-            pushedOutboxMessage.markAsRead(kookooIVRContext);
+            outboxMessage.markAsRead(kookooIVRContext);
         }
     }
 
@@ -52,10 +52,10 @@ public class MessagesToBePushed {
     }
 
     private KookooIVRResponseBuilder messages(KooKooIVRContext kooKooIVRContext) {
-        if (pushedOutboxMessage.hasAnyMessage(kooKooIVRContext)) {
-            return pushedOutboxMessage.getResponse(kooKooIVRContext);
-        } else if (pushedHealthTipMessage.hasAnyMessage(kooKooIVRContext)) {
-            return pushedHealthTipMessage.getResponse(kooKooIVRContext);
+        if (outboxMessage.hasAnyMessage(kooKooIVRContext)) {
+            return outboxMessage.getResponse(kooKooIVRContext);
+        } else if (healthTipMessage.hasAnyMessage(kooKooIVRContext)) {
+            return healthTipMessage.getResponse(kooKooIVRContext);
         } else {
             return new KookooIVRResponseBuilder().withSid(kooKooIVRContext.callId());
         }

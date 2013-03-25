@@ -90,7 +90,14 @@ public enum CallState {
         }
     },
 
-    PULL_MESSAGES(AllIVRURLs.DECISION_TREE_URL) {
+    PULL_MESSAGES(ControllerURLs.PUSH_MESSAGES_URL) {
+        @Override
+        public String nextURL(TAMAIVRContext context) {
+            return possibleTransitionURLs.get(0);
+        }
+    },
+
+    PULL_MESSAGES_TREE(AllIVRURLs.DECISION_TREE_URL) {
         @Override
         public String nextURL(TAMAIVRContext context) {
             return possibleTransitionURLs.get(0);

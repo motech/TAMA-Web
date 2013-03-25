@@ -2,13 +2,14 @@ package org.motechproject.tama.messages.domain;
 
 import lombok.EqualsAndHashCode;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.outbox.context.OutboxContext;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @EqualsAndHashCode
-public class PushedMessage {
+public class PlayedMessage {
 
     public static enum Types {
         HEALTH_TIPS,
@@ -17,13 +18,24 @@ public class PushedMessage {
 
     private KooKooIVRContext ivrContext;
 
-    public PushedMessage(KooKooIVRContext ivrContext) {
+    public PlayedMessage(KooKooIVRContext ivrContext) {
         this.ivrContext = ivrContext;
     }
 
     public boolean exists() {
         return (isNotBlank(new TAMAIVRContextFactory().create(ivrContext).getLastPlayedHealthTip())
                 || isNotBlank(new OutboxContext(ivrContext).lastPlayedMessageId()));
+    }
+
+    public void reset() {
+        TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(ivrContext);
+        OutboxContext outboxContext = new OutboxContext(ivrContext);
+        if (isNotBlank(tamaivrContext.getLastPlayedHealthTip())) {
+            tamaivrContext.setLastPlayedHealthTip(null);
+        } else {
+            outboxContext.lastPlayedMessageId(null);
+        }
+        tamaivrContext.currentDecisionTreePath("");
     }
 
     public String id() {

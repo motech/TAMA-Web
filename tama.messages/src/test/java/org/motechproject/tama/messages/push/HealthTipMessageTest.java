@@ -1,4 +1,4 @@
-package org.motechproject.tama.messages;
+package org.motechproject.tama.messages.push;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class PushedHealthTipMessageTest {
+public class HealthTipMessageTest {
 
     @Mock
     private HealthTipService healthTipService;
@@ -27,7 +27,7 @@ public class PushedHealthTipMessageTest {
     @Mock
     private ContinueToHealthTipsCriteria continueToHealthTipsCriteria;
 
-    private PushedHealthTipMessage pushedHealthTipMessage;
+    private HealthTipMessage healthTipMessage;
 
     @Before
     public void setup() {
@@ -39,7 +39,7 @@ public class PushedHealthTipMessageTest {
         when(request.getSession()).thenReturn(httpSession);
         when(kookooIVRContext.httpRequest()).thenReturn(request);
         when(kookooIVRContext.cookies()).thenReturn(cookies);
-        pushedHealthTipMessage = new PushedHealthTipMessage(healthTipService, continueToHealthTipsCriteria);
+        healthTipMessage = new HealthTipMessage(healthTipService, continueToHealthTipsCriteria);
     }
 
     @Test
@@ -49,7 +49,7 @@ public class PushedHealthTipMessageTest {
         when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
 
         KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-        pushedHealthTipMessage.addToResponse(ivrResponseBuilder, kookooIVRContext);
+        healthTipMessage.addToResponse(ivrResponseBuilder, kookooIVRContext);
         assertEquals(asList(nextHealthTip), ivrResponseBuilder.getPlayAudios());
     }
 
@@ -60,7 +60,7 @@ public class PushedHealthTipMessageTest {
         when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
 
         KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-        pushedHealthTipMessage.addToResponse(ivrResponseBuilder, kookooIVRContext);
+        healthTipMessage.addToResponse(ivrResponseBuilder, kookooIVRContext);
         assertTrue(ivrResponseBuilder.getPlayAudios().isEmpty());
     }
 
@@ -70,7 +70,7 @@ public class PushedHealthTipMessageTest {
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(false);
         when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
 
-        assertFalse(pushedHealthTipMessage.hasAnyMessage(kookooIVRContext));
+        assertFalse(healthTipMessage.hasAnyMessage(kookooIVRContext));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class PushedHealthTipMessageTest {
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(true);
         when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
 
-        assertFalse(pushedHealthTipMessage.hasAnyMessage(kookooIVRContext));
+        assertFalse(healthTipMessage.hasAnyMessage(kookooIVRContext));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class PushedHealthTipMessageTest {
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(true);
         when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
 
-        assertTrue(pushedHealthTipMessage.hasAnyMessage(kookooIVRContext));
+        assertTrue(healthTipMessage.hasAnyMessage(kookooIVRContext));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class PushedHealthTipMessageTest {
         String audioFileName = "audioFileName";
         String patientDocId = "patientDocumentId";
 
-        pushedHealthTipMessage.markAsRead(patientDocId, audioFileName);
+        healthTipMessage.markAsRead(patientDocId, audioFileName);
         verify(healthTipService).markAsPlayed(patientDocId, audioFileName);
     }
 
@@ -105,7 +105,7 @@ public class PushedHealthTipMessageTest {
         String audioFileName = "";
         String patientDocId = "patientDocumentId";
 
-        pushedHealthTipMessage.markAsRead(patientDocId, audioFileName);
+        healthTipMessage.markAsRead(patientDocId, audioFileName);
         verify(healthTipService, never()).markAsPlayed(patientDocId, audioFileName);
     }
 }
