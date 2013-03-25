@@ -9,6 +9,7 @@ import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.domain.IVRAuthenticationStatus;
+import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
 import org.motechproject.util.Cookies;
 import org.motechproject.util.DateUtil;
 
@@ -32,6 +33,7 @@ public class TAMAIVRContext {
     public static final String LAST_PLAYED_HEALTH_TIP = "lastPlayedHealthTip";
     public static final String SWITCH_TO_DIAL_STATE = "switch_to_dial_state";
     public static final String DO_NOT_PROMPT_FOR_HANG_UP = "do_not_prompt_for_hang_up";
+    public static final String MESSAGE_CATEGORY_NAME = "message_category_name";
 
     protected KookooRequest kookooRequest;
     protected HttpServletRequest httpRequest;
@@ -245,4 +247,12 @@ public class TAMAIVRContext {
         return cookies;
     }
 
+    public TAMAMessageTypes getMessagesCategory() {
+        String name = this.cookies.getValue(MESSAGE_CATEGORY_NAME);
+        return (isNotBlank(name)) ? TAMAMessageTypes.valueOf(name) : null;
+    }
+
+    public void setMessagesCategory(String categoryName) {
+        this.cookies.add(MESSAGE_CATEGORY_NAME, categoryName);
+    }
 }

@@ -70,7 +70,7 @@ public class HealthTipMessageTest {
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(false);
         when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
 
-        assertFalse(healthTipMessage.hasAnyMessage(kookooIVRContext));
+        assertFalse(healthTipMessage.hasAnyMessage(kookooIVRContext, null));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class HealthTipMessageTest {
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(true);
         when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
 
-        assertFalse(healthTipMessage.hasAnyMessage(kookooIVRContext));
+        assertFalse(healthTipMessage.hasAnyMessage(kookooIVRContext, null));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class HealthTipMessageTest {
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(true);
         when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
 
-        assertTrue(healthTipMessage.hasAnyMessage(kookooIVRContext));
+        assertTrue(healthTipMessage.hasAnyMessage(kookooIVRContext, null));
     }
 
     @Test

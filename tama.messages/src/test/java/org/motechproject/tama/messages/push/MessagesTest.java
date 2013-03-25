@@ -69,8 +69,8 @@ public class MessagesTest {
     public void shouldAddHealthTipsToResponse() {
         KookooIVRResponseBuilder healthTipMessage = new KookooIVRResponseBuilder().withPlayAudios("healthTipMessage");
 
-        when(pushedHealthTipsMessage.hasAnyMessage(kookooIVRContext)).thenReturn(true);
-        when(pushedHealthTipsMessage.getResponse(kookooIVRContext)).thenReturn(healthTipMessage);
+        when(pushedHealthTipsMessage.hasAnyMessage(kookooIVRContext, null)).thenReturn(true);
+        when(pushedHealthTipsMessage.getResponse(kookooIVRContext, null)).thenReturn(healthTipMessage);
 
         KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
         assertTrue(response.getPlayAudios().contains("healthTipMessage"));

@@ -4,8 +4,11 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.tama.ivr.domain.CallState;
+import org.motechproject.tama.ivr.factory.MessageTransitionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static org.motechproject.tama.ivr.domain.TAMAMessageTypes.*;
 
 @Component
 public class PullMessagesTree extends TamaDecisionTree {
@@ -29,13 +32,13 @@ public class PullMessagesTree extends TamaDecisionTree {
                 )
                 .setTransitions(
                         new Object[][]{
-                                {"1", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES)},
-                                {"2", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES)},
-                                {"3", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES)},
-                                {"4", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES)},
-                                {"5", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES)},
-                                {"6", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES)},
-                                {"7", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES)},
+                                {"1", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, ALL_MESSAGES.name())},
+                                {"2", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, FAMILY_AND_CHILDREN.name())},
+                                {"3", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, NUTRITION_AND_LIFESTYLE.name())},
+                                {"4", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, SYMPTOMS.name())},
+                                {"5", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, ADHERENCE.name())},
+                                {"6", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, ART_AND_CD4.name())},
+                                {"7", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, LIVING_WITH_HIV.name())},
                                 {"9", TAMATransitionFactory.createResetTransition()},
                         }
                 );
