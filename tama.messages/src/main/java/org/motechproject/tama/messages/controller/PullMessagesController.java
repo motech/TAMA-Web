@@ -32,7 +32,7 @@ public class PullMessagesController implements PatientMessagesController {
         if (StringUtils.equals("9", tamaivrContext.dtmfInput())) {
             return new KookooIVRResponseBuilder().withSid(kooKooIVRContext.callId());
         } else {
-            return nextMessage(tamaivrContext);
+            return nextMessage(tamaivrContext).collectDtmfLength(1);
         }
     }
 
