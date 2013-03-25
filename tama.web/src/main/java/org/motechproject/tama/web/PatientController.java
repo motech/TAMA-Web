@@ -119,14 +119,24 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/saveAndActivate")
-    public String saveAndActivate(@Valid Patient patient, Model uiModel, HttpServletRequest request) {
-        patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
-        activatePatient(patient.getId(), REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request), request);
-        Patient savedPatient = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), loggedInClinic(request));
-        List<String> warning = new IncompletePatientDataWarning(savedPatient, null, null, null, null).value();
-        uiModel.addAttribute("warning", warning);
-        uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
-        initUIModel(uiModel, savedPatient);
+    public String saveAndActivate(@Valid Patient patient,BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
+        if (bindingResult.hasErrors()) {
+            initUIModel(uiModel, patient);
+            return CREATE_VIEW;
+        }
+
+        try{
+            patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
+            activatePatient(patient.getId(), REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request), request);
+            Patient savedPatient = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), loggedInClinic(request));
+            List<String> warning = new IncompletePatientDataWarning(savedPatient, null, null, null, null).value();
+            uiModel.addAttribute("warning", warning);
+            uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
+            initUIModel(uiModel, savedPatient);
+        } catch (RuntimeException e) {
+            decorateViewWithUniqueConstraintError(patient, bindingResult, uiModel, e);
+            return CREATE_VIEW;
+        }
         return EXPRESS_SHOW_VIEW;
     }
 
