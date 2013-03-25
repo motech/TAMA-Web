@@ -1,4 +1,4 @@
-package org.motechproject.tama.messages.push;
+package org.motechproject.tama.messages.service;
 
 
 import org.junit.Before;

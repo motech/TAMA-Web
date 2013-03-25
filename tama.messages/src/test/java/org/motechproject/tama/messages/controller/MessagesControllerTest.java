@@ -8,24 +8,28 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.controller.StandardResponseController;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.message.IVRMessage;
-import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.messages.domain.PlayedMessage;
-import org.motechproject.tama.messages.push.Messages;
-import org.motechproject.tama.outbox.context.OutboxContext;
+import org.motechproject.tama.ivr.domain.CallState;
+import org.motechproject.tama.messages.service.Messages;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.ivr.kookoo.eventlogging.CallEventConstants.CALL_STATE;
+import static org.motechproject.tama.ivr.domain.CallState.PULL_MESSAGES_TREE;
 import static org.motechproject.tama.ivr.domain.CallState.PUSH_MESSAGES_COMPLETE;
 
 public class MessagesControllerTest {
 
     @Mock
     private KooKooIVRContext kookooIVRContext;
+    @Mock
+    private HttpSession httpSession;
+    @Mock
+    private Cookies cookies;
     @Mock
     private IVRMessage ivrMessage;
     @Mock
@@ -35,11 +39,10 @@ public class MessagesControllerTest {
     @Mock
     private Messages messages;
     @Mock
-    private HttpSession httpSession;
+    private PullMessagesController pullMessagesController;
     @Mock
-    private Cookies cookies;
+    private PushMessagesController pushMessagesController;
 
-    private String patientId = "patientId";
     private MessagesController messagesController;
 
     @Before
@@ -47,14 +50,13 @@ public class MessagesControllerTest {
         initMocks(this);
         setupCookies();
         setupSession();
-        messagesController = new MessagesController(ivrMessage, callDetailRecordsService, standardResponseController, messages);
+        messagesController = new MessagesController(ivrMessage, callDetailRecordsService, standardResponseController, pullMessagesController, pushMessagesController);
     }
 
     private void setupSession() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getSession()).thenReturn(httpSession);
         when(kookooIVRContext.httpRequest()).thenReturn(request);
-        when(httpSession.getAttribute(TAMAIVRContext.PATIENT_ID)).thenReturn(patientId);
     }
 
     private void setupCookies() {
@@ -62,42 +64,57 @@ public class MessagesControllerTest {
     }
 
     @Test
-    public void shouldAddMessageToResponse() {
-        when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("");
-        when(cookies.getValue(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn("");
-        when(messages.nextMessage(kookooIVRContext)).thenReturn(new KookooIVRResponseBuilder());
+    public void shouldPlayTheNextPulledMessage() {
+        when(httpSession.getAttribute(CALL_STATE)).thenReturn(CallState.PULL_MESSAGES.name());
+        when(pullMessagesController.markAsReadAndContinue(kookooIVRContext)).thenReturn(true);
+        when(pullMessagesController.gotDTMF(kookooIVRContext)).thenReturn(new KookooIVRResponseBuilder());
 
         messagesController.gotDTMF(kookooIVRContext);
-
-        verify(messages).nextMessage(kookooIVRContext);
+        verify(pullMessagesController).gotDTMF(kookooIVRContext);
     }
 
     @Test
-    public void shouldMarkMessageAsReadIfMessageIsAlreadyPlayed() {
-        when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("healthTip");
+    public void shouldNotPlayPulledMessageWhenMarkAsReadAndContinueIsFalse() {
+        when(httpSession.getAttribute(CALL_STATE)).thenReturn(CallState.PULL_MESSAGES.name());
+        when(pullMessagesController.markAsReadAndContinue(kookooIVRContext)).thenReturn(false);
 
-        messagesController.gotDTMF(kookooIVRContext);
-
-        verify(messages).markAsRead(kookooIVRContext, new PlayedMessage(kookooIVRContext));
+        KookooIVRResponseBuilder response = messagesController.gotDTMF(kookooIVRContext);
+        verify(pullMessagesController, never()).gotDTMF(kookooIVRContext);
+        assertTrue(response.isEmpty());
     }
 
     @Test
-    public void shouldNotMarkMessageAsReadIfMessageIsNotAlreadyPlayed() {
-        when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("");
-        when(cookies.getValue(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn("");
-        when(messages.nextMessage(kookooIVRContext)).thenReturn(new KookooIVRResponseBuilder());
+    public void shouldPlayTheNextPushedMessage() {
+        when(pushMessagesController.markAsReadAndContinue(kookooIVRContext)).thenReturn(true);
+        when(pushMessagesController.gotDTMF(kookooIVRContext)).thenReturn(new KookooIVRResponseBuilder());
 
         messagesController.gotDTMF(kookooIVRContext);
-
-        verify(messages, never()).markAsRead(kookooIVRContext, new PlayedMessage(kookooIVRContext));
+        verify(pushMessagesController).gotDTMF(kookooIVRContext);
     }
 
     @Test
-    public void shouldSetCallStateToCompleteIfMessageIsAlreadyPlayed() {
-        when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("healthTip");
+    public void shouldNotPlayPushMessageIfMarkAsReadAndContinueIsFalse() {
+        when(pushMessagesController.markAsReadAndContinue(kookooIVRContext)).thenReturn(false);
+
+        KookooIVRResponseBuilder response = messagesController.gotDTMF(kookooIVRContext);
+        verify(pushMessagesController, never()).gotDTMF(kookooIVRContext);
+        assertTrue(response.isEmpty());
+    }
+
+    @Test
+    public void shouldSetPullMessagesAsCompleteIfMessageIsAlreadyPlayed() {
+        when(httpSession.getAttribute(CALL_STATE)).thenReturn(CallState.PULL_MESSAGES.name());
+        when(pullMessagesController.markAsReadAndContinue(kookooIVRContext)).thenReturn(false);
 
         messagesController.gotDTMF(kookooIVRContext);
+        verify(httpSession).setAttribute(CALL_STATE, PULL_MESSAGES_TREE.toString());
+    }
 
+    @Test
+    public void shouldSetPushMessageAsCompleteIfMessageIsAlreadyPlayed() {
+        when(pushMessagesController.markAsReadAndContinue(kookooIVRContext)).thenReturn(false);
+
+        messagesController.gotDTMF(kookooIVRContext);
         verify(httpSession).setAttribute(CALL_STATE, PUSH_MESSAGES_COMPLETE.toString());
     }
 }

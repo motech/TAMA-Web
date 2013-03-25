@@ -5,7 +5,7 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 
 public interface PatientMessagesController {
 
-    public boolean markAsRead(KooKooIVRContext kooKooIVRContext);
+    public boolean markAsReadAndContinue(KooKooIVRContext kooKooIVRContext);
 
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext);
 }

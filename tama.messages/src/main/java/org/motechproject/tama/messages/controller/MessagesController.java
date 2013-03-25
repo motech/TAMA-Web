@@ -11,7 +11,6 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.messages.domain.PlayedMessage;
-import org.motechproject.tama.messages.push.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,26 +19,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(ControllerURLs.PUSH_MESSAGES_URL)
 public class MessagesController extends SafeIVRController {
 
-    private Messages messages;
+    private PullMessagesController pullMessagesController;
+    private PushMessagesController pushMessagesController;
 
     @Autowired
-    public MessagesController(IVRMessage ivrMessage, KookooCallDetailRecordsService callDetailRecordsService, StandardResponseController standardResponseController, Messages messages) {
+    public MessagesController(IVRMessage ivrMessage,
+                              KookooCallDetailRecordsService callDetailRecordsService,
+                              StandardResponseController standardResponseController,
+                              PullMessagesController pullMessagesController,
+                              PushMessagesController pushMessagesController) {
+
         super(ivrMessage, callDetailRecordsService, standardResponseController);
-        this.messages = messages;
+        this.pullMessagesController = pullMessagesController;
+        this.pushMessagesController = pushMessagesController;
     }
 
     @Override
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(kooKooIVRContext);
         if (CallState.PULL_MESSAGES.equals(tamaivrContext.callState())) {
-            return sanitizeResponse(kooKooIVRContext, handleDTMF(kooKooIVRContext, new PullMessagesController(messages)), CallState.PULL_MESSAGES_TREE);
+            return sanitizeResponse(kooKooIVRContext, handleDTMF(kooKooIVRContext, pullMessagesController), CallState.PULL_MESSAGES_TREE);
         } else {
-            return sanitizeResponse(kooKooIVRContext, handleDTMF(kooKooIVRContext, new PushMessagesController(messages)), CallState.PUSH_MESSAGES_COMPLETE);
+            return sanitizeResponse(kooKooIVRContext, handleDTMF(kooKooIVRContext, pushMessagesController), CallState.PUSH_MESSAGES_COMPLETE);
         }
     }
 
     private KookooIVRResponseBuilder handleDTMF(KooKooIVRContext context, PatientMessagesController messagesController) {
-        if (messagesController.markAsRead(context)) {
+        if (messagesController.markAsReadAndContinue(context)) {
             return messagesController.gotDTMF(context);
         } else {
             return new KookooIVRResponseBuilder().withSid(context.callId());

@@ -7,18 +7,22 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.messages.domain.PlayedMessage;
-import org.motechproject.tama.messages.push.Messages;
+import org.motechproject.tama.messages.service.Messages;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PullMessagesController implements PatientMessagesController {
 
     private Messages messages;
 
+    @Autowired
     public PullMessagesController(Messages messages) {
         this.messages = messages;
     }
 
     @Override
-    public boolean markAsRead(KooKooIVRContext kooKooIVRContext) {
+    public boolean markAsReadAndContinue(KooKooIVRContext kooKooIVRContext) {
         PlayedMessage playedMessage = new PlayedMessage(kooKooIVRContext);
         if (playedMessage.exists()) {
             messages.markAsRead(kooKooIVRContext, playedMessage);
@@ -32,7 +36,16 @@ public class PullMessagesController implements PatientMessagesController {
         if (StringUtils.equals("9", tamaivrContext.dtmfInput())) {
             return new KookooIVRResponseBuilder().withSid(kooKooIVRContext.callId());
         } else {
-            return nextMessage(tamaivrContext).collectDtmfLength(1);
+            return setCollectDTMF(tamaivrContext);
+        }
+    }
+
+    private KookooIVRResponseBuilder setCollectDTMF(TAMAIVRContext tamaivrContext) {
+        KookooIVRResponseBuilder response = nextMessage(tamaivrContext);
+        if (response.isNotEmpty()) {
+            return response.collectDtmfLength(1);
+        } else {
+            return response;
         }
     }
 
