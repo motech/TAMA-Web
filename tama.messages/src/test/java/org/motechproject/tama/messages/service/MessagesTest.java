@@ -5,14 +5,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
-import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.domain.PlayedMessage;
-import org.motechproject.tama.patient.builder.PatientBuilder;
-import org.motechproject.tama.patient.domain.CallPreference;
-import org.motechproject.tama.patient.domain.Patient;
-import org.motechproject.tama.patient.domain.PatientReport;
-import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,8 +18,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MessagesTest {
 
-    @Mock
-    private PatientService patientService;
     @Mock
     private HealthTipMessage pushedHealthTipsMessage;
     @Mock
@@ -42,16 +34,9 @@ public class MessagesTest {
     @Before
     public void setup() {
         initMocks(this);
-        setupPatient(CallPreference.FourDayRecall);
         setupCookies();
         setupSession();
-        messages = new Messages(outboxMessage, pushedHealthTipsMessage, patientService);
-    }
-
-    @Test
-    public void fourDayRecallPatientsHaveADefaultMessage() {
-        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
-        assertTrue(response.getPlayAudios().contains(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY));
+        messages = new Messages(outboxMessage, pushedHealthTipsMessage);
     }
 
     @Test
@@ -78,7 +63,6 @@ public class MessagesTest {
 
     @Test
     public void shouldReturnEmptyResponseWhenThereAreNoMessages() {
-        setupPatient(CallPreference.DailyPillReminder);
         KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
         assertTrue(response.getPlayAudios().isEmpty());
     }
@@ -101,13 +85,6 @@ public class MessagesTest {
         verify(pushedHealthTipsMessage).markAsRead(anyString(), eq(playedHealthTip));
     }
 
-    private void setupPatient(CallPreference callPreference) {
-        Patient patient = PatientBuilder.startRecording().withDefaults().withCallPreference(callPreference).build();
-        PatientReport patientReport = new PatientReport(patient, null, null, null);
-
-        when(httpSession.getAttribute(TAMAIVRContext.PATIENT_ID)).thenReturn(patient.getId());
-        when(patientService.getPatientReport(patient.getId())).thenReturn(patientReport);
-    }
 
     private void setupCookies() {
         when(kookooIVRContext.cookies()).thenReturn(cookies);

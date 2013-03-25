@@ -2,37 +2,27 @@ package org.motechproject.tama.messages.service;
 
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
-import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.messages.domain.PlayedMessage;
-import org.motechproject.tama.patient.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class Messages {
 
     private OutboxMessage outboxMessage;
     private HealthTipMessage healthTipMessage;
-    private PatientService patientService;
 
     @Autowired
-    public Messages(OutboxMessage outboxMessage, HealthTipMessage healthTipMessage, PatientService patientService) {
+    public Messages(OutboxMessage outboxMessage, HealthTipMessage healthTipMessage) {
         this.outboxMessage = outboxMessage;
         this.healthTipMessage = healthTipMessage;
-        this.patientService = patientService;
     }
 
     public KookooIVRResponseBuilder nextMessage(KooKooIVRContext kooKooIVRContext) {
-        TAMAIVRContext context = new TAMAIVRContextFactory().create(kooKooIVRContext);
-        KookooIVRResponseBuilder response = defaultMessageForPatientOnWeeklyReminder(context);
-        List<String> audios = messages(kooKooIVRContext).getPlayAudios();
-        response.withPlayAudios(audios.toArray(new String[audios.size()]));
-        return response;
+        return messages(kooKooIVRContext);
     }
 
     public KookooIVRResponseBuilder nextHealthTip(KooKooIVRContext kooKooIVRContext, TAMAMessageTypes type) {
@@ -50,14 +40,6 @@ public class Messages {
         } else {
             outboxMessage.markAsRead(kookooIVRContext);
         }
-    }
-
-    private KookooIVRResponseBuilder defaultMessageForPatientOnWeeklyReminder(TAMAIVRContext context) {
-        KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withSid(context.callId());
-        if (patientService.getPatientReport(context.patientDocumentId()).getPatient().isOnWeeklyPillReminder()) {
-            response.withPlayAudios(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY);
-        }
-        return response;
     }
 
     private KookooIVRResponseBuilder messages(KooKooIVRContext kooKooIVRContext) {

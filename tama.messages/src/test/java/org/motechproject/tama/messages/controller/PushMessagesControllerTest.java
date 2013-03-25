@@ -5,10 +5,16 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.domain.PlayedMessage;
 import org.motechproject.tama.messages.service.Messages;
 import org.motechproject.tama.outbox.context.OutboxContext;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientReport;
+import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +35,8 @@ public class PushMessagesControllerTest {
     private Cookies cookies;
     @Mock
     private Messages messages;
+    @Mock
+    private PatientService patientService;
 
     private String patientId = "patientId";
 
@@ -37,20 +45,36 @@ public class PushMessagesControllerTest {
     @Before
     public void setup() {
         initMocks(this);
+        setupPatient(CallPreference.FourDayRecall);
         setupSession();
         setupCookies();
-        messagesController = new PushMessagesController(messages);
+        messagesController = new PushMessagesController(messages, patientService);
+    }
+
+    private void setupPatient(CallPreference callPreference) {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(callPreference).build();
+        PatientReport patientReport = new PatientReport(patient, null, null, null);
+
+        when(httpSession.getAttribute(TAMAIVRContext.PATIENT_ID)).thenReturn(patient.getId());
+        when(patientService.getPatientReport(patient.getId())).thenReturn(patientReport);
     }
 
     private void setupSession() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getSession()).thenReturn(httpSession);
         when(kookooIVRContext.httpRequest()).thenReturn(request);
-        when(httpSession.getAttribute(TAMAIVRContext.PATIENT_ID)).thenReturn(patientId);
     }
 
     private void setupCookies() {
         when(kookooIVRContext.cookies()).thenReturn(cookies);
+    }
+
+    @Test
+    public void fourDayRecallPatientsHaveADefaultMessage() {
+        when(messages.nextMessage(kookooIVRContext)).thenReturn(new KookooIVRResponseBuilder());
+        KookooIVRResponseBuilder response = messagesController.gotDTMF(kookooIVRContext);
+
+        assertTrue(response.getPlayAudios().contains(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY));
     }
 
     @Test

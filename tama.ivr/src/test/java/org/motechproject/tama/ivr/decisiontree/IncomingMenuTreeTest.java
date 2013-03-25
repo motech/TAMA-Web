@@ -52,11 +52,6 @@ public class IncomingMenuTreeTest {
         assertCallStateTransitionForKeyPress("2", transitions, CallState.SYMPTOM_REPORTING);
     }
 
-    @Test
-    public void shouldTransitionToHealthTips() {
-        assertCallStateTransitionForKeyPress("5", transitions, CallState.HEALTH_TIPS);
-    }
-
     private void assertCallStateTransitionForKeyPress(String keyPressed, Map<String, Transition> transitions, CallState callState) {
         List<ITreeCommand> treeCommands = transitions.get(keyPressed).getDestinationNode().getTreeCommands();
         for (ITreeCommand treeCommand : treeCommands) {
