@@ -13,13 +13,13 @@
     <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
     <spring:url value="/resources-${applicationVersion}/styles/create-patient.css" var="create_patient_css_url" />
-    <link rel="stylesheet" type="text/css" media="screen" href="${create_patient_css_url}"></link>
+    <link rel="stylesheet" type="text/css" media="screen" href="${create_patient_css_url}"><!-- required --></link>
 
     <c:if test="${patientInsertError != null}">
         <div class="errorBanner"> <c:out value="${patientInsertError}"/> </div>
     </c:if>
     <spring:url value="/patients" var="form_url"/>
-    <form:form name="express_registration_form" modelAttribute="patient" method="POST" id="express_registration_form" action="${form_url}" z="HkT/39qeIawAHTgF7FpZDeoTr94=" enctype="application/x-www-form-urlencoded">
+    <form:form name="express_registration_form" modelAttribute="patient" method="POST" id="patient" action="${form_url}" z="HkT/39qeIawAHTgF7FpZDeoTr94=" enctype="application/x-www-form-urlencoded">
 
         <jsp:include page="createBasicInformation.jspx">
             <jsp:param name="context" value="expressRegistration"/>
@@ -42,13 +42,14 @@
 
         <script type="text/javascript">
             dojo.connect(dojo.byId("activatePatient"), "onclick", function(evt) {
-                dojo.byId("express_registration_form").action =  "${form_url}" + "/saveAndActivate";
+                dojo.byId("patient").action =  "${form_url}" + "/saveAndActivate";
             });
             dojo.connect(dojo.byId("savePatient"), "onclick", function(evt) {
-                dojo.byId("express_registration_form").action = "${form_url}";
+                dojo.byId("patient").action = "${form_url}";
             });
         </script>
     </form:form>
+    </util:panel>
 
     <script type="text/javascript">
         dojo.require("dijit.form.Button");
@@ -58,12 +59,12 @@
     <div id="patientPreferences.fourWeekWarningDialog" title="Warning" data-dojo-type="dijit.Dialog">
         The patient has not been on 'Daily Pill Reminder' calls for sufficient amount of time. <br/>
         Are you sure you want to enroll him/her on 'Weekly Adherence'? <br/>
-		<button dojoType="dijit.form.Button" type="submit" id="four_week_warning_confirm">Yes</button>
-		<button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="four_week_warning_cancel">Cancel</button>
-	</div>
+        <button dojoType="dijit.form.Button" type="submit" id="four_week_warning_confirm">Yes</button>
+        <button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="four_week_warning_cancel">Cancel</button>
+    </div>
 
     <spring:url value="/resources-${applicationVersion}/js/createPatient.js" var="createPatientScriptUrl"/>
     <script src="${createPatientScriptUrl}"><!--required--></script>
-    </util:panel>
+
 
 </div>

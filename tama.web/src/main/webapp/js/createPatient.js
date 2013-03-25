@@ -64,7 +64,9 @@ dojo.addOnLoad(function() {
     }
 
     dojo.connect(dojo.byId('proceed'), 'onclick', openAllPanels);
-    dojo.connect(dojo.byId('proceed'), 'onclick', warningWhenStartingOnFourDayRecall);
+    //dojo.connect(dojo.byId('proceed'), 'onclick', warningWhenStartingOnFourDayRecall);
+    dojo.connect(dojo.byId('savePatient'), 'onclick', warningWhenStartingOnFourDayRecall);
+    dojo.connect(dojo.byId('activatePatient'), 'onclick', warningWhenStartingOnFourDayRecall);
 });
 
 function encodePk(){
