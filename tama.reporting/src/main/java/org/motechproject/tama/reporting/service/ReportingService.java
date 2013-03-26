@@ -4,6 +4,8 @@ package org.motechproject.tama.reporting.service;
 import org.motechproject.http.client.service.HttpClientService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 
+import java.io.Serializable;
+
 public class ReportingService {
 
     protected HttpClientService httpClientService;
@@ -15,10 +17,12 @@ public class ReportingService {
     }
 
     protected void save(Object requestObject, String path) {
-        httpClientService.post(reportingProperties.reportingURL() + path, requestObject);
+        Serializable serializableRequest = (Serializable) requestObject;
+        httpClientService.post(reportingProperties.reportingURL() + path, serializableRequest);
     }
 
     protected void update(Object requestObject, String path) {
-        httpClientService.put(reportingProperties.reportingURL() + path, requestObject);
+        Serializable serializableRequest = (Serializable) requestObject;
+        httpClientService.put(reportingProperties.reportingURL() + path, serializableRequest);
     }
 }
