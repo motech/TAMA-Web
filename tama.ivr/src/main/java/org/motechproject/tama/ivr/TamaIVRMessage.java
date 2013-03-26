@@ -26,7 +26,6 @@ public class TamaIVRMessage implements IVRMessage {
     /*----------------MENU---------------*/
     public static final String SYMPTOMS_REPORTING_MENU_OPTION = "010_00_00_mainMenu_symptoms";
     public static final String OUTBOX_MENU_OPTION = "010_00_00_mainMenu_messages";
-    public static final String HEALTH_TIPS_MENU_OPTION = "010_00_00_mainMenu_healthTips";
     public static final String DOSE_TAKEN_MENU_OPTION = "010_00_00_mainMenu_doseTaken";
 
     public static final String PILL_REMINDER_RESPONSE_MENU = "001_02_05_pillTimeMenu";
@@ -42,15 +41,18 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String LAST_REMINDER_WARNING = "005_04_01_CannotDelayPillsNow";
     public static final String LAST_REMINDER_WARNING_PADDING = "005_04_03_WillCallAgain";
 
-    /* -------- Pill from the bottle ----------- */
-    public static final String ITS_TIME_FOR_THE_PILL_INCOMING_CALL_INSIDE_PILL_WINDOW = "010_02_01_itsTimeToTake";
-    public static final String FROM_THE_BOTTLE_INCOMING_CALL_INSIDE_PILL_WINDOW = "010_02_03_fromTheBottle1";
     public static final String NOT_REPORTED_IF_TAKEN = "010_02_04_notReportedIfTaken";
-    public static final String FROM_THE_BOTTLE_INCOMING_CALL_AFTER_PILL_WINDOW = "010_02_06_fromTheBottle2";
     public static final String ITS_TIME_FOR_THE_PILL_OUTGOING_CALL_FOR_CURRENT_DOSAGE = "001_02_02_itsTimeForPill1";
     public static final String FROM_THE_BOTTLE_OUTGOING_CALL_FOR_CURRENT_DOSAGE = "001_02_04_itsTimeForPill2";
     public static final String YOU_WERE_SUPPOSED_TO_TAKE = "001_07_05_supposedToTake";
     public static final String FROM_THE_BOTTLE_FOR_PREVIOUS_DOSAGE = "001_07_07_fromTheBottle1";
+
+
+    public static final String MESSAGES_MENU_FOR_DOSE_TAKEN = "010_00_00_mainMenu_doseTaken";
+
+    public static final String MESSAGES_MENU= "010_00_00_messagesMenu";
+    public static final String PRESS_9_FOR_MAIN_MENU = "010_07_00_press9ForPreviousMenu";
+
     /* -------- Pill from the bottle ----------- */
 
     /* -------- PreviousDosage ----------- */

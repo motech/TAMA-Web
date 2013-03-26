@@ -3,6 +3,7 @@ package org.motechproject.tama.ivr.decisiontree;
 import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Node;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.MessageTransitionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class PullMessagesTree extends TamaDecisionTree {
                         new AudioPrompt().setCommand(new ITreeCommand() {
                             @Override
                             public String[] execute(Object o) {
-                                return new String[]{"AudioFile"};
+                                return new String[]{TamaIVRMessage.MESSAGES_MENU};
                             }
                         })
                 )

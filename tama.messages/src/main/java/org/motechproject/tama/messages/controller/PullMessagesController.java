@@ -3,6 +3,7 @@ package org.motechproject.tama.messages.controller;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
@@ -36,13 +37,14 @@ public class PullMessagesController implements PatientMessagesController {
         if (StringUtils.equals("9", tamaivrContext.dtmfInput())) {
             return new KookooIVRResponseBuilder().withSid(kooKooIVRContext.callId());
         } else {
-            return setCollectDTMF(tamaivrContext);
+            return sanitizeResponse(tamaivrContext);
         }
     }
 
-    private KookooIVRResponseBuilder setCollectDTMF(TAMAIVRContext tamaivrContext) {
+    private KookooIVRResponseBuilder sanitizeResponse(TAMAIVRContext tamaivrContext) {
         KookooIVRResponseBuilder response = nextMessage(tamaivrContext);
         if (response.isNotEmpty()) {
+            response.withPlayAudios(TamaIVRMessage.PRESS_9_FOR_MAIN_MENU);
             return response.collectDtmfLength(1);
         } else {
             return response;

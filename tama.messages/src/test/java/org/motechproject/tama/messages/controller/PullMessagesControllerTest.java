@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.KookooRequest;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
 import org.motechproject.tama.messages.service.Messages;
@@ -100,6 +101,18 @@ public class PullMessagesControllerTest {
 
         KookooIVRResponseBuilder kookooIVRResponse = pullMessagesController.gotDTMF(kooKooIVRContext);
         assertFalse(kookooIVRResponse.isCollectDTMF());
+    }
+
+    @Test
+    public void shouldPlayPress9ToGoBackToMainMenuIfThereIsAnyMessage() {
+        KookooIVRResponseBuilder emptyResponse = new KookooIVRResponseBuilder().withPlayAudios("audio");
+
+        when(kookooRequest.getInput()).thenReturn("1");
+        when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageTypes.ALL_MESSAGES.name());
+        when(messages.nextMessage(kooKooIVRContext)).thenReturn(emptyResponse);
+
+        KookooIVRResponseBuilder kookooIVRResponse = pullMessagesController.gotDTMF(kooKooIVRContext);
+        assertTrue(kookooIVRResponse.getPlayAudios().contains(TamaIVRMessage.PRESS_9_FOR_MAIN_MENU));
     }
 
     @Test
