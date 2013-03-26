@@ -4,7 +4,7 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.tama.fourdayrecall.command.IncomingWelcomeGreetingMessage;
-import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
+import org.motechproject.tama.ivr.command.SymptomAndMessagesCommand;
 import org.motechproject.tama.ivr.decisiontree.TAMATransitionFactory;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.decisiontree.TamaDecisionTree;
@@ -17,7 +17,7 @@ public class FourDayRecallIncomingCallTree extends TamaDecisionTree {
     @Autowired
     private IncomingWelcomeGreetingMessage welcomeGreetingMessage;
     @Autowired
-    private SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand;
+    private SymptomAndMessagesCommand symptomAndMessagesCommand;
 
     @Autowired
     public FourDayRecallIncomingCallTree(TAMATreeRegistry tamaTreeRegistry) {
@@ -29,7 +29,7 @@ public class FourDayRecallIncomingCallTree extends TamaDecisionTree {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(welcomeGreetingMessage),
-                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand))
+                        new MenuAudioPrompt().setCommand(symptomAndMessagesCommand))
                 .setTransitions(new Object[][]{
                         {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
                         {"3", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES_TREE)}

@@ -8,7 +8,6 @@ import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
-import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
 import org.motechproject.tama.ivr.context.PillModuleStrategy;
 import org.motechproject.tama.ivr.context.SymptomModuleStrategy;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
@@ -32,8 +31,6 @@ public class TAMACallFlowControllerTest {
     @Mock
     private PillModuleStrategy pillModuleStrategy;
     @Mock
-    private OutboxModuleStrategy outboxModuleStrategy;
-    @Mock
     private TAMAIVRContextFactory contextFactory;
     @Mock
     private AllPatients allPatients;
@@ -51,7 +48,7 @@ public class TAMACallFlowControllerTest {
         initMocks(this);
         tamaCallFlowController = new TAMACallFlowController(treeRegistry, allPatients, contextFactory);
         tamaCallFlowController.registerPillModule(pillModuleStrategy);
-        tamaCallFlowController.registerOutboxModule(outboxModuleStrategy);
+        tamaCallFlowController.registerOutboxModule();
         tamaCallFlowController.registerSymptomModule(symptomModuleStrategy);
         tamaIVRContext = new TAMAIVRContextForTest();
         when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaIVRContext);

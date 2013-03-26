@@ -9,7 +9,6 @@ import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
-import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
 import org.motechproject.tama.ivr.context.PillModuleStrategy;
 import org.motechproject.tama.ivr.context.SymptomModuleStrategy;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
@@ -22,23 +21,24 @@ import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 public class TAMACallFlowControllerInboundCallTest {
-    private TAMACallFlowController tamaCallFlowController;
-    private TAMAIVRContextForTest tamaIVRContextForTest;
+
     @Mock
     private KooKooIVRContext kooKooIVRContext;
     @Mock
     private PillModuleStrategy pillModuleStrategy;
     @Mock
-    private OutboxModuleStrategy outboxModuleStrategy;
-    @Mock
     private SymptomModuleStrategy symptomModuleStrategy;
+
     private AllPatients allPatients;
+
+    private TAMAIVRContextForTest tamaIVRContextForTest;
+
+    private TAMACallFlowController tamaCallFlowController;
 
     @Before
     public void setUp() {
@@ -49,7 +49,7 @@ public class TAMACallFlowControllerInboundCallTest {
 
         tamaCallFlowController = new TAMACallFlowController(TAMATreeChooser, allPatients, contextFactory);
         tamaCallFlowController.registerPillModule(pillModuleStrategy);
-        tamaCallFlowController.registerOutboxModule(outboxModuleStrategy);
+        tamaCallFlowController.registerOutboxModule();
         tamaCallFlowController.registerSymptomModule(symptomModuleStrategy);
         tamaIVRContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Inbound);
         when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaIVRContextForTest);
@@ -106,7 +106,6 @@ public class TAMACallFlowControllerInboundCallTest {
 
     @Test
     public void whenSymptomReportingTreeIsComplete() {
-        when(outboxModuleStrategy.shouldContinueToOutbox(any(String.class))).thenReturn(true);
         tamaIVRContextForTest.lastCompletedTree(TAMATreeRegistry.REGIMEN_1_TO_6);
         tamaIVRContextForTest.callState(CallState.ALL_TREES_COMPLETED);
         assertEquals(ControllerURLs.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));

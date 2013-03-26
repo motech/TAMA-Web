@@ -5,7 +5,6 @@ import org.motechproject.decisiontree.model.Tree;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.extensions.CallFlowController;
 import org.motechproject.tama.common.TamaException;
-import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
 import org.motechproject.tama.ivr.context.PillModuleStrategy;
 import org.motechproject.tama.ivr.context.SymptomModuleStrategy;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
@@ -19,12 +18,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TAMACallFlowController implements CallFlowController {
+
     private TAMATreeRegistry treeRegistry;
     private TAMAIVRContextFactory factory;
     private AllPatients allPatients;
     private PillModuleStrategy pillModuleStrategy;
     private SymptomModuleStrategy symptomModuleStrategy;
-    private OutboxModuleStrategy outboxModuleStrategy;
 
     @Autowired
     public TAMACallFlowController(TAMATreeRegistry treeRegistry, AllPatients allPatients) {
@@ -45,8 +44,7 @@ public class TAMACallFlowController implements CallFlowController {
         this.symptomModuleStrategy = symptomModuleStrategy;
     }
 
-    public void registerOutboxModule(OutboxModuleStrategy outboxModuleStrategy) {
-        this.outboxModuleStrategy = outboxModuleStrategy;
+    public void registerOutboxModule() {
     }
 
     @Override

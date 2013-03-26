@@ -5,7 +5,7 @@ import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.tama.dailypillreminder.command.NextCallDetails;
 import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
-import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
+import org.motechproject.tama.ivr.command.SymptomAndMessagesCommand;
 import org.motechproject.tama.ivr.decisiontree.TAMATransitionFactory;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.decisiontree.TamaDecisionTree;
@@ -22,7 +22,7 @@ public class CurrentDosageTakenTree extends TamaDecisionTree {
     private NextCallDetails nextCallDetails;
 
     @Autowired
-    private SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand;
+    private SymptomAndMessagesCommand symptomAndMessagesCommand;
 
     @Autowired
     public CurrentDosageTakenTree(TAMATreeRegistry tamaTreeRegistry) {
@@ -35,7 +35,7 @@ public class CurrentDosageTakenTree extends TamaDecisionTree {
                 .setPrompts(
                         new AudioPrompt().setCommand(incomingWelcomeMessage),
                         new AudioPrompt().setCommand(nextCallDetails),
-                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand))
+                        new MenuAudioPrompt().setCommand(symptomAndMessagesCommand))
                 .setTransitions(new Object[][]{
                         {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
                         {"3", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES_TREE)}

@@ -10,7 +10,7 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.dailypillreminder.command.NextCallDetails;
 import org.motechproject.tama.dailypillreminder.decisiontree.CurrentDosageTakenTree;
 import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
-import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
+import org.motechproject.tama.ivr.command.SymptomAndMessagesCommand;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.util.AssertUtil;
@@ -52,7 +52,7 @@ public class CurrentDosageTakenTreeTest {
         assertEquals(3, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof IncomingWelcomeMessage);
         assertTrue(prompts.get(1).getCommand() instanceof NextCallDetails);
-        assertTrue(prompts.get(2).getCommand() instanceof SymptomAndOutboxMenuCommand);
+        assertTrue(prompts.get(2).getCommand() instanceof SymptomAndMessagesCommand);
     }
 
     @Test

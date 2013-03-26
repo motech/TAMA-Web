@@ -8,7 +8,7 @@ import org.motechproject.decisiontree.model.Node;
 import org.motechproject.decisiontree.model.Prompt;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
-import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
+import org.motechproject.tama.ivr.command.SymptomAndMessagesCommand;
 import org.motechproject.tama.ivr.decisiontree.MenuTree;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class MenuTreeTest {
         List<Prompt> prompts = nextNode.getPrompts();
         assertEquals(2, prompts.size());
         assertTrue(prompts.get(0).getCommand() instanceof IncomingWelcomeMessage);
-        assertTrue(prompts.get(1).getCommand() instanceof SymptomAndOutboxMenuCommand);
+        assertTrue(prompts.get(1).getCommand() instanceof SymptomAndMessagesCommand);
     }
 }
 

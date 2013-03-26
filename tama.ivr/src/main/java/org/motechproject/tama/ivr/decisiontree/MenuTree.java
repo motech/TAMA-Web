@@ -4,7 +4,7 @@ import org.motechproject.decisiontree.model.AudioPrompt;
 import org.motechproject.decisiontree.model.MenuAudioPrompt;
 import org.motechproject.decisiontree.model.Node;
 import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
-import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
+import org.motechproject.tama.ivr.command.SymptomAndMessagesCommand;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class MenuTree extends TamaDecisionTree {
     IncomingWelcomeMessage incomingWelcomeMessage;
 
     @Autowired
-    private SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand;
+    private SymptomAndMessagesCommand symptomAndMessagesCommand;
 
     @Autowired
     public MenuTree(TAMATreeRegistry tamaTreeRegistry) {
@@ -28,7 +28,7 @@ public class MenuTree extends TamaDecisionTree {
         return new Node()
                 .setPrompts(
                         new AudioPrompt().setCommand(incomingWelcomeMessage),
-                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand)
+                        new MenuAudioPrompt().setCommand(symptomAndMessagesCommand)
                 )
                 .setTransitions(
                         new Object[][]{

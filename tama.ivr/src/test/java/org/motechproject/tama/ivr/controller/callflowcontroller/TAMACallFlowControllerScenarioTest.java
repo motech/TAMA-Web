@@ -8,7 +8,6 @@ import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
-import org.motechproject.tama.ivr.context.OutboxModuleStrategy;
 import org.motechproject.tama.ivr.context.PillModuleStrategy;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
@@ -20,7 +19,6 @@ import org.motechproject.tama.patient.domain.PatientPreferences;
 import org.motechproject.tama.patient.repository.AllPatients;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -28,17 +26,17 @@ public class TAMACallFlowControllerScenarioTest {
     @Mock
     private PillModuleStrategy pillModuleStrategy;
     @Mock
-    private OutboxModuleStrategy outboxModuleStrategy;
-    @Mock
     private TAMAIVRContextFactory contextFactory;
     @Mock
     private AllPatients allPatients;
     @Mock
     private KooKooIVRContext kooKooIVRContext;
 
-    private TAMACallFlowController callFlowController;
     private TAMAIVRContextForTest ivrContext;
+
     private PatientPreferences patientPreferences;
+
+    private TAMACallFlowController callFlowController;
 
     @Before
     public void setUp() {
@@ -46,7 +44,7 @@ public class TAMACallFlowControllerScenarioTest {
         TAMATreeRegistry treeRegistry = new TAMATreeRegistry();
         callFlowController = new TAMACallFlowController(treeRegistry, allPatients, contextFactory);
         callFlowController.registerPillModule(pillModuleStrategy);
-        callFlowController.registerOutboxModule(outboxModuleStrategy);
+        callFlowController.registerOutboxModule();
         ivrContext = new TAMAIVRContextForTest();
         Patient patient = new Patient();
         patientPreferences = new PatientPreferences();
@@ -110,7 +108,6 @@ public class TAMACallFlowControllerScenarioTest {
         assertTree(TAMATreeRegistry.REGIMEN_1_TO_6);
 
         treeComplete(TAMATreeRegistry.REGIMEN_1_TO_6);
-        when(outboxModuleStrategy.shouldContinueToOutbox(any(String.class))).thenReturn(true);
         assertURL(ControllerURLs.PUSH_MESSAGES_URL);
     }
 
@@ -127,7 +124,6 @@ public class TAMACallFlowControllerScenarioTest {
         assertTree(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
 
         treeComplete(TAMATreeRegistry.CURRENT_DOSAGE_REMINDER);
-        when(outboxModuleStrategy.shouldContinueToOutbox(any(String.class))).thenReturn(true);
         assertURL(ControllerURLs.PUSH_MESSAGES_URL);
     }
 
@@ -148,7 +144,6 @@ public class TAMACallFlowControllerScenarioTest {
         assertTree(TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER);
 
         treeComplete(TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER);
-        when(outboxModuleStrategy.shouldContinueToOutbox(any(String.class))).thenReturn(true);
         assertURL(ControllerURLs.PUSH_MESSAGES_URL);
     }
 

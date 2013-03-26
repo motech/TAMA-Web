@@ -7,7 +7,7 @@ import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.tama.dailypillreminder.command.*;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
-import org.motechproject.tama.ivr.command.SymptomAndOutboxMenuCommand;
+import org.motechproject.tama.ivr.command.SymptomAndMessagesCommand;
 import org.motechproject.tama.ivr.decisiontree.TAMATransitionFactory;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.decisiontree.TamaDecisionTree;
@@ -28,7 +28,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     @Autowired
     private AdherenceMessageWhenPreviousDosageCapturedCommand adherenceWhenPreviousDosageCapturedCommand;
     @Autowired
-    private SymptomAndOutboxMenuCommand symptomAndOutboxMenuCommand;
+    private SymptomAndMessagesCommand symptomAndMessagesCommand;
 
     @Autowired
     public CurrentDosageConfirmTree(TAMATreeRegistry tamaTreeRegistry) {
@@ -41,7 +41,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                         new AudioPrompt().setCommand(incomingWelcomeMessage),
                         new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),
                         new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_TAKEN_MENU_OPTION),
-                        new MenuAudioPrompt().setCommand(symptomAndOutboxMenuCommand))
+                        new MenuAudioPrompt().setCommand(symptomAndMessagesCommand))
                 .setTransitions(new Object[][]{
                         {"1", new Transition()
                                 .setDestinationNode(
