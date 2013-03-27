@@ -93,7 +93,11 @@ public class TAMAIVRContext {
     }
 
     public String dtmfInput() {
-        return kookooRequest.getInput();
+        try {
+            return kookooRequest.getInput();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public String callerId() {

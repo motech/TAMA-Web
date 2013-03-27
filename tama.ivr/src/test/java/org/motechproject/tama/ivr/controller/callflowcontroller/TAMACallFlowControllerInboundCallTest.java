@@ -11,6 +11,7 @@ import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.ivr.TAMAIVRContextForTest;
 import org.motechproject.tama.ivr.context.PillModuleStrategy;
 import org.motechproject.tama.ivr.context.SymptomModuleStrategy;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
@@ -19,8 +20,10 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientPreferences;
 import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.util.Cookies;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -33,6 +36,8 @@ public class TAMACallFlowControllerInboundCallTest {
     private PillModuleStrategy pillModuleStrategy;
     @Mock
     private SymptomModuleStrategy symptomModuleStrategy;
+    @Mock
+    private Cookies cookies;
 
     private AllPatients allPatients;
 
@@ -51,7 +56,12 @@ public class TAMACallFlowControllerInboundCallTest {
         tamaCallFlowController.registerPillModule(pillModuleStrategy);
         tamaCallFlowController.registerOutboxModule();
         tamaCallFlowController.registerSymptomModule(symptomModuleStrategy);
-        tamaIVRContextForTest = new TAMAIVRContextForTest().callDirection(CallDirection.Inbound);
+        setupContext(contextFactory);
+    }
+
+    private void setupContext(TAMAIVRContextFactory contextFactory) {
+        when(kooKooIVRContext.cookies()).thenReturn(cookies);
+        tamaIVRContextForTest = new TAMAIVRContextForTest(kooKooIVRContext).callDirection(CallDirection.Inbound);
         when(contextFactory.create(kooKooIVRContext)).thenReturn(tamaIVRContextForTest);
     }
 
@@ -108,6 +118,7 @@ public class TAMACallFlowControllerInboundCallTest {
     public void whenSymptomReportingTreeIsComplete() {
         tamaIVRContextForTest.lastCompletedTree(TAMATreeRegistry.REGIMEN_1_TO_6);
         tamaIVRContextForTest.callState(CallState.ALL_TREES_COMPLETED);
-        assertEquals(ControllerURLs.PRE_OUTBOX_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+        assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
+        verify(cookies).add(TAMAIVRContext.DO_NOT_PROMPT_FOR_HANG_UP, "true");
     }
 }
