@@ -28,8 +28,11 @@
     <bean id="configurationDiagnostic" class="org.motechproject.diagnostics.diagnostics.ConfigurationDiagnostic">
         <constructor-arg>
             <map>
-                <entry key="activemq">
+                <entry key="tama">
                     <util:properties location="classpath:tama.properties"/>
+                </entry>
+                <entry key="activemq">
+                    <util:properties location="classpath:activemq.properties"/>
                 </entry>
                 <entry key="quartz">
                     <util:properties location="classpath:quartz.properties"/>
