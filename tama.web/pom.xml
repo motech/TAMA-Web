@@ -217,6 +217,14 @@
             <artifactId>xstream</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.motechproject.tama-motech-contrib</groupId>
+            <artifactId>motech-diagnostics</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama-motech-contrib</groupId>
+            <artifactId>motech-diagnostics-web</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.motechproject</groupId>
             <artifactId>motech-kookoo-automation</artifactId>
         </dependency>

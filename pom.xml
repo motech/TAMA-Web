@@ -443,6 +443,22 @@
             </dependency>
             <!-- Platform and contrib -->
             <dependency>
+                <groupId>org.motechproject.tama-motech-contrib</groupId>
+                <artifactId>motech-diagnostics</artifactId>
+                <version>${motech.contrib.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.quartz-scheduler</groupId>
+                        <artifactId>quartz</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.motechproject.tama-motech-contrib</groupId>
+                <artifactId>motech-diagnostics-web</artifactId>
+                <version>${motech.contrib.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.motechproject</groupId>
                 <artifactId>motech-seed</artifactId>
                 <version>0.12-SNAPSHOT</version>

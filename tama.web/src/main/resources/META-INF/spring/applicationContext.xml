@@ -14,10 +14,55 @@
     <import resource="classpath:applicationHealthTipsContext.xml"/>
     <import resource="classpath:applicationMessagesContext.xml"/>
     <import resource="classpath:/placeholderPluginContext.xml"/>
+    <import resource="classpath:applicationContext-DiagnosticsWeb.xml"/>
 
     <context:annotation-config/>
     <context:spring-configured/>
     <context:component-scan base-package="org.motechproject.tama"/>
+
+    <bean id="activeMQDiagnosticsClientConnector"
+          class="org.springframework.jmx.support.MBeanServerConnectionFactoryBean">
+        <property name="serviceUrl" value="service:jmx:rmi:///jndi/rmi://127.0.0.1:1099/jmxrmi"/>
+    </bean>
+
+    <bean id="configurationDiagnostic" class="org.motechproject.diagnostics.diagnostics.ConfigurationDiagnostic">
+        <constructor-arg>
+            <map>
+                <entry key="activemq">
+                    <util:properties location="classpath:tama.properties"/>
+                </entry>
+                <entry key="quartz">
+                    <util:properties location="classpath:quartz.properties"/>
+                </entry>
+                <entry key="httpClient">
+                    <util:properties location="classpath:httpclient.properties"/>
+                </entry>
+                <entry key="dailyPillReminder">
+                    <util:properties location="classpath:dailypillreminder.properties"/>
+                </entry>
+                <entry key="fourDayRecall">
+                    <util:properties location="classpath:fourdayrecall.properties"/>
+                </entry>
+                <entry key="ivr">
+                    <util:properties location="classpath:ivr.properties"/>
+                </entry>
+                <entry key="appointments">
+                    <util:properties location="classpath:appointments.properties"/>
+                </entry>
+                <entry key="clinicianSMS">
+                    <util:properties location="classpath:clinicianSMS.properties"/>
+                </entry>
+                <entry key="couchdb">
+                    <util:properties location="classpath:couchdb.properties"/>
+                </entry>
+                <entry key="timeSlot">
+                    <util:properties location="classpath:timeSlot.properties"/>
+                </entry>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <util:properties id="diagnosticProperties" location="classpath:diagnostics.properties"/>
 
     <context:property-placeholder location="classpath*:*.properties"/>
 

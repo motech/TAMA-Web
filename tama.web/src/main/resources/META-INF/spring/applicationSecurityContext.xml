@@ -18,6 +18,7 @@
         <intercept-url pattern="/security/changeUserPassword/**" access="hasRole('ADMIN')" requires-channel="any"/>
         <intercept-url pattern="/reports/**" access="hasRole('ADMIN')" requires-channel="any"/>
         <intercept-url pattern="/analysts/**" access="hasRole('ADMIN')" requires-channel="any"/>
+        <intercept-url pattern="/diagnostics/**" access="hasRole('ADMIN')" requires-channel="any"/>
 
         <!-- Only clinicians -->
         <intercept-url pattern="/patients/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
@@ -30,6 +31,7 @@
         <intercept-url pattern="/alerts/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
         <intercept-url pattern="/adherence/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
         <intercept-url pattern="/symptoms/**" access="hasAnyRole('CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR')" requires-channel="any"/>
+
 
         <!-- Both admin and clinicians -->
         <intercept-url pattern="/" access="hasAnyRole('ADMIN','CLINICIAN_STUDY_NURSE','CLINICIAN_DOCTOR', 'ANALYST')" requires-channel="any"/>
