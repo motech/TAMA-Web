@@ -24,19 +24,19 @@
         <div class="medical_history_view">
         <util:panel id="fc_org_motechproject_tama_domain_patient_non_HIV_Medical_History" title="Non - HIV Medical History" openPane="true">
 
-            <span class="drug_allergy_view_label"><c:out value="History of drug allergy / hypersensitivity" /></span>
-            <c:forEach items="${patient.medicalHistory.nonHivMedicalHistory.allergiesHistory}" varStatus="item" var="allergyHistory">
-                <c:if test="${allergyHistory.specified}">
-                    <span class="drug_allergy_text">
-                        <c:out value="${allergyHistory.drugAllergy.value}" />
-                        <c:if test="${not empty allergyHistory.description}">
-                            <c:out value=" : ${allergyHistory.description}" />
-                        </c:if>
-                    </span>
-                </c:if>
-            </c:forEach>
-
             <c:if test="${param.context != 'expressRegistration'}">
+                <span class="drug_allergy_view_label"><c:out value="History of drug allergy / hypersensitivity" /></span>
+                <c:forEach items="${patient.medicalHistory.nonHivMedicalHistory.allergiesHistory}" varStatus="item" var="allergyHistory">
+                    <c:if test="${allergyHistory.specified}">
+                        <span class="drug_allergy_text">
+                            <c:out value="${allergyHistory.drugAllergy.value}" />
+                            <c:if test="${not empty allergyHistory.description}">
+                                <c:out value=" : ${allergyHistory.description}" />
+                            </c:if>
+                        </span>
+                    </c:if>
+                </c:forEach>
+
                 <c:if test="${empty patient.medicalHistory.nonHivMedicalHistory.specifiedAllergies}">
                     <span class="drug_allergy_text">
                         <c:out value="None" />
