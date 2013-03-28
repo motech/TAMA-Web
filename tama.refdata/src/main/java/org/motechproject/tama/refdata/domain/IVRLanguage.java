@@ -19,6 +19,7 @@ public class IVRLanguage extends CouchEntity {
     public static final String TELUGU_CODE = "te";
     public static final String KANNADA_CODE = "kn";
     public static final String MANIPURI_CODE = "mni";
+    public static final String GUJARATI_CODE = "gu";
 
     public IVRLanguage() {
     }
