@@ -7,8 +7,6 @@ import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.event.IVREvent;
 import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.common.CallTypeConstants;
-import org.motechproject.tama.ivr.log.CallEventView;
-import org.motechproject.tama.ivr.log.CallFlowGroupView;
 import org.motechproject.util.DateUtil;
 
 import static org.junit.Assert.assertEquals;
@@ -29,6 +27,21 @@ public class CallFlowGroupViewTest {
 
         assertEquals(123, callFlowGroupView.getFlowDuration());
         assertEquals("flow", callFlowGroupView.toString());
+    }
+
+    @Test
+    public void shouldAddNextEvent() {
+        CallEventView firstEventView = new CallEventView(new CallEvent(IVREvent.GotDTMF.toString()));
+        CallEventView secondEventView = new CallEventView(new CallEvent(IVREvent.GotDTMF.toString()));
+        CallEventView thirdEventView = new CallEventView(new CallEvent(IVREvent.GotDTMF.toString()));
+
+        callFlowGroupView = new CallFlowGroupView("flow", firstEventView);
+        callFlowGroupView.add(secondEventView);
+        callFlowGroupView.add(thirdEventView);
+
+        assertEquals(secondEventView, firstEventView.getNextEvent());
+        assertEquals(thirdEventView, secondEventView.getNextEvent());
+        assertEquals(null, thirdEventView.getNextEvent());
     }
 
     @Test

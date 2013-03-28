@@ -37,6 +37,13 @@ public enum CallState {
         }
     },
 
+    PUSH_MESSAGES(ControllerURLs.PUSH_MESSAGES_URL) {
+        @Override
+        public String nextURL(TAMAIVRContext context) {
+            return possibleTransitionURLs.get(0);
+        }
+    },
+
     ALL_TREES_COMPLETED(ControllerURLs.PUSH_MESSAGES_URL, ControllerURLs.MENU_REPEAT, ControllerURLs.DIAL_URL) {
         @Override
         public String nextURL(TAMAIVRContext context) {
@@ -44,6 +51,7 @@ public enum CallState {
                 return possibleTransitionURLs.get(2);
             } else {
                 if (context.isOutgoingCall()) {
+                    context.callState(PUSH_MESSAGES);
                     return possibleTransitionURLs.get(0);
                 } else {
                     context.doNoPromptForHangUp(true);

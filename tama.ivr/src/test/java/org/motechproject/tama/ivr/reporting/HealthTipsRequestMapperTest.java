@@ -65,7 +65,7 @@ public class HealthTipsRequestMapperTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldMapCallDate(){
+    public void shouldMapCallDate() {
         assertEquals(callLog.getStartTime().toDate(), healthTipsRequest.getCallDate());
     }
 

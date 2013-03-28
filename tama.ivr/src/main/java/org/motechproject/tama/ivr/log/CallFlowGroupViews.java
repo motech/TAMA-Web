@@ -110,6 +110,12 @@ public class CallFlowGroupViews {
         } else if (callState.equals(CallState.HEALTH_TIPS.name())) {
             authenticated = true;
             return CallTypeConstants.HEALTH_TIPS;
+        } else if (callState.equals(CallState.PULL_MESSAGES.name())) {
+            authenticated = true;
+            return CallTypeConstants.PULL_MESSAGES;
+        } else if (callState.equals(CallState.PUSH_MESSAGES.name())) {
+            authenticated = true;
+            return CallTypeConstants.MESSAGES;
         } else if (callState.equals(CallState.OUTBOX.name())) {
             authenticated = true;
             return CallTypeConstants.OUTBOX_CALL;

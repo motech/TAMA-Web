@@ -5,15 +5,22 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.service.IVRService;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
 import org.motechproject.tama.ivr.log.tools.KooKooResponseParser;
 import org.motechproject.tama.ivr.log.tools.Response;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 public class CallEventView {
+
     private CallEvent callEvent;
-    
+
+    private CallEventView nextEvent;
+
     public CallEventView(CallEvent callEvent) {
         this.callEvent = callEvent;
     }
@@ -57,13 +64,30 @@ public class CallEventView {
         return getData(IVRService.CALL_TYPE);
     }
 
-    public DateTime getTimeStamp(){
+    public DateTime getTimeStamp() {
         return callEvent.getTimeStamp();
+    }
+
+    public String getPullMessagesCategory() {
+        TAMAMessageTypes type = TAMAMessageTypes.lookup(getData(TAMAIVRContext.MESSAGE_CATEGORY_NAME));
+        return (null != type) ? type.getDisplayName() : "";
+    }
+
+    public boolean isPullMessageCategorySelected() {
+        return isNotBlank(getPullMessagesCategory());
     }
 
     private String getData(String key) {
         CallEventCustomData customData = callEvent.getData();
         String data = customData.getFirst(key);
         return data == null ? "" : data;
+    }
+
+    public void setNextEvent(CallEventView nextEvent) {
+        this.nextEvent = nextEvent;
+    }
+
+    public CallEventView getNextEvent() {
+        return nextEvent;
     }
 }

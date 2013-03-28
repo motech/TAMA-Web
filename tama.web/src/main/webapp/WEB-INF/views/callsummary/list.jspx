@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
-     version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+<div xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
-     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields">
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     version="2.0">
+
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+
     <page:list id="pl_org_motechproject_tama_ivr_logging_domain_CallLog" items="${callSummary}">
         <jsp:include page="callSummaryPageNavigation.jspx" />
-
         <c:forEach items="${callSummary}" var="calllog" varStatus="logIndex">
             <util:panel id="title[${logIndex.index}]" title="${calllog.title} || Type : ${calllog.flows} || Date :${calllog.callDate} || Started At :${calllog.callStartTime} || Ended At :${calllog.callEndTime}" openPane="false">
             <c:forEach items="${calllog.callFlowGroupViews}" var="callEventGroup" varStatus="groupIndex">
@@ -16,7 +20,14 @@
                         <c:forEach items="${callEventGroup.callEventViews}" var="callEvent" varStatus="eventIndex">
                             <c:if test="${callEvent.userInputAvailable}">
                                 <c:if test="${not empty callEvent.userInput}">
-                                    <b><c:out value="User entered : "/></b><c:out value="${callEvent.userInput}"/>
+                                    <b>
+                                        <c:out value="User entered : "/>
+                                    </b>
+                                    <c:out value="${callEvent.userInput}"/>
+
+                                    <c:if test="${null != callEvent.nextEvent and callEvent.nextEvent.pullMessageCategorySelected}">
+                                        <c:out value=" - ${callEvent.nextEvent.pullMessagesCategory}"/>
+                                    </c:if>
                                     <br/>
                                     <br/>
                                 </c:if>

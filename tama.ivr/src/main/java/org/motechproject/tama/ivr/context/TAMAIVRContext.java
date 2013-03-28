@@ -258,5 +258,6 @@ public class TAMAIVRContext {
 
     public void setMessagesCategory(String categoryName) {
         this.cookies.add(MESSAGE_CATEGORY_NAME, categoryName);
+        log(MESSAGE_CATEGORY_NAME, categoryName);
     }
 }

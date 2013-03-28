@@ -10,6 +10,7 @@ import org.motechproject.util.Cookies;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -51,6 +52,12 @@ public class PlayedMessageTest {
     public void messageTypeIsHealthTipWhenAHealthTipMessageWasPlayed() {
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("message");
         assertEquals(PlayedMessage.Types.HEALTH_TIPS, playedMessage.type());
+    }
+
+    @Test
+    public void shouldResetMessageCategoryOnReset() {
+        playedMessage.reset();
+        verify(cookies).add(TAMAIVRContext.MESSAGE_CATEGORY_NAME, "");
     }
 
     private void setupIVRSession(KooKooIVRContext kookooIVRContext) {

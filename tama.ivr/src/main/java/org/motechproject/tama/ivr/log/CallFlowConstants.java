@@ -15,6 +15,7 @@ public class CallFlowConstants {
         put(TAMATreeRegistry.FOUR_DAY_RECALL, CallTypeConstants.FOUR_DAY_RECALL_CALL);
         put(TAMATreeRegistry.REGIMEN_1_TO_6, CallTypeConstants.SYMPTOMS_CALL);
         put(TAMATreeRegistry.OUTBOX_CALL, CallTypeConstants.OUTBOX_CALL);
+        put(TAMATreeRegistry.PULL_MESSAGES_TREE, CallTypeConstants.PULL_MESSAGES);
         put(TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL, CallTypeConstants.MENU);
         put(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN, CallTypeConstants.MENU);
         put(TAMATreeRegistry.MENU_TREE, CallTypeConstants.MENU);

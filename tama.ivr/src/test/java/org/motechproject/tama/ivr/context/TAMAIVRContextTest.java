@@ -98,7 +98,7 @@ public class TAMAIVRContextTest {
     }
 
     @Test
-    public void shouldAddCallState_ToDataBucket(){
+    public void shouldAddCallStateAsDataToBeLogged() {
         tamaivrContext = new TAMAIVRContext(kooKooIVRContext);
         tamaivrContext.callState(CallState.HEALTH_TIPS);
 
@@ -107,5 +107,17 @@ public class TAMAIVRContextTest {
         HashMap<String, String> dataToLogMap = (HashMap<String, String>) dataToLogMapCaptor.getValue();
         assertEquals(1, dataToLogMap.size());
         assertEquals(CallState.HEALTH_TIPS.name(), dataToLogMap.get(CallEventConstants.CALL_STATE).toString());
+    }
+
+    @Test
+    public void shouldAddMessageCategoryAsDataToBeLogged() {
+        tamaivrContext = new TAMAIVRContext(kooKooIVRContext);
+        tamaivrContext.setMessagesCategory("category");
+
+        ArgumentCaptor<Map> dataToLogMapCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(kooKooIVRContext).dataToLog((HashMap<String, String>) dataToLogMapCaptor.capture());
+        HashMap<String, String> dataToLogMap = (HashMap<String, String>) dataToLogMapCaptor.getValue();
+        assertEquals(1, dataToLogMap.size());
+        assertEquals("category", dataToLogMap.get(TAMAIVRContext.MESSAGE_CATEGORY_NAME).toString());
     }
 }

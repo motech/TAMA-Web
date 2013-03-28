@@ -30,6 +30,9 @@ public class CallFlowGroupView {
     }
 
     public void add(CallEventView callEventView) {
+        if (!callEventViews.isEmpty()) {
+            callEventViews.get(callEventViews.size() - 1).setNextEvent(callEventView);
+        }
         callEventViews.add(callEventView);
     }
 

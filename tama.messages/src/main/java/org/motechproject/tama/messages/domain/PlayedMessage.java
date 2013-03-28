@@ -36,6 +36,7 @@ public class PlayedMessage {
             outboxContext.lastPlayedMessageId(null);
         }
         tamaivrContext.currentDecisionTreePath("");
+        tamaivrContext.setMessagesCategory("");
     }
 
     public String id() {
