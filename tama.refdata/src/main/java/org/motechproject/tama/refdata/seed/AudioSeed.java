@@ -5,6 +5,7 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.log4j.Logger;
+import org.hamcrest.text.pattern.internal.ast.ListOf;
 import org.motechproject.cmslite.api.model.StreamContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.deliverytools.seed.Seed;
@@ -16,10 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,21 +25,33 @@ import java.util.concurrent.Executors;
 @Component
 public class AudioSeed {
 
-    private static final String WAV_FILES_LOCATION = "wav.files.location";
+    public static final String WAV_FILES_LOCATION = "wav.files.location";
+
+    public static final String LANGUAGES_TO_LOAD = "languages.to.load";
 
     Logger logger = Logger.getLogger(this.getClass());
-
     CMSLiteService cmsLiteService;
     private String wavFilesLocation;
+    private String languagesToLoad;
+    private final List<String> languages;
     private int poolSize = 10;
 
     @Autowired
     public AudioSeed(CMSLiteService cmsLiteService, @Qualifier("seedProperties") Properties seedProperties) {
         this.cmsLiteService = cmsLiteService;
         this.wavFilesLocation = (String) seedProperties.get(WAV_FILES_LOCATION);
+        this.languages = listOfLanguages(seedProperties.getProperty(LANGUAGES_TO_LOAD));
+
     }
 
-    @Seed(version = "1.0", priority = 0)
+    private List<String> listOfLanguages(String languagesToLoad) {
+        if (null == languagesToLoad || languagesToLoad.isEmpty())
+            return Collections.emptyList();
+        List<String> allLanguagesToLoad = Arrays.asList(languagesToLoad.split(","));
+        return allLanguagesToLoad;
+    }
+
+    @Seed(version = "2.0", priority = 0)
     public void load() {
         File wavsDir = new File(wavFilesLocation);
         String[] languageDirs = wavsDir.list(new AndFileFilter(Arrays.asList(HiddenFileFilter.VISIBLE, DirectoryFileFilter.INSTANCE)));
@@ -52,6 +62,9 @@ public class AudioSeed {
         }
 
         for (final String languageDir : languageDirs) {
+            if (!languages.isEmpty() && !languages.contains(languageDir)) {
+                continue;
+            }
             String languageDirPath = wavFilesLocation + "/" + languageDir;
             for (String subFolder : new File(languageDirPath).list(DirectoryFileFilter.INSTANCE)) {
                 String subFolderPath = languageDirPath + "/" + subFolder;
