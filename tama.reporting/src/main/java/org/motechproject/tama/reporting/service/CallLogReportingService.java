@@ -1,20 +1,20 @@
 package org.motechproject.tama.reporting.service;
 
-import org.motechproject.tama.reports.contract.HealthTipsRequest;
+import org.motechproject.tama.reports.contract.MessagesRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CallLogReportingService {
 
-    private HealthTipsReportingService healthTipsReportingService;
+    private MessagesReportingService messagesReportingService;
 
     @Autowired
-    public CallLogReportingService(HealthTipsReportingService healthTipsReportingService) {
-        this.healthTipsReportingService = healthTipsReportingService;
+    public CallLogReportingService(MessagesReportingService messagesReportingService) {
+        this.messagesReportingService = messagesReportingService;
     }
 
-    public void reportHealthTips(HealthTipsRequest request) {
-        healthTipsReportingService.save(request);
+    public void reportMessages(MessagesRequest request) {
+        messagesReportingService.save(request);
     }
 }

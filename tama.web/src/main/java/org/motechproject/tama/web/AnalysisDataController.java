@@ -79,7 +79,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("clinicianSmsFilter", new ClinicAndDateFilter());
         uiModel.addAttribute("patientEventFilter", new PatientEventFilter());
         uiModel.addAttribute("outboxMessageReportFilter", new FilterWithPatientIDAndDateRange());
-        uiModel.addAttribute("healthTipsReportFilter", new ClinicAndDateFilter());
+        uiModel.addAttribute("messagesReportFilter", new ClinicAndDateFilter());
         uiModel.addAttribute("dosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
         callSummaryController.download(uiModel);
@@ -172,17 +172,17 @@ public class AnalysisDataController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/healthTipsReport.xls", method = RequestMethod.GET)
-    public String downloadHealthTipsReport(@RequestParam("clinicId") String clinicId,
-                                           @RequestParam("patientId") String patientId,
-                                           @RequestParam("startDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate startDate,
-                                           @RequestParam("endDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate endDate,
-                                           Model uiModel) {
+    @RequestMapping(value = "/messagesReport.xls", method = RequestMethod.GET)
+    public String downloadMessagesReport(@RequestParam("clinicId") String clinicId,
+                                         @RequestParam("patientId") String patientId,
+                                         @RequestParam("startDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate startDate,
+                                         @RequestParam("endDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate endDate,
+                                         Model uiModel) {
         DateFilter filter = new DateFilter().setDates(startDate, endDate);
         if (filter.isMoreThanOneYear()) {
-            return error(uiModel, "healthTips_warning");
+            return error(uiModel, "messages_warning");
         } else {
-            return format("redirect:/tama-reports/healthTips/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s", clinicId, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"));
+            return format("redirect:/tama-reports/messages/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s", clinicId, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"));
         }
     }
 

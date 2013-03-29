@@ -8,6 +8,7 @@ import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.tama.ivr.StandardIVRResponse;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
 import org.motechproject.tama.ivr.log.CallEventView;
 
 import java.util.List;
@@ -58,13 +59,13 @@ public class CallEventViewTest {
 
     @Test
     public void shouldReturnMessageCategory() {
-        String category = "category";
+        String category = TAMAMessageTypes.ALL_MESSAGES.name();
 
         CallEvent callEvent = new CallEvent(IVREvent.GotDTMF.toString());
         callEvent.appendData(TAMAIVRContext.MESSAGE_CATEGORY_NAME, category);
 
         CallEventView callEventView = new CallEventView(callEvent);
-        assertEquals(category, callEventView.getPullMessagesCategory());
+        assertEquals(TAMAMessageTypes.ALL_MESSAGES.getDisplayName(), callEventView.getPullMessagesCategory());
     }
 
     @Test

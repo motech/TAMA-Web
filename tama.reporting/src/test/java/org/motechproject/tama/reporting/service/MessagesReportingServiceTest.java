@@ -5,13 +5,13 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.http.client.service.HttpClientService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
-import org.motechproject.tama.reports.contract.HealthTipsRequest;
+import org.motechproject.tama.reports.contract.MessagesRequest;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class HealthTipsReportingServiceTest {
+public class MessagesReportingServiceTest {
 
     public static final String REPORTS_URL = "http://localhost:9999/tama-reports/";
 
@@ -19,19 +19,19 @@ public class HealthTipsReportingServiceTest {
     private HttpClientService httpClientService;
     @Mock
     private ReportingProperties reportingProperties;
-    private HealthTipsReportingService healthTipsReportingService;
+    private MessagesReportingService messagesReportingService;
 
     @Before
     public void setup() {
         initMocks(this);
         when(reportingProperties.reportingURL()).thenReturn(REPORTS_URL);
-        healthTipsReportingService = new HealthTipsReportingService(httpClientService, reportingProperties);
+        messagesReportingService = new MessagesReportingService(httpClientService, reportingProperties);
     }
 
     @Test
-    public void shouldPublishPatientSave() {
-        HealthTipsRequest request = new HealthTipsRequest();
-        healthTipsReportingService.save(request);
-        verify(httpClientService).post(REPORTS_URL + "healthTips", request);
+    public void shouldPublishMessagesSave() {
+        MessagesRequest request = new MessagesRequest();
+        messagesReportingService.save(request);
+        verify(httpClientService).post(REPORTS_URL + "messages", request);
     }
 }

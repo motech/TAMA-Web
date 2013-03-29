@@ -103,10 +103,10 @@ public class AnalysisDataControllerTest {
     }
 
     @Test
-    public void shouldAddHealthTipsFilterModel() {
+    public void shouldAddMessagesFilterModel() {
         when(reportingProperties.reportingURL()).thenReturn("url");
         assertEquals("analysisData/show", analysisDataController.show(model));
-        verify(model).addAttribute(eq("healthTipsReportFilter"), any(ReportsFilterForPatientWithClinicName.class));
+        verify(model).addAttribute(eq("messagesReportFilter"), any(ReportsFilterForPatientWithClinicName.class));
     }
 
     @Test
@@ -191,10 +191,10 @@ public class AnalysisDataControllerTest {
     }
 
     @Test
-    public void shouldRedirectToDownloadOfHealthTipsReport() {
+    public void shouldRedirectToDownloadOfMessagesReport() {
         LocalDate today = DateUtil.today();
-        String view = analysisDataController.downloadHealthTipsReport("clinic", "patientId", today, today, model);
-        assertTrue(view.contains("redirect:/tama-reports/healthTips/report"));
+        String view = analysisDataController.downloadMessagesReport("clinic", "patientId", today, today, model);
+        assertTrue(view.contains("redirect:/tama-reports/messages/report"));
     }
 
     @Test

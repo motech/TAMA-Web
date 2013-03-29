@@ -15,7 +15,7 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.mapper.CallLogMapper;
-import org.motechproject.tama.ivr.reporting.HealthTipsRequestMapper;
+import org.motechproject.tama.ivr.reporting.MessagesRequestMapper;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
@@ -63,7 +63,7 @@ public class CallLogServiceTest {
     }
 
     @Test
-    public void shouldReportHealthTips() {
+    public void shouldReportMessages() {
         String callId = "callId";
         String patientDocumentId = "patientDocumentId";
         KookooCallDetailRecord kookooCallDetailRecord = callDetailRecord();
@@ -74,7 +74,7 @@ public class CallLogServiceTest {
         when(kookooCallDetailRecordsService.get(callId)).thenReturn(kookooCallDetailRecord);
         when(callLogMapper.toCallLog(patientDocumentId, kookooCallDetailRecord)).thenReturn(log);
         callLoggingService.log(callId, patientDocumentId);
-        verify(callLogReportingService).reportHealthTips(new HealthTipsRequestMapper(log).map(CallTypeConstants.PULL_MESSAGES, CallTypeConstants.MESSAGES));
+        verify(callLogReportingService).reportMessages(new MessagesRequestMapper(log).map(CallTypeConstants.PULL_MESSAGES, CallTypeConstants.MESSAGES));
     }
 
     @Test

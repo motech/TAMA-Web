@@ -6,7 +6,7 @@ import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.mapper.CallLogMapper;
-import org.motechproject.tama.ivr.reporting.HealthTipsRequestMapper;
+import org.motechproject.tama.ivr.reporting.MessagesRequestMapper;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
@@ -58,7 +58,7 @@ public class CallLogService {
             callLog.callLanguage(patient.getLanguageCode());
         }
         allCallLogs.add(callLog);
-        callLogReportingService.reportHealthTips(new HealthTipsRequestMapper(callLog).map(CallTypeConstants.PULL_MESSAGES, CallTypeConstants.MESSAGES));
+        callLogReportingService.reportMessages(new MessagesRequestMapper(callLog).map(CallTypeConstants.PULL_MESSAGES, CallTypeConstants.MESSAGES));
     }
 
     public List<CallLog> getAll() {

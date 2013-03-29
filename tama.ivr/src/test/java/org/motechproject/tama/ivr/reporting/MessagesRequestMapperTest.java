@@ -9,80 +9,80 @@ import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallState;
-import org.motechproject.tama.reports.contract.HealthTipsRequest;
+import org.motechproject.tama.reports.contract.MessagesRequest;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
-public class HealthTipsRequestMapperTest extends BaseUnitTest {
+public class MessagesRequestMapperTest extends BaseUnitTest {
 
     private CallLog callLog;
-    private HealthTipsRequest healthTipsRequest;
+    private MessagesRequest messagesRequest;
 
     @Before
     public void setup() {
         setupCallLog();
         mockCurrentDate(DateUtil.now());
-        healthTipsRequest = new HealthTipsRequestMapper(callLog).map(CallTypeConstants.HEALTH_TIPS, null);
+        messagesRequest = new MessagesRequestMapper(callLog).map(CallTypeConstants.PULL_MESSAGES, null);
     }
 
     private void setupCallLog() {
         callLog = new CallLog("patientDocumentId");
         callLog.setStartTime(DateUtil.now());
         callLog.setCallDirection(CallDirection.Inbound);
-        callLog.setCallEvents(asList(healthTipsEvent(), endOfCallEvent()));
+        callLog.setCallEvents(asList(messagesEvent(), endOfCallEvent()));
     }
 
     @Test
     public void shouldMapPatientDocumentId() {
-        assertEquals(callLog.getPatientDocumentId(), healthTipsRequest.getPatientDocumentId());
+        assertEquals(callLog.getPatientDocumentId(), messagesRequest.getPatientDocumentId());
     }
 
     @Test
-    public void shouldMapNumberOfTimesHealthTipsAccessed() {
-        assertEquals(Integer.valueOf(1), healthTipsRequest.getNumberOfTimesHealthTipsAccessed());
+    public void shouldMapNumberOfTimesMessagesAccessed() {
+        assertEquals(Integer.valueOf(1), messagesRequest.getNumberOfTimesMessagesAccessed());
     }
 
     @Test
-    public void shouldMapHealthTips() {
-        assertEquals(asList("response1", "response2"), healthTipsRequest.getHealthTipsPlayed());
+    public void shouldMapMessages() {
+        assertEquals(asList("response1", "response2"), messagesRequest.getMessagesPlayed());
     }
 
     @Test
-    public void shouldMapIndividualHealthTipFlowAccessDurationInSeconds() {
-        assertEquals(asList(60), healthTipsRequest.getIndividualHealthTipsAccessDurations());
+    public void shouldMapIndividualMessagesFlowAccessDurationInSeconds() {
+        assertEquals(asList(60), messagesRequest.getIndividualMessagesAccessDurations());
     }
 
     @Test
-    public void shouldMapTotalHealthTipFlowsAccessDurationInSeconds() {
-        assertEquals(Long.valueOf(60L), healthTipsRequest.getTotalHealthTipsAccessDuration());
+    public void shouldMapTotalMessagesFlowsAccessDurationInSeconds() {
+        assertEquals(Long.valueOf(60L), messagesRequest.getTotalMessagesAccessDuration());
     }
 
     @Test
     public void shouldMapCallDirection() {
-        assertEquals("Incoming", healthTipsRequest.getCallDirection());
+        assertEquals("Incoming", messagesRequest.getCallDirection());
     }
 
     @Test
     public void shouldMapCallDate() {
-        assertEquals(callLog.getStartTime().toDate(), healthTipsRequest.getCallDate());
+        assertEquals(callLog.getStartTime().toDate(), messagesRequest.getCallDate());
     }
 
     private CallEvent endOfCallEvent() {
-        CallEvent event = new CallEvent(CallState.END_OF_HEALTH_TIPS_FLOW.name());
+        CallEvent event = new CallEvent(CallState.MAIN_MENU.name());
         CallEventCustomData data = new CallEventCustomData();
         event.setTimeStamp(DateUtil.now().plusMinutes(1));
         event.setData(data);
         return event;
     }
 
-    private CallEvent healthTipsEvent() {
-        CallEvent event = new CallEvent(CallState.HEALTH_TIPS.name());
+    private CallEvent messagesEvent() {
+        CallEvent event = new CallEvent(CallState.PULL_MESSAGES.name());
         CallEventCustomData data = new CallEventCustomData();
         data.add(CallEventConstants.CUSTOM_DATA_LIST, "<response><playaudio>http://localhost/response1.wav</playaudio><playaudio>http://localhost/response2.wav</playaudio></response>");
-        data.add(CallEventConstants.CALL_STATE, CallState.HEALTH_TIPS.name());
+        data.add(CallEventConstants.CALL_STATE, CallState.PULL_MESSAGES.name());
         event.setTimeStamp(DateUtil.now());
         event.setData(data);
         return event;
