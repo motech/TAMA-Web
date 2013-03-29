@@ -1,8 +1,11 @@
 package org.motechproject.tama.web.model;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.ivr.log.CallFlowDetails;
 
 import java.util.Map;
+import java.util.Set;
 
 public class CallLogSummary {
 
@@ -18,11 +21,12 @@ public class CallLogSummary {
     private Map<String, CallFlowDetails> flowDetailsMap;
     private String flows;
     private String age;
+    private Set<String> messageCategories;
     private String gender;
 
     public CallLogSummary(String patientId, String sourcePhoneNumber, String destinationPhoneNumber, String initiatedDateTime,
                           String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic,
-                          String flows, Map<String, CallFlowDetails> flowDetailsMap, String gender, String age) {
+                          String flows, Map<String, CallFlowDetails> flowDetailsMap, String gender, String age, Set<String> messageCategories) {
         this.patientId = patientId;
         this.sourcePhoneNumber = sourcePhoneNumber;
         this.destinationPhoneNumber = destinationPhoneNumber;
@@ -36,6 +40,7 @@ public class CallLogSummary {
         this.flowDetailsMap = flowDetailsMap;
         this.gender = gender;
         this.age = age;
+        this.messageCategories = messageCategories;
     }
 
 
@@ -89,5 +94,9 @@ public class CallLogSummary {
 
     public String getGender() {
         return gender;
+    }
+
+    public String getMessageCategories() {
+        return CollectionUtils.isEmpty(messageCategories) ? "-" : StringUtils.join(messageCategories, ", ");
     }
 }

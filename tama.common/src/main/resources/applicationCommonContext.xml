@@ -22,9 +22,14 @@
         <property name="algorithm" value="PBEWithMD5AndDES"/>
         <property name="password" value="jasypt"/>
     </bean>
+
+    <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean">
+        <property name="autoUpdateViewOnChange" value="true"/>
+    </bean>
+
     <bean id="tamaCouchDbInstance" class="org.ektorp.impl.StdCouchDbInstance">
         <constructor-arg>
-            <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean"/>
+            <ref bean="httpClient"/>
         </constructor-arg>
     </bean>
     <bean id="tamaDbConnector" class="org.ektorp.impl.StdCouchDbConnector">

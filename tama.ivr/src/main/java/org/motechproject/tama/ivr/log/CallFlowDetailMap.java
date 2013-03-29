@@ -19,6 +19,7 @@ public class CallFlowDetailMap {
         }
         callFlowDetailsMap.put(CallTypeConstants.HEALTH_TIPS, new CallFlowDetails());
         callFlowDetailsMap.put(CallTypeConstants.MESSAGES, new CallFlowDetails());
+        callFlowDetailsMap.put(CallTypeConstants.PULL_MESSAGES, new CallFlowDetails());
     }
 
     public void populateFlowDetails(CallFlowGroupViews flowGroupViews) {

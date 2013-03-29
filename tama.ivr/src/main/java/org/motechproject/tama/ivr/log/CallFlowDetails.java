@@ -22,7 +22,7 @@ public class CallFlowDetails {
     }
 
     public String getIndividualAccessDurations() {
-        return accessDurations.isEmpty() ? "NA" : StringUtils.join(accessDurations, ", ");
+        return asString(accessDurations);
     }
 
     public List<String> getResponses() {
@@ -41,5 +41,13 @@ public class CallFlowDetails {
 
     public List<Integer> getAllIndividualAccessDurations() {
         return accessDurations;
+    }
+
+    public String getResponsesAsString() {
+        return asString(responses);
+    }
+
+    private <T> String asString(List<T> list) {
+        return list.isEmpty() ? "NA" : StringUtils.join(list, ", ");
     }
 }

@@ -8,7 +8,9 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallLog;
+import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Patients;
@@ -22,8 +24,8 @@ import org.motechproject.tama.web.view.CallLogView;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -70,7 +72,9 @@ public class CallLogSummaryBuilderTest {
 
         final CallEvent callEvent = mock(CallEvent.class);
         when(callEvent.getTimeStamp()).thenReturn(startTime);
-        when(callEvent.getData()).thenReturn(new CallEventCustomData());
+        CallEventCustomData customData = new CallEventCustomData();
+        customData.add(TAMAIVRContext.MESSAGE_CATEGORY_NAME, "All Messages");
+        when(callEvent.getData()).thenReturn(customData);
         callLog.setCallEvents(new ArrayList<CallEvent>() {{
             add(callEvent);
         }});
@@ -80,8 +84,8 @@ public class CallLogSummaryBuilderTest {
         clinic.setName("clinicName");
 
         when(allIVRLanguages.getByCode("en")).thenReturn(IVRLanguage.newIVRLanguage("English", "en"));
-        when(allPatients.getAll()).thenReturn(Arrays.asList(patient));
-        when(callLogViewMapper.toCallLogView(Arrays.asList(callLog))).thenReturn(Arrays.asList(callLogView));
+        when(allPatients.getAll()).thenReturn(asList(patient));
+        when(callLogViewMapper.toCallLogView(asList(callLog))).thenReturn(asList(callLogView));
 
         callLogSummaryBuilder = new CallLogSummaryBuilder(allPatients, new Patients(allPatients.getAll()), allIVRLanguages);
     }
@@ -102,6 +106,23 @@ public class CallLogSummaryBuilderTest {
         assertEquals("1 Days, 1 Hours, and 1 Minutes", callLogSummary.getPatientDistanceFromClinic());
         assertEquals("40", callLogSummary.getAge());
         assertEquals("Male", callLogSummary.getGender());
+    }
+
+    @Test
+    public void shouldHaveUniqueMessageCategoriesAccessedInCall() {
+        setUpCallLog(CallDirection.Outbound);
+
+        CallEventCustomData customData = new CallEventCustomData();
+        customData.add(TAMAIVRContext.MESSAGE_CATEGORY_NAME, TAMAMessageTypes.ALL_MESSAGES.name());
+
+        CallEvent event = mock(CallEvent.class);
+        when(event.getData()).thenReturn(customData);
+        when(event.getTimeStamp()).thenReturn(startTime);
+
+        callLog.setCallEvents(asList(event, event));
+
+        CallLogSummary callLogSummary = callLogSummaryBuilder.build(callLog);
+        assertEquals(TAMAMessageTypes.ALL_MESSAGES.getDisplayName(), callLogSummary.getMessageCategories());
     }
 
     @Test

@@ -12,7 +12,6 @@ import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -41,9 +40,8 @@ public class AllCallLogs extends AbstractCouchRepository<CallLog> {
         return db.queryView(q, CallLog.class);
     }
 
-    @View(name = "find_by_date_range", map = "function copy(d, s) {" +
+    @View(name = "find_by_date_range_new", map = "function copy(d, s) {" +
             "  for (i in s) {" +
-            "    if (i === 'responseXML') continue;" +
             "    if (typeof s[i] == 'object') {" +
             "      d[i] = (typeof s[i].length == 'undefined'?{}:[]);" +
             "      copy(d[i], s[i]);" +
@@ -60,7 +58,7 @@ public class AllCallLogs extends AbstractCouchRepository<CallLog> {
             " }" +
             "}" )
     public List<CallLog> findAllCallLogsForDateRange(DateTime startDateTime, DateTime endDateTime, int pageSize, String startDocId) {
-        ViewQuery q = createQuery("find_by_date_range").startKey(startDateTime).endKey(endDateTime).limit(pageSize);
+        ViewQuery q = createQuery("find_by_date_range_new").startKey(startDateTime).endKey(endDateTime).limit(pageSize);
         if (StringUtils.isNotEmpty(startDocId)) q.startDocId(startDocId);
         return db.queryView(q, CallLog.class);
     }

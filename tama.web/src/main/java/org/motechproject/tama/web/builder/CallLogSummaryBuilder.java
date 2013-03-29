@@ -3,8 +3,10 @@ package org.motechproject.tama.web.builder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.ivr.domain.CallLog;
+import org.motechproject.tama.ivr.log.CallEventView;
 import org.motechproject.tama.ivr.log.CallFlowDetailMap;
 import org.motechproject.tama.ivr.log.CallFlowDetails;
 import org.motechproject.tama.patient.domain.Patient;
@@ -15,9 +17,7 @@ import org.motechproject.tama.web.mapper.CallLogViewMapper;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.view.CallLogView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.isEmpty;
@@ -54,7 +54,20 @@ public class CallLogSummaryBuilder {
                 getCallLogFlows(callLog),
                 getCallFlowDetails(callLog),
                 getGender(callLog),
-                getAge(callLog));
+                getAge(callLog),
+                getMessageCategories(callLog));
+    }
+
+    private Set<String> getMessageCategories(CallLog callLog) {
+        List<CallEvent> callEvents = callLog.getCallEvents();
+        Set<String> result = new HashSet<>();
+        for (CallEvent callEvent : callEvents) {
+            CallEventView view = new CallEventView(callEvent);
+            if (view.isPullMessageCategorySelected()) {
+                result.add(view.getPullMessagesCategory());
+            }
+        }
+        return result;
     }
 
     private String getPatientId(CallLog callLog) {

@@ -30,6 +30,18 @@ public class CallFlowDetailsTest {
     }
 
     @Test
+    public void shouldReturnAllResponsesAsString() {
+        callFlowDetails.respondedWith(asList("response1"));
+        callFlowDetails.respondedWith(asList("response2"));
+        assertEquals("response1, response2", callFlowDetails.getResponsesAsString());
+    }
+
+    @Test
+    public void shouldReturnNAWhenNoResponsesAreAvailable() {
+        assertEquals("NA", callFlowDetails.getResponsesAsString());
+    }
+
+    @Test
     public void shouldSummarizeTheNumberOfTimesThatTheFlowWasAccessed() {
         callFlowDetails.flowAccessed(1);
         callFlowDetails.flowAccessed(2);
