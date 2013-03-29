@@ -44,6 +44,12 @@ public class TimeConstructBuilderTest {
     }
 
     @Test
+    public void constructGujaratiTimeConstructBuilder() {
+        SlotBasedTimeConstructBuilder builder = new TimeConstructBuilder().builder(IVRLanguage.GUJARATI_CODE);
+        assertEquals(GujaratiTimeConstructBuilder.class, builder.getClass());
+    }
+
+    @Test
     public void constructTimeConstructBuilder_ForNotSupportedLanguage() {
         try {
             new TimeConstructBuilder().builder("unknown");
