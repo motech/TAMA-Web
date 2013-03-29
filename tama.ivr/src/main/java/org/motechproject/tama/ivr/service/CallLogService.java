@@ -2,6 +2,7 @@ package org.motechproject.tama.ivr.service;
 
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.ivr.mapper.CallLogMapper;
@@ -57,7 +58,7 @@ public class CallLogService {
             callLog.callLanguage(patient.getLanguageCode());
         }
         allCallLogs.add(callLog);
-        callLogReportingService.reportHealthTips(new HealthTipsRequestMapper(callLog).map());
+        callLogReportingService.reportHealthTips(new HealthTipsRequestMapper(callLog).map(CallTypeConstants.PULL_MESSAGES, CallTypeConstants.MESSAGES));
     }
 
     public List<CallLog> getAll() {

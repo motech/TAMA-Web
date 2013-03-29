@@ -1,6 +1,7 @@
 package org.motechproject.tama.migration;
 
 import org.motechproject.deliverytools.seed.Seed;
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.reporting.HealthTipsRequestMapper;
 import org.motechproject.tama.migration.repository.PagedCallLogsRepository;
@@ -28,7 +29,7 @@ public class HealthTipsMigration extends Migration<CallLog> {
 
     @Override
     protected void save(CallLog document) {
-        HealthTipsRequest request = new HealthTipsRequestMapper(document).map();
+        HealthTipsRequest request = new HealthTipsRequestMapper(document).map(CallTypeConstants.HEALTH_TIPS, null);
         reportingService.reportHealthTips(request);
     }
 }

@@ -1,7 +1,8 @@
+
 package org.motechproject.tama.ivr.reporting;
 
+import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.model.CallDirection;
-import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.log.CallFlowDetailMap;
 import org.motechproject.tama.ivr.log.CallFlowDetails;
@@ -30,13 +31,16 @@ public class HealthTipsRequestMapper {
         this.callFlowDetailMap.populateFlowDetails(flowGroupViews);
     }
 
-    public HealthTipsRequest map() {
+    public HealthTipsRequest map(String pullMessagesFlowType, String pushMessageFlowType) {
         HealthTipsRequest healthTipsRequest = new HealthTipsRequest();
         healthTipsRequest.setPatientDocumentId(patientDocumentId);
-        healthTipsRequest.setNumberOfTimesHealthTipsAccessed(numberOfTimesHealthTipsAccessed());
-        healthTipsRequest.setHealthTipsPlayed(healthTipsPlayed());
-        healthTipsRequest.setIndividualHealthTipsAccessDurations(individualHealthTipsAccessDurations());
-        healthTipsRequest.setTotalHealthTipsAccessDuration(totalDurationOfHealthTipFlows());
+        if (StringUtils.isNotBlank(pushMessageFlowType)) {
+            healthTipsRequest.setPushedMessages(healthTipsPlayed(pushMessageFlowType));
+        }
+        healthTipsRequest.setNumberOfTimesHealthTipsAccessed(numberOfTimesHealthTipsAccessed(pullMessagesFlowType));
+        healthTipsRequest.setHealthTipsPlayed(healthTipsPlayed(pullMessagesFlowType));
+        healthTipsRequest.setIndividualHealthTipsAccessDurations(individualHealthTipsAccessDurations(pullMessagesFlowType));
+        healthTipsRequest.setTotalHealthTipsAccessDuration(totalDurationOfHealthTipFlows(pullMessagesFlowType));
         healthTipsRequest.setCallDirection(callDirection());
         healthTipsRequest.setCallDate(callLog.getStartTime().toDate());
         return healthTipsRequest;
@@ -46,27 +50,27 @@ public class HealthTipsRequestMapper {
         return (CallDirection.Inbound.equals(callLog.getCallDirection())) ? "Incoming" : "Outgoing";
     }
 
-    private Long totalDurationOfHealthTipFlows() {
-        CallFlowDetails callFlowDetails = healthTipsDetails();
+    private Long totalDurationOfHealthTipFlows(String flowType) {
+        CallFlowDetails callFlowDetails = healthTipsDetails(flowType);
         return (null == callFlowDetails) ? 0L : callFlowDetails.getTotalAccessDuration();
     }
 
-    private List<Integer> individualHealthTipsAccessDurations() {
-        CallFlowDetails callFlowDetails = healthTipsDetails();
+    private List<Integer> individualHealthTipsAccessDurations(String flowType) {
+        CallFlowDetails callFlowDetails = healthTipsDetails(flowType);
         return (null == callFlowDetails) ? Collections.<Integer>emptyList() : callFlowDetails.getAllIndividualAccessDurations();
     }
 
-    private List<String> healthTipsPlayed() {
-        CallFlowDetails callFlowDetails = healthTipsDetails();
+    private List<String> healthTipsPlayed(String flowType) {
+        CallFlowDetails callFlowDetails = healthTipsDetails(flowType);
         return (null == callFlowDetails) ? Collections.<String>emptyList() : callFlowDetails.getResponses();
     }
 
-    private int numberOfTimesHealthTipsAccessed() {
-        CallFlowDetails callFlowDetails = healthTipsDetails();
+    private int numberOfTimesHealthTipsAccessed(String flowType) {
+        CallFlowDetails callFlowDetails = healthTipsDetails(flowType);
         return (null == callFlowDetails) ? 0 : callFlowDetails.getNumberOfTimesAccessed();
     }
 
-    private CallFlowDetails healthTipsDetails() {
-        return callFlowDetailMap.getCallFlowDetailsMap().get(CallTypeConstants.HEALTH_TIPS);
+    private CallFlowDetails healthTipsDetails(String flowType) {
+        return callFlowDetailMap.getCallFlowDetailsMap().get(flowType);
     }
 }

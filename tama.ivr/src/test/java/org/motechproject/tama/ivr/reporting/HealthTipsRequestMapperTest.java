@@ -6,6 +6,7 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.model.CallDirection;
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.reports.contract.HealthTipsRequest;
@@ -24,7 +25,7 @@ public class HealthTipsRequestMapperTest extends BaseUnitTest {
     public void setup() {
         setupCallLog();
         mockCurrentDate(DateUtil.now());
-        healthTipsRequest = new HealthTipsRequestMapper(callLog).map();
+        healthTipsRequest = new HealthTipsRequestMapper(callLog).map(CallTypeConstants.HEALTH_TIPS, null);
     }
 
     private void setupCallLog() {

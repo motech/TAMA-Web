@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
 import org.motechproject.ivr.model.CallDetailRecord;
+import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.domain.CallLog;
@@ -73,7 +74,7 @@ public class CallLogServiceTest {
         when(kookooCallDetailRecordsService.get(callId)).thenReturn(kookooCallDetailRecord);
         when(callLogMapper.toCallLog(patientDocumentId, kookooCallDetailRecord)).thenReturn(log);
         callLoggingService.log(callId, patientDocumentId);
-        verify(callLogReportingService).reportHealthTips(new HealthTipsRequestMapper(log).map());
+        verify(callLogReportingService).reportHealthTips(new HealthTipsRequestMapper(log).map(CallTypeConstants.PULL_MESSAGES, CallTypeConstants.MESSAGES));
     }
 
     @Test
