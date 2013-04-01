@@ -54,7 +54,6 @@ public class IncompletePatientDataWarning {
             findRequiredVitalStatistics();
             findRequiredTreatmentAdvice();
             findBaseLineLabResults();
-            findLatestLabResults();
         }
     }
 
@@ -83,14 +82,6 @@ public class IncompletePatientDataWarning {
             cd4Result = null;
         }
         requiredPatientDetails.add(new RequiredPatientDetail(cd4Result, "Baseline CD4 count", requiredFor));
-    }
-
-    private void findLatestLabResults() {
-        HashSet<String> requiredFor = new HashSet<String>(asList("Health Tips"));
-        int cd4Result = allLabResults == null ? LabResult.INVALID_COUNT : allLabResults.allLabResults(patient.getId()).latestCountOf(TAMAConstants.LabTestType.CD4);
-        if (cd4Result == LabResult.INVALID_COUNT) {
-            requiredPatientDetails.add(new RequiredPatientDetail(cd4Result == LabResult.INVALID_COUNT ? null : cd4Result, "Latest CD4 count", requiredFor));
-        }
     }
 
     private void findRequiredTreatmentAdvice() {

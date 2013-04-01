@@ -127,17 +127,17 @@ public class PatientController extends BaseController {
 
         try{
             patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
-            activatePatient(patient.getId(), REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request), request);
+            String redirectUrl = activatePatient(patient.getId(), REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request), request);
             Patient savedPatient = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), loggedInClinic(request));
             List<String> warning = new IncompletePatientDataWarning(savedPatient, null, null, null, null).value();
             uiModel.addAttribute("warning", warning);
             uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
             initUIModel(uiModel, savedPatient);
+            return redirectUrl;
         } catch (RuntimeException e) {
             decorateViewWithUniqueConstraintError(patient, bindingResult, uiModel, e);
             return CREATE_VIEW;
         }
-        return EXPRESS_SHOW_VIEW;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/expressActivate/{id}")
@@ -267,6 +267,8 @@ public class PatientController extends BaseController {
         List<PatientViewModel> listPatientViewModels = new ArrayList<PatientViewModel>();
         for (Patient patient : allPatients.findByClinic(clinicId)) {
             PatientViewModel listPatientViewModel = new PatientViewModel(patient);
+            List<String> warning = new IncompletePatientDataWarning(listPatientViewModel, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
+            listPatientViewModel.setWarnings(warning);
             listPatientViewModels.add(listPatientViewModel);
         }
         uiModel.addAttribute(PATIENTS, listPatientViewModels);
@@ -292,7 +294,7 @@ public class PatientController extends BaseController {
             decorateViewWithUniqueConstraintError(patient, bindingResult, uiModel, e);
             return CREATE_VIEW;
         }
-        return EXPRESS_SHOW_VIEW ;//    + encodeUrlPathSegment(patient.getId(), request);
+        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)

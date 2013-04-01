@@ -7,25 +7,18 @@
      xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      version="2.0">
-    <c:set value="true" var="showEditButton"/>
-    <c:if test="${param.context == 'expressRegistration'}" >
-        <c:set value="false" var="showEditButton"/>
-    </c:if>
-
     <spring:message code="label_org_motechproject_tama_domain_patient_basic_information" var="basic_information" htmlEscape="false" />
-    <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="${basic_information}" openPane="true" update="${showEditButton}">
+    <util:panel id="fc_org_motechproject_tama_domain_patient_Basic_Information" title="${basic_information}" openPane="true" update="true">
         <field:display field="patientId" id="s_org_motechproject_tama_domain_patient_patientId" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
         <field:display field="mobilePhoneNumber" id="s_org_motechproject_tama_domain_patient_mobilePhoneNumber" object="${patient}" z="TLu9R1JJQRjWUpw7nrwixCmLRAg="/>
         <field:display date="true" dateTimePattern="dd/MM/yyyy" field="dateOfBirthAsDate" id="s_org_motechproject_tama_domain_patient_dateOfBirth" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
         <field:display field="gender" id="s_org_motechproject_tama_domain_patient_gender" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
-        <c:if test="${param.context != 'expressRegistration'}" >
-            <field:display field="clinic" id="s_org_motechproject_tama_domain_patient_clinic" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
-            <label for="_travelTimeToClinic_id">Travel Time To Clinic : </label>
-            <div>
-                <span><c:out value="${patient.travelTimeToClinicInDays}" /> day(s) | </span>
-                <span><c:out value="${patient.travelTimeToClinicInHours}" /> hour(s) | </span>
-                <span><c:out value="${patient.travelTimeToClinicInMinutes}" /> minute(s)</span>
-            </div>
-        </c:if>
+        <field:display field="clinic" id="s_org_motechproject_tama_domain_patient_clinic" object="${patient}" z="HN0xWuiZ8C+6cyNrQRvICCoH+PU="/>
+        <label for="_travelTimeToClinic_id">Travel Time To Clinic : </label>
+        <div>
+            <span><c:out value="${patient.travelTimeToClinicInDays}" /> day(s) | </span>
+            <span><c:out value="${patient.travelTimeToClinicInHours}" /> hour(s) | </span>
+            <span><c:out value="${patient.travelTimeToClinicInMinutes}" /> minute(s)</span>
+        </div>
     </util:panel>
 </div>

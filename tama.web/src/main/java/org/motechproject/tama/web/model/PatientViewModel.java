@@ -1,9 +1,16 @@
 package org.motechproject.tama.web.model;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.drools.core.util.StringUtils;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PatientViewModel extends Patient {
+
+    private List<String> warnings = new ArrayList<>();
 
     public PatientViewModel(Patient patient) {
         this.setId(patient.getId());
@@ -71,5 +78,18 @@ public class PatientViewModel extends Patient {
             return "/patients/deactivate";
         else
             return null;
+    }
+
+    public void setWarnings(List<String> warnings){
+        this.warnings = warnings;
+    }
+
+    public String getCompletionStatus(){
+        if(getStatus().equals(Status.Active))
+            if(CollectionUtils.isEmpty(warnings))
+                return "Complete";
+            else
+                return "Incomplete";
+        return StringUtils.EMPTY;
     }
 }

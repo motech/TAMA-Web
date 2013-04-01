@@ -31,6 +31,7 @@
                           id="c_org_motechproject_tama_domain_patient_registrationDate"
                           property="registrationDateAsDate" z="user-managed"/>
             <table:column id="c_org_motechproject_tama_domain_patient_status" property="status" z="user-managed"/>
+            <table:column id="c_org_motechproject_tama_domain_patient_completion" property="completionStatus" z="user-managed"/>
             <table:column id="c_org_motechproject_tama_domain_patient_action" property="statusAction" actionUrl="statusActionUrl" z="user-managed"/>
         </table:table>
 

@@ -417,6 +417,7 @@ fieldset th {
 	text-transform:uppercase;
 	font-weight:bold;
 	height:24px;
+    margin-right: 10px;
 }
 
 .updated {

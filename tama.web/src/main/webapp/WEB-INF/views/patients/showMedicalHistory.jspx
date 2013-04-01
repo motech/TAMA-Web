@@ -8,13 +8,8 @@
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
      version="2.0">
 
-    <c:set value="true" var="showEditButton"/>
-    <c:if test="${param.context == 'expressRegistration'}" >
-        <c:set value="false" var="showEditButton"/>
-    </c:if>
-
     <spring:message code="label_org_motechproject_tama_domain_patient_medical_history" var="medical_history" htmlEscape="false" />
-    <util:panel id="fc_org_motechproject_tama_domain_patient_Medical_History" title="${medical_history}" openPane="true" update="${showEditButton}">
+    <util:panel id="fc_org_motechproject_tama_domain_patient_Medical_History" title="${medical_history}" openPane="true" update="true">
         <c:if test="${not empty patient.medicalHistory.hivMedicalHistory}">
             <util:panel id="fc_org_motechproject_tama_domain_patient_HIV_Medical_History" title="HIV Related Medical History" openPane="true">
                 <field:display field="name" id="s_org_motechproject_tama_domain_patient_test_reason" object="${patient.medicalHistory.hivMedicalHistory.testReason}"/>
@@ -24,7 +19,6 @@
         <div class="medical_history_view">
         <util:panel id="fc_org_motechproject_tama_domain_patient_non_HIV_Medical_History" title="Non - HIV Medical History" openPane="true">
 
-            <c:if test="${param.context != 'expressRegistration'}">
                 <span class="drug_allergy_view_label"><c:out value="History of drug allergy / hypersensitivity" /></span>
                 <c:forEach items="${patient.medicalHistory.nonHivMedicalHistory.allergiesHistory}" varStatus="item" var="allergyHistory">
                     <c:if test="${allergyHistory.specified}">
@@ -51,7 +45,6 @@
                     <span class="drug_allergy_text">
                         <c:out value="None" />
                     </span>
-                </c:if>
             </c:if>
 
 
@@ -73,8 +66,8 @@
                     </c:if>
                 </span>
             </c:forEach>
-            <jsp:include page="showSystemCategories.jspx" />
 
+            <jsp:include page="showSystemCategories.jspx" />
         </util:panel>
         </div>
     </util:panel>
