@@ -118,28 +118,6 @@ public class PatientController extends BaseController {
         return activatePatient(id, REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(id, request), request);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/saveAndActivate")
-    public String saveAndActivate(@Valid Patient patient,BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            initUIModel(uiModel, patient);
-            return CREATE_VIEW;
-        }
-
-        try{
-            patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
-            String redirectUrl = activatePatient(patient.getId(), REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request), request);
-            Patient savedPatient = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), loggedInClinic(request));
-            List<String> warning = new IncompletePatientDataWarning(savedPatient, null, null, null, null).value();
-            uiModel.addAttribute("warning", warning);
-            uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
-            initUIModel(uiModel, savedPatient);
-            return redirectUrl;
-        } catch (RuntimeException e) {
-            decorateViewWithUniqueConstraintError(patient, bindingResult, uiModel, e);
-            return CREATE_VIEW;
-        }
-    }
-
     @RequestMapping(method = RequestMethod.POST, value = "/expressActivate/{id}")
     public String expressActivate(@PathVariable String id, Model uiModel, HttpServletRequest request) {
         activatePatient(id, null, request);
@@ -277,25 +255,41 @@ public class PatientController extends BaseController {
         return LIST_VIEW;
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/saveAndActivate")
+    public String saveAndActivate(@Valid Patient patient,BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
+        return create(patient, bindingResult, uiModel, request, true);    }
+
+
     @RequestMapping(method = RequestMethod.POST)
     public String create(@Valid Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
+        return create(patient, bindingResult, uiModel, request, false);
+    }
+
+    private String create(Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest request, Boolean shouldActivate){
         uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
+
         if (bindingResult.hasErrors()) {
             initUIModel(uiModel, patient);
             return CREATE_VIEW;
         }
-        try {
+
+        try{
             patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
+            String redirectUrl = REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
+            if(shouldActivate){
+                redirectUrl = activatePatient(patient.getId(), REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request), request);
+            }
             Patient savedPatient = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), loggedInClinic(request));
             List<String> warning = new IncompletePatientDataWarning(savedPatient, null, null, null, null).value();
             uiModel.addAttribute("warning", warning);
             initUIModel(uiModel, savedPatient);
+            return redirectUrl;
         } catch (RuntimeException e) {
             decorateViewWithUniqueConstraintError(patient, bindingResult, uiModel, e);
             return CREATE_VIEW;
         }
-        return REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
     }
+
 
     @RequestMapping(value = "/{id}", params = "form", method = RequestMethod.GET)
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
