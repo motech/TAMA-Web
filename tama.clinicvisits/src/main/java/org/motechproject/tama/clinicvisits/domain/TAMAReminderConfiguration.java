@@ -44,6 +44,14 @@ public class TAMAReminderConfiguration {
         return (null != confirmedDate) ? confirmedDate.minusDays(remindFrom) : null;
     }
 
+    public int getRemindAppointmentsFrom() {
+        return Integer.parseInt(appointmentsProperties.getProperty(REMIND_FROM));
+    }
+
+    public int getVisitReminderFrom() {
+        return Integer.parseInt(appointmentsProperties.getProperty(REMIND_FOR_VISIT_FROM));
+    }
+
     public int getPushedAppointmentReminderVoiceMessageCount() {
         return pushedAppointmentReminderMessageCount;
     }

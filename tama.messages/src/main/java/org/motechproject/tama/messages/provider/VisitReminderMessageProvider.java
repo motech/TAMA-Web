@@ -3,6 +3,7 @@ package org.motechproject.tama.messages.provider;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
+import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.message.VisitReminderMessage;
@@ -20,11 +21,13 @@ public class VisitReminderMessageProvider implements MessageProvider {
 
     private PatientOnCall patientOnCall;
     private MessageTrackingService messageTrackingService;
+    private TAMAReminderConfiguration tamaReminderConfiguration;
 
     @Autowired
-    public VisitReminderMessageProvider(PatientOnCall patientOnCall, MessageTrackingService messageTrackingService) {
+    public VisitReminderMessageProvider(PatientOnCall patientOnCall, MessageTrackingService messageTrackingService, TAMAReminderConfiguration tamaReminderConfiguration) {
         this.patientOnCall = patientOnCall;
         this.messageTrackingService = messageTrackingService;
+        this.tamaReminderConfiguration = tamaReminderConfiguration;
     }
 
     @Override
@@ -45,10 +48,12 @@ public class VisitReminderMessageProvider implements MessageProvider {
 
     private VisitReminderMessage message(TAMAIVRContext context, DateTime today) {
         ClinicVisits clinicVisits = patientOnCall.getClinicVisits(context);
-        return new VisitReminderMessage(3, clinicVisits.upcomingVisit(today), patientOnCall.getPatient(context));
+        int remindFrom = tamaReminderConfiguration.getVisitReminderFrom();
+        return new VisitReminderMessage(remindFrom, clinicVisits.upcomingVisit(today), patientOnCall.getPatient(context));
     }
 
     private boolean shouldPlay(VisitReminderMessage message) {
-        return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < 2;
+        int count = tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount();
+        return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < count;
     }
 }

@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
+import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.domain.MessageHistory;
 import org.motechproject.tama.messages.service.MessageTrackingService;
@@ -37,17 +38,23 @@ public class VisitReminderMessageProviderTest extends BaseUnitTest {
     private TAMAIVRContext context;
     @Mock
     private ClinicVisit clinicVisit;
+    @Mock
+    private TAMAReminderConfiguration tamaReminderConfiguration;
 
     private Patient patient;
 
     private VisitReminderMessageProvider visitReminderMessageProvider;
+
 
     @Before
     public void setup() {
         initMocks(this);
         setupPatient();
         setupClinicVisits();
-        visitReminderMessageProvider = new VisitReminderMessageProvider(patientOnCall, messageTrackingService);
+        when(tamaReminderConfiguration.getVisitReminderFrom()).thenReturn(3);
+        when(tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount()).thenReturn(2);
+
+        visitReminderMessageProvider = new VisitReminderMessageProvider(patientOnCall, messageTrackingService, tamaReminderConfiguration);
     }
 
     private void setupClinicVisits() {

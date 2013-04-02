@@ -3,6 +3,7 @@ package org.motechproject.tama.messages.provider;
 import org.joda.time.LocalDate;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.clinicvisits.domain.Appointment;
+import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.message.AppointmentReminderMessage;
@@ -20,11 +21,13 @@ public class AppointmentReminderMessageProvider implements MessageProvider {
 
     private MessageTrackingService messageTrackingService;
     private PatientOnCall patientOnCall;
+    private TAMAReminderConfiguration tamaReminderConfiguration;
 
     @Autowired
-    public AppointmentReminderMessageProvider(MessageTrackingService messageTrackingService, PatientOnCall patientOnCall) {
+    public AppointmentReminderMessageProvider(MessageTrackingService messageTrackingService, PatientOnCall patientOnCall, TAMAReminderConfiguration tamaReminderConfiguration) {
         this.messageTrackingService = messageTrackingService;
         this.patientOnCall = patientOnCall;
+        this.tamaReminderConfiguration = tamaReminderConfiguration;
     }
 
     @Override
@@ -45,10 +48,12 @@ public class AppointmentReminderMessageProvider implements MessageProvider {
 
     private AppointmentReminderMessage message(TAMAIVRContext context, LocalDate today) {
         Appointment appointment = patientOnCall.getUpcomingAppointment(context, today);
-        return new AppointmentReminderMessage(7, appointment, patientOnCall.getPatient(context));
+        int remindFrom = tamaReminderConfiguration.getRemindAppointmentsFrom();
+        return new AppointmentReminderMessage(remindFrom, appointment, patientOnCall.getPatient(context));
     }
 
     private boolean shouldPlay(AppointmentReminderMessage message) {
-        return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < 2;
+        int count = tamaReminderConfiguration.getPushedAppointmentReminderVoiceMessageCount();
+        return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < count;
     }
 }
