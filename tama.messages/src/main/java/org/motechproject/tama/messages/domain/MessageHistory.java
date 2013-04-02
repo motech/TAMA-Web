@@ -29,4 +29,8 @@ public class MessageHistory extends CouchEntity {
         lastPlayedOn = dateTime;
         count++;
     }
+
+    public boolean neverPlayed() {
+        return null == lastPlayedOn;
+    }
 }

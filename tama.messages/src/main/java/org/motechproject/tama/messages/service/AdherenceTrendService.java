@@ -4,7 +4,9 @@ import org.joda.time.DateTime;
 import org.motechproject.tama.common.NoAdherenceRecordedException;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.fourdayrecall.service.FourDayRecallAdherenceService;
+import org.motechproject.tama.fourdayrecall.service.FourDayRecallDateService;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -39,6 +41,14 @@ public class AdherenceTrendService {
             return currentAdherence < previousAdherence;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public boolean hasAdherenceTrend(Patient patient, TreatmentAdvice advice, DateTime reference) {
+        if (patient.isOnDailyPillReminder()) {
+            return advice.hasAdherenceTrend(reference.toLocalDate());
+        } else {
+            return !new FourDayRecallDateService().isFirstTreatmentWeek(patient, advice);
         }
     }
 

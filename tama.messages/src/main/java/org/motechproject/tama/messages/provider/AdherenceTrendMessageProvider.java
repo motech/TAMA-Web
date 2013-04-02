@@ -1,17 +1,18 @@
 package org.motechproject.tama.messages.provider;
 
-import org.joda.time.LocalDate;
+import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.message.AdherenceTrendMessage;
 import org.motechproject.tama.messages.service.PatientOnCall;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.motechproject.util.DateUtil.today;
+import static org.motechproject.util.DateUtil.now;
 
 @Component
 public class AdherenceTrendMessageProvider implements MessageProvider {
@@ -27,21 +28,21 @@ public class AdherenceTrendMessageProvider implements MessageProvider {
 
     @Override
     public boolean hasMessage(TAMAIVRContext context) {
-        LocalDate today = today();
+        DateTime now = now();
         TreatmentAdvice advice = patientOnCall.getCurrentTreatmentAdvice(context);
-        return adherenceTrendMessage.isValid(advice, today);
+        Patient patient = patientOnCall.getPatient(context);
+        return adherenceTrendMessage.isValid(patient, advice, now);
     }
 
     @Override
     public KookooIVRResponseBuilder nextMessage(TAMAIVRContext context) {
         TreatmentAdvice advice = patientOnCall.getCurrentTreatmentAdvice(context);
-        AdherenceTrendMessage message = adherenceTrendMessage;
-        prepareContext(context, advice, message);
-        return message.build(patientOnCall.getPatient(context), DateUtil.now(), context);
+        prepareContext(context, advice);
+        return adherenceTrendMessage.build(patientOnCall.getPatient(context), DateUtil.now(), context);
     }
 
-    private void prepareContext(TAMAIVRContext context, TreatmentAdvice advice, AdherenceTrendMessage message) {
+    private void prepareContext(TAMAIVRContext context, TreatmentAdvice advice) {
         context.setTAMAMessageType(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
-        context.lastPlayedMessageId(message.getId(advice));
+        context.lastPlayedMessageId(adherenceTrendMessage.getId(advice));
     }
 }

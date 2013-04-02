@@ -42,7 +42,7 @@ public class AdherenceTrendMessageProviderTest {
 
     @Test
     public void shouldHaveMessageTreatmentAdviceHasAdherenceTrend() {
-        when(adherenceTrendMessage.isValid(eq(advice), any(LocalDate.class))).thenReturn(true);
+        when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
         assertTrue(adherenceTrendMessageProvider.hasMessage(context));
     }
 
