@@ -16,5 +16,6 @@
 
     <import resource="classpath:applicationHealthTipsContext.xml"/>
     <import resource="classpath:applicationDailyPillReminderContext.xml"/>
+    <import resource="classpath:applicationFourDayRecallContext.xml"/>
 
 </beans>

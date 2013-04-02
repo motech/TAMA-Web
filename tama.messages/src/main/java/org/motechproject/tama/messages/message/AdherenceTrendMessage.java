@@ -1,33 +1,39 @@
 package org.motechproject.tama.messages.message;
 
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
-import org.motechproject.tama.dailypillreminder.command.PlayAdherenceTrendFeedbackCommand;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.messages.domain.AdherenceTrendAudios;
+import org.motechproject.tama.messages.service.AdherenceTrendService;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AdherenceTrendMessage {
 
-    private TreatmentAdvice advice;
-    private PlayAdherenceTrendFeedbackCommand command;
+    private AdherenceTrendService adherenceTrendService;
 
-
-    public AdherenceTrendMessage(TreatmentAdvice advice, PlayAdherenceTrendFeedbackCommand command) {
-        this.advice = advice;
-        this.command = command;
+    @Autowired
+    public AdherenceTrendMessage(AdherenceTrendService adherenceTrendService) {
+        this.adherenceTrendService = adherenceTrendService;
     }
 
-    public boolean isValid(LocalDate reference) {
+    public boolean isValid(TreatmentAdvice advice, LocalDate reference) {
         return advice.hasAdherenceTrend(reference);
     }
 
-    public String getId() {
+    public String getId(TreatmentAdvice advice) {
         return advice.getId();
     }
 
-    public KookooIVRResponseBuilder build(TAMAIVRContext context) {
+    public KookooIVRResponseBuilder build(Patient patient, DateTime dateTime, TAMAIVRContext context) {
         KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withSid(context.callId());
-        return response.withPlayAudios(command.executeCommand(context));
+        double adherencePercentage = adherenceTrendService.getAdherencePercentage(patient, dateTime);
+        boolean falling = adherenceTrendService.isAdherenceFalling(patient, dateTime);
+        return response.withPlayAudios(new AdherenceTrendAudios(adherencePercentage, falling).getFiles());
     }
 }
