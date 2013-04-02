@@ -106,15 +106,15 @@ public class CallLogViewTest {
     @Test
     public void getAListOfCallFlows_GivenAListOfCallEvents() {
         CallLog callLog = setUpCallLogs();
-        final CallEvent healthTipsCallEvent = createCallEvent("GotDTMF", CallState.HEALTH_TIPS.name(), "", "", "");
+        final CallEvent pullMessagesCallEvent = createCallEvent("GotDTMF", CallState.PULL_MESSAGES.name(), "", "", "");
 
         callLog.setCallEvents(new ArrayList<CallEvent>() {{
-            add(healthTipsCallEvent);
+            add(pullMessagesCallEvent);
         }});
 
         callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
         assertEquals(1, callLogView.getCallFlowGroupViews().size());
-        assertEquals("Health Tips", callLogView.getFlows());
+        assertEquals("Pull Messages", callLogView.getFlows());
     }
 
     @Test

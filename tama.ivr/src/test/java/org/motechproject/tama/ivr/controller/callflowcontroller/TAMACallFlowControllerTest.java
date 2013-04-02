@@ -84,18 +84,6 @@ public class TAMACallFlowControllerTest {
     }
 
     @Test
-    public void shouldReturnHealthTipURLWhenCallStateIsHealthTip() {
-        tamaIVRContext.callState(CallState.HEALTH_TIPS);
-        assertEquals(ControllerURLs.HEALTH_TIPS_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
-    }
-
-    @Test
-    public void shouldReturnHealthTipURLWhenCallState() {
-        tamaIVRContext.callState(CallState.HEALTH_TIPS);
-        assertEquals(ControllerURLs.HEALTH_TIPS_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
-    }
-
-    @Test
     public void dialPromptsShouldLeadToDialURL() {
         tamaIVRContext.callState(CallState.ALL_TREES_COMPLETED);
         tamaIVRContext.isDialState(true);
@@ -207,7 +195,7 @@ public class TAMACallFlowControllerTest {
 
     @Test
     public void shouldTransitionToMenuRepeatWhenCallStateIs_EndOfFlow() {
-        tamaIVRContext.callState(CallState.END_OF_HEALTH_TIPS_FLOW);
+        tamaIVRContext.callState(CallState.PUSH_MESSAGES_COMPLETE);
         tamaIVRContext.callDirection(CallDirection.Outbound);
 
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));

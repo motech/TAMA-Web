@@ -107,9 +107,6 @@ public class CallFlowGroupViews {
         if (callEventView.isMissedCall()) {
             missed = true;
             return CallTypeConstants.MISSED;
-        } else if (callState.equals(CallState.HEALTH_TIPS.name())) {
-            authenticated = true;
-            return CallTypeConstants.HEALTH_TIPS;
         } else if (callState.equals(CallState.PULL_MESSAGES.name())) {
             authenticated = true;
             return CallTypeConstants.PULL_MESSAGES;

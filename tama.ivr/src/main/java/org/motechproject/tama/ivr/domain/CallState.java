@@ -82,20 +82,6 @@ public enum CallState {
         }
     },
 
-    HEALTH_TIPS(ControllerURLs.HEALTH_TIPS_URL) {
-        @Override
-        public String nextURL(TAMAIVRContext context) {
-            return possibleTransitionURLs.get(0);
-        }
-    },
-
-    END_OF_HEALTH_TIPS_FLOW(ControllerURLs.MENU_REPEAT) {
-        @Override
-        public String nextURL(TAMAIVRContext context) {
-            return possibleTransitionURLs.get(0);
-        }
-    },
-
     PUSH_MESSAGES_COMPLETE(ControllerURLs.MENU_REPEAT) {
         @Override
         public String nextURL(TAMAIVRContext context) {
