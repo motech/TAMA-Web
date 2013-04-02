@@ -50,7 +50,7 @@ public class TamaIVRMessage implements IVRMessage {
 
     public static final String MESSAGES_MENU_FOR_DOSE_TAKEN = "010_00_00_mainMenu_doseTaken";
 
-    public static final String MESSAGES_MENU= "010_00_00_messagesMenu";
+    public static final String MESSAGES_MENU = "010_00_00_messagesMenu";
     public static final String PRESS_9_FOR_MAIN_MENU = "010_07_00_press9ForPreviousMenu";
 
     /* -------- Pill from the bottle ----------- */
@@ -164,6 +164,12 @@ public class TamaIVRMessage implements IVRMessage {
     /* ---------- Appointment Reminders ----------*/
     public static final String NEXT_CLINIC_VISIT_IS_DUE_PART1 = "M07a_01_yourNextClinicVisitDue1";
     public static final String NEXT_CLINIC_VISIT_IS_DUE_PART2 = "M07a_03_yourNextClinicVisitDue2";
+
+    /* ---------- Visit Reminders ----------*/
+    public static final String NEXT_VISIT_REMINDER_IS_DUE_PART1 = "M07b_01_yourNextClinicVisit";
+    public static final String NEXT_VISIT_REMINDER_IS_DUE_PART2 = "M07b_03_yourNextClinicVisit3";
+    public static final String NEXT_VISIT_REMINDER_IS_DUE_PART3 = "M07b_06_yourNextClinicVisit4";
+    public static final String NEXT_VISIT_REMINDER_IS_DUE_PART4 = "M07b_08_yourNextClinicVisit5";
 
     /* ---------- Four Day Recall ----------*/
     private Properties properties;

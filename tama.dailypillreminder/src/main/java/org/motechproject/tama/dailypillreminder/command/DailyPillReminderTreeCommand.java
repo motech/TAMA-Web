@@ -22,7 +22,7 @@ public abstract class DailyPillReminderTreeCommand extends BaseTreeCommand {
     }
 
     @Override
-    public final String[] executeCommand(TAMAIVRContext tamaivrContext) {
+    public String[] executeCommand(TAMAIVRContext tamaivrContext) {
         return executeCommand(new DailyPillReminderContext(tamaivrContext, dailyPillReminderService));
     }
 

@@ -45,7 +45,7 @@ public class PlayedMessageTest {
     @Test
     public void messageTypeIsOutboxWhenNoMessageWasPlayed() {
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn(null);
-        assertEquals(PlayedMessage.Types.OUTBOX, playedMessage.type());
+        assertEquals(PlayedMessage.Types.MESSAGES, playedMessage.type());
     }
 
     @Test

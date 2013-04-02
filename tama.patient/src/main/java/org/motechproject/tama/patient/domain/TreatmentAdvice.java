@@ -14,9 +14,14 @@ import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.hasItem;
+import static org.joda.time.Days.daysBetween;
+import static org.motechproject.util.DateUtil.newDate;
 
 @TypeDiscriminator("doc.documentType == 'TreatmentAdvice'")
 public class TreatmentAdvice extends CouchEntity implements Comparable<TreatmentAdvice> {
+
+    public static final int DAYS_IN_FIVE_WEEKS = 35;
+
     @NotNull
     private String patientId;
 
@@ -44,7 +49,7 @@ public class TreatmentAdvice extends CouchEntity implements Comparable<Treatment
     }
 
     public String getRegimenId() {
-        return  this.regimenId;
+        return this.regimenId;
     }
 
     public void setRegimenId(String regimenId) {
@@ -129,6 +134,11 @@ public class TreatmentAdvice extends CouchEntity implements Comparable<Treatment
     public Date getStartDate() {
         DrugDosage dosageWithMinStartDate = Collections.min(getDrugDosages(), new DrugDosage.StartDateBasedComparator());
         return dosageWithMinStartDate.getStartDateAsDate();
+    }
+
+    @JsonIgnore
+    public boolean hasAdherenceTrend(LocalDate reference) {
+        return daysBetween(newDate(this.getStartDate()), reference).getDays() >= DAYS_IN_FIVE_WEEKS;
     }
 
     @JsonIgnore

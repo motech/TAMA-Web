@@ -7,6 +7,7 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.domain.PlayedMessage;
+import org.motechproject.tama.messages.provider.MessageProviders;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,14 +22,13 @@ public class MessagesTest {
     @Mock
     private HealthTipMessage pushedHealthTipsMessage;
     @Mock
-    private OutboxMessage outboxMessage;
+    private MessageProviders messageProviders;
     @Mock
     private KooKooIVRContext kookooIVRContext;
     @Mock
     private HttpSession httpSession;
     @Mock
     private Cookies cookies;
-
     private Messages messages;
 
     @Before
@@ -36,18 +36,18 @@ public class MessagesTest {
         initMocks(this);
         setupCookies();
         setupSession();
-        messages = new Messages(outboxMessage, pushedHealthTipsMessage);
+        messages = new Messages(messageProviders, pushedHealthTipsMessage);
     }
 
     @Test
-    public void shouldAddOutboxMessageToResponse() {
-        KookooIVRResponseBuilder outboxMessage = new KookooIVRResponseBuilder().withPlayAudios("outboxMessage");
+    public void shouldAddMessagesToResponse() {
+        KookooIVRResponseBuilder message = new KookooIVRResponseBuilder().withPlayAudios("message");
 
-        when(this.outboxMessage.hasAnyMessage(kookooIVRContext)).thenReturn(true);
-        when(this.outboxMessage.getResponse(kookooIVRContext)).thenReturn(outboxMessage);
+        when(this.messageProviders.hasAnyMessage(any(TAMAIVRContext.class))).thenReturn(true);
+        when(this.messageProviders.getResponse(any(TAMAIVRContext.class))).thenReturn(message);
 
         KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
-        assertTrue(response.getPlayAudios().contains("outboxMessage"));
+        assertTrue(response.getPlayAudios().contains("message"));
     }
 
     @Test
@@ -68,11 +68,13 @@ public class MessagesTest {
     }
 
     @Test
-    public void shouldMarkOutboxMessageAsReadWhenLastPlayedMessageIsOutboxMessage() {
+    public void shouldAddMessageAsReadWhenLastPlayedMessageIsOutboxMessage() {
         PlayedMessage playedMessage = new PlayedMessage(kookooIVRContext);
+        when(cookies.getValue(TAMAIVRContext.TAMA_MESSAGE_TYPE)).thenReturn("messageType");
+        when(playedMessage.id()).thenReturn("messageId");
 
         messages.markAsRead(kookooIVRContext, playedMessage);
-        verify(outboxMessage).markAsRead(kookooIVRContext);
+        verify(messageProviders).markAsRead("messageType", "messageId");
     }
 
     @Test
@@ -84,7 +86,6 @@ public class MessagesTest {
         messages.markAsRead(kookooIVRContext, playedMessage);
         verify(pushedHealthTipsMessage).markAsRead(anyString(), eq(playedHealthTip));
     }
-
 
     private void setupCookies() {
         when(kookooIVRContext.cookies()).thenReturn(cookies);

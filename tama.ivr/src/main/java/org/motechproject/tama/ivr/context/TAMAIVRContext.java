@@ -21,20 +21,22 @@ import static java.lang.Boolean.valueOf;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class TAMAIVRContext {
-    static final String CALLER_ID = "caller_id";
-    static final String NUMBER_OF_ATTEMPTS = "number_of_attempts";
-    private static final String SYMPTOM_REPORTING_TREE = "symptom_reporting_tree";
+
     public static final String PATIENT_ID = "patient_id";
-    private static final String CALL_START_TIME = "call_time";
-    protected static final String PILL_REGIMEN = "PillRegimen";
     public static final String IS_OUTBOX_CALL = "outbox_call";
-    private static final String LAST_COMPLETED_TREE = "LastCompletedTree";
-    private static final String HEALTH_TIPS_PLAYED_COUNT = "healthTipsPlayedCount";
     public static final String LAST_PLAYED_HEALTH_TIP = "lastPlayedHealthTip";
     public static final String SWITCH_TO_DIAL_STATE = "switch_to_dial_state";
     public static final String DO_NOT_PROMPT_FOR_HANG_UP = "do_not_prompt_for_hang_up";
     public static final String MESSAGE_CATEGORY_NAME = "message_category_name";
-
+    public static final String TAMA_MESSAGE_TYPE = "tama_message_type";
+    public static final String LAST_PLAYED_VOICE_MESSAGE_ID = "LastPlayedVoiceMessageID";
+    protected static final String PILL_REGIMEN = "PillRegimen";
+    static final String CALLER_ID = "caller_id";
+    static final String NUMBER_OF_ATTEMPTS = "number_of_attempts";
+    private static final String SYMPTOM_REPORTING_TREE = "symptom_reporting_tree";
+    private static final String CALL_START_TIME = "call_time";
+    private static final String LAST_COMPLETED_TREE = "LastCompletedTree";
+    private static final String HEALTH_TIPS_PLAYED_COUNT = "healthTipsPlayedCount";
     protected KookooRequest kookooRequest;
     protected HttpServletRequest httpRequest;
     private Cookies cookies;
@@ -213,21 +215,21 @@ public class TAMAIVRContext {
         this.callState(CallState.AUTHENTICATED);
     }
 
-    public void setPlayedHealthTipsCount(int count) {
-        this.cookies.add(HEALTH_TIPS_PLAYED_COUNT, String.valueOf(count));
-    }
-
     public int getPlayedHealthTipsCount() {
         String value = this.cookies.getValue(HEALTH_TIPS_PLAYED_COUNT);
         return value == null ? 0 : Integer.valueOf(value);
     }
 
-    public void setLastPlayedHealthTip(String message) {
-        this.cookies.add(LAST_PLAYED_HEALTH_TIP, message);
+    public void setPlayedHealthTipsCount(int count) {
+        this.cookies.add(HEALTH_TIPS_PLAYED_COUNT, String.valueOf(count));
     }
 
     public String getLastPlayedHealthTip() {
         return this.cookies.getValue(LAST_PLAYED_HEALTH_TIP);
+    }
+
+    public void setLastPlayedHealthTip(String message) {
+        this.cookies.add(LAST_PLAYED_HEALTH_TIP, message);
     }
 
     public void setDataToLog(HashMap<String, String> map) {
@@ -259,5 +261,23 @@ public class TAMAIVRContext {
     public void setMessagesCategory(String categoryName) {
         this.cookies.add(MESSAGE_CATEGORY_NAME, categoryName);
         log(MESSAGE_CATEGORY_NAME, categoryName);
+    }
+
+    public String getTAMAMessageType() {
+        String name = this.cookies.getValue(TAMA_MESSAGE_TYPE);
+        return (isNotBlank(name)) ? name : "";
+    }
+
+    public void setTAMAMessageType(String typeName) {
+        this.cookies.add(TAMA_MESSAGE_TYPE, typeName);
+        log(TAMA_MESSAGE_TYPE, typeName);
+    }
+
+    public String lastPlayedMessageId() {
+        return cookies.getValue(LAST_PLAYED_VOICE_MESSAGE_ID);
+    }
+
+    public void lastPlayedMessageId(String messageId) {
+        cookies.add(LAST_PLAYED_VOICE_MESSAGE_ID, messageId);
     }
 }

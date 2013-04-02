@@ -6,18 +6,19 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.messages.domain.PlayedMessage;
+import org.motechproject.tama.messages.provider.MessageProviders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Messages {
 
-    private OutboxMessage outboxMessage;
+    private MessageProviders messageProviders;
     private HealthTipMessage healthTipMessage;
 
     @Autowired
-    public Messages(OutboxMessage outboxMessage, HealthTipMessage healthTipMessage) {
-        this.outboxMessage = outboxMessage;
+    public Messages(MessageProviders messageProviders, HealthTipMessage healthTipMessage) {
+        this.messageProviders = messageProviders;
         this.healthTipMessage = healthTipMessage;
     }
 
@@ -38,13 +39,14 @@ public class Messages {
         if (PlayedMessage.Types.HEALTH_TIPS.equals(playedMessage.type())) {
             healthTipMessage.markAsRead(context.patientDocumentId(), playedMessage.id());
         } else {
-            outboxMessage.markAsRead(kookooIVRContext);
+            messageProviders.markAsRead(context.getTAMAMessageType(), playedMessage.id());
         }
     }
 
     private KookooIVRResponseBuilder messages(KooKooIVRContext kooKooIVRContext) {
-        if (outboxMessage.hasAnyMessage(kooKooIVRContext)) {
-            return outboxMessage.getResponse(kooKooIVRContext);
+        TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(kooKooIVRContext);
+        if (messageProviders.hasAnyMessage(tamaivrContext)) {
+            return messageProviders.getResponse(tamaivrContext);
         } else if (healthTipMessage.hasAnyMessage(kooKooIVRContext, null)) {
             return healthTipMessage.getResponse(kooKooIVRContext, null);
         } else {

@@ -18,10 +18,15 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.outbox</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.healthtips</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.motechproject.tama</groupId>
+            <artifactId>tama.dailypillreminder</artifactId>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>

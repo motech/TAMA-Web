@@ -19,7 +19,6 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     public static final String LAB_RESULTS = "LabResultIds";
     public static final String REPORTED_OPPORTUNISTIC_INFECTIONS = "ReportedOpportunisticInfectionsId";
     public static final String WEEK_NUMBER = "WeekNumber";
-
     private Patient patient;
     private VisitResponse visit;
 
@@ -104,6 +103,14 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
 
     public LocalDate getEffectiveDueDate() {
         return getAdjustedDueDate() == null ? DateUtil.newDate(getAppointmentDueDate()) : getAdjustedDueDate();
+    }
+
+    public boolean isUpcoming() {
+        return null != getConfirmedAppointmentDate() && null == getVisitDate();
+    }
+
+    public boolean isOnOrAfter(DateTime reference) {
+        return null != getConfirmedAppointmentDate() && !getConfirmedAppointmentDate().isBefore(reference);
     }
 
     @Override
