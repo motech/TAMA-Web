@@ -3,6 +3,7 @@ package org.motechproject.tama.messages.domain;
 import lombok.EqualsAndHashCode;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -28,6 +29,7 @@ public class PlayedMessage {
         } else {
             tamaivrContext.lastPlayedMessageId(null);
         }
+        tamaivrContext.callState(CallState.AUTHENTICATED);
         tamaivrContext.currentDecisionTreePath("");
         tamaivrContext.setMessagesCategory("");
         tamaivrContext.setTAMAMessageType("");

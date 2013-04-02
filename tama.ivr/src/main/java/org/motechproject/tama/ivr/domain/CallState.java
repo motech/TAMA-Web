@@ -50,7 +50,7 @@ public enum CallState {
             if (context.isDialState()) {
                 return possibleTransitionURLs.get(2);
             } else {
-                if (context.isOutgoingCall()) {
+                if (context.isOutgoingCall() && !context.isMessagesPushed()) {
                     context.callState(PUSH_MESSAGES);
                     return possibleTransitionURLs.get(0);
                 } else {

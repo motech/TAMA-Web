@@ -29,6 +29,7 @@ public class PushMessagesController implements PatientMessagesController {
     public boolean markAsReadAndContinue(KooKooIVRContext kooKooIVRContext) {
         PlayedMessage playedMessage = new PlayedMessage(kooKooIVRContext);
         if (playedMessage.exists()) {
+            new TAMAIVRContextFactory().create(kooKooIVRContext).setMessagesPushed(true);
             messages.markAsRead(kooKooIVRContext, playedMessage);
             return false;
         }

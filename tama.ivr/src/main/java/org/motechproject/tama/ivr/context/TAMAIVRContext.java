@@ -37,6 +37,8 @@ public class TAMAIVRContext {
     private static final String CALL_START_TIME = "call_time";
     private static final String LAST_COMPLETED_TREE = "LastCompletedTree";
     private static final String HEALTH_TIPS_PLAYED_COUNT = "healthTipsPlayedCount";
+    private static final String MESSAGES_PUSHED = "messages_pushed";
+
     protected KookooRequest kookooRequest;
     protected HttpServletRequest httpRequest;
     private Cookies cookies;
@@ -251,6 +253,15 @@ public class TAMAIVRContext {
 
     protected Cookies cookies() {
         return cookies;
+    }
+
+    public boolean isMessagesPushed() {
+        String pushed = this.cookies.getValue(MESSAGES_PUSHED);
+        return (StringUtils.isNotBlank(pushed)) ? Boolean.valueOf(pushed) : false;
+    }
+
+    public void setMessagesPushed(boolean value) {
+        this.cookies.add(MESSAGES_PUSHED, String.valueOf(value));
     }
 
     public TAMAMessageTypes getMessagesCategory() {

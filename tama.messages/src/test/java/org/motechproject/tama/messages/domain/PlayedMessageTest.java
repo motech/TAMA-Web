@@ -4,14 +4,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.outbox.context.OutboxContext;
 import org.motechproject.util.Cookies;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class PlayedMessageTest {
@@ -20,6 +24,9 @@ public class PlayedMessageTest {
     private KooKooIVRContext kookooIVRContext;
     @Mock
     private Cookies cookies;
+    @Mock
+    private HttpSession httpSession;
+
 
     private PlayedMessage playedMessage;
 
@@ -55,12 +62,22 @@ public class PlayedMessageTest {
     }
 
     @Test
+    public void shouldSetCallStateToAuthenticatedOnReset() {
+        playedMessage.reset();
+        verify(httpSession).setAttribute(CallEventConstants.CALL_STATE, CallState.AUTHENTICATED.name());
+    }
+
+    @Test
     public void shouldResetMessageCategoryOnReset() {
         playedMessage.reset();
         verify(cookies).add(TAMAIVRContext.MESSAGE_CATEGORY_NAME, "");
     }
 
     private void setupIVRSession(KooKooIVRContext kookooIVRContext) {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        when(request.getSession()).thenReturn(httpSession);
+        when(kookooIVRContext.httpRequest()).thenReturn(request);
         when(kookooIVRContext.cookies()).thenReturn(cookies);
     }
 }

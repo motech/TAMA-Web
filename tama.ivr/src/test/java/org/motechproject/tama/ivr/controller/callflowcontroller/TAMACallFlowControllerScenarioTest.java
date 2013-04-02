@@ -17,6 +17,7 @@ import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientPreferences;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.util.Cookies;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -31,6 +32,8 @@ public class TAMACallFlowControllerScenarioTest {
     private AllPatients allPatients;
     @Mock
     private KooKooIVRContext kooKooIVRContext;
+    @Mock
+    private Cookies cookies;
 
     private TAMAIVRContextForTest ivrContext;
 
@@ -45,7 +48,10 @@ public class TAMACallFlowControllerScenarioTest {
         callFlowController = new TAMACallFlowController(treeRegistry, allPatients, contextFactory);
         callFlowController.registerPillModule(pillModuleStrategy);
         callFlowController.registerOutboxModule();
-        ivrContext = new TAMAIVRContextForTest();
+
+        when(kooKooIVRContext.cookies()).thenReturn(cookies);
+
+        ivrContext = new TAMAIVRContextForTest(kooKooIVRContext);
         Patient patient = new Patient();
         patientPreferences = new PatientPreferences();
         patient.setPatientPreferences(patientPreferences);
