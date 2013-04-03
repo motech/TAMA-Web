@@ -25,7 +25,6 @@ public class IVRLanguageSeed {
         languages.add(IVRLanguage.newIVRLanguage("Tamil", IVRLanguage.TAMIL_CODE));
         languages.add(IVRLanguage.newIVRLanguage("Manipuri", IVRLanguage.MANIPURI_CODE));
         languages.add(IVRLanguage.newIVRLanguage("Marathi", IVRLanguage.MARATHI_CODE));
-        languages.add(IVRLanguage.newIVRLanguage("Gujarati", IVRLanguage.GUJARATI_CODE));
         allIVRLanguagesCache.refresh();
     }
 }
