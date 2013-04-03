@@ -455,6 +455,11 @@
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama-motech-contrib</groupId>
+                <artifactId>motech-web-utils</artifactId>
+                <version>${motech.contrib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.motechproject.tama-motech-contrib</groupId>
                 <artifactId>motech-diagnostics-web</artifactId>
                 <version>${motech.contrib.version}</version>
             </dependency>
