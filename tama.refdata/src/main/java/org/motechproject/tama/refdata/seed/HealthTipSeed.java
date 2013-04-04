@@ -65,7 +65,7 @@ public class HealthTipSeed {
         healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.SYMPTOMS.getDisplayName(), "HT082", 1, 1, 113, 113));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.SYMPTOMS.getDisplayName(), "HT083", 2, 2, 102, 102));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.SYMPTOMS.getDisplayName(), "HT084", 7, 7, 140, 140));
-        healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.SYMPTOMS.getDisplayName(), "HT085", 5, 5, 124, 124));
+        healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.SYMPTOMS.getDisplayName(), "HT085", 5, 5, 143, 143));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.SYMPTOMS.getDisplayName(), "HT086", 6, 6, 136, 136));
 
         healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.ADHERENCE.getDisplayName(), "HT011a", 6, 6, 157, 157));
@@ -81,7 +81,7 @@ public class HealthTipSeed {
 
         healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.ART_AND_CD4.getDisplayName(), "HT001a", 3, 3, 123, 123));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.ART_AND_CD4.getDisplayName(), "HT002a", 4, 4, 148, 148));
-        healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.ART_AND_CD4.getDisplayName(), "HT003a", 7, 7, 138, 138));
+        healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.ART_AND_CD4.getDisplayName(), "HT003a", 7, 7, 144, 144));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.ART_AND_CD4.getDisplayName(), "HT004a", 5, 5, 128, 128));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.ART_AND_CD4.getDisplayName(), "HT005a", 6, 6, 150, 150));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageTypes.ART_AND_CD4.getDisplayName(), "HT088", 2, 2, 146, 146));
