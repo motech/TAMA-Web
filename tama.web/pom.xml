@@ -219,6 +219,12 @@
         <dependency>
             <groupId>org.motechproject.tama-motech-contrib</groupId>
             <artifactId>motech-diagnostics</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-orm</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama-motech-contrib</groupId>
