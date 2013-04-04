@@ -8,7 +8,7 @@ import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallState;
-import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
+import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;

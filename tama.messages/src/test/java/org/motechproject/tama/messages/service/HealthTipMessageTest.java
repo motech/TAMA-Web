@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.tama.healthtips.criteria.ContinueToHealthTipsCriteria;
 import org.motechproject.tama.healthtips.service.HealthTipService;
 import org.motechproject.util.Cookies;
@@ -46,10 +47,10 @@ public class HealthTipMessageTest {
     public void shouldAddHealthTipMessageToResponse() {
         String nextHealthTip = "nextHealthTip";
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(true);
-        when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
+        when(healthTipService.nextHealthTip(anyString(), any(TAMAMessageTypes.class))).thenReturn(nextHealthTip);
 
         KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-        healthTipMessage.addToResponse(ivrResponseBuilder, kookooIVRContext);
+        healthTipMessage.addToResponse(ivrResponseBuilder, kookooIVRContext, null);
         assertEquals(asList(nextHealthTip), ivrResponseBuilder.getPlayAudios());
     }
 
@@ -57,10 +58,10 @@ public class HealthTipMessageTest {
     public void shouldNotAddHealthTipMessageToResponseWhenUnableToDetermineHealthTips() {
         String nextHealthTip = "nextHealthTip";
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(false);
-        when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
+        when(healthTipService.nextHealthTip(anyString(),  any(TAMAMessageTypes.class))).thenReturn(nextHealthTip);
 
         KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder();
-        healthTipMessage.addToResponse(ivrResponseBuilder, kookooIVRContext);
+        healthTipMessage.addToResponse(ivrResponseBuilder, kookooIVRContext, null);
         assertTrue(ivrResponseBuilder.getPlayAudios().isEmpty());
     }
 
@@ -68,7 +69,7 @@ public class HealthTipMessageTest {
     public void doesNotHaveHealthTipsWhenPatientDoesNotHaveRequiredData() {
         String nextHealthTip = "nextHealthTip";
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(false);
-        when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
+        when(healthTipService.nextHealthTip(anyString(),  any(TAMAMessageTypes.class))).thenReturn(nextHealthTip);
 
         assertFalse(healthTipMessage.hasAnyMessage(kookooIVRContext, null));
     }
@@ -77,7 +78,7 @@ public class HealthTipMessageTest {
     public void doesNotHaveHealthTipsWhenThereAreNoMoreHealthTipsToBeRead() {
         String nextHealthTip = null;
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(true);
-        when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
+        when(healthTipService.nextHealthTip(anyString(),  any(TAMAMessageTypes.class))).thenReturn(nextHealthTip);
 
         assertFalse(healthTipMessage.hasAnyMessage(kookooIVRContext, null));
     }
@@ -86,7 +87,7 @@ public class HealthTipMessageTest {
     public void shouldHaveHealthTipsWhenHealthTipsAreAvailable() {
         String nextHealthTip = "healthTip";
         when(continueToHealthTipsCriteria.shouldContinue(anyString())).thenReturn(true);
-        when(healthTipService.nextHealthTip(anyString())).thenReturn(nextHealthTip);
+        when(healthTipService.nextHealthTip(anyString(),  any(TAMAMessageTypes.class))).thenReturn(nextHealthTip);
 
         assertTrue(healthTipMessage.hasAnyMessage(kookooIVRContext, null));
     }

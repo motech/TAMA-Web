@@ -10,7 +10,7 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallState;
-import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
+import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.util.DateUtil;
 
 import java.util.List;

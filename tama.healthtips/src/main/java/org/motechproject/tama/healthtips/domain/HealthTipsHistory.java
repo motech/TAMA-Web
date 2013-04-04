@@ -18,6 +18,8 @@ public class HealthTipsHistory extends CouchEntity {
     @NotNull
     private DateTime lastPlayed;
 
+    private Integer playCount = 0;
+
     public HealthTipsHistory() {
     }
 
@@ -25,6 +27,7 @@ public class HealthTipsHistory extends CouchEntity {
         this.audioFilename = audioFilename;
         this.lastPlayed = lastPlayed;
         this.patientDocumentId = patientDocumentId;
+        playCount = 1;
     }
 
     public String getPatientDocumentId() {
@@ -49,5 +52,10 @@ public class HealthTipsHistory extends CouchEntity {
 
     public void setLastPlayed(DateTime lastPlayed) {
         this.lastPlayed = lastPlayed;
+        playCount++;
+    }
+
+    public Integer getPlayCount(){
+        return playCount;
     }
 }

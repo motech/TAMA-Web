@@ -3,7 +3,7 @@ package org.motechproject.tama.messages.service;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
+import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.messages.domain.PlayedMessage;
 import org.motechproject.tama.messages.provider.MessageProviders;

@@ -8,7 +8,7 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
+import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.tama.messages.service.Messages;
 import org.motechproject.util.Cookies;
 

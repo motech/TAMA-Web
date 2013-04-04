@@ -1,4 +1,4 @@
-package org.motechproject.tama.ivr.domain;
+package org.motechproject.tama.common.domain;
 
 public enum TAMAMessageTypes {
 

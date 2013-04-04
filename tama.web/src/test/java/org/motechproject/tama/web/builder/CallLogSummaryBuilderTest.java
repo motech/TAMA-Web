@@ -10,7 +10,7 @@ import org.motechproject.ivr.model.CallDirection;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallLog;
-import org.motechproject.tama.ivr.domain.TAMAMessageTypes;
+import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Patients;
