@@ -43,13 +43,13 @@ public class AdherenceTrendMessageProviderTest {
     @Test
     public void shouldHaveMessageTreatmentAdviceHasAdherenceTrend() {
         when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
-        assertTrue(adherenceTrendMessageProvider.hasMessage(context));
+        assertTrue(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
     public void shouldNotHaveMessageTreatmentAdviceDoesNotHaveAdherenceTrend() {
         when(advice.hasAdherenceTrend(any(LocalDate.class))).thenReturn(false);
-        assertFalse(adherenceTrendMessageProvider.hasMessage(context));
+        assertFalse(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test

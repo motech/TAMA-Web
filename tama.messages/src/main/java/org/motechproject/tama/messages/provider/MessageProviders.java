@@ -22,7 +22,7 @@ public class MessageProviders {
 
     public boolean hasAnyMessage(TAMAIVRContext context) {
         for (MessageProvider messageProvider : messageProviders) {
-            if (messageProvider.hasMessage(context)) {
+            if (messageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE)) {
                 return true;
             }
         }
@@ -31,7 +31,7 @@ public class MessageProviders {
 
     public KookooIVRResponseBuilder getResponse(TAMAIVRContext context) {
         for (MessageProvider messageProvider : messageProviders) {
-            if (messageProvider.hasMessage(context)) {
+            if (messageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE)) {
                 return messageProvider.nextMessage(context);
             }
         }

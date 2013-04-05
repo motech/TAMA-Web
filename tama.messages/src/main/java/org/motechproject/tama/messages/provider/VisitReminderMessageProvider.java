@@ -5,6 +5,7 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.message.VisitReminderMessage;
 import org.motechproject.tama.messages.service.MessageTrackingService;
@@ -31,7 +32,7 @@ public class VisitReminderMessageProvider implements MessageProvider {
     }
 
     @Override
-    public boolean hasMessage(TAMAIVRContext context) {
+    public boolean hasMessage(TAMAIVRContext context, TAMAMessageType type) {
         DateTime today = now();
         VisitReminderMessage message = message(context, today);
         return message.isValid(today) && shouldPlay(message);

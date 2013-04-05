@@ -3,6 +3,7 @@ package org.motechproject.tama.messages.provider;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.message.AdherenceTrendMessage;
 import org.motechproject.tama.messages.service.PatientOnCall;
@@ -27,7 +28,7 @@ public class AdherenceTrendMessageProvider implements MessageProvider {
     }
 
     @Override
-    public boolean hasMessage(TAMAIVRContext context) {
+    public boolean hasMessage(TAMAIVRContext context, TAMAMessageType type) {
         DateTime now = now();
         TreatmentAdvice advice = patientOnCall.getCurrentTreatmentAdvice(context);
         Patient patient = patientOnCall.getPatient(context);

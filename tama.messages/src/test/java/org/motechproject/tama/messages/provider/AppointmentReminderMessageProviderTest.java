@@ -72,7 +72,7 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
         when(messageHistory.getCount()).thenReturn(1);
         when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertTrue(appointmentReminderMessageProvider.hasMessage(context));
+        assertTrue(appointmentReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test

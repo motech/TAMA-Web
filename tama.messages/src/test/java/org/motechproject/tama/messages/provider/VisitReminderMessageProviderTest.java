@@ -79,7 +79,7 @@ public class VisitReminderMessageProviderTest extends BaseUnitTest {
         when(messageHistory.getCount()).thenReturn(1);
         when(messageTrackingService.get(eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertTrue(visitReminderMessageProvider.hasMessage(context));
+        assertTrue(visitReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class VisitReminderMessageProviderTest extends BaseUnitTest {
         when(messageHistory.getCount()).thenReturn(2);
         when(messageTrackingService.get(eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertFalse(visitReminderMessageProvider.hasMessage(context));
+        assertFalse(visitReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
