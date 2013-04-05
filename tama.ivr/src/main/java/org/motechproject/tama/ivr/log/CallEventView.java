@@ -5,8 +5,8 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.service.IVRService;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.tama.ivr.log.tools.KooKooResponseParser;
 import org.motechproject.tama.ivr.log.tools.Response;
 
@@ -69,7 +69,7 @@ public class CallEventView {
     }
 
     public String getPullMessagesCategory() {
-        TAMAMessageTypes type = TAMAMessageTypes.lookup(getData(TAMAIVRContext.MESSAGE_CATEGORY_NAME));
+        TAMAMessageType type = TAMAMessageType.lookup(getData(TAMAIVRContext.MESSAGE_CATEGORY_NAME));
         return (null != type) ? type.getDisplayName() : "";
     }
 

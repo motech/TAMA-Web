@@ -9,7 +9,7 @@ import org.motechproject.tama.ivr.factory.MessageTransitionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.motechproject.tama.common.domain.TAMAMessageTypes.*;
+import static org.motechproject.tama.common.domain.TAMAMessageType.*;
 
 @Component
 public class PullMessagesTree extends TamaDecisionTree {

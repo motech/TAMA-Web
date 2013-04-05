@@ -2,7 +2,7 @@ package org.motechproject.tama.healthtips.service;
 
 import net.sf.cglib.core.CollectionUtils;
 import net.sf.cglib.core.Predicate;
-import org.motechproject.tama.common.domain.TAMAMessageTypes;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.healthtips.domain.HealthTipsHistory;
 import org.motechproject.tama.healthtips.repository.AllHealthTipsHistory;
 import org.motechproject.tama.patient.domain.Patient;
@@ -47,7 +47,7 @@ public class HealthTipService {
         }
     }
 
-    public String nextHealthTip(String patientId, TAMAMessageTypes type) {
+    public String nextHealthTip(String patientId, TAMAMessageType type) {
         List<String> playList = getPlayList(patientId, type);
         if (playList.size() > 0) {
             return playList.get(0);
@@ -55,7 +55,7 @@ public class HealthTipService {
         return "";
     }
 
-    public List<String> getPlayList(String patientId, TAMAMessageTypes type) {
+    public List<String> getPlayList(String patientId, TAMAMessageType type) {
 
         // Get All Health Tips
         // Get Health Tip History
@@ -97,7 +97,7 @@ public class HealthTipService {
         });
     }
 
-    private HealthTipSequence getHealthTipSequence(Patient patient, TAMAMessageTypes type) {
+    private HealthTipSequence getHealthTipSequence(Patient patient, TAMAMessageType type) {
         boolean isDailyPillReminder = patient.isOnDailyPillReminder();
         boolean isPushMessage = type == null;
         return isPushMessage ? (isDailyPillReminder ? HealthTipSequence.PUSH_DAILY : HealthTipSequence.PUSH_WEEKLY) : (isDailyPillReminder ? HealthTipSequence.PULL_DAILY : HealthTipSequence.PULL_WEEKLY);

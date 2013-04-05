@@ -1,7 +1,8 @@
 package org.motechproject.tama.common.domain;
 
-public enum TAMAMessageTypes {
+public enum TAMAMessageType {
 
+    PUSHED_MESSAGE("Pushed Message"),
     ALL_MESSAGES("All Messages"),
     FAMILY_AND_CHILDREN("Family and children"),
     NUTRITION_AND_LIFESTYLE("Nutrition and lifestyle"),
@@ -10,15 +11,16 @@ public enum TAMAMessageTypes {
     ART_AND_CD4("ART and CD4"),
     LIVING_WITH_HIV("Living with HIV");
 
+
     private String displayName;
 
-    private TAMAMessageTypes(String displayName) {
+    private TAMAMessageType(String displayName) {
         this.displayName = displayName;
     }
 
-    public static TAMAMessageTypes lookup(String messagesCategory) {
+    public static TAMAMessageType lookup(String messagesCategory) {
         try {
-            return TAMAMessageTypes.valueOf(messagesCategory);
+            return TAMAMessageType.valueOf(messagesCategory);
         } catch (Exception e) {
         }
         return null;

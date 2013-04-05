@@ -7,10 +7,10 @@ import org.mockito.Mock;
 import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.model.CallDirection;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallLog;
-import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Patients;
@@ -113,7 +113,7 @@ public class CallLogSummaryBuilderTest {
         setUpCallLog(CallDirection.Outbound);
 
         CallEventCustomData customData = new CallEventCustomData();
-        customData.add(TAMAIVRContext.MESSAGE_CATEGORY_NAME, TAMAMessageTypes.ALL_MESSAGES.name());
+        customData.add(TAMAIVRContext.MESSAGE_CATEGORY_NAME, TAMAMessageType.ALL_MESSAGES.name());
 
         CallEvent event = mock(CallEvent.class);
         when(event.getData()).thenReturn(customData);
@@ -122,7 +122,7 @@ public class CallLogSummaryBuilderTest {
         callLog.setCallEvents(asList(event, event));
 
         CallLogSummary callLogSummary = callLogSummaryBuilder.build(callLog);
-        assertEquals(TAMAMessageTypes.ALL_MESSAGES.getDisplayName(), callLogSummary.getMessageCategories());
+        assertEquals(TAMAMessageType.ALL_MESSAGES.getDisplayName(), callLogSummary.getMessageCategories());
     }
 
     @Test

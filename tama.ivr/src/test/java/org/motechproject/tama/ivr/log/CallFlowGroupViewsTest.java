@@ -6,11 +6,11 @@ import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.event.IVREvent;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.tama.common.CallTypeConstants;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallState;
-import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.util.DateUtil;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class CallFlowGroupViewsTest {
     @Test
     public void shouldHavePullMessagesFlowWhenPullMessagesWereAccessedInCall() {
         CallLog callLog = new CallLog();
-        callLog.setCallEvents(asList(newCallEvent(CallState.PULL_MESSAGES_TREE.name(), TAMATreeRegistry.PULL_MESSAGES_TREE, TAMAMessageTypes.ALL_MESSAGES.name())));
+        callLog.setCallEvents(asList(newCallEvent(CallState.PULL_MESSAGES_TREE.name(), TAMATreeRegistry.PULL_MESSAGES_TREE, TAMAMessageType.ALL_MESSAGES.name())));
 
         CallFlowGroupViews callFlowGroupViews = new CallFlowGroupViews(callLog);
         assertHasFlow(CallTypeConstants.PULL_MESSAGES, callFlowGroupViews.getCallFlowGroupViews());
@@ -32,7 +32,7 @@ public class CallFlowGroupViewsTest {
     @Test
     public void shouldPullMessagesWhenAnyMessageOfCategoryWasAccessed() {
         CallLog callLog = new CallLog();
-        callLog.setCallEvents(asList(newCallEvent(CallState.PULL_MESSAGES.name(), null, TAMAMessageTypes.ALL_MESSAGES.name())));
+        callLog.setCallEvents(asList(newCallEvent(CallState.PULL_MESSAGES.name(), null, TAMAMessageType.ALL_MESSAGES.name())));
 
         CallFlowGroupViews callFlowGroupViews = new CallFlowGroupViews(callLog);
         assertHasFlow(CallTypeConstants.PULL_MESSAGES, callFlowGroupViews.getCallFlowGroupViews());

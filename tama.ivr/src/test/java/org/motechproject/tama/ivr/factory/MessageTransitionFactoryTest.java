@@ -7,9 +7,9 @@ import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallState;
-import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,16 +40,16 @@ public class MessageTransitionFactoryTest {
 
     @Test
     public void shouldSetCallSateOnMessageTransition() {
-        Transition transition = MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, TAMAMessageTypes.ALL_MESSAGES.name());
+        Transition transition = MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, TAMAMessageType.ALL_MESSAGES.name());
         executeCommands(transition);
         verify(httpSession).setAttribute(CallEventConstants.CALL_STATE, CallState.PULL_MESSAGES.name());
     }
 
     @Test
     public void shouldSetMessageCategoryOnMessageTransition() {
-        Transition transition = MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, TAMAMessageTypes.ALL_MESSAGES.name());
+        Transition transition = MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, TAMAMessageType.ALL_MESSAGES.name());
         executeCommands(transition);
-        verify(cookies).add(TAMAIVRContext.MESSAGE_CATEGORY_NAME, TAMAMessageTypes.ALL_MESSAGES.name());
+        verify(cookies).add(TAMAIVRContext.MESSAGE_CATEGORY_NAME, TAMAMessageType.ALL_MESSAGES.name());
     }
 
     private void executeCommands(Transition transition) {

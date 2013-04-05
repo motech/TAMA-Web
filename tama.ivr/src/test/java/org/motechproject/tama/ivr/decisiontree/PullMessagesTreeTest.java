@@ -6,9 +6,9 @@ import org.mockito.Mock;
 import org.motechproject.decisiontree.model.ITreeCommand;
 import org.motechproject.decisiontree.model.Transition;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.domain.CallState;
-import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,12 +54,12 @@ public class PullMessagesTreeTest {
 
     @Test
     public void shouldPlayHealthTipsOnPressOfKeysFrom2Through7() {
-        assertMessageTransitionForKeyPress("2", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageTypes.FAMILY_AND_CHILDREN);
-        assertMessageTransitionForKeyPress("3", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageTypes.NUTRITION_AND_LIFESTYLE);
-        assertMessageTransitionForKeyPress("4", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageTypes.SYMPTOMS);
-        assertMessageTransitionForKeyPress("5", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageTypes.ADHERENCE);
-        assertMessageTransitionForKeyPress("6", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageTypes.ART_AND_CD4);
-        assertMessageTransitionForKeyPress("7", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageTypes.LIVING_WITH_HIV);
+        assertMessageTransitionForKeyPress("2", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.FAMILY_AND_CHILDREN);
+        assertMessageTransitionForKeyPress("3", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.NUTRITION_AND_LIFESTYLE);
+        assertMessageTransitionForKeyPress("4", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.SYMPTOMS);
+        assertMessageTransitionForKeyPress("5", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.ADHERENCE);
+        assertMessageTransitionForKeyPress("6", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.ART_AND_CD4);
+        assertMessageTransitionForKeyPress("7", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.LIVING_WITH_HIV);
     }
 
     @Test
@@ -67,7 +67,7 @@ public class PullMessagesTreeTest {
         assertCallStateTransitionForKeyPress("9", pullMessagesTree.createRootNode().getTransitions(), CallState.MAIN_MENU);
     }
 
-    private void assertMessageTransitionForKeyPress(String keyPressed, Map<String, Transition> transitions, TAMAMessageTypes type) {
+    private void assertMessageTransitionForKeyPress(String keyPressed, Map<String, Transition> transitions, TAMAMessageType type) {
         assertCallStateTransitionForKeyPress(keyPressed, transitions, CallState.PULL_MESSAGES);
         verify(cookies).add(TAMAIVRContext.MESSAGE_CATEGORY_NAME, type.name());
     }

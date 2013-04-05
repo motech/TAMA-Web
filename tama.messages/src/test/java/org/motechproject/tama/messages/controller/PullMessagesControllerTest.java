@@ -6,9 +6,9 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.ivr.kookoo.KookooRequest;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.tama.messages.service.Messages;
 import org.motechproject.util.Cookies;
 
@@ -83,7 +83,7 @@ public class PullMessagesControllerTest {
         KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withPlayAudios("audio");
 
         when(kookooRequest.getInput()).thenReturn("1");
-        when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageTypes.ALL_MESSAGES.name());
+        when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageType.ALL_MESSAGES.name());
         when(messages.nextMessage(kooKooIVRContext)).thenReturn(response);
 
         KookooIVRResponseBuilder kookooIVRResponse = pullMessagesController.gotDTMF(kooKooIVRContext);
@@ -96,7 +96,7 @@ public class PullMessagesControllerTest {
         KookooIVRResponseBuilder emptyResponse = new KookooIVRResponseBuilder();
 
         when(kookooRequest.getInput()).thenReturn("1");
-        when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageTypes.ALL_MESSAGES.name());
+        when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageType.ALL_MESSAGES.name());
         when(messages.nextMessage(kooKooIVRContext)).thenReturn(emptyResponse);
 
         KookooIVRResponseBuilder kookooIVRResponse = pullMessagesController.gotDTMF(kooKooIVRContext);
@@ -108,7 +108,7 @@ public class PullMessagesControllerTest {
         KookooIVRResponseBuilder emptyResponse = new KookooIVRResponseBuilder().withPlayAudios("audio");
 
         when(kookooRequest.getInput()).thenReturn("1");
-        when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageTypes.ALL_MESSAGES.name());
+        when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageType.ALL_MESSAGES.name());
         when(messages.nextMessage(kooKooIVRContext)).thenReturn(emptyResponse);
 
         KookooIVRResponseBuilder kookooIVRResponse = pullMessagesController.gotDTMF(kooKooIVRContext);
@@ -120,8 +120,8 @@ public class PullMessagesControllerTest {
         KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withPlayAudios("audio");
 
         when(kookooRequest.getInput()).thenReturn("1");
-        when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageTypes.FAMILY_AND_CHILDREN.name());
-        when(messages.nextHealthTip(kooKooIVRContext, TAMAMessageTypes.FAMILY_AND_CHILDREN)).thenReturn(response);
+        when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageType.FAMILY_AND_CHILDREN.name());
+        when(messages.nextHealthTip(kooKooIVRContext, TAMAMessageType.FAMILY_AND_CHILDREN)).thenReturn(response);
 
         KookooIVRResponseBuilder kookooIVRResponse = pullMessagesController.gotDTMF(kooKooIVRContext);
         assertEquals(response, kookooIVRResponse);

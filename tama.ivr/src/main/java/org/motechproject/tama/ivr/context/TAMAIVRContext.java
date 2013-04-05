@@ -7,9 +7,9 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooRequest;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.model.CallDirection;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.domain.IVRAuthenticationStatus;
-import org.motechproject.tama.common.domain.TAMAMessageTypes;
 import org.motechproject.util.Cookies;
 import org.motechproject.util.DateUtil;
 
@@ -264,9 +264,9 @@ public class TAMAIVRContext {
         this.cookies.add(MESSAGES_PUSHED, String.valueOf(value));
     }
 
-    public TAMAMessageTypes getMessagesCategory() {
+    public TAMAMessageType getMessagesCategory() {
         String name = this.cookies.getValue(MESSAGE_CATEGORY_NAME);
-        return (isNotBlank(name)) ? TAMAMessageTypes.valueOf(name) : null;
+        return (isNotBlank(name)) ? TAMAMessageType.valueOf(name) : null;
     }
 
     public void setMessagesCategory(String categoryName) {
