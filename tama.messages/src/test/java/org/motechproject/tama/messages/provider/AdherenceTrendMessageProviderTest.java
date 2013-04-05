@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.message.AdherenceTrendMessage;
 import org.motechproject.tama.messages.service.PatientOnCall;
@@ -44,6 +45,18 @@ public class AdherenceTrendMessageProviderTest {
     public void shouldHaveMessageTreatmentAdviceHasAdherenceTrend() {
         when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
         assertTrue(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+    }
+
+    @Test
+    public void shouldHaveMessageWhenMessageTypeIsAdherence() {
+        when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        assertTrue(adherenceTrendMessageProvider.hasMessage(context, TAMAMessageType.ADHERENCE));
+    }
+
+    @Test
+    public void shouldNotHaveMessageWhenMessageTypeIsNotAdherenceTrendOrPushMessage() {
+        when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        assertFalse(adherenceTrendMessageProvider.hasMessage(context, TAMAMessageType.HIV_AND_CD4));
     }
 
     @Test

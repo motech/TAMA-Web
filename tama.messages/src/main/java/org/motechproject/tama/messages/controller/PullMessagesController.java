@@ -54,7 +54,7 @@ public class PullMessagesController implements PatientMessagesController {
     private KookooIVRResponseBuilder nextMessage(TAMAIVRContext tamaIVRContext) {
         TAMAMessageType type = tamaIVRContext.getMessagesCategory();
         if (TAMAMessageType.ALL_MESSAGES.equals(type)) {
-            return messages.nextMessage(tamaIVRContext.getKooKooIVRContext());
+            return messages.nextMessage(tamaIVRContext.getKooKooIVRContext(), type);
         } else {
             return messages.nextHealthTip(tamaIVRContext.getKooKooIVRContext(), type);
         }

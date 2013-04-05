@@ -5,10 +5,11 @@ public enum TAMAMessageType {
     PUSHED_MESSAGE("Pushed Message"),
     ALL_MESSAGES("All Messages"),
     FAMILY_AND_CHILDREN("Family and children"),
-    NUTRITION_AND_LIFESTYLE("Nutrition and lifestyle"),
+    NUTRITION_AND_LIFESTYLE("Food and Nutrition"),
+    MORE_ABOUT_ART("More About ART"),
     SYMPTOMS("Symptoms"),
     ADHERENCE("Adherence"),
-    ART_AND_CD4("ART and CD4"),
+    HIV_AND_CD4("ART and CD4"),
     LIVING_WITH_HIV("Living with HIV");
 
 

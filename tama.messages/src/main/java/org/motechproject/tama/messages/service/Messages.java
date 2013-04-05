@@ -22,8 +22,8 @@ public class Messages {
         this.healthTipMessage = healthTipMessage;
     }
 
-    public KookooIVRResponseBuilder nextMessage(KooKooIVRContext kooKooIVRContext) {
-        return messages(kooKooIVRContext);
+    public KookooIVRResponseBuilder nextMessage(KooKooIVRContext kooKooIVRContext, TAMAMessageType type) {
+        return messages(kooKooIVRContext, type);
     }
 
     public KookooIVRResponseBuilder nextHealthTip(KooKooIVRContext kooKooIVRContext, TAMAMessageType type) {
@@ -43,12 +43,12 @@ public class Messages {
         }
     }
 
-    private KookooIVRResponseBuilder messages(KooKooIVRContext kooKooIVRContext) {
+    private KookooIVRResponseBuilder messages(KooKooIVRContext kooKooIVRContext, TAMAMessageType type) {
         TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(kooKooIVRContext);
-        if (messageProviders.hasAnyMessage(tamaivrContext)) {
+        if (messageProviders.hasAnyMessage(tamaivrContext, type)) {
             return messageProviders.getResponse(tamaivrContext);
-        } else if (healthTipMessage.hasAnyMessage(kooKooIVRContext, null)) {
-            return healthTipMessage.getResponse(kooKooIVRContext, null);
+        } else if (healthTipMessage.hasAnyMessage(kooKooIVRContext, type)) {
+            return healthTipMessage.getResponse(kooKooIVRContext, type);
         } else {
             return new KookooIVRResponseBuilder().withSid(kooKooIVRContext.callId());
         }

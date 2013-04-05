@@ -84,7 +84,7 @@ public class PullMessagesControllerTest {
 
         when(kookooRequest.getInput()).thenReturn("1");
         when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageType.ALL_MESSAGES.name());
-        when(messages.nextMessage(kooKooIVRContext)).thenReturn(response);
+        when(messages.nextMessage(kooKooIVRContext, TAMAMessageType.ALL_MESSAGES)).thenReturn(response);
 
         KookooIVRResponseBuilder kookooIVRResponse = pullMessagesController.gotDTMF(kooKooIVRContext);
         assertEquals(response, kookooIVRResponse);
@@ -97,7 +97,7 @@ public class PullMessagesControllerTest {
 
         when(kookooRequest.getInput()).thenReturn("1");
         when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageType.ALL_MESSAGES.name());
-        when(messages.nextMessage(kooKooIVRContext)).thenReturn(emptyResponse);
+        when(messages.nextMessage(kooKooIVRContext, TAMAMessageType.ALL_MESSAGES)).thenReturn(emptyResponse);
 
         KookooIVRResponseBuilder kookooIVRResponse = pullMessagesController.gotDTMF(kooKooIVRContext);
         assertFalse(kookooIVRResponse.isCollectDTMF());
@@ -109,7 +109,7 @@ public class PullMessagesControllerTest {
 
         when(kookooRequest.getInput()).thenReturn("1");
         when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageType.ALL_MESSAGES.name());
-        when(messages.nextMessage(kooKooIVRContext)).thenReturn(emptyResponse);
+        when(messages.nextMessage(kooKooIVRContext, TAMAMessageType.ALL_MESSAGES)).thenReturn(emptyResponse);
 
         KookooIVRResponseBuilder kookooIVRResponse = pullMessagesController.gotDTMF(kooKooIVRContext);
         assertTrue(kookooIVRResponse.getPlayAudios().contains(TamaIVRMessage.PRESS_9_FOR_MAIN_MENU));

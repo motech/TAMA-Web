@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.domain.PlayedMessage;
 import org.motechproject.tama.messages.provider.MessageProviders;
@@ -43,10 +44,10 @@ public class MessagesTest {
     public void shouldAddMessagesToResponse() {
         KookooIVRResponseBuilder message = new KookooIVRResponseBuilder().withPlayAudios("message");
 
-        when(this.messageProviders.hasAnyMessage(any(TAMAIVRContext.class))).thenReturn(true);
+        when(this.messageProviders.hasAnyMessage(any(TAMAIVRContext.class), any(TAMAMessageType.class))).thenReturn(true);
         when(this.messageProviders.getResponse(any(TAMAIVRContext.class))).thenReturn(message);
 
-        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
+        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext, null);
         assertTrue(response.getPlayAudios().contains("message"));
     }
 
@@ -57,13 +58,13 @@ public class MessagesTest {
         when(pushedHealthTipsMessage.hasAnyMessage(kookooIVRContext, null)).thenReturn(true);
         when(pushedHealthTipsMessage.getResponse(kookooIVRContext, null)).thenReturn(healthTipMessage);
 
-        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
+        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext, null);
         assertTrue(response.getPlayAudios().contains("healthTipMessage"));
     }
 
     @Test
     public void shouldReturnEmptyResponseWhenThereAreNoMessages() {
-        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext);
+        KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext, null);
         assertTrue(response.getPlayAudios().isEmpty());
     }
 

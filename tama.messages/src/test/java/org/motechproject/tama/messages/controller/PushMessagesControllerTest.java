@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.domain.PlayedMessage;
@@ -71,7 +72,7 @@ public class PushMessagesControllerTest {
 
     @Test
     public void fourDayRecallPatientsHaveADefaultMessage() {
-        when(messages.nextMessage(kookooIVRContext)).thenReturn(new KookooIVRResponseBuilder());
+        when(messages.nextMessage(kookooIVRContext, TAMAMessageType.PUSHED_MESSAGE)).thenReturn(new KookooIVRResponseBuilder());
         KookooIVRResponseBuilder response = messagesController.gotDTMF(kookooIVRContext);
 
         assertTrue(response.getPlayAudios().contains(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY));
@@ -91,7 +92,7 @@ public class PushMessagesControllerTest {
     public void shouldNotMarkMessageAsReadIfMessageIsNotAlreadyPlayed() {
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("");
         when(cookies.getValue(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn("");
-        when(messages.nextMessage(kookooIVRContext)).thenReturn(new KookooIVRResponseBuilder());
+        when(messages.nextMessage(kookooIVRContext, TAMAMessageType.PUSHED_MESSAGE)).thenReturn(new KookooIVRResponseBuilder());
 
         boolean shouldContinue = messagesController.markAsReadAndContinue(kookooIVRContext);
 
@@ -103,10 +104,10 @@ public class PushMessagesControllerTest {
     public void shouldAddMessageToResponse() {
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("");
         when(cookies.getValue(OutboxContext.LAST_PLAYED_VOICE_MESSAGE_ID)).thenReturn("");
-        when(messages.nextMessage(kookooIVRContext)).thenReturn(new KookooIVRResponseBuilder());
+        when(messages.nextMessage(kookooIVRContext, TAMAMessageType.PUSHED_MESSAGE)).thenReturn(new KookooIVRResponseBuilder());
 
         messagesController.gotDTMF(kookooIVRContext);
 
-        verify(messages).nextMessage(kookooIVRContext);
+        verify(messages).nextMessage(kookooIVRContext, TAMAMessageType.PUSHED_MESSAGE);
     }
 }

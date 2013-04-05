@@ -34,12 +34,13 @@ public class PullMessagesTree extends TamaDecisionTree {
                 .setTransitions(
                         new Object[][]{
                                 {"1", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, ALL_MESSAGES.name())},
-                                {"2", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, FAMILY_AND_CHILDREN.name())},
-                                {"3", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, NUTRITION_AND_LIFESTYLE.name())},
-                                {"4", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, SYMPTOMS.name())},
-                                {"5", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, ADHERENCE.name())},
-                                {"6", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, ART_AND_CD4.name())},
+                                {"2", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, ADHERENCE.name())},
+                                {"3", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, FAMILY_AND_CHILDREN.name())},
+                                {"4", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, NUTRITION_AND_LIFESTYLE.name())},
+                                {"5", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, MORE_ABOUT_ART.name())},
+                                {"6", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, HIV_AND_CD4.name())},
                                 {"7", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, LIVING_WITH_HIV.name())},
+                                {"8", MessageTransitionFactory.createTransition(CallState.PULL_MESSAGES, SYMPTOMS.name())},
                                 {"9", TAMATransitionFactory.createResetTransition()},
                         }
                 );

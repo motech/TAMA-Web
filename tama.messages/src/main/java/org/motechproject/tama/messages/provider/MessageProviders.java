@@ -1,12 +1,15 @@
 package org.motechproject.tama.messages.provider;
 
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.service.MessageTrackingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE;
 
 @Component
 public class MessageProviders {
@@ -20,9 +23,9 @@ public class MessageProviders {
         this.messageTrackingService = messageTrackingService;
     }
 
-    public boolean hasAnyMessage(TAMAIVRContext context) {
+    public boolean hasAnyMessage(TAMAIVRContext context, TAMAMessageType type) {
         for (MessageProvider messageProvider : messageProviders) {
-            if (messageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE)) {
+            if (messageProvider.hasMessage(context, type)) {
                 return true;
             }
         }
@@ -31,7 +34,7 @@ public class MessageProviders {
 
     public KookooIVRResponseBuilder getResponse(TAMAIVRContext context) {
         for (MessageProvider messageProvider : messageProviders) {
-            if (messageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE)) {
+            if (messageProvider.hasMessage(context, PUSHED_MESSAGE)) {
                 return messageProvider.nextMessage(context);
             }
         }
