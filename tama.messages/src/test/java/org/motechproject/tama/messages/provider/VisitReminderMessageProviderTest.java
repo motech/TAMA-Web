@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
 import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
+import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.domain.MessageHistory;
 import org.motechproject.tama.messages.service.MessageTrackingService;
@@ -94,6 +95,20 @@ public class VisitReminderMessageProviderTest extends BaseUnitTest {
         when(messageTrackingService.get(eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
         assertFalse(visitReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+    }
+
+    @Test
+    public void shouldHaveMessageWhenMessageIsPlayedEqualToTwoTimesAndTheMessageIsNotBeingPushed() {
+        DateTime now = now();
+        mockCurrentDate(now);
+
+        when(clinicVisit.isUpcoming()).thenReturn(true);
+        when(clinicVisit.getConfirmedAppointmentDate()).thenReturn(now);
+
+        when(messageHistory.getCount()).thenReturn(2);
+        when(messageTrackingService.get(eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+
+        assertTrue(visitReminderMessageProvider.hasMessage(context, TAMAMessageType.ALL_MESSAGES));
     }
 
     @Test

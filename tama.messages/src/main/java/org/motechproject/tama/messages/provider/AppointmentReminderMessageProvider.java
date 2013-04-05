@@ -13,6 +13,7 @@ import org.motechproject.tama.messages.service.PatientOnCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE;
 import static org.motechproject.util.DateUtil.today;
 
 @Component
@@ -35,7 +36,7 @@ public class AppointmentReminderMessageProvider implements MessageProvider {
     public boolean hasMessage(TAMAIVRContext context, TAMAMessageType type) {
         LocalDate today = today();
         AppointmentReminderMessage message = message(context, today);
-        return message.isValid(today) && shouldPlay(message);
+        return message.isValid(today) && shouldPlay(type, message);
     }
 
     @Override
@@ -53,8 +54,12 @@ public class AppointmentReminderMessageProvider implements MessageProvider {
         return new AppointmentReminderMessage(remindFrom, appointment, patientOnCall.getPatient(context));
     }
 
-    private boolean shouldPlay(AppointmentReminderMessage message) {
-        int count = tamaReminderConfiguration.getPushedAppointmentReminderVoiceMessageCount();
-        return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < count;
+    private boolean shouldPlay(TAMAMessageType type, AppointmentReminderMessage message) {
+        if (PUSHED_MESSAGE.equals(type)) {
+            int count = tamaReminderConfiguration.getPushedAppointmentReminderVoiceMessageCount();
+            return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < count;
+        } else {
+            return true;
+        }
     }
 }
