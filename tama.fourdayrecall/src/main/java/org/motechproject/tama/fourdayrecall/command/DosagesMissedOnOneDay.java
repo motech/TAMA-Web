@@ -32,7 +32,7 @@ public class DosagesMissedOnOneDay implements ITreeCommand {
         else
             messages.add(TamaIVRMessage.FDR_MISSED_ONE_DOSAGE_ON_ONE_DAY);
 
-        messages.add(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY);
+
         return messages.toArray(new String[messages.size()]);
     }
 }

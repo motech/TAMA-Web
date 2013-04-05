@@ -13,7 +13,6 @@ public class AllDosagesTaken implements ITreeCommand {
     public String[] execute(Object o) {
         List<String> messages = new ArrayList<String>();
         messages.add(TamaIVRMessage.FDR_ALL_DOSAGES_TAKEN);
-        messages.add(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY);
         return messages.toArray(new String[messages.size()]);
     }
 }

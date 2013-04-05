@@ -38,7 +38,6 @@ public class DosageMissedOnMultipleDays implements ITreeCommand {
             messages.add(ivrMessage.getNumberFilename(numDaysMissed));
             messages.add(TamaIVRMessage.FDR_MISSED_ONE_DOSAGE_ON_MULTIPLE_DAYS_PART_2);
         }
-        messages.add(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY);
         return messages.toArray(new String[messages.size()]);
     }
 }
