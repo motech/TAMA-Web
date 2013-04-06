@@ -7,7 +7,8 @@ public enum PatientEvent {
     Temporary_Deactivation("Temporary Deactivation"),
     Call_Plan_Changed("Call Plan Changed"),
     Day_Of_Weekly_Call_Changed("Day of Weekly Call Changed"),
-    Best_Call_Time_Changed("Best Call Time Changed");
+    Best_Call_Time_Changed("Best Call Time Changed"),
+    Regimen_Changed("Regimen Changed");
 
     private String displayName;
 
