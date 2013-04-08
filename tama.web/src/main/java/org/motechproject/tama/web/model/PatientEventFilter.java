@@ -22,7 +22,8 @@ public class PatientEventFilter {
         List<String> result = new ArrayList<>();
         result.add("");
         for (PatientEvent event : PatientEvent.values()) {
-            result.add(event.getDisplayName());
+            if(event.shouldDisplayInAnalystFilter())
+                result.add(event.getDisplayName());
         }
         return result;
     }

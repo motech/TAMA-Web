@@ -60,10 +60,14 @@ public class TreatmentAdviceServiceTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         PillTimeRequestMapper pillTimeRequestMapper = new PillTimeRequestMapper(treatmentAdvice);
         PillTimeRequest pillTimesRequest = pillTimeRequestMapper.map();
+        Regimen regimen = RegimenBuilder.startRecording().withDefaults().build();
 
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
+        when(allRegimens.get(treatmentAdvice.getRegimenId())).thenReturn(regimen);
 
         treatmentAdviceService.createRegimen(treatmentAdvice, USER_NAME);
+
+        verify(allPatientEventLogs).add(new PatientEventLog(patient.getId(), PatientEvent.Regimen_Set, regimen.getDisplayName()), USER_NAME);
         verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
         verify(dailyCallPlan).enroll(patient, treatmentAdvice);
         verify(patientReportingService).savePillTimes(pillTimesRequest);
@@ -75,10 +79,14 @@ public class TreatmentAdviceServiceTest {
         TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withDefaults().build();
         PillTimeRequestMapper pillTimeRequestMapper = new PillTimeRequestMapper(treatmentAdvice);
         PillTimeRequest pillTimesRequest = pillTimeRequestMapper.map();
+        Regimen regimen = RegimenBuilder.startRecording().withDefaults().build();
 
         when(allPatients.get(treatmentAdvice.getPatientId())).thenReturn(patient);
+        when(allRegimens.get(treatmentAdvice.getRegimenId())).thenReturn(regimen);
 
         treatmentAdviceService.createRegimen(treatmentAdvice, USER_NAME);
+
+        verify(allPatientEventLogs).add(new PatientEventLog(patient.getId(), PatientEvent.Regimen_Set, regimen.getDisplayName()), USER_NAME);
         verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
         verify(weeklyCallPlan).enroll(patient, treatmentAdvice);
         verify(patientReportingService).savePillTimes(pillTimesRequest);
@@ -102,7 +110,7 @@ public class TreatmentAdviceServiceTest {
         assertEquals(treatmentAdvice.getId(), newTreatmentAdviceId);
         verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
         verify(allTreatmentAdvices).update(existingTreatmentAdvice, USER_NAME);
-        verify(allPatientEventLogs).add(new PatientEventLog(patient.getId(), PatientEvent.Regimen_Changed, newRegimen.getDisplayName()), USER_NAME);
+        verify(allPatientEventLogs).add(new PatientEventLog(patient.getId(), PatientEvent.Regimen_Updated, newRegimen.getDisplayName()), USER_NAME);
         verify(dailyCallPlan).reEnroll(patient, treatmentAdvice);
         verify(callTimeSlotService).freeSlots(patient, existingTreatmentAdvice);
         verify(callTimeSlotService).allotSlots(patient, treatmentAdvice);
@@ -125,7 +133,7 @@ public class TreatmentAdviceServiceTest {
         treatmentAdviceService.changeRegimen(existingTreatmentAdvice.getId(), "stop", treatmentAdvice, USER_NAME);
         verify(allTreatmentAdvices).add(treatmentAdvice, USER_NAME);
         verify(allTreatmentAdvices).update(existingTreatmentAdvice, USER_NAME);
-        verify(allPatientEventLogs).add(new PatientEventLog(patient.getId(), PatientEvent.Regimen_Changed, newRegimen.getDisplayName()), USER_NAME);
+        verify(allPatientEventLogs).add(new PatientEventLog(patient.getId(), PatientEvent.Regimen_Updated, newRegimen.getDisplayName()), USER_NAME);
         verify(weeklyCallPlan).reEnroll(patient, treatmentAdvice);
         verify(callTimeSlotService).freeSlots(patient, existingTreatmentAdvice);
         verify(callTimeSlotService, times(0)).allotSlots(patient, treatmentAdvice);

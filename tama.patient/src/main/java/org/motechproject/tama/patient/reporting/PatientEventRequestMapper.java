@@ -27,6 +27,7 @@ public class PatientEventRequestMapper {
 
     private String getDisplayName() {
         PatientEvent event = entity.getEvent();
+        event = PatientEvent.Regimen_Set.equals(event) ? PatientEvent.Regimen_Updated : event;
         return (null == event) ? "" : event.getDisplayName();
     }
 

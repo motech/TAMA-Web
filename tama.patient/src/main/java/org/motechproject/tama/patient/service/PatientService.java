@@ -128,7 +128,7 @@ public class PatientService {
 
     public List<PatientEventLog> getStatusHistory(String patientDocId) {
         List<PatientEventLog> allPatientEventLogs = this.allPatientEventLogs.findByPatientId(patientDocId);
-        return selectStatusChangeLogsAndRegimenChangeLogs(allPatientEventLogs);
+        return selectStatusChangeLogsAndRegimenRelatedLogs(allPatientEventLogs);
     }
 
     private PatientReport patientReport(Patient patient) {
@@ -137,18 +137,19 @@ public class PatientService {
         return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen(patient));
     }
 
-    private List<PatientEventLog> selectStatusChangeLogsAndRegimenChangeLogs(List<PatientEventLog> patientEventLogs) {
-        Predicate<PatientEventLog> onlyStatusChangeLogsAndRegimenChangeLogs = new Predicate<PatientEventLog>() {
+    private List<PatientEventLog> selectStatusChangeLogsAndRegimenRelatedLogs(List<PatientEventLog> patientEventLogs) {
+        Predicate<PatientEventLog> onlyStatusChangeLogsAndRegimenRelatedLogs = new Predicate<PatientEventLog>() {
             @Override
             public boolean apply(PatientEventLog log) {
-                List<PatientEvent> statusChangeEventsAndRegimenChangeEvents = Arrays.asList(PatientEvent.Activation,
+                List<PatientEvent> statusChangeEventsAndRegimenEvents = Arrays.asList(PatientEvent.Activation,
                         PatientEvent.Suspension,
                         PatientEvent.Temporary_Deactivation,
-                        PatientEvent.Regimen_Changed);
-                return statusChangeEventsAndRegimenChangeEvents.contains(log.getEvent());
+                        PatientEvent.Regimen_Updated,
+                        PatientEvent.Regimen_Set);
+                return statusChangeEventsAndRegimenEvents.contains(log.getEvent());
             }
         };
 
-        return filter(onlyStatusChangeLogsAndRegimenChangeLogs, patientEventLogs);
+        return filter(onlyStatusChangeLogsAndRegimenRelatedLogs, patientEventLogs);
     }
 }

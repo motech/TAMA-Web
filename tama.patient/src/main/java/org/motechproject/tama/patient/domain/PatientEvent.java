@@ -8,7 +8,8 @@ public enum PatientEvent {
     Call_Plan_Changed("Call Plan Changed"),
     Day_Of_Weekly_Call_Changed("Day of Weekly Call Changed"),
     Best_Call_Time_Changed("Best Call Time Changed"),
-    Regimen_Changed("Regimen Changed");
+    Regimen_Updated("Regimen updated"),
+    Regimen_Set("Regimen set");
 
     private String displayName;
 
@@ -23,5 +24,9 @@ public enum PatientEvent {
 
     public String getDisplayName() {
         return this.displayName;
+    }
+
+    public boolean shouldDisplayInAnalystFilter(){
+        return !PatientEvent.Regimen_Set.equals(this);
     }
 }

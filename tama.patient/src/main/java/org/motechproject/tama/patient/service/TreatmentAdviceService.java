@@ -46,6 +46,11 @@ public class TreatmentAdviceService {
         callPlanRegistry.getCallPlan(patient.callPreference()).enroll(patient, treatmentAdvice);
 
         patientReportingService.savePillTimes(new PillTimeRequestMapper(treatmentAdvice).map());
+        Regimen regimen = allRegimens.get(treatmentAdvice.getRegimenId());
+        allPatientEventLogs.add(new PatientEventLog(patient.getId(),
+                PatientEvent.Regimen_Set,
+                regimen.getDisplayName()
+                ), userName);
         return treatmentAdvice.getId();
     }
 
@@ -66,7 +71,7 @@ public class TreatmentAdviceService {
         Regimen newRegimen = allRegimens.get(treatmentAdvice.getRegimenId());
 
         allPatientEventLogs.add(new PatientEventLog(patient.getId(),
-                PatientEvent.Regimen_Changed,
+                PatientEvent.Regimen_Updated,
                 newRegimen.getDisplayName(),
                 existingRegimen.getDisplayName()),
                 userName);

@@ -40,4 +40,13 @@ public class PatientEventRequestMapperTest {
 
         assertEquals(request, patientRequestMapper.map("user"));
     }
+
+    @Test
+    public void shouldMapRegimenSetEventToRegimenUpdateEvent() {
+        PatientEventLog patientEventLog = new PatientEventLog("patientId", PatientEvent.Regimen_Set);
+
+        PatientEventRequest request = new PatientEventRequestMapper(patientEventLog).map("user");
+
+        assertEquals(request.getEventName(), PatientEvent.Regimen_Updated.getDisplayName());
+    }
 }

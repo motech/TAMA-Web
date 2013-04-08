@@ -345,15 +345,16 @@ public class PatientServiceTest extends BaseUnitTest {
         PatientEventLog callPlanChangedEventLog = new PatientEventLog("patientDocId", PatientEvent.Call_Plan_Changed);
         PatientEventLog suspensionEventLog = new PatientEventLog("patientDocId", PatientEvent.Suspension);
         PatientEventLog tempDeactivationEventLog = new PatientEventLog("patientDocId", PatientEvent.Temporary_Deactivation);
-        PatientEventLog regimenChangeLog = new PatientEventLog("patientDocId", PatientEvent.Regimen_Changed);
+        PatientEventLog regimenChangeLog = new PatientEventLog("patientDocId", PatientEvent.Regimen_Updated);
+        PatientEventLog regimenSet = new PatientEventLog("patientDocId", PatientEvent.Regimen_Set);
 
         when(allPatientEventLogs.findByPatientId("patientDocId")).thenReturn(Arrays.asList(activationEventLog, bestCallTimeChangedEventLog,
-                callPlanChangedEventLog, suspensionEventLog, tempDeactivationEventLog, regimenChangeLog));
+                callPlanChangedEventLog, suspensionEventLog, tempDeactivationEventLog, regimenChangeLog, regimenSet));
 
         List<PatientEventLog> patientStatusHistory = patientService.getStatusHistory("patientDocId");
 
-        assertEquals(4, patientStatusHistory.size());
-        assertArrayEquals(Arrays.asList(activationEventLog, suspensionEventLog, tempDeactivationEventLog, regimenChangeLog).toArray(),
+        assertEquals(5, patientStatusHistory.size());
+        assertArrayEquals(Arrays.asList(activationEventLog, suspensionEventLog, tempDeactivationEventLog, regimenChangeLog, regimenSet).toArray(),
                 patientStatusHistory.toArray());
     }
 
