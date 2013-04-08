@@ -15,7 +15,7 @@
             <spring:param name="clinicVisitId" value="${clinicVisitId}" />
             <spring:param name="patientId" value="${patientId}" />
         </spring:url>
-        <a id="oi_edit_link" href="${edit_url}" style="float:right">[edit]</a>
+        <a id="oi_edit_link"  class="editLink" href="${edit_url}" style="float:right">[edit]</a>
 
         <c:choose>
 

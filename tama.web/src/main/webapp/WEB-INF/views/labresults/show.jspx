@@ -21,7 +21,7 @@
                 <spring:param name="patientId" value="${patientId}" />
                 <spring:param name="clinicVisitId" value="${clinicVisitId}" />
             </spring:url>
-            <a id="labresults_edit_link" href="${edit_url}">[add/edit]</a>
+            <a id="labresults_edit_link" class="editLink" href="${edit_url}">[add/edit]</a>
         </div>
         <table>
             <thead>

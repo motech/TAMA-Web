@@ -244,6 +244,11 @@ h4 {
 	line-height: 20px;
 }
 
+.editLink {
+    font-weight: bolder;
+    font-size: large;
+}
+
 .errors {
 	color: red;
 	font-weight: bold;
