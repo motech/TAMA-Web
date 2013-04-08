@@ -36,7 +36,7 @@ public class VisitReminderMessageProvider implements MessageProvider {
     public boolean hasMessage(TAMAIVRContext context, TAMAMessageType type) {
         DateTime today = now();
         VisitReminderMessage message = message(context, today);
-        return message.isValid(today) && shouldPlay(type, message);
+        return message.isValid(today) && shouldPlay(context, type, message);
     }
 
     @Override
@@ -54,12 +54,12 @@ public class VisitReminderMessageProvider implements MessageProvider {
         return new VisitReminderMessage(remindFrom, clinicVisits.upcomingVisit(today), patientOnCall.getPatient(context));
     }
 
-    private boolean shouldPlay(TAMAMessageType type, VisitReminderMessage message) {
+    private boolean shouldPlay(TAMAIVRContext context, TAMAMessageType type, VisitReminderMessage message) {
         if (PUSHED_MESSAGE.equals(type)) {
             int count = tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount();
             return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < count;
         } else {
-            return true;
+            return !MESSAGE_TYPE.equals(context.getTAMAMessageType());
         }
     }
 }

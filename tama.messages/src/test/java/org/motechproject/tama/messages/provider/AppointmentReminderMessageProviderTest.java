@@ -91,6 +91,20 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldNotHaveMessageWhenLastPlayedMessagesIsAlsoAppointmentReminder() {
+        DateTime now = now();
+        mockCurrentDate(now);
+
+        when(appointment.isUpcoming()).thenReturn(true);
+        when(appointment.getDueDate()).thenReturn(now.toLocalDate());
+        when(context.getTAMAMessageType()).thenReturn(AppointmentReminderMessageProvider.MESSAGE_TYPE);
+        when(messageHistory.getCount()).thenReturn(3);
+        when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+
+        assertFalse(appointmentReminderMessageProvider.hasMessage(context, TAMAMessageType.ALL_MESSAGES));
+    }
+
+    @Test
     public void shouldHaveMessageIfMessageIsValidAndIsPlayedGreaterThanTwoTimesAndTypeIsNotPushedMessage() {
         DateTime now = now();
         mockCurrentDate(now);
