@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static org.motechproject.tama.common.TAMAConstants.APPOINTMENT_REMINDER_VOICE_MESSAGE;
-import static org.motechproject.tama.common.TAMAConstants.PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE;
 
 @Component
 public class AppointmentReminderMessageBuilder implements OutboxMessageBuilder {
@@ -29,7 +28,7 @@ public class AppointmentReminderMessageBuilder implements OutboxMessageBuilder {
     @Override
     public boolean canHandle(OutboundVoiceMessage voiceMessage) {
         VoiceMessageType voiceMessageType = voiceMessage.getVoiceMessageType();
-        return voiceMessageType != null && (APPOINTMENT_REMINDER_VOICE_MESSAGE.equals(voiceMessageType.getVoiceMessageTypeName()) || PUSHED_APPOINTMENT_REMINDER_VOICE_MESSAGE.equals(voiceMessageType.getVoiceMessageTypeName()));
+        return voiceMessageType != null && (APPOINTMENT_REMINDER_VOICE_MESSAGE.equals(voiceMessageType.getVoiceMessageTypeName()));
     }
 
     @Override

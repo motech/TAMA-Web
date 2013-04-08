@@ -1,7 +1,6 @@
 package org.motechproject.tama.clinicvisits.service;
 
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
-import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
 import org.motechproject.tama.clinicvisits.domain.criteria.ReminderOutboxCriteria;
 import org.motechproject.tama.clinicvisits.domain.criteria.VisitMissedAlertCriteria;
 import org.motechproject.tama.common.TAMAConstants;
@@ -22,21 +21,22 @@ public class VisitReminderService {
     private OutboxService outboxService;
     private VisitMissedAlertCriteria visitMissedAlertCriteria;
     private PatientAlertService patientAlertService;
-    private TAMAReminderConfiguration tamaReminderConfiguration;
 
 
     @Autowired
-    public VisitReminderService(ReminderOutboxCriteria reminderOutboxCriteria, OutboxService outboxService, VisitMissedAlertCriteria visitMissedAlertCriteria, PatientAlertService patientAlertService, TAMAReminderConfiguration tamaReminderConfiguration) {
+    public VisitReminderService(ReminderOutboxCriteria reminderOutboxCriteria, OutboxService outboxService, VisitMissedAlertCriteria visitMissedAlertCriteria, PatientAlertService patientAlertService) {
         this.reminderOutboxCriteria = reminderOutboxCriteria;
         this.outboxService = outboxService;
         this.visitMissedAlertCriteria = visitMissedAlertCriteria;
         this.patientAlertService = patientAlertService;
-        this.tamaReminderConfiguration = tamaReminderConfiguration;
     }
 
     public void addOutboxMessage(Patient patient, ClinicVisit clinicVisit) {
-        addPushedVisitReminders(patient, clinicVisit);
-        addPulledVisitReminders(patient, clinicVisit);
+        if (reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, clinicVisit)) {
+            final HashMap<String, Object> parameters = new HashMap<>();
+            parameters.put(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME, clinicVisit.getId());
+            outboxService.addMessage(patient.getId(), TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE, parameters);
+        }
     }
 
     public void raiseAlert(Patient patient, ClinicVisit clinicVisit) {
@@ -48,21 +48,4 @@ public class VisitReminderService {
         }
     }
 
-    private void addPushedVisitReminders(Patient patient, ClinicVisit clinicVisit) {
-        if (reminderOutboxCriteria.shouldAddPushedOutboxMessageForVisits(patient, clinicVisit)) {
-            final HashMap<String, Object> parameters = new HashMap<>();
-            parameters.put(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME, clinicVisit.getId());
-            for (int i = 0; i < tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount(); i++) {
-                outboxService.addMessage(patient.getId(), TAMAConstants.PUSHED_VISIT_REMINDER_VOICE_MESSAGE, parameters);
-            }
-        }
-    }
-
-    private void addPulledVisitReminders(Patient patient, ClinicVisit clinicVisit) {
-        if (reminderOutboxCriteria.shouldAddOutboxMessageForVisits(patient, clinicVisit)) {
-            final HashMap<String, Object> parameters = new HashMap<>();
-            parameters.put(TAMAConstants.MESSAGE_PARAMETER_VISIT_NAME, clinicVisit.getId());
-            outboxService.addMessage(patient.getId(), TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE, parameters);
-        }
-    }
 }

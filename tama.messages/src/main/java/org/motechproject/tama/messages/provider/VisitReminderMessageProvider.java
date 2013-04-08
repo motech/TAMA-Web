@@ -19,7 +19,7 @@ import static org.motechproject.util.DateUtil.now;
 @Component
 public class VisitReminderMessageProvider implements MessageProvider {
 
-    public static final String MESSAGE_TYPE = TAMAConstants.PUSHED_VISIT_REMINDER_VOICE_MESSAGE;
+    public static final String MESSAGE_TYPE = TAMAConstants.VISIT_REMINDER_VOICE_MESSAGE;
 
     private PatientOnCall patientOnCall;
     private MessageTrackingService messageTrackingService;

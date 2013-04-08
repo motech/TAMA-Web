@@ -105,16 +105,6 @@ public class VisitReminderMessageBuilderTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldHandlePushedVisitReminderMessage() {
-        VoiceMessageType voiceMessageType = new VoiceMessageType();
-        voiceMessageType.setVoiceMessageTypeName(TAMAConstants.PUSHED_VISIT_REMINDER_VOICE_MESSAGE);
-        OutboundVoiceMessage outboundVoiceMessage = new OutboundVoiceMessage();
-        outboundVoiceMessage.setVoiceMessageType(voiceMessageType);
-
-        assertTrue(visitReminderMessageBuilder.canHandle(outboundVoiceMessage));
-    }
-
-    @Test
     public void shouldNotHandleMessageIfItIsNotAVisitReminderMessage() {
         assertFalse(visitReminderMessageBuilder.canHandle(new OutboundVoiceMessage()));
     }
