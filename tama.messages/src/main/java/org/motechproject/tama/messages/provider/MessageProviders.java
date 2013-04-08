@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE;
-
 @Component
 public class MessageProviders {
 
@@ -32,9 +30,9 @@ public class MessageProviders {
         return false;
     }
 
-    public KookooIVRResponseBuilder getResponse(TAMAIVRContext context) {
+    public KookooIVRResponseBuilder getResponse(TAMAIVRContext context, TAMAMessageType type) {
         for (MessageProvider messageProvider : messageProviders) {
-            if (messageProvider.hasMessage(context, PUSHED_MESSAGE)) {
+            if (messageProvider.hasMessage(context, type)) {
                 return messageProvider.nextMessage(context);
             }
         }

@@ -45,7 +45,7 @@ public class MessagesTest {
         KookooIVRResponseBuilder message = new KookooIVRResponseBuilder().withPlayAudios("message");
 
         when(this.messageProviders.hasAnyMessage(any(TAMAIVRContext.class), any(TAMAMessageType.class))).thenReturn(true);
-        when(this.messageProviders.getResponse(any(TAMAIVRContext.class))).thenReturn(message);
+        when(this.messageProviders.getResponse(any(TAMAIVRContext.class), any(TAMAMessageType.class))).thenReturn(message);
 
         KookooIVRResponseBuilder response = messages.nextMessage(kookooIVRContext, null);
         assertTrue(response.getPlayAudios().contains("message"));

@@ -46,7 +46,7 @@ public class Messages {
     private KookooIVRResponseBuilder messages(KooKooIVRContext kooKooIVRContext, TAMAMessageType type) {
         TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(kooKooIVRContext);
         if (messageProviders.hasAnyMessage(tamaivrContext, type)) {
-            return messageProviders.getResponse(tamaivrContext);
+            return messageProviders.getResponse(tamaivrContext, type);
         } else if (healthTipMessage.hasAnyMessage(kooKooIVRContext, type)) {
             return healthTipMessage.getResponse(kooKooIVRContext, type);
         } else {
