@@ -12,6 +12,7 @@
   <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
   <jsp:directive.attribute name="url" type="java.lang.String" required="false" rtexprvalue="true" description="The column will be rendered as a hyperlink pointing the url backed by this property." />
   <jsp:directive.attribute name="actionUrl" type="java.lang.String" required="false" rtexprvalue="true" description="The column will be rendered as a form button link which will post to the given actionPath Url." />
+  <jsp:directive.attribute name="imageUrl" type="java.lang.String" required="false" rtexprvalue="true" description="The column will be rendered with the image in the given url." />
 
 
     <c:if test="${empty render or render}">
@@ -52,6 +53,21 @@
             <c:set var="columnActionUrls" value="${columnActionUrls},none" scope="request"/>
         </c:otherwise>
     </c:choose>
+
+    <c:choose>
+        <c:when test="${imageUrl ne null and empty columnImageUrls}">
+            <c:set var="columnImageUrls" value="${imageUrl}" scope="request"/>
+        </c:when>
+        <c:when test="${imageUrl ne null and not empty columnImageUrls}">
+            <c:set var="columnImageUrls" value="${columnImageUrls},${imageUrl}" scope="request"/>
+        </c:when>
+        <c:when test="${empty columnImageUrls}">
+            <c:set var="columnImageUrls" value="none" scope="request"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="columnImageUrls" value="${columnImageUrls},none" scope="request"/>
+        </c:otherwise>
+    </c:choose>        
 
     <c:choose>
       <c:when test="${date and empty columnTypes}">

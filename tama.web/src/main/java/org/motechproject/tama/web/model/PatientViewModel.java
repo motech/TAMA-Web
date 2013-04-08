@@ -11,6 +11,7 @@ import java.util.List;
 public class PatientViewModel extends Patient {
 
     private List<String> warnings = new ArrayList<>();
+    private String incompleteImageUrl = StringUtils.EMPTY;
 
     public PatientViewModel(Patient patient) {
         this.setId(patient.getId());
@@ -84,6 +85,10 @@ public class PatientViewModel extends Patient {
         this.warnings = warnings;
     }
 
+    public void setIncompleteImageUrl(String imageUrl){
+        this.incompleteImageUrl = imageUrl;
+    }
+
     public String getCompletionStatus(){
         if(getStatus().equals(Status.Active))
             if(CollectionUtils.isEmpty(warnings))
@@ -92,4 +97,10 @@ public class PatientViewModel extends Patient {
                 return "Incomplete";
         return StringUtils.EMPTY;
     }
+
+    public String getCompletionStatusImageUrl() {
+        return getStatus().equals(Status.Active) && !CollectionUtils.isEmpty(warnings) ? incompleteImageUrl : null;
+
+    }
+
 }

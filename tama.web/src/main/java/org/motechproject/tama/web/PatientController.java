@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
@@ -29,6 +30,7 @@ import org.motechproject.tama.web.model.PatientSummary;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,14 +41,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @RequestMapping("/patients")
 @Controller
@@ -242,10 +242,15 @@ public class PatientController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     public String list(Model uiModel, HttpServletRequest request) {
         String clinicId = loggedInClinic(request);
-        List<PatientViewModel> listPatientViewModels = new ArrayList<PatientViewModel>();
+
+        String applicationVersion = getApplicationVersion(request);
+        String incompleteImageUrl = String.format("/tama/resources-%s/images/warning.png", applicationVersion);
+
+        List<PatientViewModel> listPatientViewModels = new ArrayList<>();
         for (Patient patient : allPatients.findByClinic(clinicId)) {
             PatientViewModel listPatientViewModel = new PatientViewModel(patient);
             List<String> warning = new IncompletePatientDataWarning(listPatientViewModel, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
+            listPatientViewModel.setIncompleteImageUrl(incompleteImageUrl);
             listPatientViewModel.setWarnings(warning);
             listPatientViewModels.add(listPatientViewModel);
         }
@@ -253,6 +258,12 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("selectedMenuItem","ALL_PATIENTS");
         addDateTimeFormat(uiModel);
         return LIST_VIEW;
+    }
+
+    private String getApplicationVersion(HttpServletRequest request) {
+        ApplicationContext appCtx = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
+        Properties tamaProperties = appCtx.getBean("tamaProperties", Properties.class);
+        return tamaProperties.getProperty("application.version");
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/saveAndActivate")

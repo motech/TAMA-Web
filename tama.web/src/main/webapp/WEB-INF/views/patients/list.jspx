@@ -8,6 +8,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <spring:url value="/resources-${applicationVersion}/js/list_patients.js" var="list_patients_js"/>
+    <spring:url value="/resources-${applicationVersion}/images/warning.png" var="incompleteImageUrl"/>
     <script src="${list_patients_js}" type="text/javascript"/>
 
     <page:list id="pl_org_motechproject_tama_domain_patient" items="${patients}" z="L3I+a9K75zBL/mAhB/RvaBuiT6g=">
@@ -19,6 +20,7 @@
         <table:table data="${patients}" id="l_org_motechproject_tama_domain_patient" path="/patients/summary"
                      z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE="
                      create="false" update="false" delete="false" show_label="Patient Dashboard">
+            <table:column id="c_org_motechproject_tama_domain_patient_completion_image" label=" " property="completionStatus" imageUrl="completionStatusImageUrl" z="user-managed"/>
             <table:column id="c_org_motechproject_tama_domain_patient_patientId" property="patientId"
                           z="4I1LBMUNYSxNw1zomaU2BkBlauc=" url="patientSummaryLink"/>
             <table:column id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" property="mobilePhoneNumber"
@@ -31,9 +33,12 @@
                           id="c_org_motechproject_tama_domain_patient_registrationDate"
                           property="registrationDateAsDate" z="user-managed"/>
             <table:column id="c_org_motechproject_tama_domain_patient_status" property="status" z="user-managed"/>
-            <table:column id="c_org_motechproject_tama_domain_patient_completion" property="completionStatus" z="user-managed"/>
             <table:column id="c_org_motechproject_tama_domain_patient_action" property="statusAction" actionUrl="statusActionUrl" z="user-managed"/>
         </table:table>
-
+        <br/><br/>
+        <div class="inline-block">
+            <img src="${incompleteImageUrl}" alt="Incomplete Image Url"/>
+            <c:out value=" Incomplete patient details"/>
+        </div>
     </page:list>
 </div>
