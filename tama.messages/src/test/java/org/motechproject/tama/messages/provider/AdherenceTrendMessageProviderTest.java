@@ -42,6 +42,13 @@ public class AdherenceTrendMessageProviderTest {
     }
 
     @Test
+    public void shouldNotHaveAdherenceTrendMessageWhenLastPlayedMessageIsAdherenceTrend() {
+        when(context.getTAMAMessageType()).thenReturn(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
+        when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        assertFalse(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+    }
+
+    @Test
     public void shouldHaveMessageTreatmentAdviceHasAdherenceTrend() {
         when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
         assertTrue(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));

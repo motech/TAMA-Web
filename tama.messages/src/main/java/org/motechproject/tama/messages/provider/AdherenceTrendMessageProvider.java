@@ -32,13 +32,23 @@ public class AdherenceTrendMessageProvider implements MessageProvider {
     @Override
     public boolean hasMessage(TAMAIVRContext context, TAMAMessageType type) {
         DateTime now = now();
-        if (PUSHED_MESSAGE.equals(type) || ADHERENCE_TO_ART.equals(type)) {
-            TreatmentAdvice advice = patientOnCall.getCurrentTreatmentAdvice(context);
-            Patient patient = patientOnCall.getPatient(context);
-            return adherenceTrendMessage.isValid(patient, advice, now);
+        if (PUSHED_MESSAGE.equals(type)) {
+            return notAlreadyPlayed(context) && isMessageValid(context, now);
+        } else if (ADHERENCE_TO_ART.equals(type)) {
+            return isMessageValid(context, now);
         } else {
             return false;
         }
+    }
+
+    private boolean notAlreadyPlayed(TAMAIVRContext context) {
+        return !TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO.equals(context.getTAMAMessageType());
+    }
+
+    private boolean isMessageValid(TAMAIVRContext context, DateTime now) {
+        TreatmentAdvice advice = patientOnCall.getCurrentTreatmentAdvice(context);
+        Patient patient = patientOnCall.getPatient(context);
+        return adherenceTrendMessage.isValid(patient, advice, now);
     }
 
     @Override
