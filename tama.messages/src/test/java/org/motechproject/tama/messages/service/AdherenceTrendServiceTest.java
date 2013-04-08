@@ -52,4 +52,13 @@ public class AdherenceTrendServiceTest {
 
         assertEquals(adherencePercentage, adherenceTrendService.getAdherencePercentage(patient, now));
     }
+
+    @Test
+    public void shouldReturnZeroAsAdherenceWhenAdherenceWasNotRecorded() throws NoAdherenceRecordedException {
+        DateTime now = DateUtil.now();
+        Patient patient = PatientBuilder.startRecording().withId("patientDocId").withCallPreference(CallPreference.DailyPillReminder).build();
+
+        when(dailyPillReminderAdherenceService.getAdherencePercentage(patient.getId(), now)).thenThrow(new NoAdherenceRecordedException(""));
+        assertEquals(0d, adherenceTrendService.getAdherencePercentage(patient, now));
+    }
 }

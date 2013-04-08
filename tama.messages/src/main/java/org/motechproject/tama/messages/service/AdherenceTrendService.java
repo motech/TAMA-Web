@@ -30,7 +30,7 @@ public class AdherenceTrendService {
                 return fourDayRecallAdherenceService.getRunningAdherencePercentage(patient);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return 0d;
         }
     }
 
