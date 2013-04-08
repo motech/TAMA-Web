@@ -13,7 +13,7 @@ import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import static org.motechproject.tama.common.domain.TAMAMessageType.ADHERENCE;
+import static org.motechproject.tama.common.domain.TAMAMessageType.ADHERENCE_TO_ART;
 import static org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE;
 import static org.motechproject.util.DateUtil.now;
 
@@ -32,7 +32,7 @@ public class AdherenceTrendMessageProvider implements MessageProvider {
     @Override
     public boolean hasMessage(TAMAIVRContext context, TAMAMessageType type) {
         DateTime now = now();
-        if (PUSHED_MESSAGE.equals(type) || ADHERENCE.equals(type)) {
+        if (PUSHED_MESSAGE.equals(type) || ADHERENCE_TO_ART.equals(type)) {
             TreatmentAdvice advice = patientOnCall.getCurrentTreatmentAdvice(context);
             Patient patient = patientOnCall.getPatient(context);
             return adherenceTrendMessage.isValid(patient, advice, now);

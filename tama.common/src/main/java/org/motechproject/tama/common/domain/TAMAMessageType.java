@@ -3,13 +3,12 @@ package org.motechproject.tama.common.domain;
 public enum TAMAMessageType {
 
     PUSHED_MESSAGE("Pushed Message"),
-    ALL_MESSAGES("All Messages"),
+    ALL_MESSAGES("TAMA Messages"),
     FAMILY_AND_CHILDREN("Family and children"),
     NUTRITION_AND_LIFESTYLE("Food and Nutrition"),
-    MORE_ABOUT_ART("More About ART"),
-    SYMPTOMS("Symptoms"),
-    ADHERENCE("Adherence"),
-    HIV_AND_CD4("ART and CD4"),
+    ADHERENCE_TO_ART("Adherence To ART"),
+    SYMPTOMS("Symptoms, surgery and other diseases"),
+    ART_AND_CD4("ART and CD4"),
     LIVING_WITH_HIV("Living with HIV");
 
 

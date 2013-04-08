@@ -50,13 +50,13 @@ public class AdherenceTrendMessageProviderTest {
     @Test
     public void shouldHaveMessageWhenMessageTypeIsAdherence() {
         when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
-        assertTrue(adherenceTrendMessageProvider.hasMessage(context, TAMAMessageType.ADHERENCE));
+        assertTrue(adherenceTrendMessageProvider.hasMessage(context, TAMAMessageType.ADHERENCE_TO_ART));
     }
 
     @Test
     public void shouldNotHaveMessageWhenMessageTypeIsNotAdherenceTrendOrPushMessage() {
         when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
-        assertFalse(adherenceTrendMessageProvider.hasMessage(context, TAMAMessageType.HIV_AND_CD4));
+        assertFalse(adherenceTrendMessageProvider.hasMessage(context, TAMAMessageType.ART_AND_CD4));
     }
 
     @Test

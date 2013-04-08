@@ -54,13 +54,12 @@ public class PullMessagesTreeTest {
 
     @Test
     public void shouldPlayHealthTipsOnPressOfKeysFrom2Through7() {
-        assertMessageTransitionForKeyPress("2", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.ADHERENCE);
-        assertMessageTransitionForKeyPress("3", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.FAMILY_AND_CHILDREN);
-        assertMessageTransitionForKeyPress("4", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.NUTRITION_AND_LIFESTYLE);
-        assertMessageTransitionForKeyPress("5", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.MORE_ABOUT_ART);
-        assertMessageTransitionForKeyPress("6", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.HIV_AND_CD4);
+        assertMessageTransitionForKeyPress("2", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.FAMILY_AND_CHILDREN);
+        assertMessageTransitionForKeyPress("3", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.NUTRITION_AND_LIFESTYLE);
+        assertMessageTransitionForKeyPress("4", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.SYMPTOMS);
+        assertMessageTransitionForKeyPress("5", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.ADHERENCE_TO_ART);
+        assertMessageTransitionForKeyPress("6", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.ART_AND_CD4);
         assertMessageTransitionForKeyPress("7", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.LIVING_WITH_HIV);
-        assertMessageTransitionForKeyPress("8", pullMessagesTree.createRootNode().getTransitions(), TAMAMessageType.SYMPTOMS);
     }
 
     @Test

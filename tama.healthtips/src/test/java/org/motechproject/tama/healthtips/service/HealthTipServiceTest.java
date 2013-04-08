@@ -110,14 +110,14 @@ public class HealthTipServiceTest {
         List<HealthTip> healthTips = new ArrayList<>();
         healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ALL_MESSAGES.getDisplayName(), "healthTipOne"  , 1,1,2,2));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ALL_MESSAGES.getDisplayName(), "healthTipNine" , 2,2,1,1));
-        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.HIV_AND_CD4.getDisplayName(), "healthTipTwo", 1, null, 3, null));
-        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.HIV_AND_CD4.getDisplayName(), "healthTipFive" , null,1,null,3));
+        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ART_AND_CD4.getDisplayName(), "healthTipTwo", 1, null, 3, null));
+        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ART_AND_CD4.getDisplayName(), "healthTipFive" , null,1,null,3));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageType.FAMILY_AND_CHILDREN.getDisplayName(), "healthTipSeven", 1,1,5,5));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageType.FAMILY_AND_CHILDREN.getDisplayName(), "healthTipEight", 2,2,6,6));
 
         when(allHealthTips.findByCategory(null)).thenReturn(healthTips);
         when(allHealthTips.findByCategory(TAMAMessageType.ALL_MESSAGES.getDisplayName())).thenReturn(asList(healthTips.get(0), healthTips.get(1)));
-        when(allHealthTips.findByCategory(TAMAMessageType.HIV_AND_CD4.getDisplayName())).thenReturn(asList(healthTips.get(2), healthTips.get(3)));
+        when(allHealthTips.findByCategory(TAMAMessageType.ART_AND_CD4.getDisplayName())).thenReturn(asList(healthTips.get(2), healthTips.get(3)));
         when(allHealthTips.findByCategory(TAMAMessageType.FAMILY_AND_CHILDREN.getDisplayName())).thenReturn(asList(healthTips.get(4), healthTips.get(5)));
     }
 
