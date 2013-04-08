@@ -106,7 +106,7 @@ public class ClinicVisit implements Comparable<ClinicVisit> {
     }
 
     public boolean isUpcoming() {
-        return null != getConfirmedAppointmentDate() && null == getVisitDate();
+        return null != getConfirmedAppointmentDate() && null == getVisitDate() && !isMissed();
     }
 
     public boolean isOnOrAfter(DateTime reference) {
