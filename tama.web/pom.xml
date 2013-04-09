@@ -288,22 +288,21 @@
                             <target unless="skipTests">
                                 <echo message="Quartz schema loading: START"/>
                                 <path id="dependencies">
-                                    <fileset file="${project.basedir}/../build/lib/mysql-connector-java-5.1.13.jar"/>
+                                    <fileset
+                                            file="${project.basedir}/../build/lib/postgresql-9.1-901.jdbc4.jar"/>
                                 </path>
-                                <sql driver="${mysql.driver}"
-                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
-                                     userid="${mysql.user}"
+                                <exec executable="dropdb" failonerror="false">
+                                    <arg line="-U ${postgres.user} ${postgres.db}"/>
+                                </exec>
+                                <exec executable="createdb">
+                                    <arg line="-U ${postgres.user} ${postgres.db}"/>
+                                </exec>
+                                <sql driver="${postgres.driver}"
+                                     url="jdbc:postgresql://${postgres.server}/${postgres.db}"
+                                     userid="${postgres.user}"
                                      classpathref="dependencies"
-                                     password="${mysql.password}">
-                                    drop database ${mysql.db};
-                                    create database ${mysql.db};
-                                </sql>
-                                <sql driver="${mysql.driver}"
-                                     url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
-                                     userid="${mysql.user}"
-                                     classpathref="dependencies"
-                                     password="${mysql.password}"
-                                     src="${project.basedir}/../build/sql/tables_mysql_innodb.sql"/>
+                                     password="${postgres.password}"
+                                     src="${project.basedir}/../build/sql/qrtz_tables.sql"/>
                                 <echo message="Quartz schema loading: END"/>
                             </target>
                         </configuration>
@@ -492,22 +491,20 @@
                                         <echo message="Quartz schema loading: START"/>
                                         <path id="dependencies">
                                             <fileset
-                                                    file="${project.basedir}/../build/lib/mysql-connector-java-5.1.13.jar"/>
+                                                    file="${project.basedir}/../build/lib/postgresql-9.1-901.jdbc4.jar"/>
                                         </path>
-                                        <sql driver="${mysql.driver}"
-                                             url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
-                                             userid="${mysql.user}"
+                                        <exec executable="dropdb" failonerror="false">
+                                            <arg line="-U ${postgres.user} ${postgres.db}"/>
+                                        </exec>
+                                        <exec executable="createdb">
+                                            <arg line="-U ${postgres.user} ${postgres.db}"/>
+                                        </exec>
+                                        <sql driver="${postgres.driver}"
+                                             url="jdbc:postgresql://${postgres.server}/${postgres.db}"
+                                             userid="${postgres.user}"
                                              classpathref="dependencies"
-                                             password="${mysql.password}">
-                                            drop database ${mysql.db};
-                                            create database ${mysql.db};
-                                        </sql>
-                                        <sql driver="${mysql.driver}"
-                                             url="jdbc:mysql://${mysql.server}:${mysql.port}/${mysql.db}?autoReconnect=true"
-                                             userid="${mysql.user}"
-                                             classpathref="dependencies"
-                                             password="${mysql.password}"
-                                             src="${project.basedir}/../build/sql/tables_mysql_innodb.sql"/>
+                                             password="${postgres.password}"
+                                             src="${project.basedir}/../build/sql/qrtz_tables.sql"/>
                                         <echo message="Quartz schema loading: END"/>
                                     </target>
                                 </configuration>
