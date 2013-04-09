@@ -71,14 +71,6 @@ public class PushMessagesControllerTest {
     }
 
     @Test
-    public void fourDayRecallPatientsHaveADefaultMessage() {
-        when(messages.nextMessage(kookooIVRContext, TAMAMessageType.PUSHED_MESSAGE)).thenReturn(new KookooIVRResponseBuilder());
-        KookooIVRResponseBuilder response = messagesController.gotDTMF(kookooIVRContext);
-
-        assertTrue(response.getPlayAudios().contains(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY));
-    }
-
-    @Test
     public void shouldMarkMessageAsReadIfMessageIsAlreadyPlayed() {
         when(cookies.getValue(TAMAIVRContext.LAST_PLAYED_HEALTH_TIP)).thenReturn("healthTip");
 
@@ -96,7 +88,7 @@ public class PushMessagesControllerTest {
 
         boolean shouldContinue = messagesController.markAsReadAndContinue(kookooIVRContext);
 
-        assertTrue(shouldContinue);
+        assertFalse(shouldContinue);
         verify(messages, never()).markAsRead(kookooIVRContext, new PlayedMessage(kookooIVRContext));
     }
 

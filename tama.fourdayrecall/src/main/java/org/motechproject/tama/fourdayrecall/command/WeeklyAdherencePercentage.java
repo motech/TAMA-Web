@@ -53,6 +53,7 @@ public class WeeklyAdherencePercentage implements ITreeCommand {
             addTrendMessages(messages, currentWeekAdherencePercentage, falling);
         }
 
+        messages.add(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY);
         return messages.toArray(new String[messages.size()]);
     }
 

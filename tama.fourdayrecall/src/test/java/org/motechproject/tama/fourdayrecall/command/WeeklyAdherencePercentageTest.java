@@ -49,11 +49,12 @@ public class WeeklyAdherencePercentageTest {
         ivrContext.dtmfInput("0");
 
         String[] audios = weeklyAdherencePercentage.executeCommand(ivrContext);
-        assertEquals(4, audios.length);
+        assertEquals(5, audios.length);
         assertThat(audios[0], is(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS));
         assertThat(audios[1], is("Num_100"));
         assertThat(audios[2], is(TamaIVRMessage.FDR_PERCENT));
         assertThat(audios[3], is(TamaIVRMessage.M02_04_ADHERENCE_COMMENT_GT95_FALLING));
+        assertThat(audios[4], is(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY));
     }
 
     @Test
@@ -63,11 +64,12 @@ public class WeeklyAdherencePercentageTest {
         ivrContext.dtmfInput("1");
 
         String[] audios = weeklyAdherencePercentage.executeCommand(ivrContext);
-        assertEquals(4, audios.length);
+        assertEquals(5, audios.length);
         assertThat(audios[0], is(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS));
         assertThat(audios[1], is("Num_080"));
         assertThat(audios[2], is(TamaIVRMessage.FDR_PERCENT));
         assertThat(audios[3], is(TamaIVRMessage.M02_05_ADHERENCE_COMMENT_70TO90_FALLING));
+        assertThat(audios[4], is(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY));
     }
 
     @Test
@@ -77,11 +79,12 @@ public class WeeklyAdherencePercentageTest {
         ivrContext.dtmfInput("1");
 
         String[] audios = weeklyAdherencePercentage.executeCommand(ivrContext);
-        assertEquals(4, audios.length);
+        assertEquals(5, audios.length);
         assertThat(audios[0], is(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS));
         assertThat(audios[1], is("Num_080"));
         assertThat(audios[2], is(TamaIVRMessage.FDR_PERCENT));
         assertThat(audios[3], is(TamaIVRMessage.M02_06_ADHERENCE_COMMENT_70TO90_RISING));
+        assertThat(audios[4], is(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY));
     }
 
     @Test
@@ -91,11 +94,12 @@ public class WeeklyAdherencePercentageTest {
         ivrContext.dtmfInput("2");
 
         String[] audios = weeklyAdherencePercentage.executeCommand(ivrContext);
-        assertEquals(4, audios.length);
+        assertEquals(5, audios.length);
         assertThat(audios[0], is(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS));
         assertThat(audios[1], is("Num_060"));
         assertThat(audios[2], is(TamaIVRMessage.FDR_PERCENT));
         assertThat(audios[3], is(TamaIVRMessage.M02_07_ADHERENCE_COMMENT_LT70_FALLING));
+        assertThat(audios[4], is(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY));
     }
 
     @Test
@@ -105,10 +109,11 @@ public class WeeklyAdherencePercentageTest {
         ivrContext.dtmfInput("2");
 
         String[] audios = weeklyAdherencePercentage.executeCommand(ivrContext);
-        assertEquals(4, audios.length);
+        assertEquals(5, audios.length);
         assertThat(audios[0], is(TamaIVRMessage.FDR_YOUR_WEEKLY_ADHERENCE_IS));
         assertThat(audios[1], is("Num_060"));
         assertThat(audios[2], is(TamaIVRMessage.FDR_PERCENT));
         assertThat(audios[3], is(TamaIVRMessage.M02_08_ADHERENCE_COMMENT_LT70_RISING));
+        assertThat(audios[4], is(TamaIVRMessage.FDR_TAKE_DOSAGES_REGULARLY));
     }
 }
