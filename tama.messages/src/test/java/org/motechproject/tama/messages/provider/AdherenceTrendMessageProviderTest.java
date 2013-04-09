@@ -31,6 +31,8 @@ public class AdherenceTrendMessageProviderTest {
     private TAMAIVRContext context;
     @Mock
     private TreatmentAdvice advice;
+    @Mock
+    private Patient patient;
 
     private AdherenceTrendMessageProvider adherenceTrendMessageProvider;
 
@@ -38,6 +40,7 @@ public class AdherenceTrendMessageProviderTest {
     public void setup() {
         initMocks(this);
         when(patientOnCall.getCurrentTreatmentAdvice(context)).thenReturn(advice);
+        when(patientOnCall.getPatient(context)).thenReturn(patient);
         adherenceTrendMessageProvider = new AdherenceTrendMessageProvider(patientOnCall, adherenceTrendMessage);
     }
 
@@ -51,13 +54,22 @@ public class AdherenceTrendMessageProviderTest {
     @Test
     public void shouldHaveMessageTreatmentAdviceHasAdherenceTrend() {
         when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        when(patient.isOnDailyPillReminder()).thenReturn(true);
         assertTrue(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
-    public void shouldHaveMessageWhenMessageTypeIsAdherence() {
+    public void shouldHaveMessageWhenMessageTypeIsAdherenceAndPatientIsOnDailyPillReminder() {
         when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        when(patient.isOnDailyPillReminder()).thenReturn(true);
         assertTrue(adherenceTrendMessageProvider.hasMessage(context, TAMAMessageType.ADHERENCE_TO_ART));
+    }
+
+    @Test
+    public void shouldNotHaveMessageWhenPatientIsOnFourDayRecall() {
+        when(patient.isOnDailyPillReminder()).thenReturn(false);
+        when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        assertFalse(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
