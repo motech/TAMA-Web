@@ -15,6 +15,7 @@ import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.view.AlertFilter;
 import org.springframework.ui.Model;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -32,6 +33,8 @@ public class AlertsControllerTest {
     private HttpServletRequest request;
     @Mock
     private HttpSession session;
+    @Mock
+    private ServletContext servletContext;
     @Mock
     private AuthenticatedUser authenticatedUser;
     @Mock
@@ -60,6 +63,8 @@ public class AlertsControllerTest {
         alert = new Alert("externalId", null, null, 0, null);
 
         when(request.getSession()).thenReturn(session);
+        when(session.getServletContext()).thenReturn(servletContext);
+        when(servletContext.getContextPath()).thenReturn("/tama");
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(authenticatedUser);
         when(authenticatedUser.getClinicId()).thenReturn(clinicId);
         when(authenticatedUser.getUsername()).thenReturn(USER_NAME);

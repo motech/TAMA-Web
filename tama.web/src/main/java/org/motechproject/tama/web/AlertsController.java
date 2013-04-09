@@ -21,7 +21,7 @@ import java.util.Arrays;
 public class AlertsController extends BaseController {
 
     private PatientAlertService patientAlertService;
-    private String baseUrlFormat = "%s://%s:%d/tama/";
+    private String baseUrlFormat = "%s://%s:%d%s/";
 
     @Autowired
     public AlertsController(PatientAlertService patientAlertService) {
@@ -117,7 +117,9 @@ public class AlertsController extends BaseController {
         if (StringUtils.isBlank(referrerUrl))
             referrerUrl = request.getHeader("referer");
 
-        String baseUrl = String.format(baseUrlFormat, request.getScheme(), request.getServerName(), request.getServerPort());
+        String contextPath = request.getSession().getServletContext().getContextPath();
+
+        String baseUrl = String.format(baseUrlFormat, request.getScheme(), request.getServerName(), request.getServerPort(), contextPath);
         referrerUrl = StringUtils.isBlank(referrerUrl) ? baseUrl : referrerUrl;
 
         return referrerUrl;
