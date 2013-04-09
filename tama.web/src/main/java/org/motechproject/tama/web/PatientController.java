@@ -244,7 +244,8 @@ public class PatientController extends BaseController {
         String clinicId = loggedInClinic(request);
 
         String applicationVersion = getApplicationVersion(request);
-        String incompleteImageUrl = String.format("/tama/resources-%s/images/warning.png", applicationVersion);
+        String contextPath = request.getSession().getServletContext().getContextPath();
+        String incompleteImageUrl = String.format("%s/resources-%s/images/warning.png",contextPath, applicationVersion);
 
         List<PatientViewModel> listPatientViewModels = new ArrayList<>();
         for (Patient patient : allPatients.findByClinic(clinicId)) {
