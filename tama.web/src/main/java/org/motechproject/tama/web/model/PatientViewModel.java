@@ -90,12 +90,7 @@ public class PatientViewModel extends Patient {
     }
 
     public String getCompletionStatus(){
-        if(getStatus().equals(Status.Active))
-            if(CollectionUtils.isEmpty(warnings))
-                return "Complete";
-            else
-                return "Incomplete";
-        return StringUtils.EMPTY;
+        return getStatus().equals(Status.Active) && !CollectionUtils.isEmpty(warnings) ? "Incomplete" : null;
     }
 
     public String getCompletionStatusImageUrl() {

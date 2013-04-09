@@ -126,7 +126,7 @@
                 <c:set var="colTxt" value="${fn:substring(colTxt, 0, columnMaxLength - 4)}..."/>
               </c:if>
 
-              <c:if test="${ not empty columnImageUrl  and columnImageUrl != 'none' }">
+              <c:if test="${ not empty columnImageUrl  and columnImageUrl != 'none'  and not empty item[columnImageUrl]}">
                   <c:set var="colTxt" value="&lt;img src='${item[columnImageUrl]}' alt='${colTxt}'/&gt;"/>
               </c:if>
 
