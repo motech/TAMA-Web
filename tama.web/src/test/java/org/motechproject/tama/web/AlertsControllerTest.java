@@ -61,10 +61,12 @@ public class AlertsControllerTest {
         clinicId = "loggedInClinicId";
         patientAlerts = new PatientAlerts();
         alert = new Alert("externalId", null, null, 0, null);
+        String contextPath = "/tama";
 
         when(request.getSession()).thenReturn(session);
         when(session.getServletContext()).thenReturn(servletContext);
-        when(servletContext.getContextPath()).thenReturn("/tama");
+
+        when(servletContext.getContextPath()).thenReturn(contextPath);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(authenticatedUser);
         when(authenticatedUser.getClinicId()).thenReturn(clinicId);
         when(authenticatedUser.getUsername()).thenReturn(USER_NAME);

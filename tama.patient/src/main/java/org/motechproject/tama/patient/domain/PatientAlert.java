@@ -24,6 +24,7 @@ public class PatientAlert {
     public static final String APPOINTMENT_DATE = "AppointmentDate";
     public static final String CONFIRMED_APPOINTMENT_DATE = "ConfirmedAppointmentDate";
 
+    private String contextPath = "/tama";
     private String backPage;
 
     private Patient patient;
@@ -50,7 +51,11 @@ public class PatientAlert {
     }
 
     public String getPatientSummaryLink() {
-        return "/tama/patients/summary/"+this.patient.getId();
+        return String.format("%s/patients/summary/%s", contextPath, this.patient.getId());
+    }
+
+    public void setContextPath(String contextPath){
+        this.contextPath = contextPath;
     }
 
     public String getPatientPhoneNumber() {

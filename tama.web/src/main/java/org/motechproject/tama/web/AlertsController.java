@@ -32,7 +32,7 @@ public class AlertsController extends BaseController {
     public String list(Model uiModel, HttpServletRequest request) {
         AlertFilter allAlertsFilter = new AlertFilter().setAlertStatus(AlertFilter.STATUS_OPEN);
         final String clinicId = loggedInClinic(request);
-        uiModel.addAttribute("alerts", getFilteredAlerts(allAlertsFilter, clinicId));
+        uiModel.addAttribute("alerts", getFilteredAlerts(allAlertsFilter, clinicId, request));
         uiModel.addAttribute("alertFilter", allAlertsFilter);
         uiModel.addAttribute("selectedMenuItem","ALL_ALERTS");
         return "alerts/list";
@@ -41,7 +41,7 @@ public class AlertsController extends BaseController {
     @RequestMapping(value = "/list/filter", method = RequestMethod.GET)
     public String list(AlertFilter filter, Model uiModel, HttpServletRequest request) {
         final String clinicId = loggedInClinic(request);
-        uiModel.addAttribute("alerts", getFilteredAlerts(filter, clinicId));
+        uiModel.addAttribute("alerts", getFilteredAlerts(filter, clinicId, request));
         uiModel.addAttribute("alertFilter", filter);
         uiModel.addAttribute("selectedMenuItem","ALL_ALERTS");
         return "alerts/list";
@@ -82,13 +82,25 @@ public class AlertsController extends BaseController {
         uiModel.addAttribute("alertStatuses", Arrays.asList(TamaAlertStatus.values()));
     }
 
-    private PatientAlerts getFilteredAlerts(AlertFilter filter, String clinicId) {
+    private PatientAlerts getFilteredAlerts(AlertFilter filter, String clinicId, HttpServletRequest request) {
+        PatientAlerts alerts;
         if (AlertFilter.STATUS_OPEN.equals(filter.getAlertStatus())) {
-            return patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
+            alerts = patientAlertService.getUnreadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
         } else if (AlertFilter.STATUS_CLOSED.equals(filter.getAlertStatus())) {
-            return patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
+            alerts = patientAlertService.getReadAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
         } else {
-            return patientAlertService.getAllAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
+            alerts = patientAlertService.getAllAlertsFor(clinicId, filter.getPatientId(), filter.getPatientAlertType(), filter.getStartDateTime(), filter.getEndDateTime());
+        }
+        updateContextPath(alerts, request);
+        return alerts;
+    }
+
+    private void updateContextPath(PatientAlerts alerts, HttpServletRequest request){
+        if(alerts == null)
+            return;
+        String contextPath = request.getSession().getServletContext().getContextPath();
+        for(PatientAlert alert: alerts){
+            alert.setContextPath(contextPath);
         }
     }
 

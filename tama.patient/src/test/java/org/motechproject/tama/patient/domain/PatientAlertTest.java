@@ -89,9 +89,11 @@ public class PatientAlertTest {
         PatientAlert patientAlert = new PatientAlert();
         Patient patient = PatientBuilder.startRecording().withId("id").build();
         patientAlert.setPatient(patient);
+        String contextPath = "/tamaqa";
+        patientAlert.setContextPath(contextPath);
 
         String patientSummaryLink = patientAlert.getPatientSummaryLink();
-        assertEquals("/tama/patients/summary/id", patientSummaryLink);
+        assertEquals(contextPath+"/patients/summary/id", patientSummaryLink);
     }
 
     @Test
