@@ -46,7 +46,7 @@ public class AppointmentReminderMessageTest {
     public void shouldBeValidIfCurrentDateIsSevenDaysFromAppointmentDate() {
         LocalDate today = today();
 
-        when(appointment.getDueDate()).thenReturn(today.plusDays(3));
+        when(appointment.getDueDate()).thenReturn(today.plusDays(7));
         when(appointment.isUpcoming()).thenReturn(true);
 
         assertTrue(appointmentReminderMessage.isValid(today));
