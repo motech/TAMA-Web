@@ -6,7 +6,6 @@ import org.mockito.Mock;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.common.domain.TAMAMessageType;
-import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.domain.PlayedMessage;
 import org.motechproject.tama.messages.service.Messages;
@@ -15,7 +14,6 @@ import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientReport;
-import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.util.Cookies;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,8 +34,6 @@ public class PushMessagesControllerTest {
     private Cookies cookies;
     @Mock
     private Messages messages;
-    @Mock
-    private PatientService patientService;
 
     private String patientId = "patientId";
 
@@ -49,7 +45,7 @@ public class PushMessagesControllerTest {
         setupPatient(CallPreference.FourDayRecall);
         setupSession();
         setupCookies();
-        messagesController = new PushMessagesController(messages, patientService);
+        messagesController = new PushMessagesController(messages);
     }
 
     private void setupPatient(CallPreference callPreference) {
@@ -57,7 +53,6 @@ public class PushMessagesControllerTest {
         PatientReport patientReport = new PatientReport(patient, null, null, null);
 
         when(httpSession.getAttribute(TAMAIVRContext.PATIENT_ID)).thenReturn(patient.getId());
-        when(patientService.getPatientReport(patient.getId())).thenReturn(patientReport);
     }
 
     private void setupSession() {
@@ -88,7 +83,7 @@ public class PushMessagesControllerTest {
 
         boolean shouldContinue = messagesController.markAsReadAndContinue(kookooIVRContext);
 
-        assertFalse(shouldContinue);
+        assertTrue(shouldContinue);
         verify(messages, never()).markAsRead(kookooIVRContext, new PlayedMessage(kookooIVRContext));
     }
 

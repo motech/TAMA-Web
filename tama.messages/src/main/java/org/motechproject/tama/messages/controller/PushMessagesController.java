@@ -7,7 +7,6 @@ import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.messages.domain.PlayedMessage;
 import org.motechproject.tama.messages.service.Messages;
-import org.motechproject.tama.patient.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,12 +16,10 @@ import java.util.List;
 public class PushMessagesController implements PatientMessagesController {
 
     private Messages messages;
-    private PatientService patientService;
 
     @Autowired
-    public PushMessagesController(Messages messages, PatientService patientService) {
+    public PushMessagesController(Messages messages) {
         this.messages = messages;
-        this.patientService = patientService;
     }
 
     @Override
@@ -31,13 +28,13 @@ public class PushMessagesController implements PatientMessagesController {
         if (playedMessage.exists()) {
             new TAMAIVRContextFactory().create(kooKooIVRContext).setMessagesPushed(true);
             messages.markAsRead(kooKooIVRContext, playedMessage);
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
-
         TAMAIVRContext context = new TAMAIVRContextFactory().create(kooKooIVRContext);
         KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withSid(context.callId());
         return buildResponse(kooKooIVRContext, response);

@@ -64,13 +64,13 @@ public class HealthTipService {
         // Sort by Playcount and then by sequence
         // return the audio filename list.
 
-        String category = type == null ? null : type.getDisplayName();
+        String category = (TAMAMessageType.PUSHED_MESSAGE.equals(type)) ? null : type.getDisplayName();
         List<HealthTip> allHealthTipsByCategory = allHealthTips.findByCategory(category);
         List<HealthTipsHistory> healthTipHistoriesForPatient = allHealthTipsHistory.findByPatientId(patientId);
 
-        for(HealthTipsHistory history: healthTipHistoriesForPatient){
-            for(HealthTip healthTip: allHealthTipsByCategory){
-                if(history.getAudioFilename().equals(healthTip.getAudioFileName())){
+        for (HealthTipsHistory history : healthTipHistoriesForPatient) {
+            for (HealthTip healthTip : allHealthTipsByCategory) {
+                if (history.getAudioFilename().equals(healthTip.getAudioFileName())) {
                     healthTip.setPlayCount(history.getPlayCount());
                 }
             }
@@ -85,8 +85,7 @@ public class HealthTipService {
         return extract(allHealthTipsByCategory, on(HealthTip.class).getAudioFileName());
     }
 
-    private void filterHealthTipsBySequence(List<HealthTip> healthTips,final HealthTipSequence sequence) {
-
+    private void filterHealthTipsBySequence(List<HealthTip> healthTips, final HealthTipSequence sequence) {
         CollectionUtils.filter(healthTips, new Predicate() {
             @Override
             public boolean evaluate(Object o) {
@@ -99,7 +98,7 @@ public class HealthTipService {
 
     private HealthTipSequence getHealthTipSequence(Patient patient, TAMAMessageType type) {
         boolean isDailyPillReminder = patient.isOnDailyPillReminder();
-        boolean isPushMessage = type == null;
+        boolean isPushMessage = (TAMAMessageType.PUSHED_MESSAGE.equals(type));
         return isPushMessage ? (isDailyPillReminder ? HealthTipSequence.PUSH_DAILY : HealthTipSequence.PUSH_WEEKLY) : (isDailyPillReminder ? HealthTipSequence.PULL_DAILY : HealthTipSequence.PULL_WEEKLY);
     }
 

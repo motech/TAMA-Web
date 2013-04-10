@@ -14,7 +14,9 @@ import org.motechproject.tama.refdata.domain.HealthTip;
 import org.motechproject.tama.refdata.repository.AllHealthTips;
 import org.motechproject.util.DateUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
@@ -56,21 +58,20 @@ public class HealthTipServiceTest {
 
 
     @Test
-    public void shouldGetHealthTipForACategoryAndPullDailySequence(){
+    public void shouldGetHealthTipForACategoryAndPullDailySequence() {
         String healthTip = healthTipService.nextHealthTip(patient.getId(), TAMAMessageType.FAMILY_AND_CHILDREN);
         assertEquals("healthTipSeven", healthTip);
     }
 
     @Test
-    public void shouldGetHealthTipForACategoryAndPushWeeklySequence(){
+    public void shouldGetHealthTipForACategoryAndPushWeeklySequence() {
         setUpWeeklyPillReminderPatient();
-        String healthTip = healthTipService.nextHealthTip(patient.getId(), null);
+        String healthTip = healthTipService.nextHealthTip(patient.getId(), TAMAMessageType.PUSHED_MESSAGE);
         assertEquals("healthTipNine", healthTip);
     }
 
-
     @Test
-    public void shouldGetNextHealthTipForACategoryAfterHistory(){
+    public void shouldGetNextHealthTipForACategoryAfterHistory() {
 
         List<HealthTipsHistory> healthTipsHistory = new ArrayList<>();
         healthTipsHistory.add(new HealthTipsHistory(patient.getId(), "healthTipSeven", DateUtil.now().minusDays(13)));
@@ -82,13 +83,13 @@ public class HealthTipServiceTest {
     }
 
     @Test
-    public void shouldGetPlaylistForACategory(){
+    public void shouldGetPlaylistForACategory() {
         assertEquals(Arrays.asList("healthTipSeven", "healthTipEight"), healthTipService.getPlayList(patient.getId(), TAMAMessageType.FAMILY_AND_CHILDREN));
     }
 
     @Test
-    public void shouldGetAllPlaylistWhenCategoryIsNull(){
-        assertEquals(Arrays.asList("healthTipNine", "healthTipOne","healthTipTwo", "healthTipSeven", "healthTipEight"), healthTipService.getPlayList(patient.getId(), null));
+    public void shouldGetAllPlaylistForPushedMessages() {
+        assertEquals(Arrays.asList("healthTipNine", "healthTipOne", "healthTipTwo", "healthTipSeven", "healthTipEight"), healthTipService.getPlayList(patient.getId(), TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
@@ -108,12 +109,12 @@ public class HealthTipServiceTest {
 
     private void setupHealthTips() {
         List<HealthTip> healthTips = new ArrayList<>();
-        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ALL_MESSAGES.getDisplayName(), "healthTipOne"  , 1,1,2,2));
-        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ALL_MESSAGES.getDisplayName(), "healthTipNine" , 2,2,1,1));
+        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ALL_MESSAGES.getDisplayName(), "healthTipOne", 1, 1, 2, 2));
+        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ALL_MESSAGES.getDisplayName(), "healthTipNine", 2, 2, 1, 1));
         healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ART_AND_CD4.getDisplayName(), "healthTipTwo", 1, null, 3, null));
-        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ART_AND_CD4.getDisplayName(), "healthTipFive" , null,1,null,3));
-        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.FAMILY_AND_CHILDREN.getDisplayName(), "healthTipSeven", 1,1,5,5));
-        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.FAMILY_AND_CHILDREN.getDisplayName(), "healthTipEight", 2,2,6,6));
+        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.ART_AND_CD4.getDisplayName(), "healthTipFive", null, 1, null, 3));
+        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.FAMILY_AND_CHILDREN.getDisplayName(), "healthTipSeven", 1, 1, 5, 5));
+        healthTips.add(HealthTip.newHealthTip(TAMAMessageType.FAMILY_AND_CHILDREN.getDisplayName(), "healthTipEight", 2, 2, 6, 6));
 
         when(allHealthTips.findByCategory(null)).thenReturn(healthTips);
         when(allHealthTips.findByCategory(TAMAMessageType.ALL_MESSAGES.getDisplayName())).thenReturn(asList(healthTips.get(0), healthTips.get(1)));
@@ -121,12 +122,12 @@ public class HealthTipServiceTest {
         when(allHealthTips.findByCategory(TAMAMessageType.FAMILY_AND_CHILDREN.getDisplayName())).thenReturn(asList(healthTips.get(4), healthTips.get(5)));
     }
 
-    private void setUpDailyPillReminderPatient(){
+    private void setUpDailyPillReminderPatient() {
         patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
         when(allPatients.get(patient.getId())).thenReturn(patient);
     }
 
-    private void setUpWeeklyPillReminderPatient(){
+    private void setUpWeeklyPillReminderPatient() {
         patient = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
         when(allPatients.get(patient.getId())).thenReturn(patient);
     }
