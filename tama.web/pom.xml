@@ -302,7 +302,7 @@
                                      userid="${postgres.user}"
                                      classpathref="dependencies"
                                      password="${postgres.password}"
-                                     src="${project.basedir}/../build/sql/qrtz_tables.sql"/>
+                                     src="${project.basedir}/../build/sql/quartz_tables.sql"/>
                                 <echo message="Quartz schema loading: END"/>
                             </target>
                         </configuration>
@@ -504,7 +504,7 @@
                                              userid="${postgres.user}"
                                              classpathref="dependencies"
                                              password="${postgres.password}"
-                                             src="${project.basedir}/../build/sql/qrtz_tables.sql"/>
+                                             src="${project.basedir}/../build/sql/quartz_tables.sql"/>
                                         <echo message="Quartz schema loading: END"/>
                                     </target>
                                 </configuration>
