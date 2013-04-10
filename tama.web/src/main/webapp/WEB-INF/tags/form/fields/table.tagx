@@ -16,15 +16,6 @@
   <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
   <jsp:directive.attribute name="z" type="java.lang.String" required="false" description="Used for checking if element has been modified (to recalculate simply provide empty string value)" />
 
-  <jsp:directive.attribute name="customAction" type="java.lang.Boolean" required="false" rtexprvalue="true" description="" />
-  <jsp:directive.attribute name="customActionHeader" type="java.lang.String" required="false" rtexprvalue="true" description="" />
-  <jsp:directive.attribute name="customActionPath" type="java.lang.String" required="false" rtexprvalue="true" description="" />
-  <jsp:directive.attribute name="customActionLabel" type="java.lang.String" required="false" rtexprvalue="true" description="" />
-  <jsp:directive.attribute name="customActionCondition" type="java.lang.String" required="false" rtexprvalue="true" description="" />
-  <jsp:directive.attribute name="customActionPath2" type="java.lang.String" required="false" rtexprvalue="true" description="" />
-  <jsp:directive.attribute name="customActionLabel2" type="java.lang.String" required="false" rtexprvalue="true" description="" />
-  <jsp:directive.attribute name="customActionCondition2" type="java.lang.String" required="false" rtexprvalue="true" description="" />
-
   <c:if test="${empty render or render}">
 
     <c:set var="columnProperties" scope="request" />
@@ -68,9 +59,6 @@
       <c:set var="delete" value="true" />
     </c:if>
 
-    <c:if test="${empty customAction}">
-      <c:set var="customAction" value="false" />
-    </c:if>
 
     <spring:eval var="colCounter" expression="1" />
 
@@ -83,10 +71,6 @@
               <spring:eval var="colCounter" expression="colCounter  + 1" />
             </th>
           </c:forTokens>
-
-          <c:if test="${customAction}">
-              <th><c:out value="${customActionHeader}" /></th>
-          </c:if>
 
           <c:if test="${update}">
             <th></th>
@@ -153,40 +137,6 @@
             </td>
           </c:forTokens>
           <c:set var="itemId"><spring:eval expression="item[typeIdFieldName]"/></c:set>
-
-          <c:if test="${customAction}">
-              <c:if test="${not empty customActionCondition}">
-                <c:set var="doCustomAction">
-                    <spring:eval expression="${customActionCondition}"/>
-                </c:set>
-              </c:if>
-              <c:if test="${not empty customActionCondition2}">
-                <c:set var="doCustomAction2">
-                    <spring:eval expression="${customActionCondition2}"/>
-                </c:set>
-              </c:if>
-              <c:choose>
-                     <c:when test="${doCustomAction}">
-                         <td class="utilbox">
-                         <spring:url value="${customActionPath}/${itemId}" var="custom_action_form_url"/>
-                             <form:form action="${fn:escapeXml(custom_action_form_url)}" method="POST">
-                                <a class="post_anchor" href="#">${customActionLabel}</a>
-                             </form:form>
-                         </td>
-                     </c:when>
-                     <c:when test="${doCustomAction2}">
-                         <td class="utilbox">
-                         <spring:url value="${customActionPath2}/${itemId}" var="custom_action_form_url"/>
-                             <form:form action="${fn:escapeXml(custom_action_form_url)}" method="POST">
-                                <a class="post_anchor" href="#">${customActionLabel2}</a>
-                             </form:form>
-                         </td>
-                     </c:when>
-                     <c:otherwise>
-                          <td class="utilbox"></td>
-                     </c:otherwise>
-                 </c:choose>
-          </c:if>
 
           <c:if test="${show}">
               <td class="utilbox">
