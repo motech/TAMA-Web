@@ -35,6 +35,7 @@
     <c:set var="columnUrls" scope="request"/>
     <c:set var="columnActionUrls" scope="request"/>
     <c:set var="columnImageUrls" scope="request"/>
+    <c:set var="columnPrefixes" scope="request"/>
 
     <jsp:doBody />
 
@@ -45,6 +46,7 @@
     <c:set var="urls" value="${fn:split(columnUrls, ',')}" scope="request" />
     <c:set var="actionUrls" value="${fn:split(columnActionUrls, ',')}" scope="request" />
     <c:set var="imageUrls" value="${fn:split(columnImageUrls, ',')}" scope="request" />
+    <c:set var="prefixes" value="${fn:split(columnPrefixes, ',')}" scope="request" />
 
     <c:if test="${empty typeIdFieldName}">
       <c:set var="typeIdFieldName" value="id" />
@@ -105,6 +107,10 @@
             <c:set var="columnUrl" value="${urls[num.count-1]}" />
             <c:set var="columnActionUrl" value="${actionUrls[num.count-1]}" />
             <c:set var="columnImageUrl" value="${imageUrls[num.count-1]}" />
+            <c:set var="columnPrefix" value="${prefixes[num.count-1]}" />
+            <c:if test="${columnPrefix eq 'none'}">
+                <c:set var="columnPrefix" value=""/>
+            </c:if>
             <td>
               <c:choose>
                 <c:when test="${columnType eq 'date'}">
@@ -132,10 +138,10 @@
 
               <c:choose>
                   <c:when test="${not empty columnUrl and columnUrl != 'none'}">
-                      <a href="${item[columnUrl]}"> ${colTxt} </a>
+                      <a href="${columnPrefix}${item[columnUrl]}"> ${colTxt} </a>
                   </c:when>
                   <c:when test="${not empty columnActionUrl and columnActionUrl != 'none'}">
-                      <spring:url value="${item[columnActionUrl]}/${item[typeIdFieldName]}" var="custom_action_form_url"/>
+                      <spring:url value="${columnPrefix}${item[columnActionUrl]}/${item[typeIdFieldName]}" var="custom_action_form_url"/>
                       <form:form action="${fn:escapeXml(custom_action_form_url)}" method="POST">
                           <a class="post_anchor" href="#">${colTxt}</a>
                       </form:form>

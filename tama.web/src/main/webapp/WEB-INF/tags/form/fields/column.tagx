@@ -13,6 +13,7 @@
   <jsp:directive.attribute name="url" type="java.lang.String" required="false" rtexprvalue="true" description="The column will be rendered as a hyperlink pointing the url backed by this property." />
   <jsp:directive.attribute name="actionUrl" type="java.lang.String" required="false" rtexprvalue="true" description="The column will be rendered as a form button link which will post to the given actionPath Url." />
   <jsp:directive.attribute name="imageUrl" type="java.lang.String" required="false" rtexprvalue="true" description="The column will be rendered with the image in the given url." />
+  <jsp:directive.attribute name="prefix" type="java.lang.String" required="false" rtexprvalue="true" description="The column will be prefixed with the urls (url, actionUrl and imageUrl)." />
 
 
     <c:if test="${empty render or render}">
@@ -51,6 +52,21 @@
         </c:when>
         <c:otherwise>
             <c:set var="columnActionUrls" value="${columnActionUrls},none" scope="request"/>
+        </c:otherwise>
+    </c:choose>
+
+    <c:choose>
+        <c:when test="${prefix ne null and empty columnPrefixes}">
+            <c:set var="columnPrefixes" value="${prefix}" scope="request"/>
+        </c:when>
+        <c:when test="${prefix ne null and not empty columnPrefixes}">
+            <c:set var="columnPrefixes" value="${columnPrefixes},${prefix}" scope="request"/>
+        </c:when>
+        <c:when test="${empty columnPrefixes}">
+            <c:set var="columnPrefixes" value="none" scope="request"/>
+        </c:when>
+        <c:otherwise>
+            <c:set var="columnPrefixes" value="${columnPrefixes},none" scope="request"/>
         </c:otherwise>
     </c:choose>
 

@@ -185,6 +185,14 @@ public class PatientAlert {
         return TamaAlertStatus.Closed.name().equals(this.getAlertStatus());
     }
 
+    public String getStatusAction() {
+        return isOpened() ? "Mark Closed" : "Mark Open";
+    }
+
+    public String getStatusActionUrl() {
+        return isOpened() ? "closeAlert" : "openAlert";
+    }
+
     public String getBackPage() {
         return backPage;
     }

@@ -33,11 +33,6 @@
                 <table:table data="${alerts}" id="l_org_motechproject_tama_domain_patientalert" path="${pathPrefix}alerts"
                              show="false" create="false" update="true" delete="false"
                              typeIdFieldName="alertId" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields"
-                             customAction="true"
-                             customActionPath="${param.actionPrefix}closeAlert" customActionLabel="Mark Closed"
-                             customActionCondition="item.opened"
-                             customActionPath2="${param.actionPrefix}openAlert" customActionLabel2="Mark Open"
-                             customActionCondition2="item.closed"
                              show_label="Alert Dashboard">
                     <table:column id="org_motechproject_tama_domain_patientalert" property="patientId" label="Patient ID" url="patientSummaryLink" />
                     <table:column id="org_motechproject_tama_domain_patientalert" property="patientPhoneNumber" label="Phone Number" />
@@ -48,6 +43,7 @@
                     <table:column id="org_motechproject_tama_domain_patientalert" property="symptomReported" label="Symptom Reported" />
                     <table:column id="org_motechproject_tama_domain_patientalert" property="notes" label="Notes" />
                     <table:column id="org_motechproject_tama_domain_patientalert" property="alertStatus" label="Alert Status" />
+                    <table:column id="org_motechproject_tama_domain_patientalert" property="statusAction" prefix="${param.actionPrefix}" actionUrl="statusActionUrl" label="Action" />
                 </table:table>
             </page:plainlist>
         </div>
