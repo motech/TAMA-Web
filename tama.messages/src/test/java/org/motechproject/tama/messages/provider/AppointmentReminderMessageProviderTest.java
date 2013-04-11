@@ -16,6 +16,7 @@ import org.motechproject.tama.messages.service.MessageTrackingService;
 import org.motechproject.tama.messages.service.PatientOnCall;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.domain.PatientPreferences;
 import org.motechproject.testing.utils.BaseUnitTest;
 
 import static org.junit.Assert.assertFalse;
@@ -64,17 +65,36 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
         when(patientOnCall.getPatient(context)).thenReturn(patient);
     }
 
+    private void updateAppointmentReminderPreference(boolean isAppointmentReminderActivated){
+        PatientPreferences patientPreferences = patient.getPatientPreferences();
+        patientPreferences.setActivateAppointmentReminders(isAppointmentReminderActivated);
+        patient.setPatientPreferences(patientPreferences);
+    }
+
     @Test
-    public void shouldHaveAMessageIfMessageIsValidAndIsPlayedLessThanTwoTimes() {
+    public void shouldHaveAMessageIfMessageIsValidAndIsPlayedLessThanTwoTimesAndAppointmentReminderIsActivated() {
         DateTime now = now();
         mockCurrentDate(now);
-
+        updateAppointmentReminderPreference(true);
         when(appointment.isUpcoming()).thenReturn(true);
         when(appointment.getDueDate()).thenReturn(now.toLocalDate());
         when(messageHistory.getCount()).thenReturn(1);
         when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
         assertTrue(appointmentReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+    }
+
+    @Test
+    public void shouldNotHaveMessagesIfMessageIsValidAndIsPlayedLessThanTwoTimesButAppointmentReminderPreferenceIsNotActivated() {
+        DateTime now = now();
+        mockCurrentDate(now);
+        updateAppointmentReminderPreference(false);
+        when(appointment.isUpcoming()).thenReturn(true);
+        when(appointment.getDueDate()).thenReturn(now.toLocalDate());
+        when(messageHistory.getCount()).thenReturn(1);
+        when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+
+        assertFalse(appointmentReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test

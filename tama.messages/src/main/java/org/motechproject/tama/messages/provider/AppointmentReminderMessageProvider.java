@@ -36,7 +36,8 @@ public class AppointmentReminderMessageProvider implements MessageProvider {
     public boolean hasMessage(TAMAIVRContext context, TAMAMessageType type) {
         LocalDate today = today();
         AppointmentReminderMessage message = message(context, today);
-        return message.isValid(today) && shouldPlay(context, type, message);
+        boolean isAppointmentRemindersActivated = patientOnCall.getPatient(context).getPatientPreferences().getActivateAppointmentReminders();
+        return message.isValid(today) && shouldPlay(context, type, message) && isAppointmentRemindersActivated;
     }
 
     @Override
