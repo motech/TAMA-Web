@@ -42,7 +42,7 @@
     <page:show id="ps_org_motechproject_tama_domain_patientSummary" object="${patient}" path="/patients" create="false" list="false" delete="false" update="false" label="Patient Dashboard">
         <jsp:include page="showSummary.jspx" />
         <div class="patient-summary">
-            <util:panel id="fc_org_motechproject_tama_domain_patient_Patient_Details" title="Patient Details" openPane="false" update="false">
+            <util:panel id="fc_org_motechproject_tama_domain_patient_Patient_Details" title="Patient Details" openPane="true" update="false">
                 <div class="basic-info">
                     <field:display date="true" dateTimePattern="dd/MM/yyyy" field="artStartDate" id="s_org_motechproject_tama_domain_patient_ARTStartDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
                     <field:display field="currentARTRegimen" id="s_org_motechproject_tama_domain_patient_currentARTRegimen" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
@@ -60,8 +60,15 @@
                     <div class="status-history">
                         <div> Status History : </div>
                         <div>
-                            <c:forEach items="${patient.statusChangeHistory}" var="statusChangeEvent">
-                                <li><c:out value="${statusChangeEvent.eventName}"/> on <joda:format value="${statusChangeEvent.date}" style="MS"/></li>
+                            <c:forEach items="${patient.statusHistory}" var="patientEventLog">
+                                <c:choose>
+                                    <c:when test="${patientEventLog.eventName == 'Regimen Changed'}">
+                                        <li><c:out value="${patientEventLog.eventName}"/> from <c:out value="${patientEventLog.existingValue}"/> to <c:out value="${patientEventLog.newValue}"/> on <joda:format value="${patientEventLog.date}" style="MS"/></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li><c:out value="${patientEventLog.eventName}"/> on <joda:format value="${patientEventLog.date}" style="MS"/></li>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:forEach>
                         </div>
                     </div>

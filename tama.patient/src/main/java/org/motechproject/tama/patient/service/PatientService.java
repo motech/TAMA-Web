@@ -126,9 +126,9 @@ public class PatientService {
         return reports;
     }
 
-    public List<PatientEventLog> getStatusChangeHistory(String patientDocId) {
+    public List<PatientEventLog> getStatusHistory(String patientDocId) {
         List<PatientEventLog> allPatientEventLogs = this.allPatientEventLogs.findByPatientId(patientDocId);
-        return selectOnlyStatusChangeLogs(allPatientEventLogs);
+        return selectStatusChangeLogsAndRegimenChangeLogs(allPatientEventLogs);
     }
 
     private PatientReport patientReport(Patient patient) {
@@ -137,15 +137,18 @@ public class PatientService {
         return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen(patient));
     }
 
-    private List<PatientEventLog> selectOnlyStatusChangeLogs(List<PatientEventLog> patientEventLogs) {
-        Predicate<PatientEventLog> onlyStatusChangeLogs = new Predicate<PatientEventLog>() {
+    private List<PatientEventLog> selectStatusChangeLogsAndRegimenChangeLogs(List<PatientEventLog> patientEventLogs) {
+        Predicate<PatientEventLog> onlyStatusChangeLogsAndRegimenChangeLogs = new Predicate<PatientEventLog>() {
             @Override
             public boolean apply(PatientEventLog log) {
-                List<PatientEvent> statusChangeEvents = Arrays.asList(PatientEvent.Activation, PatientEvent.Suspension, PatientEvent.Temporary_Deactivation);
-                return statusChangeEvents.contains(log.getEvent());
+                List<PatientEvent> statusChangeEventsAndRegimenChangeEvents = Arrays.asList(PatientEvent.Activation,
+                        PatientEvent.Suspension,
+                        PatientEvent.Temporary_Deactivation,
+                        PatientEvent.Regimen_Changed);
+                return statusChangeEventsAndRegimenChangeEvents.contains(log.getEvent());
             }
         };
 
-        return filter(onlyStatusChangeLogs, patientEventLogs);
+        return filter(onlyStatusChangeLogsAndRegimenChangeLogs, patientEventLogs);
     }
 }

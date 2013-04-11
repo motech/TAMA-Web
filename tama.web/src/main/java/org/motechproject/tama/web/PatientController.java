@@ -46,6 +46,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import java.util.*;
 
 @RequestMapping("/patients")
@@ -219,7 +220,7 @@ public class PatientController extends BaseController {
         TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(id);
         TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(id);
         Regimen currentRegimen = patientService.currentRegimen(patient);
-        List<PatientEventLog> patientStatusChangeHistory = patientService.getStatusChangeHistory(patient.getId());
+        List<PatientEventLog> patientStatusChangeHistory = patientService.getStatusHistory(patient.getId());
         ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patient.getId());
         Double runningAdherencePercentage = getRunningAdherencePercentage(patient);
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();

@@ -39,11 +39,11 @@ public class PatientSummary {
         this.currentRegimen = currentRegimen;
         this.clinicVisits = clinicVisits;
         this.runningAdherencePercentage = runningAdherencePercentage;
-        this.setStatusChangeHistory(statusChangeHistory);
+        this.setStatusHistory(statusChangeHistory);
         this.warning = warning;
     }
 
-    private PatientSummary setStatusChangeHistory(List<PatientEventLog> statusChangeHistory) {
+    private PatientSummary setStatusHistory(List<PatientEventLog> statusChangeHistory) {
         this.statusChangeHistory = statusChangeHistory;
         Collections.sort(this.statusChangeHistory, new Comparator<PatientEventLog>() {
             @Override
@@ -126,7 +126,7 @@ public class PatientSummary {
         return patient.getStatus();
     }
 
-    public List<PatientEventLog> getStatusChangeHistory() {
+    public List<PatientEventLog> getStatusHistory() {
         return statusChangeHistory;
     }
 

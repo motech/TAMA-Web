@@ -20,6 +20,8 @@ public class PatientEventLog extends CouchEntity {
     @NotNull
     private DateTime date;
 
+    private String existingValue;
+
     private String newValue;
 
     public PatientEventLog() {
@@ -34,6 +36,11 @@ public class PatientEventLog extends CouchEntity {
     public PatientEventLog(String patientDocId, PatientEvent event, String newValue) {
         this(patientDocId, event);
         this.newValue = newValue;
+    }
+
+    public PatientEventLog(String patientDocId, PatientEvent event, String newValue, String existingValue) {
+        this(patientDocId, event, newValue);
+        this.existingValue = existingValue;
     }
 
     public String getPatientId() {
@@ -71,5 +78,9 @@ public class PatientEventLog extends CouchEntity {
 
     public void setNewValue(String newValue) {
         this.newValue = newValue;
+    }
+
+    public String getExistingValue() {
+        return existingValue;
     }
 }

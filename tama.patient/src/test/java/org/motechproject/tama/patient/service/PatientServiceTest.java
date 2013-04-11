@@ -339,20 +339,22 @@ public class PatientServiceTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldReturnPatientEventLogRelatedToStatusChange() throws Exception {
+    public void shouldReturnPatientEventLogRelatedToStatusChangeAndRegimenChangeOnly() throws Exception {
         PatientEventLog activationEventLog = new PatientEventLog("patientDocId", PatientEvent.Activation);
         PatientEventLog bestCallTimeChangedEventLog = new PatientEventLog("patientDocId", PatientEvent.Best_Call_Time_Changed);
         PatientEventLog callPlanChangedEventLog = new PatientEventLog("patientDocId", PatientEvent.Call_Plan_Changed);
         PatientEventLog suspensionEventLog = new PatientEventLog("patientDocId", PatientEvent.Suspension);
         PatientEventLog tempDeactivationEventLog = new PatientEventLog("patientDocId", PatientEvent.Temporary_Deactivation);
+        PatientEventLog regimenChangeLog = new PatientEventLog("patientDocId", PatientEvent.Regimen_Changed);
 
         when(allPatientEventLogs.findByPatientId("patientDocId")).thenReturn(Arrays.asList(activationEventLog, bestCallTimeChangedEventLog,
-                callPlanChangedEventLog, suspensionEventLog, tempDeactivationEventLog));
+                callPlanChangedEventLog, suspensionEventLog, tempDeactivationEventLog, regimenChangeLog));
 
-        List<PatientEventLog> patientStatusHistory = patientService.getStatusChangeHistory("patientDocId");
+        List<PatientEventLog> patientStatusHistory = patientService.getStatusHistory("patientDocId");
 
-        assertEquals(3, patientStatusHistory.size());
-        assertArrayEquals(Arrays.asList(activationEventLog, suspensionEventLog, tempDeactivationEventLog).toArray(), patientStatusHistory.toArray());
+        assertEquals(4, patientStatusHistory.size());
+        assertArrayEquals(Arrays.asList(activationEventLog, suspensionEventLog, tempDeactivationEventLog, regimenChangeLog).toArray(),
+                patientStatusHistory.toArray());
     }
 
     @Test
