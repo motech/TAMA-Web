@@ -1,4 +1,4 @@
-package main.java.org.motechproject.tama.refdata.seed;
+package org.motechproject.tama.refdata.seed;
 
 import org.motechproject.deliverytools.seed.Seed;
 import org.motechproject.tama.refdata.domain.City;
