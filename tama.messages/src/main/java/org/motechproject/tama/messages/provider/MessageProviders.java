@@ -9,13 +9,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+
 public class MessageProviders {
 
     private List<MessageProvider> messageProviders;
     private MessageTrackingService messageTrackingService;
 
-    @Autowired
     public MessageProviders(List<MessageProvider> messageProviders, MessageTrackingService messageTrackingService) {
         this.messageProviders = messageProviders;
         this.messageTrackingService = messageTrackingService;

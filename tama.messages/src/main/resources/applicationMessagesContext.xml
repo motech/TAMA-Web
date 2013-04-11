@@ -18,4 +18,16 @@
     <import resource="classpath:applicationDailyPillReminderContext.xml"/>
     <import resource="classpath:applicationFourDayRecallContext.xml"/>
 
+    <!-- Manually defining the bean to preserve the order of Message providers. -->
+    <bean id="messageProviders" class="org.motechproject.tama.messages.provider.MessageProviders">
+            <constructor-arg>
+                <list>
+                    <ref bean="appointmentReminderMessageProvider"/>
+                    <ref bean="visitReminderMessageProvider"/>
+                    <ref bean="adherenceTrendMessageProvider"/>
+                </list>
+            </constructor-arg>
+        <constructor-arg ref="messageTrackingService" />
+    </bean>
+
 </beans>
