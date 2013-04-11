@@ -82,8 +82,13 @@ public class ClinicController extends BaseController {
     @ModelAttribute("cities")
     public Collection<City> populateCities() {
         List<City> allCities = this.allCities.getAll();
-        Collections.sort(allCities);
+        arrangeCities(allCities);
         return allCities;
+    }
+
+    private void arrangeCities(List<City> allCities) {
+        Collections.sort(allCities);
+        Collections.swap(allCities,allCities.size()-1,allCities.size()-2);
     }
 
     @ModelAttribute("clinics")
