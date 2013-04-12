@@ -511,9 +511,12 @@ fieldset th {
 
 .dosage {
     float: left;
-    margin-right: 80px;
+    margin-right: 1%;
+    width: 49%;
 }
-
+.dosage:last-child {
+    margin: 0;
+}
 .tundra .dijitTextArea{
     padding-right:2px;
     width:99em;
@@ -689,4 +692,16 @@ fieldset th {
     font-weight: bolder;
     text-decoration:none;
     margin: 1px;
+}
+
+/* style for flexible(percentage based) fields */
+.flexible_fields .display_field label {
+    width: 47%;
+}
+.flexible_fields .display_field .box {
+    width: 47%;
+    margin-left: 47%;
+}
+.flexible_fields .display_field {
+    overflow: hidden;
 }

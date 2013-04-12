@@ -7,7 +7,7 @@
         <field:display object="${treatmentAdvice}" field="regimenName" id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens"/>
         <field:display object="${treatmentAdvice}" field="drugCompositionName"
                        id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions"/>
-        <table>
+        <table class="flexible_fields">
             <tr>
                 <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                     <td>

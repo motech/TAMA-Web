@@ -43,7 +43,7 @@
         <jsp:include page="showSummary.jspx" />
         <div class="patient-summary">
             <util:panel id="fc_org_motechproject_tama_domain_patient_Patient_Details" title="Patient Details" openPane="false" update="false">
-                <div class="basic-info">
+                <div class="basic-info flexible_fields">
                     <field:display date="true" dateTimePattern="dd/MM/yyyy" field="artStartDate" id="s_org_motechproject_tama_domain_patient_ARTStartDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
                     <field:display field="currentARTRegimen" id="s_org_motechproject_tama_domain_patient_currentARTRegimen" object="${patient}" z="2owGksPZDElszoBiYh73UJMFv0A="/>
                     <field:display date="true" dateTimePattern="dd/MM/yyyy" field="currentRegimenStartDate" id="s_org_motechproject_tama_domain_patient_currentRegimenStartDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>

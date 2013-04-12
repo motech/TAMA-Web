@@ -24,7 +24,7 @@
                 <div>
                     <div id="dosage_times_error" class="error"/>
                 </div>
-                <div id="dosages">
+                <div id="dosages" class="flexible_fields">
                     <c:forEach items="${treatmentAdvice.drugDosages}" varStatus="item" var="drugDosage">
                         <div class="dosage">
 
