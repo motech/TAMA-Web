@@ -114,7 +114,7 @@ public class CallLogViewTest {
 
         callLogView = new CallLogView("patientId", callLog, "clinicName", new ArrayList<String>());
         assertEquals(1, callLogView.getCallFlowGroupViews().size());
-        assertEquals("Pull Messages", callLogView.getFlows());
+        assertEquals("Messages", callLogView.getFlows());
     }
 
     @Test

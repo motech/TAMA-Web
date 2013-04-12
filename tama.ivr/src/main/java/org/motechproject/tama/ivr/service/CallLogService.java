@@ -58,7 +58,7 @@ public class CallLogService {
             callLog.callLanguage(patient.getLanguageCode());
         }
         allCallLogs.add(callLog);
-        callLogReportingService.reportMessages(new MessagesRequestMapper(callLog).map(CallTypeConstants.PULL_MESSAGES, CallTypeConstants.MESSAGES));
+        callLogReportingService.reportMessages(new MessagesRequestMapper(callLog).map(CallTypeConstants.MESSAGES, CallTypeConstants.PUSHED_MESSAGES));
     }
 
     public List<CallLog> getAll() {

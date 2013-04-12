@@ -121,10 +121,10 @@ public class CallLogReportBuilder extends BatchReportBuilder {
         row.add(flowDetailsMap.get(FOUR_DAY_RECALL_CALL).getNumberOfTimesAccessed());
         row.add(flowDetailsMap.get(FOUR_DAY_RECALL_CALL).getIndividualAccessDurations());
         row.add(flowDetailsMap.get(FOUR_DAY_RECALL_CALL).getTotalAccessDuration());
-        row.add(flowDetailsMap.get(MESSAGES).getResponsesAsString());
-        row.add(flowDetailsMap.get(PULL_MESSAGES).getNumberOfTimesAccessed());
-        row.add(flowDetailsMap.get(PULL_MESSAGES).getIndividualAccessDurations());
-        row.add(flowDetailsMap.get(PULL_MESSAGES).getTotalAccessDuration());
+        row.add(flowDetailsMap.get(PUSHED_MESSAGES).getResponsesAsString());
+        row.add(flowDetailsMap.get(MESSAGES).getNumberOfTimesAccessed());
+        row.add(flowDetailsMap.get(MESSAGES).getIndividualAccessDurations());
+        row.add(flowDetailsMap.get(MESSAGES).getTotalAccessDuration());
 
         row.add(callLogSummary.getMessageCategories());
 

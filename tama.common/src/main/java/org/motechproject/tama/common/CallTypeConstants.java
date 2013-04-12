@@ -10,8 +10,8 @@ public class CallTypeConstants {
     public static final String MENU = "Menu";
     public static final String MISSED = "Missed";
     public static final String HEALTH_TIPS = "Health Tips";
+    public static final String PUSHED_MESSAGES = "Pushed Messages";
     public static final String MESSAGES = "Messages";
-    public static final String PULL_MESSAGES = "Pull Messages";
     public static final String UNAUTHENTICATED = "Unauthenticated";
 
 }

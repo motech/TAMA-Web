@@ -4,7 +4,6 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.refdata.domain.City;
 import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
-import org.motechproject.tama.refdata.repository.AllCities;
 import org.motechproject.tama.web.view.ClinicsView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

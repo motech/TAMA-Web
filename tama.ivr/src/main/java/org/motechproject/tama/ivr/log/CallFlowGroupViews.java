@@ -109,10 +109,10 @@ public class CallFlowGroupViews {
             return CallTypeConstants.MISSED;
         } else if (callState.equals(CallState.PULL_MESSAGES.name())) {
             authenticated = true;
-            return CallTypeConstants.PULL_MESSAGES;
+            return CallTypeConstants.MESSAGES;
         } else if (callState.equals(CallState.PUSH_MESSAGES.name())) {
             authenticated = true;
-            return CallTypeConstants.MESSAGES;
+            return CallTypeConstants.PUSHED_MESSAGES;
         } else if (callState.equals(CallState.OUTBOX.name())) {
             authenticated = true;
             return CallTypeConstants.OUTBOX_CALL;

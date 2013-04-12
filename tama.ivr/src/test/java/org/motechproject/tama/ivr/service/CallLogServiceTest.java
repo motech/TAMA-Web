@@ -74,7 +74,7 @@ public class CallLogServiceTest {
         when(kookooCallDetailRecordsService.get(callId)).thenReturn(kookooCallDetailRecord);
         when(callLogMapper.toCallLog(patientDocumentId, kookooCallDetailRecord)).thenReturn(log);
         callLoggingService.log(callId, patientDocumentId);
-        verify(callLogReportingService).reportMessages(new MessagesRequestMapper(log).map(CallTypeConstants.PULL_MESSAGES, CallTypeConstants.MESSAGES));
+        verify(callLogReportingService).reportMessages(new MessagesRequestMapper(log).map(CallTypeConstants.MESSAGES, CallTypeConstants.PUSHED_MESSAGES));
     }
 
     @Test

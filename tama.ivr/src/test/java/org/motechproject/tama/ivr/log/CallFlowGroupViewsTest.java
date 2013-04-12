@@ -26,7 +26,7 @@ public class CallFlowGroupViewsTest {
         callLog.setCallEvents(asList(newCallEvent(CallState.PULL_MESSAGES_TREE.name(), TAMATreeRegistry.PULL_MESSAGES_TREE, TAMAMessageType.ALL_MESSAGES.name())));
 
         CallFlowGroupViews callFlowGroupViews = new CallFlowGroupViews(callLog);
-        assertHasFlow(CallTypeConstants.PULL_MESSAGES, callFlowGroupViews.getCallFlowGroupViews());
+        assertHasFlow(CallTypeConstants.MESSAGES, callFlowGroupViews.getCallFlowGroupViews());
     }
 
     @Test
@@ -35,7 +35,7 @@ public class CallFlowGroupViewsTest {
         callLog.setCallEvents(asList(newCallEvent(CallState.PULL_MESSAGES.name(), null, TAMAMessageType.ALL_MESSAGES.name())));
 
         CallFlowGroupViews callFlowGroupViews = new CallFlowGroupViews(callLog);
-        assertHasFlow(CallTypeConstants.PULL_MESSAGES, callFlowGroupViews.getCallFlowGroupViews());
+        assertHasFlow(CallTypeConstants.MESSAGES, callFlowGroupViews.getCallFlowGroupViews());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class CallFlowGroupViewsTest {
         callLog.setCallEvents(asList(newCallEvent(CallState.PUSH_MESSAGES.name(), null, null)));
 
         CallFlowGroupViews callFlowGroupViews = new CallFlowGroupViews(callLog);
-        assertHasFlow(CallTypeConstants.MESSAGES, callFlowGroupViews.getCallFlowGroupViews());
+        assertHasFlow(CallTypeConstants.PUSHED_MESSAGES, callFlowGroupViews.getCallFlowGroupViews());
     }
 
     private CallEvent newCallEvent(String callState, String treeName, String categoryName) {

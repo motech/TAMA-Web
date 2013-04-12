@@ -25,7 +25,7 @@ public class MessagesRequestMapperTest extends BaseUnitTest {
     public void setup() {
         setupCallLog();
         mockCurrentDate(DateUtil.now());
-        messagesRequest = new MessagesRequestMapper(callLog).map(CallTypeConstants.PULL_MESSAGES, null);
+        messagesRequest = new MessagesRequestMapper(callLog).map(CallTypeConstants.MESSAGES, null);
     }
 
     private void setupCallLog() {
