@@ -53,7 +53,7 @@
                     <field:display dateTimePattern="dd/MM/yyyy" field="nextAppointmentDueDate" id="s_org_motechproject_tama_domain_patient_nextAppointmentDueDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
                     <field:display dateTimePattern="dd/MM/yyyy" field="nextConfirmedAppointmentDate" id="s_org_motechproject_tama_domain_patient_nextConfirmedAppointmentDate" object="${patient}" z="Q7e4Q4s2LG1NG+sxbd+AxKE9u1w="/>
                 </div>
-                <div class="extra-info">
+                <div class="extra-info flexible_fields">
                     <field:display field="pillTimes" id="s_org_motechproject_tama_domain_patient_pillTimes" object="${patient}" z="2owGksPZDElszoBiYh73UJMcdf="/>
 
                     <field:display field="runningAdherencePercentage" id="s_org_motechproject_tama_domain_patient_adherencePercentage" object="${patient}" z="rpssPZDElkjkiYh73UJMcdf="/>
