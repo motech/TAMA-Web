@@ -55,6 +55,7 @@ public class PatientService {
     }
 
     public void create(Patient patient, String clinicId, String userName) {
+        populateDefaultMedicaHistory(patient);
         allPatients.addToClinic(patient, clinicId, userName);
         outboxRegistry.getOutbox().enroll(patient);
         allPatientEventLogs.addAll(new ChangedPatientPreferenceContext(null, patient).getEventLogs(), userName);
@@ -135,6 +136,17 @@ public class PatientService {
         TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patient.getId());
         TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
         return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen(patient));
+    }
+
+    private void populateDefaultMedicaHistory(Patient patient) {
+        NonHIVMedicalHistory nonHivMedicalHistoryForPatient = patient.getMedicalHistory().getNonHivMedicalHistory();
+        List<SystemCategory> existingSystemCategories = nonHivMedicalHistoryForPatient.getSystemCategories();
+        List<SystemCategory> systemCategoriesToBeAdded = SystemCategoryDefinition.all();
+        systemCategoriesToBeAdded.removeAll(existingSystemCategories);
+        for (SystemCategory systemCategory : systemCategoriesToBeAdded) {
+            existingSystemCategories.add(systemCategory);
+        }
+        nonHivMedicalHistoryForPatient.setSystemCategories(existingSystemCategories);
     }
 
     private List<PatientEventLog> selectStatusChangeLogsAndRegimenRelatedLogs(List<PatientEventLog> patientEventLogs) {
