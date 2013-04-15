@@ -40,6 +40,12 @@ public class City extends CouchEntity implements Comparable<City> {
 
     @Override
     public int compareTo(City o) {
-        return name.toLowerCase().compareTo(o.name.toLowerCase());
+        if (name.toLowerCase().equals("others") || name.toLowerCase().equals("other")) {
+            return 1;
+        } else if (o.name.toLowerCase().equals("others") || o.name.toLowerCase().equals("other")) {
+            return -1;
+        } else {
+            return name.toLowerCase().compareTo(o.name.toLowerCase());
+        }
     }
 }

@@ -9,7 +9,6 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
 import org.motechproject.tama.refdata.domain.City;
 import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
-import org.motechproject.tama.refdata.repository.AllCities;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -45,7 +44,7 @@ public class ClinicControllerTest {
     }
 
     @Test
-    public void shouldSortCitiesInAlphabeticalOrderCaseInsensitive() {
+    public void shouldSortCitiesInAlphabeticalOrderCaseInsensitiveIfOtherCityIsNotPresent() {
         List<City> cityList = Arrays.asList(City.newCity("Pune"), City.newCity("Chennai"), City.newCity("Hyderabad"), City.newCity("chirala"));
 
         Mockito.when(allCities.getAll()).thenReturn(cityList);
@@ -58,6 +57,23 @@ public class ClinicControllerTest {
         Assert.assertEquals("chirala", sortedCityArray[1].getName());
         Assert.assertEquals("Hyderabad", sortedCityArray[2].getName());
         Assert.assertEquals("Pune", sortedCityArray[3].getName());
+    }
+
+    @Test
+    public void shouldAddOtherToTheEndIfOtherCityIsPresent() {
+        List<City> cityList = Arrays.asList(City.newCity("Pune"), City.newCity("Chennai"), City.newCity("Other"), City.newCity("Hyderabad"), City.newCity("chirala"));
+
+        Mockito.when(allCities.getAll()).thenReturn(cityList);
+
+        Collection<City> sortedCities = clinicController.populateCities();
+        Assert.assertEquals(5, sortedCities.size());
+        City[] sortedCityArray = sortedCities.toArray(new City[0]);
+
+        Assert.assertEquals("Chennai", sortedCityArray[0].getName());
+        Assert.assertEquals("chirala", sortedCityArray[1].getName());
+        Assert.assertEquals("Hyderabad", sortedCityArray[2].getName());
+        Assert.assertEquals("Pune", sortedCityArray[3].getName());
+        Assert.assertEquals("Other", sortedCityArray[4].getName());
     }
 
     @Test
