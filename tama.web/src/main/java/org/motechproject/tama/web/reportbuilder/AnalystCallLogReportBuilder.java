@@ -8,12 +8,12 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.domain.CallLog;
+import org.motechproject.tama.ivr.log.CallFlowDetails;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
 import org.motechproject.tama.patient.domain.Patients;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.web.builder.CallLogSummaryBuilder;
-import org.motechproject.tama.ivr.log.CallFlowDetails;
 import org.motechproject.tama.web.model.CallLogSummary;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.BatchReportBuilder;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
@@ -62,7 +62,7 @@ public class AnalystCallLogReportBuilder extends BatchReportBuilder {
     protected void initializeColumns() {
         columns = new LinkedList<ExcelColumn>();
         columns.add(new ExcelColumn("Patient ID", Cell.CELL_TYPE_STRING, 8000));
-        columns.add(new ExcelColumn("Call made by", Cell.CELL_TYPE_STRING, 8000));
+        columns.add(new ExcelColumn("Call Made By", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Clinic Name", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("TAMA Initiated Call At (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Call Started At (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 10000));
@@ -78,9 +78,11 @@ public class AnalystCallLogReportBuilder extends BatchReportBuilder {
         columns.add(new ExcelColumn("Four Day Recall Accessed (No. of times)", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Four Day Recall - Individual Durations (Seconds)", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Four Day Recall - Total Duration (Seconds)", Cell.CELL_TYPE_STRING, 8000));
-        columns.add(new ExcelColumn("Health Tips Accessed (No. of times)", Cell.CELL_TYPE_STRING, 8000));
-        columns.add(new ExcelColumn("Health Tips - Individual Durations (Seconds)", Cell.CELL_TYPE_STRING, 8000));
-        columns.add(new ExcelColumn("Health Tips - Total Duration (Seconds)", Cell.CELL_TYPE_STRING, 8000));
+        columns.add(new ExcelColumn("Pushed Messages", Cell.CELL_TYPE_STRING, 8000));
+        columns.add(new ExcelColumn("Messages Accessed (No. of times)", Cell.CELL_TYPE_STRING, 8000));
+        columns.add(new ExcelColumn("Messages - Individual Durations (Seconds)", Cell.CELL_TYPE_STRING, 8000));
+        columns.add(new ExcelColumn("Messages - Total Duration (Seconds)", Cell.CELL_TYPE_STRING, 8000));
+        columns.add(new ExcelColumn("Message category", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Symptom Reporting Accessed (No. of times)", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Symptom Reporting - Individual Durations (Seconds)", Cell.CELL_TYPE_STRING, 8000));
         columns.add(new ExcelColumn("Symptom Reporting - Total Duration (Seconds)", Cell.CELL_TYPE_STRING, 8000));
@@ -98,8 +100,7 @@ public class AnalystCallLogReportBuilder extends BatchReportBuilder {
         Map<String, CallFlowDetails> flowDetailsMap = callLogSummary.getFlowDetailsMap();
         List<Object> row = new LinkedList<Object>();
         row.add(callLogSummary.getPatientId());
-        final String sourcePhoneNumber = callLogSummary.getSourcePhoneNumber();
-        row.add("TAMA".equals(sourcePhoneNumber) ? "TAMA" : "Patient");
+        row.add(callLogSummary.getCallMadeBy());
         row.add(callLogSummary.getClinicName());
         row.add(callLogSummary.getInitiatedDateTime());
         row.add(callLogSummary.getStartDateTime());
@@ -118,9 +119,13 @@ public class AnalystCallLogReportBuilder extends BatchReportBuilder {
         row.add(flowDetailsMap.get(FOUR_DAY_RECALL_CALL).getNumberOfTimesAccessed());
         row.add(flowDetailsMap.get(FOUR_DAY_RECALL_CALL).getIndividualAccessDurations());
         row.add(flowDetailsMap.get(FOUR_DAY_RECALL_CALL).getTotalAccessDuration());
-        row.add(flowDetailsMap.get(HEALTH_TIPS).getNumberOfTimesAccessed());
-        row.add(flowDetailsMap.get(HEALTH_TIPS).getIndividualAccessDurations());
-        row.add(flowDetailsMap.get(HEALTH_TIPS).getTotalAccessDuration());
+        row.add(flowDetailsMap.get(PUSHED_MESSAGES).getResponsesAsString());
+        row.add(flowDetailsMap.get(MESSAGES).getNumberOfTimesAccessed());
+        row.add(flowDetailsMap.get(MESSAGES).getIndividualAccessDurations());
+        row.add(flowDetailsMap.get(MESSAGES).getTotalAccessDuration());
+
+        row.add(callLogSummary.getMessageCategories());
+
         row.add(flowDetailsMap.get(SYMPTOMS_CALL).getNumberOfTimesAccessed());
         row.add(flowDetailsMap.get(SYMPTOMS_CALL).getIndividualAccessDurations());
         row.add(flowDetailsMap.get(SYMPTOMS_CALL).getTotalAccessDuration());

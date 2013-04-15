@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.motechproject.ivr.event.CallEvent;
 import org.motechproject.ivr.model.CallDirection;
+import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.log.CallEventView;
 import org.motechproject.tama.ivr.log.CallFlowDetailMap;
@@ -28,6 +29,8 @@ public class CallLogSummaryBuilder {
 
     public static final String NOT_REGISTERED_USER = "Not Registered User";
     public static final String TAMA = "TAMA";
+    public static final String PATIENT = "Patient";
+    private final String UNKNOWN = "Unknown";
 
     private AllPatients allPatients;
     private Patients allLoadedPatients = new Patients();
@@ -42,8 +45,9 @@ public class CallLogSummaryBuilder {
     public CallLogSummary build(CallLog callLog) {
         CallDirection callDirection = callLog.getCallDirection();
         boolean isInboundCall = callDirection == CallDirection.Inbound;
-        return new CallLogSummary(getPatientId(callLog),
-                getSourcePhoneNumber(callLog, isInboundCall),
+        return new CallLogSummary(
+                getPatientId(callLog),
+                getCallMadeBy(callLog, isInboundCall),
                 getDestinationPhoneNumber(callLog, isInboundCall),
                 getInitiatedTime(callLog, isInboundCall),
                 getTimeStampOfFirstEvent(callLog).toString(DATETIME_YYYY_MM_DD_FORMAT),
@@ -55,7 +59,19 @@ public class CallLogSummaryBuilder {
                 getCallFlowDetails(callLog),
                 getGender(callLog),
                 getAge(callLog),
-                getMessageCategories(callLog));
+                getMessageCategories(callLog),
+                getSourcePhoneNumber(callLog, isInboundCall)
+        );
+    }
+
+    private String getCallMadeBy(CallLog callLog, boolean isInboundCall) {
+        String sourcePhoneNumber = getSourcePhoneNumber(callLog, isInboundCall);
+        if (TAMA.equals(sourcePhoneNumber))
+            return TAMA;
+        else if (TAMA.matches(TAMAConstants.MOBILE_NUMBER_REGEX))
+            return PATIENT;
+        else
+            return UNKNOWN;
     }
 
     private Set<String> getMessageCategories(CallLog callLog) {

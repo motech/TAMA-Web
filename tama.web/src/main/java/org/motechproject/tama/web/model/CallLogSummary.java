@@ -23,11 +23,11 @@ public class CallLogSummary {
     private String age;
     private Set<String> messageCategories;
     private String gender;
+    private String callMadeBy;
 
-    public CallLogSummary(String patientId, String sourcePhoneNumber, String destinationPhoneNumber, String initiatedDateTime,
-                          String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic,
-                          String flows, Map<String, CallFlowDetails> flowDetailsMap, String gender, String age, Set<String> messageCategories) {
+    public CallLogSummary(String patientId, String callMadeBy, String destinationPhoneNumber, String initiatedDateTime, String startDateTime, String endDateTime, String clinicName, String language, String patientDistanceFromClinic, String flows, Map<String, CallFlowDetails> flowDetailsMap, String gender, String age, Set<String> messageCategories, String sourcePhoneNumber) {
         this.patientId = patientId;
+        this.callMadeBy = callMadeBy;
         this.sourcePhoneNumber = sourcePhoneNumber;
         this.destinationPhoneNumber = destinationPhoneNumber;
         this.initiatedDateTime = initiatedDateTime;
@@ -98,5 +98,9 @@ public class CallLogSummary {
 
     public String getMessageCategories() {
         return CollectionUtils.isEmpty(messageCategories) ? "-" : StringUtils.join(messageCategories, ", ");
+    }
+
+    public String getCallMadeBy() {
+        return callMadeBy;
     }
 }
