@@ -68,7 +68,7 @@ public class CallLogSummaryBuilder {
         String sourcePhoneNumber = getSourcePhoneNumber(callLog, isInboundCall);
         if (TAMA.equals(sourcePhoneNumber))
             return TAMA;
-        else if (TAMA.matches(TAMAConstants.MOBILE_NUMBER_REGEX))
+        else if (sourcePhoneNumber.matches(TAMAConstants.MOBILE_NUMBER_REGEX))
             return PATIENT;
         else
             return UNKNOWN;
