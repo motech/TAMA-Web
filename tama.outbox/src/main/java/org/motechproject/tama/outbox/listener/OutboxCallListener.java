@@ -33,6 +33,9 @@ public class OutboxCallListener {
     public void handle(MotechEvent event) {
         String patientDocId = (String) event.getParameters().get(OutboxSchedulerService.EXTERNAL_ID_KEY);
         CallPreference callPreference = allPatients.get(patientDocId).getPatientPreferences().getCallPreference();
-        outboxHandlers.get(callPreference).handle(event);
+        OutboxCallHandler outboxCallHandler = outboxHandlers.get(callPreference);
+        if (null != outboxCallHandler) {
+            outboxCallHandler.handle(event);
+        }
     }
 }
