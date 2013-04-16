@@ -70,6 +70,20 @@ public class VisitReminderMessageProviderTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldNotHaveMessageWhenTypeIsNotPushedOrAllMessages() {
+        DateTime now = now();
+        mockCurrentDate(now);
+
+        when(clinicVisit.isUpcoming()).thenReturn(true);
+        when(clinicVisit.getConfirmedAppointmentDate()).thenReturn(now);
+
+        when(messageHistory.getCount()).thenReturn(1);
+        when(messageTrackingService.get(eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+
+        assertFalse(visitReminderMessageProvider.hasMessage(context, TAMAMessageType.ADHERENCE_TO_ART));
+    }
+
+    @Test
     public void shouldHaveMessageWhenMessageIsValidAndIsPlayedLessThanTwoTimes() {
         DateTime now = now();
         mockCurrentDate(now);

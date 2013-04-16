@@ -92,6 +92,19 @@ public class PullMessagesControllerTest {
     }
 
     @Test
+    public void shouldPlayNextMessageWhenMessageCategoryIsAdherenceToART() {
+        KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withPlayAudios("audio");
+
+        when(kookooRequest.getInput()).thenReturn("1");
+        when(cookies.getValue(TAMAIVRContext.MESSAGE_CATEGORY_NAME)).thenReturn(TAMAMessageType.ADHERENCE_TO_ART.name());
+        when(messages.nextMessage(kooKooIVRContext, TAMAMessageType.ADHERENCE_TO_ART)).thenReturn(response);
+
+        KookooIVRResponseBuilder kookooIVRResponse = pullMessagesController.gotDTMF(kooKooIVRContext);
+        assertEquals(response, kookooIVRResponse);
+        assertTrue(kookooIVRResponse.isCollectDTMF());
+    }
+
+    @Test
     public void shouldNotCollectDTMFWhenNoMoreMessagesAreToBePlayed() {
         KookooIVRResponseBuilder emptyResponse = new KookooIVRResponseBuilder();
 

@@ -13,6 +13,7 @@ import org.motechproject.tama.messages.service.PatientOnCall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.motechproject.tama.common.domain.TAMAMessageType.ALL_MESSAGES;
 import static org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE;
 import static org.motechproject.util.DateUtil.now;
 
@@ -59,7 +60,7 @@ public class VisitReminderMessageProvider implements MessageProvider {
             int count = tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount();
             return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < count;
         } else {
-            return !MESSAGE_TYPE.equals(context.getTAMAMessageType());
+            return ALL_MESSAGES.equals(type) && !MESSAGE_TYPE.equals(context.getTAMAMessageType());
         }
     }
 }

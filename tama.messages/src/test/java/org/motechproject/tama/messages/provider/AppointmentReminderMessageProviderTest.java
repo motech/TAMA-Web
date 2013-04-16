@@ -65,10 +65,23 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
         when(patientOnCall.getPatient(context)).thenReturn(patient);
     }
 
-    private void updateAppointmentReminderPreference(boolean isAppointmentReminderActivated){
+    private void updateAppointmentReminderPreference(boolean isAppointmentReminderActivated) {
         PatientPreferences patientPreferences = patient.getPatientPreferences();
         patientPreferences.setActivateAppointmentReminders(isAppointmentReminderActivated);
         patient.setPatientPreferences(patientPreferences);
+    }
+
+    @Test
+    public void shouldNotPlayAppointmentReminderWhenMessageTypeIsNotPushOrAllTAMAMessages() {
+        DateTime now = now();
+        mockCurrentDate(now);
+        updateAppointmentReminderPreference(true);
+        when(appointment.isUpcoming()).thenReturn(true);
+        when(appointment.getDueDate()).thenReturn(now.toLocalDate());
+        when(messageHistory.getCount()).thenReturn(1);
+        when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+
+        assertFalse(appointmentReminderMessageProvider.hasMessage(context, TAMAMessageType.ADHERENCE_TO_ART));
     }
 
     @Test

@@ -37,7 +37,7 @@ public class AppointmentReminderMessageProvider implements MessageProvider {
         LocalDate today = today();
         AppointmentReminderMessage message = message(context, today);
         boolean isAppointmentRemindersActivated = patientOnCall.getPatient(context).getPatientPreferences().getActivateAppointmentReminders();
-        return message.isValid(today) && shouldPlay(context, type, message) && isAppointmentRemindersActivated;
+        return shouldPlay(context, type, message) && message.isValid(today) && isAppointmentRemindersActivated;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class AppointmentReminderMessageProvider implements MessageProvider {
             int count = tamaReminderConfiguration.getPushedAppointmentReminderVoiceMessageCount();
             return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < count;
         } else {
-            return !MESSAGE_TYPE.equals(context.getTAMAMessageType());
+            return TAMAMessageType.ALL_MESSAGES.equals(type) && !MESSAGE_TYPE.equals(context.getTAMAMessageType());
         }
     }
 }
