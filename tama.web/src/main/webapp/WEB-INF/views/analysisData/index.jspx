@@ -4,7 +4,6 @@
     <util:panel id="allAnalystReportsDownload" title="All Reports" openPane="true">
         <jsp:include page="/WEB-INF/views/analysisData/appointmentsCalenderReportsFilter.jspx"/>
         <jsp:include page="/WEB-INF/views/analysisData/dailyPillReminderReportsFilter.jspx"/>
-        <jsp:include page="/WEB-INF/views/analysisData/outboxMessageDownloadFilter.jspx"/>
         <jsp:include page="/WEB-INF/views/analysisData/patientEventReportDownloadFilter.jspx"/>
         <jsp:include page="/WEB-INF/views/analysisData/patientRegistrationReportDownloadFilter.jspx"/>
         <jsp:include page="/WEB-INF/views/analysisData/OTCSmsReportDownloadFilter.jspx"/>

@@ -27,7 +27,6 @@
                 <field:display date="true" dateTimePattern="MMM dd, yyyy" field="currentRegimenStartDate" label="Start Date of Current Regimen" id="currentRegimenStartDate" object="${report}"/>
                 <br />
                 <jsp:include page="showDailyPillReminderReport.jspx" />
-                <jsp:include page="showOutboxMessageReport.jspx" />
             </c:when>
             <c:otherwise>
                 <div class="bold"><br/>No Reports to generate.<br/><br/></div>
