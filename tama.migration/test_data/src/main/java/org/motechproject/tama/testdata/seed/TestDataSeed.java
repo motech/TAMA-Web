@@ -38,8 +38,8 @@ public class TestDataSeed {
     @Seed(version = "3.0", priority = 1, test = true)
     public void loadTesData() {
         City city = allCities.getAll().get(0);
-        Clinic clinic1 = createClinic(city);
-        Clinic clinic2 = createClinic(city);
+        Clinic clinic1 = createClinic("Clinic1",city);
+        Clinic clinic2 = createClinic("Clinic2",city);
         createClinician(clinic1, "drpujari", "9999999999", "drpujari");
         createClinician(clinic2, "saple", "9999999999", "saple");
     }
@@ -50,8 +50,8 @@ public class TestDataSeed {
         return clinician;
     }
 
-    private Clinic createClinic(City city) {
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).build();
+    private Clinic createClinic(String clinicName, City city) {
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withName(clinicName).withCity(city).build();
         allClinics.add(clinic, TEST_SEED);
         return clinic;
     }
