@@ -15,6 +15,6 @@
  }
 %>
 <div id="version">
- Version: 5.1.<% out.println(version); %>
+ Build: 5.1.<% out.println(version); %>
 </div>
 
