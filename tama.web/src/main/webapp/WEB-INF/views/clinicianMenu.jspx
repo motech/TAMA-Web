@@ -13,5 +13,8 @@
             </c:if>
             <menu:item id="i_patient_new" selected="${selectedMenuItem == 'NEW_PATIENT'}" messageCode="global_menu_new" url="/patients?form" z="/FWw96bQNbLZGfOq6+cGeWYQz8Y="/>
         </menu:category>
+        <menu:category id="c_summary">
+            <menu:item id="i_logs_list" messageCode="global_menu_list" url="/callsummary?form"/>
+        </menu:category>
     </menu:menu>
 </div>
