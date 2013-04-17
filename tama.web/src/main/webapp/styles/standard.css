@@ -69,6 +69,14 @@ body {
     color: #0CB3E9;
 }
 
+.redText {
+    color: #F44A56;
+}
+
+.greenText {
+    color: #66af33;
+}
+
 .post_anchor.greyText{
     color : #6b6b6b;
 }
