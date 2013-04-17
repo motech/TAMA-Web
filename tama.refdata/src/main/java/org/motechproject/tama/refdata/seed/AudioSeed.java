@@ -5,7 +5,6 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.log4j.Logger;
-import org.hamcrest.text.pattern.internal.ast.ListOf;
 import org.motechproject.cmslite.api.model.StreamContent;
 import org.motechproject.cmslite.api.service.CMSLiteService;
 import org.motechproject.deliverytools.seed.Seed;
@@ -51,7 +50,7 @@ public class AudioSeed {
         return allLanguagesToLoad;
     }
 
-    @Seed(version = "2.0", priority = 0)
+    @Seed(version = "1.0", priority = 0)
     public void load() {
         File wavsDir = new File(wavFilesLocation);
         String[] languageDirs = wavsDir.list(new AndFileFilter(Arrays.asList(HiddenFileFilter.VISIBLE, DirectoryFileFilter.INSTANCE)));
