@@ -16,7 +16,7 @@
         <div style="overflow-x:auto">
             <div id="weightOverTimeNotice" class="bold"> <!-- required for jsp --> </div>
             <div  id="weightOverTimePlaceholder">
-                <div id="weightOverTime" style="width: 800px; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
+                <div id="weightOverTime" style="width: 100%; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
             </div>
         </div>
 

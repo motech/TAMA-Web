@@ -19,7 +19,7 @@
         <div style="overflow-x:auto">
             <div id="cd4CountOverTimeNotice" class="bold"> <!-- required for jsp --> </div>
             <div  id="cd4CountOverTimePlaceholder">
-                <div id="cd4CountOverTime" style="width: 800px; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
+                <div id="cd4CountOverTime" style="width: 100%; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
             </div>
         </div>
 

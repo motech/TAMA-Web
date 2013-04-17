@@ -73,7 +73,7 @@
         <div style="overflow-x:auto">
             <div id="bpOverTimeNotice" class="bold"> <!-- required for jsp --> </div>
             <div  id="bpOverTimePlaceholder">
-                <div id="bpOverTime" style="width: 800px; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
+                <div id="bpOverTime" style="width: 100%; height: 400px; display: inline-block;"> <!-- required for jsp --> </div>
                 <table id="bpOverTimeLegend">
                     <tr>
                         <td>Legend</td>
