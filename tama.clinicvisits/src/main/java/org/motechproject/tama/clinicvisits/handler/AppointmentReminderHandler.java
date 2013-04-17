@@ -33,7 +33,6 @@ public class AppointmentReminderHandler {
         Patient patient = allPatients.get(patientDocId);
         ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, visitName);
 
-        appointmentReminderService.addOutboxMessage(patient, clinicVisit);
         appointmentReminderService.raiseAlert(patient, clinicVisit);
     }
 }

@@ -5,7 +5,6 @@ import org.motechproject.server.event.annotations.MotechListener;
 import org.motechproject.server.pillreminder.api.EventKeys;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
-import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.DateUtil;
@@ -14,13 +13,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AdherenceTrendListener {
-    private OutboxService outboxService;
     private DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
     private AllPatients allPatients;
 
     @Autowired
-    public AdherenceTrendListener(OutboxService outboxService, DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, AllPatients allPatients) {
-        this.outboxService = outboxService;
+    public AdherenceTrendListener(DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService, AllPatients allPatients) {
         this.dailyReminderAdherenceTrendService = dailyReminderAdherenceTrendService;
         this.allPatients = allPatients;
     }
@@ -31,7 +28,6 @@ public class AdherenceTrendListener {
         final Patient patient = allPatients.get(externalId);
 
         if (patient != null && patient.allowAdherenceCalls()) {
-            outboxService.addMessage(externalId, TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
             dailyReminderAdherenceTrendService.raiseAlertIfAdherenceTrendIsFalling(externalId, DateUtil.now());
         }
     }

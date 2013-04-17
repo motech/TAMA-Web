@@ -9,7 +9,6 @@ import org.motechproject.model.MotechEvent;
 import org.motechproject.server.pillreminder.api.builder.SchedulerPayloadBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceTrendService;
-import org.motechproject.tama.outbox.service.OutboxService;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
@@ -27,9 +26,6 @@ public class AdherenceTrendListenerTest {
     private AdherenceTrendListener adherenceTrendListener;
 
     @Mock
-    private OutboxService outboxService;
-
-    @Mock
     private DailyPillReminderAdherenceTrendService dailyReminderAdherenceTrendService;
 
     @Mock
@@ -38,11 +34,11 @@ public class AdherenceTrendListenerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        adherenceTrendListener = new AdherenceTrendListener(outboxService, dailyReminderAdherenceTrendService, allPatients);
+        adherenceTrendListener = new AdherenceTrendListener(dailyReminderAdherenceTrendService, allPatients);
     }
 
     @Test
-    public void shouldCreateVoiceMessage() {
+    public void shouldRaiseAlertIfAdherenceTrendIsFalling() {
         final String patientId = "patientId";
         PowerMockito.when(allPatients.get(patientId)).thenReturn(PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).build());
         Map<String, Object> eventParams = new SchedulerPayloadBuilder().withJobId(patientId)
@@ -50,12 +46,11 @@ public class AdherenceTrendListenerTest {
                 .payload();
         final MotechEvent motechEvent = new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams);
         adherenceTrendListener.handleAdherenceTrendEvent(motechEvent);
-        verify(outboxService).addMessage(patientId, TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
         verify(dailyReminderAdherenceTrendService).raiseAlertIfAdherenceTrendIsFalling(eq(patientId), Matchers.<DateTime>any());
     }
 
     @Test
-    public void shouldNotCreateVoiceMessageIfPatientIsSuspended() {
+    public void shouldNotRaiseAlertIfPatientIsSuspended() {
         final String patientId = "patientId";
         final Patient patient = new Patient();
         patient.setStatus(Status.Suspended);
@@ -65,7 +60,6 @@ public class AdherenceTrendListenerTest {
                 .payload();
 
         adherenceTrendListener.handleAdherenceTrendEvent(new MotechEvent(TAMAConstants.ADHERENCE_WEEKLY_TREND_SCHEDULER_SUBJECT, eventParams));
-        verifyZeroInteractions(outboxService);
         verifyZeroInteractions(dailyReminderAdherenceTrendService);
     }
 }
