@@ -15,10 +15,10 @@
                     openPane="true">
             <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimens" field="treatmentAdvice.regimenId"
                           items="${regimens}" itemValue="id" itemLabel="displayName" path="/treatmentadvices/regimens"
-                          label="Regimen *"/>
+                          label="Regimen" required="true" disableDefaultSelection="true"/>
             <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositiongroups"
                           field="treatmentAdvice.drugCompositionGroupId" items="${drugCompositionGroups}"
-                          path="/treatmentadvices/drugCompositionGroups" label="Drug Composition Group *"/>
+                          path="/treatmentadvices/drugCompositionGroups" label="Drug Composition Group" required="true"/>
 
             <div>
                 <div>
@@ -32,7 +32,7 @@
                                 <c:when test="${item.index == 0}">
                                     <field:select id="c_org_motechproject_tama_domain_TreatmentAdvice_regimencompositions"
                                                   field="treatmentAdvice.drugCompositionId" items="${drugCompositions}"
-                                                  path="/treatmentadvices/drugCompositions" label="Drug Name *"/>
+                                                  path="/treatmentadvices/drugCompositions" label="Drug Name" required="true"/>
                                 </c:when>
                                 <c:otherwise>
                                     <field:display object="${treatmentAdvice.drugDosages[item.index]}" field="drugName"

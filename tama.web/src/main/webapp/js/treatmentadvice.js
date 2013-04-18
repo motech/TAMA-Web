@@ -14,30 +14,46 @@ dojo.addOnLoad(function() {
 
     var init = function() {
         var options = new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}});
+        options.newItem({name: null, id: null });
         dojo.forEach(regimens_data, function(regimen, i) {
             options.newItem({name: regimen.displayName, id: regimen._id });
         });
         regimens.set('store', options);
-        regimens.setValue(regimens_data[1]._id);
-        regimens.setValue(regimens_data[0]._id);    // because dojo doesn't trigger onchange for setting same value
+        regimens.setDisplayedValue("");
+        regimens.setValue(null);
 
         dojo.connect(regimens, "onChange", function(regimen_id) {
             var options = new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}});
-            dojo.forEach(regimens_data_hash[regimen_id].drugCompositionGroups, function(group, i) {
-                options.newItem({name: group.name, id: group._id });
-            });
+            var valueToSet = "";
+            if(!regimen_id){
+                options.newItem({name: null, id: null});
+            }
+            else{
+                dojo.forEach(regimens_data_hash[regimen_id].drugCompositionGroups, function(group, i) {
+                    options.newItem({name: group.name, id: group._id });
+                });
+                valueToSet = regimens_data_hash[regimen_id].drugCompositionGroups[0]._id;
+            }
             composition_groups.attr('store', options);
-            composition_groups.setValue(regimens_data_hash[regimen_id].drugCompositionGroups[0]._id);
+            composition_groups.setValue(valueToSet);
         });
 
         dojo.connect(composition_groups, "onChange", function(group_id) {
             var regimen_index = regimens.attr("value");
             var options = new dojo.data.ItemFileWriteStore({data: {identifier: "id", label: "name", items: []}});
-            dojo.forEach(groups_data_hash[group_id].drugCompositions, function(composition, i) {
-                options.newItem({name: composition.displayName, id: composition.id });
-            });
+
+            var valueToSet = "";
+            if(!group_id){
+                options.newItem({name: null, id: null});
+            }
+            else {
+                dojo.forEach(groups_data_hash[group_id].drugCompositions, function(composition, i) {
+                    options.newItem({name: composition.displayName, id: composition.id });
+                });
+                valueToSet = groups_data_hash[group_id].drugCompositions[0].id;
+            }
             compositions.attr('store', options);
-            compositions.setValue(groups_data_hash[group_id].drugCompositions[0].id);
+            compositions.setValue(valueToSet);
         });
 
 
@@ -50,12 +66,15 @@ dojo.addOnLoad(function() {
         dojo.connect(compositions, "onChange", function(composition_id) {
             var selected_drug = null;
             var other_drug = null;
-            dojo.forEach(compositions_data_hash[composition_id].drugs, function(drug, i) {
-                if (compositions_data_hash[composition_id].displayName === drug.name)
-                    selected_drug = drug;
-                else
-                    other_drug = drug;
-            });
+
+            if(composition_id){
+                dojo.forEach(compositions_data_hash[composition_id].drugs, function(drug, i) {
+                    if (compositions_data_hash[composition_id].displayName === drug.name)
+                        selected_drug = drug;
+                    else
+                        other_drug = drug;
+                });
+            }
 
             var composition_drugs = dojo.filter([selected_drug, other_drug], function(drug) {
                 return drug != null;
@@ -74,7 +93,8 @@ dojo.addOnLoad(function() {
             _changeFirstDosage();
 
             secondDosageWidgets.forEach(function(widget, i) {
-                if (compositions_data_hash[composition_id].drugs.length == 1) {
+
+                if ((!composition_id) || compositions_data_hash[composition_id].drugs.length == 1) {
                     widget.set("disabled", true);
                     widget.set("required", false);
                     dojo.query(".dosage:last-child").style("display", "none");
