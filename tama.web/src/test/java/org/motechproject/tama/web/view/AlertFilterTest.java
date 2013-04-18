@@ -42,7 +42,7 @@ public class AlertFilterTest {
     @Test
     public void shouldSetStartDateToSOD_ToSearchAllAlerts_RaisedAfter_TheStartDateTime() {
         AlertFilter alertFilter = new AlertFilter().setEndDate(DateUtil.now().toDate());
-        assertEquals(DateUtil.newDateTime(DateUtil.today(), 0, 0, 0), alertFilter.getStartDateTime());
+        assertEquals(DateUtil.newDateTime(DateUtil.today().minusMonths(1), 0, 0, 0), alertFilter.getStartDateTime());
     }
 
     @Test

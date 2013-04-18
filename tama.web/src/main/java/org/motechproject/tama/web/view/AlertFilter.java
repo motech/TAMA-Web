@@ -28,7 +28,7 @@ public class AlertFilter {
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
-    private Date startDate = DateUtil.today().toDate();
+    private Date startDate = DateUtil.today().minusMonths(1).toDate();
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
     private Date endDate = DateUtil.today().toDate();
