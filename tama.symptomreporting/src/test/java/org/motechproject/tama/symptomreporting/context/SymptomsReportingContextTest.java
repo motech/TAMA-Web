@@ -7,6 +7,7 @@ import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.util.Cookies;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -32,7 +33,16 @@ public class SymptomsReportingContextTest {
     }
 
     @Test
-    public void shouldIncrementTheNumberOfPatientsCalled() {
+    public void shouldResetTheNumberOfCliniciansCalledWhenEndingTheCall() {
+        when(cookies.getValue(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
+        SymptomsReportingContext symptomsReportingContext = new SymptomsReportingContext(kooKooIVRContext);
+
+        symptomsReportingContext.endCall();
+        verify(cookies).add(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED, "0");
+    }
+
+    @Test
+    public void shouldIncrementTheNumberOfCliniciansCalled() {
         when(cookies.getValue(SymptomsReportingContext.NUMBER_OF_CLINICIANS_CALLED)).thenReturn("1");
         SymptomsReportingContext symptomsReportingContext = new SymptomsReportingContext(kooKooIVRContext);
 

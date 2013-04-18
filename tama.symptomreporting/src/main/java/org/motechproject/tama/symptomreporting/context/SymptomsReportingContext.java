@@ -21,6 +21,7 @@ public class SymptomsReportingContext extends TAMAIVRContext {
 
     public void endCall() {
         cookies().add(TAMAIVRContext.SWITCH_TO_DIAL_STATE, String.valueOf(false));
+        cookies().add(NUMBER_OF_CLINICIANS_CALLED, String.valueOf(0));
     }
 
     public int numberOfCliniciansCalled() {
