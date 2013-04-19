@@ -45,7 +45,7 @@ public class PullMessagesController implements PatientMessagesController {
     private KookooIVRResponseBuilder sanitizeResponse(Method method, TAMAIVRContext tamaivrContext) {
         KookooIVRResponseBuilder response = nextMessage(method, tamaivrContext);
         if (response.isNotEmpty()) {
-            response.withPlayAudios(TamaIVRMessage.PRESS_9_FOR_MAIN_MENU);
+            response.withPlayAudios(TamaIVRMessage.END_OF_MESSAGE,TamaIVRMessage.PRESS_9_FOR_MAIN_MENU);
             return response.collectDtmfLength(1);
         } else {
             return response;
