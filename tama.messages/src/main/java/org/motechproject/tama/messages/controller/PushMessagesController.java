@@ -3,6 +3,7 @@ package org.motechproject.tama.messages.controller;
 import org.motechproject.ivr.kookoo.KooKooIVRContext;
 import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.common.domain.TAMAMessageType;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.messages.domain.PlayedMessage;
@@ -42,6 +43,7 @@ public class PushMessagesController implements PatientMessagesController {
 
     private KookooIVRResponseBuilder buildResponse(KooKooIVRContext kooKooIVRContext, KookooIVRResponseBuilder response) {
         List<String> audios = messages.nextMessage(kooKooIVRContext, TAMAMessageType.PUSHED_MESSAGE).getPlayAudios();
+        audios.add(TamaIVRMessage.END_OF_MESSAGE);
         return response.withPlayAudios(audios.toArray(new String[audios.size()]));
     }
 }

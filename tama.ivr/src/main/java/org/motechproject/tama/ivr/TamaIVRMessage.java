@@ -21,6 +21,7 @@ public class TamaIVRMessage implements IVRMessage {
     public static final String DEFAULT_OUTBOUND_CLINIC_MESSAGE = "001_02_01_TAMAGreeting1Generic";
     public static final String DEFAULT_INBOUND_CLINIC_MESSAGE = "Greeting2Generic";
     public static final String END_OF_CALL = "end_of_call";
+    public static final String END_OF_MESSAGE = "msgEndTone";
 
     public static final String CONTENT_LOCATION_URL = "content.location.url";
     /*----------------MENU---------------*/
