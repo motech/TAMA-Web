@@ -56,6 +56,7 @@ public class MessagesController extends SafeIVRController {
         if (builder.isEmpty()) {
             endMessagesFlow(context, new PlayedMessage(context), state);
         }
+        builder.language(context.preferredLanguage());
         return builder;
     }
 
