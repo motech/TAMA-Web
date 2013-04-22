@@ -30,7 +30,7 @@ public class Messages {
         if (healthTipMessage.hasAnyMessage(kooKooIVRContext, type)) {
             return healthTipMessage.getResponse(kooKooIVRContext, type);
         } else {
-            return new KookooIVRResponseBuilder().withSid(kooKooIVRContext.callId());
+            return new KookooIVRResponseBuilder().language(kooKooIVRContext.preferredLanguage()).withSid(kooKooIVRContext.callId());
         }
     }
 
@@ -50,7 +50,7 @@ public class Messages {
         } else if (healthTipMessage.hasAnyMessage(kooKooIVRContext, type)) {
             return healthTipMessage.getResponse(kooKooIVRContext, type);
         } else {
-            return new KookooIVRResponseBuilder().withSid(kooKooIVRContext.callId());
+            return new KookooIVRResponseBuilder().language(kooKooIVRContext.preferredLanguage()).withSid(kooKooIVRContext.callId());
         }
     }
 }

@@ -39,7 +39,7 @@ public class AppointmentReminderMessage {
     public KookooIVRResponseBuilder build(TAMAIVRContext context) {
         String clinicPhoneNumber = patient.getClinic().getPhone();
         List<String> allNumberFileNames = TamaIVRMessage.getAllNumberFileNames("0" + clinicPhoneNumber);
-        KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder().withSid(context.callId());
+        KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder().language(context.preferredLanguage()).withSid(context.callId());
 
         ivrResponseBuilder.withPlayAudios(TamaIVRMessage.NEXT_CLINIC_VISIT_IS_DUE_PART1);
         ivrResponseBuilder.withPlayAudios(allNumberFileNames.toArray(new String[allNumberFileNames.size()]));

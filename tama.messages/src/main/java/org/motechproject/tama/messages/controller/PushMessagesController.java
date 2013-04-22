@@ -36,7 +36,7 @@ public class PushMessagesController implements PatientMessagesController {
     @Override
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext context = new TAMAIVRContextFactory().create(kooKooIVRContext);
-        KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withSid(context.callId());
+        KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().language(kooKooIVRContext.preferredLanguage()).withSid(context.callId());
         return buildResponse(kooKooIVRContext, response);
     }
 

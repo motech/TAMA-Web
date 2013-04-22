@@ -35,7 +35,7 @@ public class HealthTipMessage {
     }
 
     public KookooIVRResponseBuilder getResponse(KooKooIVRContext kooKooIVRContext, TAMAMessageType type) {
-        KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withSid(kooKooIVRContext.callId());
+        KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().language(kooKooIVRContext.preferredLanguage()).withSid(kooKooIVRContext.callId());
         addToResponse(response, kooKooIVRContext, type);
         return response;
     }

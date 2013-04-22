@@ -44,7 +44,7 @@ public class AdherenceTrendMessage {
     }
 
     public KookooIVRResponseBuilder build(Patient patient, DateTime dateTime, TAMAIVRContext context) {
-        KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().withSid(context.callId());
+        KookooIVRResponseBuilder response = new KookooIVRResponseBuilder().language(context.preferredLanguage()).withSid(context.callId());
         double adherencePercentage = adherenceTrendService.getAdherencePercentage(patient, dateTime);
         boolean falling = adherenceTrendService.isAdherenceFalling(patient, dateTime);
         return response.withPlayAudios(new AdherenceTrendAudios(adherencePercentage, falling).getFiles());

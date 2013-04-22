@@ -35,7 +35,7 @@ public class PullMessagesController implements PatientMessagesController {
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = new TAMAIVRContextFactory().create(kooKooIVRContext);
         if (StringUtils.equals("9", tamaivrContext.dtmfInput())) {
-            return new KookooIVRResponseBuilder().withSid(kooKooIVRContext.callId());
+            return new KookooIVRResponseBuilder().language(kooKooIVRContext.preferredLanguage()).withSid(kooKooIVRContext.callId());
         } else {
             return sanitizeResponse(tamaivrContext);
         }

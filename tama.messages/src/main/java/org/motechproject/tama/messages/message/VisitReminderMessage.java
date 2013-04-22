@@ -39,7 +39,7 @@ public class VisitReminderMessage {
     }
 
     public KookooIVRResponseBuilder build(TAMAIVRContext context) {
-        KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder().withSid(context.callId());
+        KookooIVRResponseBuilder ivrResponseBuilder = new KookooIVRResponseBuilder().language(context.preferredLanguage()).withSid(context.callId());
         List<String> message = constructMessage(clinicVisit.getConfirmedAppointmentDate(), patient);
         return ivrResponseBuilder.withPlayAudios(message.toArray(new String[0]));
     }
