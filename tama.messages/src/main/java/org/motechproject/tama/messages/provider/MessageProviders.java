@@ -4,8 +4,6 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.service.MessageTrackingService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -35,7 +33,7 @@ public class MessageProviders {
                 return messageProvider.nextMessage(context);
             }
         }
-        return new KookooIVRResponseBuilder().withSid(context.callId());
+        return new KookooIVRResponseBuilder().language(context.preferredLanguage()).withSid(context.callId());
     }
 
     public void markAsRead(String messageType, String messageId) {

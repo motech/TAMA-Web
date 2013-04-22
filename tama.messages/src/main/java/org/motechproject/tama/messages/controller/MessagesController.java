@@ -48,7 +48,7 @@ public class MessagesController extends SafeIVRController {
         if (messagesController.markAsReadAndContinue(context)) {
             return messagesController.gotDTMF(context);
         } else {
-            return new KookooIVRResponseBuilder().withSid(context.callId());
+            return new KookooIVRResponseBuilder().language(context.preferredLanguage()).withSid(context.callId());
         }
     }
 
