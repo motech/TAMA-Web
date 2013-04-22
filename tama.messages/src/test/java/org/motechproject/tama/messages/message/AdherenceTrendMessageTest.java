@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.messages.domain.AdherenceTrendMessageCriteria;
 import org.motechproject.tama.messages.domain.MessageHistory;
+import org.motechproject.tama.messages.domain.Method;
 import org.motechproject.tama.messages.service.AdherenceTrendService;
 import org.motechproject.tama.messages.service.MessageTrackingService;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
@@ -30,6 +31,8 @@ public class AdherenceTrendMessageTest {
     @Mock
     private MessageHistory history;
 
+    private Method method = Method.PULL;
+
     private Patient patient;
     private TreatmentAdvice advice;
     private DateTime now;
@@ -46,20 +49,20 @@ public class AdherenceTrendMessageTest {
     }
 
     private void setupHistory() {
-        when(messageTrackingService.get(eq(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO), anyString())).thenReturn(history);
+        when(messageTrackingService.get(eq(method), eq(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO), anyString())).thenReturn(history);
     }
 
     @Test
     public void shouldBeValidIfAdherenceTrendIsAvailable() {
         when(adherenceTrendService.hasAdherenceTrend(patient, advice, now)).thenReturn(true);
         when(criteria.shouldPlay(anyDouble(), eq(history), eq(now))).thenReturn(true);
-        assertTrue(adherenceTrendMessage.isValid(patient, advice, now));
+        assertTrue(adherenceTrendMessage.isValid(method, patient, advice, now));
     }
 
     @Test
     public void shouldBeFalseWhenAdherenceTrendMessageShouldNotBePlayed() {
         when(criteria.shouldPlay(anyDouble(), eq(history), eq(now))).thenReturn(true);
-        assertFalse(adherenceTrendMessage.isValid(patient, advice, now));
+        assertFalse(adherenceTrendMessage.isValid(method, patient, advice, now));
     }
 
     @Test
@@ -69,11 +72,11 @@ public class AdherenceTrendMessageTest {
 
     @Test
     public void shouldNotBeValidIfCurrentDateIsLessThanFiveWeeksFromTreatmentStartDate() {
-        assertFalse(adherenceTrendMessage.isValid(patient, advice, now.plusDays(TreatmentAdvice.DAYS_IN_FIVE_WEEKS - 1)));
+        assertFalse(adherenceTrendMessage.isValid(method, patient, advice, now.plusDays(TreatmentAdvice.DAYS_IN_FIVE_WEEKS - 1)));
     }
 
     @Test
     public void shouldNotBeValidIfCurrentDateIsLessThanTreatmentStartDate() {
-        assertFalse(adherenceTrendMessage.isValid(patient, advice, now.minusDays(1)));
+        assertFalse(adherenceTrendMessage.isValid(method, patient, advice, now.minusDays(1)));
     }
 }

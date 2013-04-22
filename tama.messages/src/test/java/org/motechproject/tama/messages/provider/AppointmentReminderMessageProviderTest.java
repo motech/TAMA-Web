@@ -12,6 +12,7 @@ import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.domain.MessageHistory;
+import org.motechproject.tama.messages.domain.Method;
 import org.motechproject.tama.messages.service.MessageTrackingService;
 import org.motechproject.tama.messages.service.PatientOnCall;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -43,6 +44,8 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
     private Clinic clinic;
     @Mock
     private TAMAReminderConfiguration tamaReminderConfiguration;
+
+    private Method method = Method.PULL;
 
     private Patient patient;
 
@@ -79,9 +82,9 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
         when(appointment.isUpcoming()).thenReturn(true);
         when(appointment.getDueDate()).thenReturn(now.toLocalDate());
         when(messageHistory.getCount()).thenReturn(1);
-        when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertFalse(appointmentReminderMessageProvider.hasMessage(context, TAMAMessageType.ADHERENCE_TO_ART));
+        assertFalse(appointmentReminderMessageProvider.hasMessage(method, context, TAMAMessageType.ADHERENCE_TO_ART));
     }
 
     @Test
@@ -92,9 +95,9 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
         when(appointment.isUpcoming()).thenReturn(true);
         when(appointment.getDueDate()).thenReturn(now.toLocalDate());
         when(messageHistory.getCount()).thenReturn(1);
-        when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertTrue(appointmentReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+        assertTrue(appointmentReminderMessageProvider.hasMessage(method, context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
@@ -105,9 +108,9 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
         when(appointment.isUpcoming()).thenReturn(true);
         when(appointment.getDueDate()).thenReturn(now.toLocalDate());
         when(messageHistory.getCount()).thenReturn(1);
-        when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertFalse(appointmentReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+        assertFalse(appointmentReminderMessageProvider.hasMessage(method, context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
@@ -118,9 +121,9 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
         when(appointment.isUpcoming()).thenReturn(true);
         when(appointment.getDueDate()).thenReturn(now.toLocalDate());
         when(messageHistory.getCount()).thenReturn(3);
-        when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertFalse(appointmentReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+        assertFalse(appointmentReminderMessageProvider.hasMessage(method, context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
@@ -132,9 +135,9 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
         when(appointment.getDueDate()).thenReturn(now.toLocalDate());
         when(context.getTAMAMessageType()).thenReturn(AppointmentReminderMessageProvider.MESSAGE_TYPE);
         when(messageHistory.getCount()).thenReturn(3);
-        when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertFalse(appointmentReminderMessageProvider.hasMessage(context, TAMAMessageType.ALL_MESSAGES));
+        assertFalse(appointmentReminderMessageProvider.hasMessage(method, context, TAMAMessageType.ALL_MESSAGES));
     }
 
     @Test
@@ -145,9 +148,9 @@ public class AppointmentReminderMessageProviderTest extends BaseUnitTest {
         when(appointment.isUpcoming()).thenReturn(true);
         when(appointment.getDueDate()).thenReturn(now.toLocalDate());
         when(messageHistory.getCount()).thenReturn(3);
-        when(messageTrackingService.get(eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(AppointmentReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertTrue(appointmentReminderMessageProvider.hasMessage(context, TAMAMessageType.ALL_MESSAGES));
+        assertTrue(appointmentReminderMessageProvider.hasMessage(method, context, TAMAMessageType.ALL_MESSAGES));
     }
 
     @Test

@@ -7,6 +7,7 @@ import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.messages.domain.Method;
 import org.motechproject.tama.messages.message.VisitReminderMessage;
 import org.motechproject.tama.messages.service.MessageTrackingService;
 import org.motechproject.tama.messages.service.PatientOnCall;
@@ -34,10 +35,10 @@ public class VisitReminderMessageProvider implements MessageProvider {
     }
 
     @Override
-    public boolean hasMessage(TAMAIVRContext context, TAMAMessageType type) {
+    public boolean hasMessage(Method method, TAMAIVRContext context, TAMAMessageType type) {
         DateTime today = now();
         VisitReminderMessage message = message(context, today);
-        return message.isValid(today) && shouldPlay(context, type, message);
+        return message.isValid(today) && shouldPlay(method, context, type, message);
     }
 
     @Override
@@ -55,10 +56,10 @@ public class VisitReminderMessageProvider implements MessageProvider {
         return new VisitReminderMessage(remindFrom, clinicVisits.upcomingVisit(today), patientOnCall.getPatient(context));
     }
 
-    private boolean shouldPlay(TAMAIVRContext context, TAMAMessageType type, VisitReminderMessage message) {
+    private boolean shouldPlay(Method method, TAMAIVRContext context, TAMAMessageType type, VisitReminderMessage message) {
         if (PUSHED_MESSAGE.equals(type)) {
             int count = tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount();
-            return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < count;
+            return messageTrackingService.get(method, MESSAGE_TYPE, message.getId()).getCount() < count;
         } else {
             return ALL_MESSAGES.equals(type) && !MESSAGE_TYPE.equals(context.getTAMAMessageType());
         }

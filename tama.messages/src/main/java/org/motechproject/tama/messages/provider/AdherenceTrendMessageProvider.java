@@ -5,6 +5,7 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.messages.domain.Method;
 import org.motechproject.tama.messages.message.AdherenceTrendMessage;
 import org.motechproject.tama.messages.service.PatientOnCall;
 import org.motechproject.tama.patient.domain.Patient;
@@ -30,14 +31,14 @@ public class AdherenceTrendMessageProvider implements MessageProvider {
     }
 
     @Override
-    public boolean hasMessage(TAMAIVRContext context, TAMAMessageType type) {
+    public boolean hasMessage(Method method, TAMAIVRContext context, TAMAMessageType type) {
         DateTime now = now();
         Patient patient = patientOnCall.getPatient(context);
 
         if (PUSHED_MESSAGE.equals(type)) {
-            return notAlreadyPlayed(context) && isMessageValid(context, now, patient) && patient.isOnDailyPillReminder();
+            return notAlreadyPlayed(context) && isMessageValid(method, context, now, patient) && patient.isOnDailyPillReminder();
         } else if (ADHERENCE_TO_ART.equals(type)) {
-            return isMessageValid(context, now, patient);
+            return isMessageValid(method, context, now, patient);
         } else {
             return false;
         }
@@ -47,9 +48,9 @@ public class AdherenceTrendMessageProvider implements MessageProvider {
         return !TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO.equals(context.getTAMAMessageType());
     }
 
-    private boolean isMessageValid(TAMAIVRContext context, DateTime now, Patient patient) {
+    private boolean isMessageValid(Method method, TAMAIVRContext context, DateTime now, Patient patient) {
         TreatmentAdvice advice = patientOnCall.getCurrentTreatmentAdvice(context);
-        return adherenceTrendMessage.isValid(patient, advice, now);
+        return adherenceTrendMessage.isValid(method, patient, advice, now);
     }
 
     @Override

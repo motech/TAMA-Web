@@ -5,6 +5,7 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
+import org.motechproject.tama.messages.domain.Method;
 import org.motechproject.tama.messages.domain.PlayedMessage;
 import org.motechproject.tama.messages.service.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class PushMessagesController implements PatientMessagesController {
         PlayedMessage playedMessage = new PlayedMessage(kooKooIVRContext);
         if (playedMessage.exists()) {
             new TAMAIVRContextFactory().create(kooKooIVRContext).setMessagesPushed(true);
-            messages.markAsRead(kooKooIVRContext, playedMessage);
+            messages.markAsRead(Method.PUSH, kooKooIVRContext, playedMessage);
             return false;
         }
         return true;
@@ -41,7 +42,7 @@ public class PushMessagesController implements PatientMessagesController {
     }
 
     private KookooIVRResponseBuilder buildResponse(KooKooIVRContext kooKooIVRContext, KookooIVRResponseBuilder response) {
-        List<String> audios = messages.nextMessage(kooKooIVRContext, TAMAMessageType.PUSHED_MESSAGE).getPlayAudios();
+        List<String> audios = messages.nextMessage(Method.PUSH, kooKooIVRContext, TAMAMessageType.PUSHED_MESSAGE).getPlayAudios();
         return response.withPlayAudios(audios.toArray(new String[audios.size()]));
     }
 }

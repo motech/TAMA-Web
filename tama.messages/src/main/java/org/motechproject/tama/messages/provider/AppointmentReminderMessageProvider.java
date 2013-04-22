@@ -7,6 +7,7 @@ import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.messages.domain.Method;
 import org.motechproject.tama.messages.message.AppointmentReminderMessage;
 import org.motechproject.tama.messages.service.MessageTrackingService;
 import org.motechproject.tama.messages.service.PatientOnCall;
@@ -33,11 +34,11 @@ public class AppointmentReminderMessageProvider implements MessageProvider {
     }
 
     @Override
-    public boolean hasMessage(TAMAIVRContext context, TAMAMessageType type) {
+    public boolean hasMessage(Method method, TAMAIVRContext context, TAMAMessageType type) {
         LocalDate today = today();
         AppointmentReminderMessage message = message(context, today);
         boolean isAppointmentRemindersActivated = patientOnCall.getPatient(context).getPatientPreferences().getActivateAppointmentReminders();
-        return shouldPlay(context, type, message) && message.isValid(today) && isAppointmentRemindersActivated;
+        return shouldPlay(method, context, type, message) && message.isValid(today) && isAppointmentRemindersActivated;
     }
 
     @Override
@@ -55,10 +56,10 @@ public class AppointmentReminderMessageProvider implements MessageProvider {
         return new AppointmentReminderMessage(remindFrom, appointment, patientOnCall.getPatient(context));
     }
 
-    private boolean shouldPlay(TAMAIVRContext context, TAMAMessageType type, AppointmentReminderMessage message) {
+    private boolean shouldPlay(Method method, TAMAIVRContext context, TAMAMessageType type, AppointmentReminderMessage message) {
         if (PUSHED_MESSAGE.equals(type)) {
             int count = tamaReminderConfiguration.getPushedAppointmentReminderVoiceMessageCount();
-            return messageTrackingService.get(MESSAGE_TYPE, message.getId()).getCount() < count;
+            return messageTrackingService.get(method, MESSAGE_TYPE, message.getId()).getCount() < count;
         } else {
             return TAMAMessageType.ALL_MESSAGES.equals(type) && !MESSAGE_TYPE.equals(context.getTAMAMessageType());
         }
