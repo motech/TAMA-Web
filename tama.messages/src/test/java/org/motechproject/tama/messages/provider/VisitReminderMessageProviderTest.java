@@ -10,6 +10,7 @@ import org.motechproject.tama.clinicvisits.domain.TAMAReminderConfiguration;
 import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.messages.domain.MessageHistory;
+import org.motechproject.tama.messages.domain.Method;
 import org.motechproject.tama.messages.service.MessageTrackingService;
 import org.motechproject.tama.messages.service.PatientOnCall;
 import org.motechproject.tama.patient.builder.PatientBuilder;
@@ -26,6 +27,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.util.DateUtil.now;
 
 public class VisitReminderMessageProviderTest extends BaseUnitTest {
+
+    private Method method = Method.PULL;
 
     @Mock
     private ClinicVisits clinicVisits;
@@ -78,9 +81,9 @@ public class VisitReminderMessageProviderTest extends BaseUnitTest {
         when(clinicVisit.getConfirmedAppointmentDate()).thenReturn(now);
 
         when(messageHistory.getCount()).thenReturn(1);
-        when(messageTrackingService.get(eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertFalse(visitReminderMessageProvider.hasMessage(context, TAMAMessageType.ADHERENCE_TO_ART));
+        assertFalse(visitReminderMessageProvider.hasMessage(method, context, TAMAMessageType.ADHERENCE_TO_ART));
     }
 
     @Test
@@ -92,9 +95,9 @@ public class VisitReminderMessageProviderTest extends BaseUnitTest {
         when(clinicVisit.getConfirmedAppointmentDate()).thenReturn(now);
 
         when(messageHistory.getCount()).thenReturn(1);
-        when(messageTrackingService.get(eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertTrue(visitReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+        assertTrue(visitReminderMessageProvider.hasMessage(method, context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
@@ -106,9 +109,9 @@ public class VisitReminderMessageProviderTest extends BaseUnitTest {
         when(clinicVisit.getConfirmedAppointmentDate()).thenReturn(now);
 
         when(messageHistory.getCount()).thenReturn(2);
-        when(messageTrackingService.get(eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertFalse(visitReminderMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+        assertFalse(visitReminderMessageProvider.hasMessage(method, context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
@@ -121,9 +124,9 @@ public class VisitReminderMessageProviderTest extends BaseUnitTest {
 
         when(messageHistory.getCount()).thenReturn(2);
         when(context.getTAMAMessageType()).thenReturn(VisitReminderMessageProvider.MESSAGE_TYPE);
-        when(messageTrackingService.get(eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertFalse(visitReminderMessageProvider.hasMessage(context, TAMAMessageType.ALL_MESSAGES));
+        assertFalse(visitReminderMessageProvider.hasMessage(method, context, TAMAMessageType.ALL_MESSAGES));
     }
 
     @Test
@@ -135,9 +138,9 @@ public class VisitReminderMessageProviderTest extends BaseUnitTest {
         when(clinicVisit.getConfirmedAppointmentDate()).thenReturn(now);
 
         when(messageHistory.getCount()).thenReturn(2);
-        when(messageTrackingService.get(eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
+        when(messageTrackingService.get(eq(method), eq(VisitReminderMessageProvider.MESSAGE_TYPE), anyString())).thenReturn(messageHistory);
 
-        assertTrue(visitReminderMessageProvider.hasMessage(context, TAMAMessageType.ALL_MESSAGES));
+        assertTrue(visitReminderMessageProvider.hasMessage(method, context, TAMAMessageType.ALL_MESSAGES));
     }
 
     @Test

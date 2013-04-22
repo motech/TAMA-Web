@@ -8,7 +8,7 @@ public class MessageIdTest {
 
     @Test
     public void shouldConcatenateTypeAndIdAsMessageId() {
-        MessageId messageId = new MessageId("MessageType", "MessageId");
-        assertEquals("MessageTypeMessageId", messageId.getMessageId());
+        MessageId messageId = new MessageId(Method.PULL, "MessageType", "MessageId");
+        assertEquals("PULLMessageTypeMessageId", messageId.getMessageId());
     }
 }

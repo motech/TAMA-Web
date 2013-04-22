@@ -9,6 +9,7 @@ import org.motechproject.ivr.kookoo.KookooIVRResponseBuilder;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
+import org.motechproject.tama.messages.domain.Method;
 import org.motechproject.tama.messages.message.AdherenceTrendMessage;
 import org.motechproject.tama.messages.service.PatientOnCall;
 import org.motechproject.tama.patient.domain.Patient;
@@ -22,6 +23,8 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class AdherenceTrendMessageProviderTest {
+
+    private Method method = Method.PULL;
 
     @Mock
     private PatientOnCall patientOnCall;
@@ -47,41 +50,41 @@ public class AdherenceTrendMessageProviderTest {
     @Test
     public void shouldNotHaveAdherenceTrendMessageWhenLastPlayedMessageIsAdherenceTrend() {
         when(context.getTAMAMessageType()).thenReturn(TAMAConstants.VOICE_MESSAGE_COMMAND_AUDIO);
-        when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
-        assertFalse(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+        when(adherenceTrendMessage.isValid(eq(method), any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        assertFalse(adherenceTrendMessageProvider.hasMessage(method, context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
     public void shouldHaveMessageTreatmentAdviceHasAdherenceTrend() {
-        when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        when(adherenceTrendMessage.isValid(eq(method), any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
         when(patient.isOnDailyPillReminder()).thenReturn(true);
-        assertTrue(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+        assertTrue(adherenceTrendMessageProvider.hasMessage(method, context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
     public void shouldHaveMessageWhenMessageTypeIsAdherenceAndPatientIsOnDailyPillReminder() {
-        when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        when(adherenceTrendMessage.isValid(eq(method), any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
         when(patient.isOnDailyPillReminder()).thenReturn(true);
-        assertTrue(adherenceTrendMessageProvider.hasMessage(context, TAMAMessageType.ADHERENCE_TO_ART));
+        assertTrue(adherenceTrendMessageProvider.hasMessage(method, context, TAMAMessageType.ADHERENCE_TO_ART));
     }
 
     @Test
     public void shouldNotHaveMessageWhenPatientIsOnFourDayRecall() {
         when(patient.isOnDailyPillReminder()).thenReturn(false);
-        when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
-        assertFalse(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+        when(adherenceTrendMessage.isValid(eq(method), any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        assertFalse(adherenceTrendMessageProvider.hasMessage(method, context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test
     public void shouldNotHaveMessageWhenMessageTypeIsNotAdherenceTrendOrPushMessage() {
-        when(adherenceTrendMessage.isValid(any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
-        assertFalse(adherenceTrendMessageProvider.hasMessage(context, TAMAMessageType.ART_AND_CD4));
+        when(adherenceTrendMessage.isValid(eq(method), any(Patient.class), eq(advice), any(DateTime.class))).thenReturn(true);
+        assertFalse(adherenceTrendMessageProvider.hasMessage(method, context, TAMAMessageType.ART_AND_CD4));
     }
 
     @Test
     public void shouldNotHaveMessageTreatmentAdviceDoesNotHaveAdherenceTrend() {
         when(advice.hasAdherenceTrend(any(LocalDate.class))).thenReturn(false);
-        assertFalse(adherenceTrendMessageProvider.hasMessage(context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
+        assertFalse(adherenceTrendMessageProvider.hasMessage(method, context, org.motechproject.tama.common.domain.TAMAMessageType.PUSHED_MESSAGE));
     }
 
     @Test

@@ -7,6 +7,7 @@ import org.motechproject.tama.common.domain.TAMAMessageType;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
+import org.motechproject.tama.messages.domain.Method;
 import org.motechproject.tama.messages.domain.PlayedMessage;
 import org.motechproject.tama.messages.service.Messages;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class PullMessagesController implements PatientMessagesController {
     public boolean markAsReadAndContinue(KooKooIVRContext kooKooIVRContext) {
         PlayedMessage playedMessage = new PlayedMessage(kooKooIVRContext);
         if (playedMessage.exists()) {
-            messages.markAsRead(kooKooIVRContext, playedMessage);
+            messages.markAsRead(Method.PULL, kooKooIVRContext, playedMessage);
         }
         return true;
     }
@@ -37,12 +38,12 @@ public class PullMessagesController implements PatientMessagesController {
         if (StringUtils.equals("9", tamaivrContext.dtmfInput())) {
             return new KookooIVRResponseBuilder().language(kooKooIVRContext.preferredLanguage()).withSid(kooKooIVRContext.callId());
         } else {
-            return sanitizeResponse(tamaivrContext);
+            return sanitizeResponse(Method.PULL, tamaivrContext);
         }
     }
 
-    private KookooIVRResponseBuilder sanitizeResponse(TAMAIVRContext tamaivrContext) {
-        KookooIVRResponseBuilder response = nextMessage(tamaivrContext);
+    private KookooIVRResponseBuilder sanitizeResponse(Method method, TAMAIVRContext tamaivrContext) {
+        KookooIVRResponseBuilder response = nextMessage(method, tamaivrContext);
         if (response.isNotEmpty()) {
             response.withPlayAudios(TamaIVRMessage.END_OF_MESSAGE,TamaIVRMessage.PRESS_9_FOR_MAIN_MENU);
             return response.collectDtmfLength(1);
@@ -51,10 +52,10 @@ public class PullMessagesController implements PatientMessagesController {
         }
     }
 
-    private KookooIVRResponseBuilder nextMessage(TAMAIVRContext tamaIVRContext) {
+    private KookooIVRResponseBuilder nextMessage(Method method, TAMAIVRContext tamaIVRContext) {
         TAMAMessageType type = tamaIVRContext.getMessagesCategory();
         if (TAMAMessageType.ALL_MESSAGES.equals(type) || TAMAMessageType.ADHERENCE_TO_ART.equals(type)) {
-            return messages.nextMessage(tamaIVRContext.getKooKooIVRContext(), type);
+            return messages.nextMessage(method, tamaIVRContext.getKooKooIVRContext(), type);
         } else {
             return messages.nextHealthTip(tamaIVRContext.getKooKooIVRContext(), type);
         }
