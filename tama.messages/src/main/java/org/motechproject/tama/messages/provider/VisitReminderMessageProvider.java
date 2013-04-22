@@ -61,7 +61,12 @@ public class VisitReminderMessageProvider implements MessageProvider {
             int count = tamaReminderConfiguration.getPushedVisitReminderVoiceMessageCount();
             return messageTrackingService.get(method, MESSAGE_TYPE, message.getId()).getCount() < count;
         } else {
-            return ALL_MESSAGES.equals(type) && !MESSAGE_TYPE.equals(context.getTAMAMessageType());
+            return ALL_MESSAGES.equals(type) && !playedAppoitmentOrVisitReminder(context);
         }
+    }
+
+    private boolean playedAppoitmentOrVisitReminder(TAMAIVRContext context) {
+        String type = context.getTAMAMessageType();
+        return MESSAGE_TYPE.equals(type) || AppointmentReminderMessageProvider.MESSAGE_TYPE.equals(type);
     }
 }
