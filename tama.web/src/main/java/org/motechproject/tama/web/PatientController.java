@@ -308,35 +308,14 @@ public class PatientController extends BaseController {
     public String updateForm(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         if (patient == null) return "authorizationFailure";
-        List<SystemCategory> allSystemCategories = SystemCategoryDefinition.all();
-        List<SystemCategory> patientSystemCategories = patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories();
-        List<SystemCategory> systemCategories = getSystemCategories(allSystemCategories, patientSystemCategories);
 
-        patient.getMedicalHistory().getNonHivMedicalHistory().setSystemCategories(systemCategories);
+        List<SystemCategory> patientSystemCategories = patient.getMedicalHistory().getNonHivMedicalHistory().getSystemCategories();
+
         initUIModel(uiModel, patient);
 
-        uiModel.addAttribute("systemCategories", systemCategories);
-
+        uiModel.addAttribute("systemCategories", patientSystemCategories);
         uiModel.addAttribute("canTransitionToWeekly", patient.canTransitionToWeekly(minNumberOfDaysOnDailyBeforeTransitioningToWeekly));
         return UPDATE_VIEW;
-    }
-
-    private List<SystemCategory> getSystemCategories(List<SystemCategory> allSystemCategories, List<SystemCategory> patientSystemCategories){
-        if(allSystemCategories.size() == patientSystemCategories.size())
-            return patientSystemCategories;
-
-        for(SystemCategory category: patientSystemCategories){
-            int index = allSystemCategories.indexOf(category);
-            if(index > -1){
-                SystemCategory systemCategory = allSystemCategories.get(index);
-                if(systemCategory.getAilments().hasOtherAilments() && !category.getAilments().hasOtherAilments()){
-                    category.getAilments().setOtherAilments(systemCategory.getAilments().getOtherAilments());
-                }
-                allSystemCategories.set(index, category);
-
-            }
-        }
-        return allSystemCategories;
     }
 
     @RequestMapping(method = RequestMethod.PUT)

@@ -16,6 +16,7 @@ import org.motechproject.tama.reporting.service.PatientReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,8 +56,18 @@ public class PatientService {
     }
 
     public void create(Patient patient, String clinicId, String userName) {
-        populateDefaultMedicaHistory(patient);
-        allPatients.addToClinic(patient, clinicId, userName);
+        NonHIVMedicalHistory nonHivMedicalHistory = patient.getMedicalHistory().getNonHivMedicalHistory();
+        List<SystemCategory> existingSystemCategories = nonHivMedicalHistory.getSystemCategories();
+
+        List<SystemCategory> populatedSystemCategories = getSystemCategories(SystemCategoryDefinition.all(), existingSystemCategories);
+        nonHivMedicalHistory.setSystemCategories(populatedSystemCategories);
+        try{
+            allPatients.addToClinic(patient, clinicId, userName);
+        }
+        catch(Exception ex){
+            nonHivMedicalHistory.setSystemCategories(existingSystemCategories);
+            throw ex;
+        }
         outboxRegistry.getOutbox().enroll(patient);
         allPatientEventLogs.addAll(new ChangedPatientPreferenceContext(null, patient).getEventLogs(), userName);
         patientReportingService.save(requestMapper.map(patient), medicalHistoryRequestMapper.map(patient));
@@ -138,15 +149,23 @@ public class PatientService {
         return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen(patient));
     }
 
-    private void populateDefaultMedicaHistory(Patient patient) {
-        NonHIVMedicalHistory nonHivMedicalHistoryForPatient = patient.getMedicalHistory().getNonHivMedicalHistory();
-        List<SystemCategory> existingSystemCategories = nonHivMedicalHistoryForPatient.getSystemCategories();
-        List<SystemCategory> systemCategoriesToBeAdded = SystemCategoryDefinition.all();
-        systemCategoriesToBeAdded.removeAll(existingSystemCategories);
-        for (SystemCategory systemCategory : systemCategoriesToBeAdded) {
-            existingSystemCategories.add(systemCategory);
+
+    private List<SystemCategory> getSystemCategories(List<SystemCategory> allSystemCategories, List<SystemCategory> patientSystemCategories){
+        if(allSystemCategories.size() == patientSystemCategories.size())
+            return patientSystemCategories;
+
+        for(SystemCategory category: patientSystemCategories){
+            int index = allSystemCategories.indexOf(category);
+            if(index > -1){
+                SystemCategory systemCategory = allSystemCategories.get(index);
+                if(systemCategory.getAilments().hasOtherAilments() && !category.getAilments().hasOtherAilments()){
+                    category.getAilments().setOtherAilments(systemCategory.getAilments().getOtherAilments());
+                }
+                allSystemCategories.set(index, category);
+
+            }
         }
-        nonHivMedicalHistoryForPatient.setSystemCategories(existingSystemCategories);
+        return allSystemCategories;
     }
 
     private List<PatientEventLog> selectStatusChangeLogsAndRegimenRelatedLogs(List<PatientEventLog> patientEventLogs) {
