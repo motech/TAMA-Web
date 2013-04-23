@@ -59,21 +59,6 @@ public class CallEventViewTest {
     }
 
     @Test
-    public void shouldNotReturnEndOfMessageInAListOfAllResponsesPlayed() {
-        TamaIVRMessage ivrMessage = new TamaIVRMessage(new Properties());
-        KookooIVRResponseBuilder responseBuilder = StandardIVRResponse.signatureTuneAndCollectDTMF("123").withPlayAudios(TamaIVRMessage.END_OF_MESSAGE.toLowerCase(), TamaIVRMessage.PLEASE_TAKE_DOSE);
-        CallEvent callEvent = new CallEvent(IVREvent.NewCall.toString());
-        callEvent.appendData(CallEventConstants.CUSTOM_DATA_LIST, responseBuilder.create(ivrMessage));
-
-        CallEventView callEventView = new CallEventView(callEvent);
-
-        List<String> content = callEventView.getResponses();
-        assertEquals("signature_music", content.get(0));
-        assertFalse(content.contains(TamaIVRMessage.END_OF_MESSAGE.toLowerCase()));
-
-    }
-
-    @Test
     public void shouldReturnMessageCategory() {
         String category = TAMAMessageType.ALL_MESSAGES.name();
 
