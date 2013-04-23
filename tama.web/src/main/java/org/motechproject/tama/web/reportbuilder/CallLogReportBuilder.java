@@ -1,12 +1,14 @@
 package org.motechproject.tama.web.reportbuilder;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.log.CallFlowDetails;
 import org.motechproject.tama.ivr.repository.AllCallLogs;
@@ -121,7 +123,7 @@ public class CallLogReportBuilder extends BatchReportBuilder {
         row.add(flowDetailsMap.get(FOUR_DAY_RECALL_CALL).getNumberOfTimesAccessed());
         row.add(flowDetailsMap.get(FOUR_DAY_RECALL_CALL).getIndividualAccessDurations());
         row.add(flowDetailsMap.get(FOUR_DAY_RECALL_CALL).getTotalAccessDuration());
-        row.add(flowDetailsMap.get(PUSHED_MESSAGES).getResponsesAsString());
+        row.add(getPushedMessages(flowDetailsMap.get(PUSHED_MESSAGES).getResponses()));
         row.add(flowDetailsMap.get(MESSAGES).getNumberOfTimesAccessed());
         row.add(flowDetailsMap.get(MESSAGES).getIndividualAccessDurations());
         row.add(flowDetailsMap.get(MESSAGES).getTotalAccessDuration());
@@ -149,6 +151,11 @@ public class CallLogReportBuilder extends BatchReportBuilder {
         removeDocumentMatchingStartKey(callLogs);
         incrementIndexOfBatch(callLogs);
         return buildSummaries(callLogs);
+    }
+
+    private String getPushedMessages(List<String> responses){
+        responses.remove(TamaIVRMessage.END_OF_MESSAGE.toLowerCase());
+        return responses.isEmpty() ? "NA" : StringUtils.join(responses, ", ");
     }
 
     private void removeDocumentMatchingStartKey(List<CallLog> callLogs) {
