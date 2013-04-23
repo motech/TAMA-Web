@@ -6,6 +6,7 @@ import org.motechproject.ivr.event.CallEventCustomData;
 import org.motechproject.ivr.kookoo.eventlogging.CallEventConstants;
 import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.common.domain.TAMAMessageType;
+import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
 import org.motechproject.tama.ivr.log.tools.KooKooResponseParser;
 import org.motechproject.tama.ivr.log.tools.Response;
@@ -35,6 +36,7 @@ public class CallEventView {
         for (String responseXML : responseXMLs) {
             Response response = KooKooResponseParser.fromXml(responseXML);
             List<String> audios = response.responsePlayed();
+            audios.remove(TamaIVRMessage.END_OF_MESSAGE.toLowerCase());
             responses.addAll(audios);
         }
         return responses;
