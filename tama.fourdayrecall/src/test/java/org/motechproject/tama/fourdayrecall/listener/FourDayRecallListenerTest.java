@@ -1,5 +1,6 @@
 package org.motechproject.tama.fourdayrecall.listener;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,6 +21,8 @@ import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.testing.utils.BaseUnitTest;
+import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
 
@@ -27,10 +30,11 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-public class FourDayRecallListenerTest {
+public class FourDayRecallListenerTest extends BaseUnitTest {
 
     public static final String PATIENT_ID = "patientId";
 
+    private DateTime NOW = DateUtil.now();
     @Mock
     IVRCall ivrCall;
     @Mock
@@ -51,6 +55,7 @@ public class FourDayRecallListenerTest {
     public void setUp() {
         initMocks(this);
         fourDayRecallListener = new FourDayRecallListener(ivrCall, fourDayRecallSchedulerService, fourDayRecallAlertService, fourDayRecallAdherenceService, allPatients, weeklyAdherenceLogService);
+        mockCurrentDate(NOW);
     }
 
     @Test
@@ -63,6 +68,19 @@ public class FourDayRecallListenerTest {
         fourDayRecallListener.handle(motechEvent);
 
         verify(ivrCall).makeCall(patient, CallTypeConstants.FOUR_DAY_RECALL_CALL, new HashMap<String, String>());
+    }
+
+    @Test
+    public void shouldNotMakeCallWhen_AdherenceHasNotBeenCapturedForCurrentWeek() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
+        motechEvent.setScheduledTime(NOW.plusMinutes(16).toDate());
+
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+        when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(false);
+        fourDayRecallListener.handle(motechEvent);
+
+        verify(ivrCall, never()).makeCall(patient, CallTypeConstants.FOUR_DAY_RECALL_CALL, new HashMap<String, String>());
     }
 
     @Test
@@ -255,6 +273,7 @@ public class FourDayRecallListenerTest {
                 .withJobId("job_id")
                 .withPatientDocId(PATIENT_ID);//.withFirstCall(false);
         MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, dataBuilder.payload());
+        motechEvent.setScheduledTime(NOW.toDate());
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
 
@@ -276,6 +295,8 @@ public class FourDayRecallListenerTest {
 
         if (isLastRetry || isRetry) dataBuilder.withRetryFlag(true);
         if (isLastRetry) dataBuilder.withLastRetryDayFlagSet();
-        return new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, dataBuilder.payload());
+        MotechEvent motechEvent = new MotechEvent(TAMAConstants.WEEKLY_FALLING_TREND_AND_ADHERENCE_IN_RED_ALERT_SUBJECT, dataBuilder.payload());
+        motechEvent.setScheduledTime(NOW.toDate());
+        return motechEvent;
     }
 }

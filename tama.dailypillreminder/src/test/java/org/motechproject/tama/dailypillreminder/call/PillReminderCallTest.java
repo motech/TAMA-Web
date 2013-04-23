@@ -16,6 +16,7 @@ import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdheren
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
+import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 
 import java.util.Map;
@@ -25,7 +26,10 @@ import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class PillReminderCallTest {
+public class PillReminderCallTest extends BaseUnitTest {
+
+    private DateTime NOW = DateUtil.now();
+
     private PillReminderCall pillReminderCall;
     @Mock
     private AllPatients allPatients;
@@ -47,12 +51,13 @@ public class PillReminderCallTest {
         initMocks(this);
         pillReminderCall = Mockito.spy(new PillReminderCall(callService, allPatients, dailyPillReminderService, dailyPillReminderAdherenceService, new Properties()));
         Mockito.doReturn("").when(pillReminderCall).getApplicationUrl();
+        mockCurrentDate(NOW);
     }
 
     @Test
     public void shouldNotMakeACallForANonExistentPatient() {
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(null);
-        pillReminderCall.execute(PATIENT_DOC_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+        pillReminderCall.execute(PATIENT_DOC_ID, NOW.toDate(), TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
         verify(callService, never()).initiateCall(any(CallRequest.class));
     }
 
@@ -62,7 +67,7 @@ public class PillReminderCallTest {
         when(patient.allowAdherenceCalls()).thenReturn(false);
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+        pillReminderCall.execute(PATIENT_DOC_ID, NOW.toDate(), TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
 
         verify(callService, never()).initiateCall(any(CallRequest.class));
     }
@@ -84,7 +89,7 @@ public class PillReminderCallTest {
         when(pillRegimen.getId()).thenReturn("pillRegimenId");
         when(dose.getDoseTime()).thenReturn(now);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+        pillReminderCall.execute(PATIENT_DOC_ID, NOW.toDate(), TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
 
         ArgumentCaptor<CallRequest> callRequestArgumentCaptor = ArgumentCaptor.forClass(CallRequest.class);
         verify(callService).initiateCall(callRequestArgumentCaptor.capture());
@@ -93,6 +98,51 @@ public class PillReminderCallTest {
         assertEquals(String.valueOf(TOTAL_TIMES_TO_SEND), payload.get(PillReminderCall.TOTAL_TIMES_TO_SEND));
         assertEquals(String.valueOf(TIMES_SENT), payload.get(PillReminderCall.TIMES_SENT));
         assertEquals(String.valueOf(RETRY_INTERVAL), payload.get(PillReminderCall.RETRY_INTERVAL));
+    }
+
+    @Test
+    public void shouldNotMakeACallWhenCurrentTimeIsConfiguredMinutesMoreThanScheduledTime() {
+        String PHONE_NUMBER = "1234567890";
+        Patient patient = mock(Patient.class);
+        PillRegimen pillRegimen = mock(PillRegimen.class);
+        Dose dose = mock(Dose.class);
+        DateTime now = DateUtil.now();
+
+        when(patient.allowAdherenceCalls()).thenReturn(true);
+        when(patient.getMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
+        when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
+
+        when(dailyPillReminderService.getPillRegimen(anyString())).thenReturn(pillRegimen);
+        when(pillRegimen.getDoseAt(Matchers.<DateTime>any())).thenReturn(dose);
+        when(pillRegimen.getId()).thenReturn("pillRegimenId");
+        when(dose.getDoseTime()).thenReturn(now);
+
+        pillReminderCall.execute(PATIENT_DOC_ID, NOW.plusMinutes(16).toDate(), TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+
+        ArgumentCaptor<CallRequest> callRequestArgumentCaptor = ArgumentCaptor.forClass(CallRequest.class);
+        verify(callService, never()).initiateCall(callRequestArgumentCaptor.capture());
+    }
+
+    @Test
+    public void shouldMarkDoseAsNotRecordedWhenCurrentTimeIsConfiguredMinutesMoreThanScheduledTime() {
+        String PHONE_NUMBER = "1234567890";
+        Patient patient = mock(Patient.class);
+        PillRegimen pillRegimen = mock(PillRegimen.class);
+        Dose dose = mock(Dose.class);
+        DateTime now = DateUtil.now();
+
+        when(patient.allowAdherenceCalls()).thenReturn(true);
+        when(patient.getMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
+        when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
+
+        when(dailyPillReminderService.getPillRegimen(anyString())).thenReturn(pillRegimen);
+        when(pillRegimen.getDoseAt(Matchers.<DateTime>any())).thenReturn(dose);
+        when(pillRegimen.getId()).thenReturn("pillRegimenId");
+        when(dose.getDoseTime()).thenReturn(now);
+
+        pillReminderCall.execute(PATIENT_DOC_ID, NOW.plusMinutes(16).toDate(), TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+
+        verify(dailyPillReminderAdherenceService).recordDosageAdherenceAsNotCaptured(PATIENT_DOC_ID, "pillRegimenId", dose, DosageStatus.NOT_RECORDED, now);
     }
 
     @Test
@@ -108,7 +158,7 @@ public class PillReminderCallTest {
         when(patient.getMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
         when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
 
-        pillReminderCall.execute(PATIENT_DOC_ID, TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+        pillReminderCall.execute(PATIENT_DOC_ID, NOW.toDate(), TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
 
         ArgumentCaptor<CallRequest> callRequestArgumentCaptor = ArgumentCaptor.forClass(CallRequest.class);
         verify(callService).initiateCall(callRequestArgumentCaptor.capture());

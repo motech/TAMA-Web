@@ -30,7 +30,7 @@ public class PillReminderListener {
             int timesAlreadyCalled = (Integer) parameters.get(EventKeys.PILLREMINDER_TIMES_SENT);
             int totalCallsToBeMade = (Integer) parameters.get(EventKeys.PILLREMINDER_TOTAL_TIMES_TO_SEND);
             int retryInterval = (Integer) parameters.get(EventKeys.PILLREMINDER_RETRY_INTERVAL);
-            call.execute(patientDocId, timesAlreadyCalled, totalCallsToBeMade, retryInterval);
+            call.execute(patientDocId, motechEvent.getScheduledTime(), timesAlreadyCalled, totalCallsToBeMade, retryInterval);
         } catch (Exception e) {
             logger.error("Failed to handle PillReminderCall event, this event would not be retried but the subsequent repeats would happen.", e);
         }
