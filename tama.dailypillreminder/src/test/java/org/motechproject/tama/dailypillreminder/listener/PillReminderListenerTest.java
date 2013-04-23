@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.motechproject.model.MotechEvent;
 import org.motechproject.server.pillreminder.api.EventKeys;
 import org.motechproject.tama.dailypillreminder.call.PillReminderCall;
+import org.motechproject.util.DateUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,9 +36,10 @@ public class PillReminderListenerTest {
         map.put(EventKeys.PILLREMINDER_TIMES_SENT, 2);
         map.put(EventKeys.PILLREMINDER_RETRY_INTERVAL, 5);
         MotechEvent motechEvent = new MotechEvent("subject", map);
+        motechEvent.setScheduledTime(DateUtil.now().toDate());
 
         listener.handlePillReminderEvent(motechEvent);
 
-        verify(pillReminderCall).execute("patientId", 2, 4, 5);
+        verify(pillReminderCall).execute("patientId", motechEvent.getScheduledTime(), 2, 4, 5);
     }
 }

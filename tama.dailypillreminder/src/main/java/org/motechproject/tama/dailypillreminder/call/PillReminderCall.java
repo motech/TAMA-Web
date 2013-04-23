@@ -1,5 +1,7 @@
 package org.motechproject.tama.dailypillreminder.call;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.motechproject.ivr.service.IVRService;
 import org.motechproject.tama.common.CallTypeConstants;
 import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
@@ -15,15 +17,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import static org.motechproject.util.DateUtil.newDateTime;
 
 @Component
 public class PillReminderCall extends IVRCall {
     public static final String TIMES_SENT = "times_sent";
     public static final String TOTAL_TIMES_TO_SEND = "total_times_to_send";
     public static final String RETRY_INTERVAL = "retry_interval";
+    public static final int ALLOWED_TIME_LAG_IN_MINUTES = 15;
+
     private AllPatients allPatients;
     private DailyPillReminderService dailyPillReminderService;
     private DailyPillReminderAdherenceService dailyPillReminderAdherenceService;
@@ -37,7 +44,7 @@ public class PillReminderCall extends IVRCall {
         this.dailyPillReminderAdherenceService = dailyPillReminderAdherenceService;
     }
 
-    public void execute(String patientDocId, final int timesSent, final int totalTimesToSend, final int retryInterval) {
+    public void execute(String patientDocId, Date scheduledTime, final int timesSent, final int totalTimesToSend, final int retryInterval) {
         final Patient patient = allPatients.get(patientDocId);
         if (patient != null && patient.allowAdherenceCalls()) {
             Map<String, String> params = new HashMap<String, String>() {{
@@ -48,7 +55,9 @@ public class PillReminderCall extends IVRCall {
             if (timesSent == 0) {
                 recordDosageStatusAsNotRecordedByDefault(patientDocId);
             }
-            makeCall(patient, CallTypeConstants.DAILY_PILL_REMINDER_CALL, params);
+            if (new Period(ignoreSecondsAndMillis(DateUtil.now()), ignoreSecondsAndMillis(newDateTime(scheduledTime))).getMinutes() <= ALLOWED_TIME_LAG_IN_MINUTES) {
+                makeCall(patient, CallTypeConstants.DAILY_PILL_REMINDER_CALL, params);
+            }
         }
     }
 
@@ -56,5 +65,9 @@ public class PillReminderCall extends IVRCall {
         PillRegimen pillRegimen = dailyPillReminderService.getPillRegimen(patientDocId);
         Dose dose = pillRegimen.getDoseAt(DateUtil.now());
         dailyPillReminderAdherenceService.recordDosageAdherenceAsNotCaptured(patientDocId, pillRegimen.getId(), dose, DosageStatus.NOT_RECORDED, dose.getDoseTime());
+    }
+
+    private DateTime ignoreSecondsAndMillis(DateTime dateTime) {
+        return dateTime.withSecondOfMinute(0).withMillisOfSecond(0);
     }
 }
