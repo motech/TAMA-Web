@@ -424,13 +424,8 @@ fieldset th {
 
 .submit input {
 	border: 1px solid #BBBBBB;
-	color:#555555;
-	padding:2px 7px;
 	font-size:11px;
 	text-transform:uppercase;
-	font-weight:bold;
-	height:24px;
-    margin-right: 10px;
 }
 
 .updated {
