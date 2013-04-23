@@ -55,7 +55,7 @@ public class PillReminderCall extends IVRCall {
             if (timesSent == 0) {
                 recordDosageStatusAsNotRecordedByDefault(patientDocId);
             }
-            if (new Period(ignoreSecondsAndMillis(DateUtil.now()), ignoreSecondsAndMillis(newDateTime(scheduledTime))).getMinutes() <= ALLOWED_TIME_LAG_IN_MINUTES) {
+            if (Math.abs(new Period(ignoreSecondsAndMillis(DateUtil.now()), ignoreSecondsAndMillis(newDateTime(scheduledTime))).getMinutes()) <= ALLOWED_TIME_LAG_IN_MINUTES) {
                 makeCall(patient, CallTypeConstants.DAILY_PILL_REMINDER_CALL, params);
             }
         }

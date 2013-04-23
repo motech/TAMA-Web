@@ -146,6 +146,29 @@ public class PillReminderCallTest extends BaseUnitTest {
     }
 
     @Test
+    public void shouldNotMakeACallWhenCurrentTimeIsConfiguredMinutesLessThanScheduledTime() {
+        String PHONE_NUMBER = "1234567890";
+        Patient patient = mock(Patient.class);
+        PillRegimen pillRegimen = mock(PillRegimen.class);
+        Dose dose = mock(Dose.class);
+        DateTime now = DateUtil.now();
+
+        when(patient.allowAdherenceCalls()).thenReturn(true);
+        when(patient.getMobilePhoneNumber()).thenReturn(PHONE_NUMBER);
+        when(allPatients.get(PATIENT_DOC_ID)).thenReturn(patient);
+
+        when(dailyPillReminderService.getPillRegimen(anyString())).thenReturn(pillRegimen);
+        when(pillRegimen.getDoseAt(Matchers.<DateTime>any())).thenReturn(dose);
+        when(pillRegimen.getId()).thenReturn("pillRegimenId");
+        when(dose.getDoseTime()).thenReturn(now);
+
+        pillReminderCall.execute(PATIENT_DOC_ID, NOW.minusMinutes(16).toDate(), TIMES_SENT, TOTAL_TIMES_TO_SEND, RETRY_INTERVAL);
+
+        ArgumentCaptor<CallRequest> callRequestArgumentCaptor = ArgumentCaptor.forClass(CallRequest.class);
+        verify(callService, never()).initiateCall(callRequestArgumentCaptor.capture());
+    }
+
+    @Test
     public void shouldMakeACallForActivePatient_DoesNotRecordDosageAsNotReported_WhenCalledAfterFirstTime() {
         String PHONE_NUMBER = "1234567890";
         Patient patient = mock(Patient.class);

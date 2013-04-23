@@ -98,7 +98,7 @@ public class FourDayRecallListener {
     }
 
     private void makeCall(MotechEvent motechEvent, Patient patient) {
-        if (new Period(ignoreSecondsAndMillis(DateUtil.now()), ignoreSecondsAndMillis(newDateTime(motechEvent.getScheduledTime()))).getMinutes() <= ALLOWED_TIME_LAG_IN_MINUTES) {
+        if (Math.abs(new Period(ignoreSecondsAndMillis(DateUtil.now()), ignoreSecondsAndMillis(newDateTime(motechEvent.getScheduledTime()))).getMinutes()) <= ALLOWED_TIME_LAG_IN_MINUTES) {
             ivrCall.makeCall(patient, CallTypeConstants.FOUR_DAY_RECALL_CALL, new HashMap<String, String>());
         }
     }

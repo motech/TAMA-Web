@@ -71,10 +71,23 @@ public class FourDayRecallListenerTest extends BaseUnitTest {
     }
 
     @Test
-    public void shouldNotMakeCallWhen_AdherenceHasNotBeenCapturedForCurrentWeek() {
+    public void shouldNotMakeCallWhenScheduledTimeIsConfiguredMinutesGreaterThanCurrentTime() {
         Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
         MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
         motechEvent.setScheduledTime(NOW.plusMinutes(16).toDate());
+
+        when(allPatients.get(PATIENT_ID)).thenReturn(patient);
+        when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(false);
+        fourDayRecallListener.handle(motechEvent);
+
+        verify(ivrCall, never()).makeCall(patient, CallTypeConstants.FOUR_DAY_RECALL_CALL, new HashMap<String, String>());
+    }
+
+    @Test
+    public void shouldNotMakeCallWhenScheduledTimeIsConfiguredMinutesLessThanCurrentTime() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().withStatus(Status.Active).withId(PATIENT_ID).withWeeklyCallPreference(DayOfWeek.Friday, new TimeOfDay(10, 10, TimeMeridiem.AM)).build();
+        MotechEvent motechEvent = buildFourDayRecallEvent(false, false, false);
+        motechEvent.setScheduledTime(NOW.minusMinutes(16).toDate());
 
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
         when(fourDayRecallAdherenceService.isAdherenceCapturedForCurrentWeek(patient)).thenReturn(false);
