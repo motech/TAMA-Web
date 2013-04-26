@@ -5,7 +5,7 @@
     <parent>
         <artifactId>tama.migration</artifactId>
         <groupId>org.motechproject.tama</groupId>
-        <version>0.7-SNAPSHOT</version>
+        <version>1.01</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -19,27 +19,27 @@
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.patient</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>1.01</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.outbox</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>1.01</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.ivr</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>1.01</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.facility</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>1.01</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
             <artifactId>tama.reporting</artifactId>
-            <version>0.7-SNAPSHOT</version>
+            <version>1.01</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
@@ -47,7 +47,7 @@
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
-            <version>0.7-SNAPSHOT</version>
+            <version>1.01</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
@@ -55,7 +55,7 @@
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
-            <version>0.7-SNAPSHOT</version>
+            <version>1.01</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject.tama</groupId>
@@ -63,7 +63,7 @@
             <classifier>tests</classifier>
             <scope>test</scope>
             <type>jar</type>
-            <version>0.7-SNAPSHOT</version>
+            <version>1.01</version>
         </dependency>
         <dependency>
             <groupId>org.motechproject</groupId>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>org.motechproject.tama.reports</groupId>
             <artifactId>tama-reports-contract</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.01</version>
         </dependency>
     </dependencies>
 

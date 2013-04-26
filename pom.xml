@@ -5,7 +5,7 @@
     <groupId>org.motechproject.tama</groupId>
     <artifactId>tama-all</artifactId>
     <packaging>pom</packaging>
-    <version>0.7-SNAPSHOT</version>
+    <version>1.01</version>
     <modules>
         <module>tama.common</module>
         <module>tama.refdata</module>
@@ -74,9 +74,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-security.version>3.1.2.RELEASE</spring-security.version>
         <build.dir>build</build.dir>
-        <motech.version>0.10.5-SNAPSHOT</motech.version>
-        <tama.reporting.version>1.0-SNAPSHOT</tama.reporting.version>
-        <motech.contrib.version>0.10-SNAPSHOT</motech.contrib.version>
+        <motech.version>0.10.5-TAMA</motech.version>
+        <tama.reporting.version>1.01</tama.reporting.version>
+        <motech.contrib.version>0.10</motech.contrib.version>
         <powermock.version>1.4.9</powermock.version>
     </properties>
     <dependencyManagement>
@@ -632,39 +632,39 @@
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>test_data</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.messages</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>migration_from_0.6_to_0.7</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.common</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.common</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
                 <classifier>tests</classifier>
                 <type>jar</type>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.refdata</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.refdata</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
                 <type>jar</type>
@@ -672,41 +672,41 @@
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.facility</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.facility</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
                 <classifier>tests</classifier>
                 <type>jar</type>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.patient</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.reporting</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.patient</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
                 <classifier>tests</classifier>
                 <type>jar</type>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.outbox</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.outbox</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
                 <type>jar</type>
@@ -714,12 +714,12 @@
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.ivr</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.ivr</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
                 <type>jar</type>
@@ -727,12 +727,12 @@
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.clinicvisits</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.clinicvisits</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
                 <type>jar</type>
@@ -740,32 +740,32 @@
             <dependency>
                 <groupId>org.motechproject</groupId>
                 <artifactId>tama-symptoms-reporting</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.dailypillreminder</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.fourdayrecall</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.healthtips</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.tools</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.symptomreporting</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.01</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama-motech-contrib</groupId>
