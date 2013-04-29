@@ -41,7 +41,11 @@
             <div id="dailyPillReminderReportGridNotice"><!-- required or JSP eats me --></div>
             <div id="dailyPillReminderReportGrid">
                 <a id="dailyPillReminderReportGridExcelLink" href="#">Download as Excel</a>
-                <div id="dailyPillReminderReportGridPlaceholder" style="margin-top: 10px;"></div>
+                <div style="overflow-x: auto">
+                    <div style="overflow-x: auto">
+                        <div id="dailyPillReminderReportGridPlaceholder" style="margin-top: 10px;"></div>
+                    </div>
+                </div>
             </div>
         </util:panel>
     </div>
