@@ -42,7 +42,9 @@
             <div id="dailyPillReminderReportGrid">
                 <a id="dailyPillReminderReportGridExcelLink" href="#">Download as Excel</a>
                 <div style="overflow-x: auto">
-                    <div id="dailyPillReminderReportGridPlaceholder" style="margin-top: 10px;"></div>
+                    <div style="overflow-x: auto">
+                        <div id="dailyPillReminderReportGridPlaceholder" style="margin-top: 10px;"></div>
+                    </div>
                 </div>
             </div>
         </util:panel>
