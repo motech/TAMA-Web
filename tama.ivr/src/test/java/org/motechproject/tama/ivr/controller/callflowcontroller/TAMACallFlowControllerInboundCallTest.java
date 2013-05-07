@@ -16,6 +16,8 @@ import org.motechproject.tama.ivr.controller.TAMACallFlowController;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
+import org.motechproject.tama.patient.builder.PatientBuilder;
+import org.motechproject.tama.patient.domain.CallPreference;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.PatientPreferences;
 import org.motechproject.tama.patient.domain.Status;
@@ -115,9 +117,40 @@ public class TAMACallFlowControllerInboundCallTest {
     }
 
     @Test
+    public void shouldPushMessagesWhenAllTreesAreCompleteAndNoMessageWasPushedAndPatientIsOnDailyPillReminder() {
+        String patientDocumentId = "patientDocumentId";
+        Patient patientNotOnDailyPillReminder = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
+
+        tamaIVRContextForTest.callState(CallState.ALL_TREES_COMPLETED);
+        tamaIVRContextForTest.patientDocumentId(patientDocumentId);
+        tamaIVRContextForTest.setMessagesPushed(false);
+
+        when(allPatients.get(patientDocumentId)).thenReturn(patientNotOnDailyPillReminder);
+
+        assertEquals(ControllerURLs.PUSH_MESSAGES_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+    }
+
+    @Test
+    public void shouldNotPushMessageWhenPatientNotOnDailyPillReminderOnIncomingCall() {
+        String patientDocumentId = "patientDocumentId";
+        Patient patientNotOnDailyPillReminder = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.FourDayRecall).build();
+
+        tamaIVRContextForTest.callState(CallState.ALL_TREES_COMPLETED);
+        tamaIVRContextForTest.setMessagesPushed(false);
+        tamaIVRContextForTest.patientDocumentId(patientDocumentId);
+        tamaIVRContextForTest.callDirection(CallDirection.Inbound);
+
+        when(allPatients.get(patientDocumentId)).thenReturn(patientNotOnDailyPillReminder);
+
+        assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
+    }
+
+    @Test
     public void whenSymptomReportingTreeIsComplete() {
+        tamaIVRContextForTest.setMessagesPushed(true);
         tamaIVRContextForTest.lastCompletedTree(TAMATreeRegistry.REGIMEN_1_TO_6);
         tamaIVRContextForTest.callState(CallState.ALL_TREES_COMPLETED);
+
         assertEquals(ControllerURLs.MENU_REPEAT, tamaCallFlowController.urlFor(kooKooIVRContext));
         verify(cookies).add(TAMAIVRContext.DO_NOT_PROMPT_FOR_HANG_UP, "true");
     }

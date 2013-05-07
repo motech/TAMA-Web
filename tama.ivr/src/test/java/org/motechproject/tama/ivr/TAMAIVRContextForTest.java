@@ -37,6 +37,7 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     private boolean isDialState;
     private List<String> completedTrees = new ArrayList<String>();
     private boolean hasTraversedAnyTree;
+    private boolean messagePushed;
 
     public TAMAIVRContextForTest() {
         super();
@@ -179,6 +180,16 @@ public class TAMAIVRContextForTest extends TAMAIVRContext {
     @Override
     public boolean hasTraversedAnyTree() {
         return hasTraversedAnyTree;
+    }
+
+    @Override
+    public boolean isMessagesPushed() {
+        return messagePushed;
+    }
+
+    @Override
+    public void setMessagesPushed(boolean value) {
+        this.messagePushed = value;
     }
 
     public void hasTraversedAnyTree(boolean hasTraversedAnyTree) {
