@@ -16,6 +16,7 @@ import org.motechproject.tama.ivr.domain.CallState;
 import org.motechproject.tama.ivr.factory.TAMAIVRContextFactory;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.domain.CallPreference;
+import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.util.Cookies;
@@ -71,6 +72,10 @@ public class TAMACallFlowControllerTest {
         tamaIVRContext.callDirection(CallDirection.Outbound);
         String patientId = "1234";
         tamaIVRContext.patientDocumentId(patientId);
+
+        Patient patient = PatientBuilder.startRecording().withDefaults().withId(patientId).withCallPreference(CallPreference.DailyPillReminder).build();
+        when(allPatients.get(patientId)).thenReturn(patient);
+
         assertEquals(ControllerURLs.PUSH_MESSAGES_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
     }
 

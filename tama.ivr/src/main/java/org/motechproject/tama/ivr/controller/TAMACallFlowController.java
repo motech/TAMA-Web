@@ -52,7 +52,7 @@ public class TAMACallFlowController implements CallFlowController {
         TAMAIVRContext tamaivrContext = factory.create(kooKooIVRContext);
         CallState callState = tamaivrContext.callState();
         if (null != callState) {
-            return callState.nextURL(tamaivrContext);
+            return callState.nextURL(tamaivrContext, allPatients);
         } else {
             throw new TamaException("No URL found");
         }
@@ -101,8 +101,12 @@ public class TAMACallFlowController implements CallFlowController {
         if (patient.isOnWeeklyPillReminder())
             return TAMATreeRegistry.FOUR_DAY_RECALL_INCOMING_CALL;
         else {
-            if (patient.getStatus().isSuspended())
+            if (patient.getStatus().isSuspended()) {
                 return TAMATreeRegistry.INCOMING_MENU_TREE;
+            }
+            if (tamaivrContext.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_TAKEN) || tamaivrContext.hasTraversedTree(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM)) {
+                return TAMATreeRegistry.INCOMING_MENU_TREE;
+            }
             if (pillModuleStrategy.isCurrentDoseTaken(tamaivrContext)) {
                 return TAMATreeRegistry.CURRENT_DOSAGE_TAKEN;
             } else {

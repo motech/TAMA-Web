@@ -18,8 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.Assert.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
@@ -67,6 +68,14 @@ public class TAMAIVRContextTest {
         verify(kooKooIVRContext).currentDecisionTreePath("");
         verify(httpSession).setAttribute("PillRegimen", null);
         verify(httpSession).setAttribute("call_state", CallState.AUTHENTICATED.toString());
+    }
+
+    @Test
+    public void shouldNotResetPushedMessageAsPartOfMenuRepeat() {
+        tamaivrContext = new TAMAIVRContext(kooKooIVRContext);
+        tamaivrContext.resetForMenuRepeat();
+
+        verify(cookies, never()).add(eq("messages_pushed"), anyString());
     }
 
     @Test
