@@ -39,7 +39,6 @@ public class SMSReportBuilder extends InMemoryReportBuilder<SMSLog> {
     protected void initializeColumns() {
         columns = new ArrayList<ExcelColumn>();
         columns.add(new ExcelColumn("Sent Date and Time (yyyy-mm-dd hh:mm:ss)", Cell.CELL_TYPE_STRING, 8000));
-        columns.add(new ExcelColumn("Phone Number Sent To", Cell.CELL_TYPE_STRING, 6000));
         columns.add(new ExcelColumn("Message", Cell.CELL_TYPE_STRING, 25000));
     }
 
@@ -48,8 +47,7 @@ public class SMSReportBuilder extends InMemoryReportBuilder<SMSLog> {
         SMSLog smsLog = (SMSLog) object;
         List<Object> row = new ArrayList<Object>();
         row.add(smsLog.getSentDateTime().toString(DATETIME_YYYY_MM_DD_FORMAT));
-        row.add(smsLog.getRecipient());
-        row.add(smsLog.getMessage());
+        row.add(smsLog.getMaskedMessage());
         return row;
     }
 

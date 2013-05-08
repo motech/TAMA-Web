@@ -1,6 +1,7 @@
 package org.motechproject.tama.ivr.domain;
 
 import lombok.Getter;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.DateTime;
@@ -33,5 +34,10 @@ public class SMSLog extends CouchEntity {
 
     public void setSentDateTime(DateTime sentDateTime) {
         this.sentDateTime = DateUtil.setTimeZone(sentDateTime);
+    }
+
+    @JsonIgnore
+    public String getMaskedMessage() {
+        return message.replaceAll("[0-9]{10}", "XXXXXXXXXX");
     }
 }
