@@ -98,7 +98,7 @@ public class CallLogSummaryBuilderTest {
         assertNotNull(callLogSummary);
         assertEquals("clinicName", callLogSummary.getClinicName());
         assertEquals("TAMA", callLogSummary.getSourcePhoneNumber());
-        assertEquals("1234567890", callLogSummary.getDestinationPhoneNumber());
+        assertEquals("Patient", callLogSummary.getDestinationPhoneNumber());
         assertEquals("2011-10-10 10:09:10", callLogSummary.getInitiatedDateTime());
         assertEquals("2011-10-10 10:10:10", callLogSummary.getStartDateTime());
         assertEquals("English", callLogSummary.getLanguage());
@@ -143,7 +143,7 @@ public class CallLogSummaryBuilderTest {
 
         assertNotNull(callLogSummary);
         assertEquals("clinicName", callLogSummary.getClinicName());
-        assertEquals("1234567890", callLogSummary.getSourcePhoneNumber());
+        assertEquals("Patient", callLogSummary.getSourcePhoneNumber());
         assertEquals("TAMA", callLogSummary.getDestinationPhoneNumber());
         assertEquals("NA", callLogSummary.getInitiatedDateTime());
         assertEquals("2011-10-10 10:10:10", callLogSummary.getStartDateTime());

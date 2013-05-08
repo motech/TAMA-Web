@@ -110,7 +110,7 @@ public class CallLogSummaryBuilder {
 
     private String getSourcePhoneNumber(CallLog callLog, boolean isInboundCall) {
         if (isInboundCall) {
-            return getRegisteredPhoneNumber(callLog);
+            return getPatientLabel(callLog);
         } else {
             return TAMA;
         }
@@ -120,7 +120,7 @@ public class CallLogSummaryBuilder {
         if (isInboundCall) {
             return TAMA;
         } else {
-            return getRegisteredPhoneNumber(callLog);
+            return getPatientLabel(callLog);
         }
     }
 
@@ -177,11 +177,11 @@ public class CallLogSummaryBuilder {
         return patientIds;
     }
 
-    private String getRegisteredPhoneNumber(CallLog callLog) {
+    private String getPatientLabel(CallLog callLog) {
         if (isEmpty(callLog.patientId()) && CollectionUtils.isEmpty(callLog.getLikelyPatientIds())) {
-            return NOT_REGISTERED_USER + " : " + callLog.getPhoneNumber();
+            return NOT_REGISTERED_USER;
         } else {
-            return callLog.getPhoneNumber();
+            return PATIENT;
         }
     }
 
