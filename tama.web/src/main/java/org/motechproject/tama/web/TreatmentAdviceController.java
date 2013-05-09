@@ -16,6 +16,7 @@ import org.motechproject.tama.refdata.objectcache.AllMealAdviceTypesCache;
 import org.motechproject.tama.refdata.objectcache.AllRegimensCache;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
+import org.motechproject.tama.web.service.PatientDetailsService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +35,7 @@ public class TreatmentAdviceController extends BaseController {
     private AllMealAdviceTypesCache allMealAdviceTypes;
     private AllDosageTypesCache allDosageTypes;
     private AllRegimensCache allRegimens;
+    private PatientDetailsService patientDetailsService;
     private AllPatients allPatients;
     private TreatmentAdviceService treatmentAdviceService;
     private AllClinicVisits allClinicVisits;
@@ -41,7 +43,8 @@ public class TreatmentAdviceController extends BaseController {
     private CallTimeSlotService callTimeSlotService;
 
     @Autowired
-    public TreatmentAdviceController(AllPatients allPatients, AllRegimensCache allRegimens, AllDosageTypesCache allDosageTypes, AllMealAdviceTypesCache allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, AllClinicVisits allClinicVisits, CallTimeSlotService callTimeSlotService) {
+    public TreatmentAdviceController(PatientDetailsService patientDetailsService, AllPatients allPatients, AllRegimensCache allRegimens, AllDosageTypesCache allDosageTypes, AllMealAdviceTypesCache allMealAdviceTypes, TreatmentAdviceService treatmentAdviceService, TreatmentAdviceViewMapper treatmentAdviceViewMapper, AllClinicVisits allClinicVisits, CallTimeSlotService callTimeSlotService) {
+        this.patientDetailsService = patientDetailsService;
         this.allPatients = allPatients;
         this.allRegimens = allRegimens;
         this.allDosageTypes = allDosageTypes;
@@ -78,6 +81,7 @@ public class TreatmentAdviceController extends BaseController {
         try {
             treatmentAdviceId = treatmentAdviceService.changeRegimen(existingTreatmentAdviceId, discontinuationReason, treatmentAdvice, loggedInUserId(httpServletRequest));
             allClinicVisits.changeRegimen(treatmentAdvice.getPatientId(), clinicVisitId, treatmentAdviceId);
+            patientDetailsService.update(treatmentAdvice.getPatientId());
             return ClinicVisitsController.redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId());
         } catch (RuntimeException e) {
             httpServletRequest.setAttribute("flash.flashError", "Error occurred while changing Regimen. Please try again: " + e.getMessage());

@@ -20,6 +20,7 @@ import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.LabResultsController;
 import org.motechproject.tama.web.model.LabResultsUIModel;
+import org.motechproject.tama.web.service.PatientDetailsService;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -53,12 +54,15 @@ public class LabResultsControllerTest {
     @Mock
     AuthenticatedUser user;
     @Mock
+    private PatientDetailsService patientDetailsService;
+    @Mock
     HttpSession session;
+
 
     @Before
     public void setUp() {
         initMocks(this);
-        labResultsController = new LabResultsController(allLabResults, allLabTests, allClinicVisits);
+        labResultsController = new LabResultsController(allLabResults, allLabTests, allClinicVisits, patientDetailsService);
         when(user.getUsername()).thenReturn(USER_NAME);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
         when(request.getSession()).thenReturn(session);

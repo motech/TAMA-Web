@@ -8,6 +8,7 @@ import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.refdata.domain.LabTest;
 import org.motechproject.tama.refdata.objectcache.AllLabTestsCache;
 import org.motechproject.tama.web.model.LabResultsUIModel;
+import org.motechproject.tama.web.service.PatientDetailsService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,13 +32,15 @@ public class LabResultsController extends BaseController {
 
     private final AllLabResults allLabResults;
     private final AllClinicVisits allClinicVisits;
+    private PatientDetailsService patientDetailsService;
     private final AllLabTestsCache allLabTests;
 
     @Autowired
-    public LabResultsController(AllLabResults allLabResults, AllLabTestsCache allLabTests, AllClinicVisits allClinicVisits) {
+    public LabResultsController(AllLabResults allLabResults, AllLabTestsCache allLabTests, AllClinicVisits allClinicVisits, PatientDetailsService patientDetailsService) {
         this.allLabResults = allLabResults;
         this.allLabTests = allLabTests;
         this.allClinicVisits = allClinicVisits;
+        this.patientDetailsService = patientDetailsService;
     }
 
     public void createForm(String patientId, Model uiModel) {
@@ -102,7 +105,7 @@ public class LabResultsController extends BaseController {
             final String labResultId = allLabResults.upsert(labResult, loggedInUserId(httpServletRequest));
             if (labResultId != null) allLabResultsIds.add(labResultId);
         }
-
+        patientDetailsService.update(labResultsUIModel.getPatientId());
         allClinicVisits.updateLabResults(labResultsUIModel.getPatientId(), labResultsUIModel.getClinicVisitId(), allLabResultsIds);
         return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(labResultsUIModel.getClinicVisitId(), httpServletRequest) + "?patientId=" + labResultsUIModel.getPatientId();
     }

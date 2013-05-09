@@ -28,6 +28,7 @@ import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.model.LabResultsUIModel;
 import org.motechproject.tama.web.model.OpportunisticInfectionsUIModel;
+import org.motechproject.tama.web.service.PatientDetailsService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -94,9 +95,10 @@ public class ClinicVisitsControllerTest {
         HttpServletRequest request;
         @Mock
         HttpSession session;
+        @Mock
+        private PatientDetailsService patientDetailsService;
 
         protected ClinicVisitsController clinicVisitsController;
-
         protected DateTime now;
 
         @Before
@@ -104,7 +106,7 @@ public class ClinicVisitsControllerTest {
             initMocks(this);
             now = DateUtil.now();
             mockCurrentDate(now);
-            clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, allVitalStatistics, allLabResults, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits, patientService);
+            clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, allVitalStatistics, allLabResults, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits, patientService, patientDetailsService);
             when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
             when(allLabResults.allLabResults(PATIENT_ID)).thenReturn(new LabResults());

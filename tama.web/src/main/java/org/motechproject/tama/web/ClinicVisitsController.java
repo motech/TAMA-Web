@@ -19,6 +19,7 @@ import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.web.model.*;
 import org.motechproject.tama.web.reportbuilder.AppointmentCalendarBuilder;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
+import org.motechproject.tama.web.service.PatientDetailsService;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +54,7 @@ public class ClinicVisitsController extends BaseController {
     private AllLabResults allLabResults;
     private AllTreatmentAdvices allTreatmentAdvices;
     private PatientService patientService;
+    private PatientDetailsService patientDetailsService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -66,7 +68,8 @@ public class ClinicVisitsController extends BaseController {
                                   VitalStatisticsController vitalStatisticsController,
                                   OpportunisticInfectionsController opportunisticInfectionsController,
                                   AllClinicVisits allClinicVisits,
-                                  PatientService patientService) {
+                                  PatientService patientService,
+                                  PatientDetailsService patientDetailsService) {
 
         this.treatmentAdviceController = treatmentAdviceController;
         this.allTreatmentAdvices = allTreatmentAdvices;
@@ -77,6 +80,7 @@ public class ClinicVisitsController extends BaseController {
         this.opportunisticInfectionsController = opportunisticInfectionsController;
         this.allClinicVisits = allClinicVisits;
         this.patientService = patientService;
+        this.patientDetailsService = patientDetailsService;
     }
 
     @RequestMapping(value = "/newVisit")
@@ -140,7 +144,7 @@ public class ClinicVisitsController extends BaseController {
         List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel, httpServletRequest);
         String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, httpServletRequest);
         String reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel, httpServletRequest);
-
+        patientDetailsService.update(patientId);
         try {
             allClinicVisits.updateVisitDetails(clinicVisitId, clinicVisitUIModel.getDefaultVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId, loggedInUserId(httpServletRequest));
         } catch (RuntimeException e) {

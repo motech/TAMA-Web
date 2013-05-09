@@ -26,6 +26,7 @@ import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.mapper.TreatmentAdviceViewMapper;
 import org.motechproject.tama.web.model.ComboBoxView;
 import org.motechproject.tama.web.model.TreatmentAdviceView;
+import org.motechproject.tama.web.service.PatientDetailsService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
 import org.springframework.ui.ExtendedModelMap;
@@ -75,10 +76,13 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
     HttpServletRequest request;
     @Mock
     HttpSession session;
+    @Mock
+    private PatientDetailsService patientDetailsService;
 
     private TreatmentAdviceController controller;
     private TreatmentAdvice treatmentAdvice;
     private static String PATIENT_ID = "patientId";
+
 
     @Before
     public void setUp() throws Exception {
@@ -90,7 +94,7 @@ public class TreatmentAdviceControllerTest extends BaseUnitTest {
         when(user.getUsername()).thenReturn(USER_NAME);
         when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
         when(request.getSession()).thenReturn(session);
-        controller = new TreatmentAdviceController(allPatients, allRegimens, allDosageTypes, allMealAdviceTypes, treatmentAdviceService, treatmentAdviceViewMapper, allClinicVisits, dosageTimeSlotService);
+        controller = new TreatmentAdviceController(patientDetailsService, allPatients, allRegimens, allDosageTypes, allMealAdviceTypes, treatmentAdviceService, treatmentAdviceViewMapper, allClinicVisits, dosageTimeSlotService);
     }
 
     @Test

@@ -5,6 +5,7 @@ import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.web.model.VitalStatisticsUIModel;
+import org.motechproject.tama.web.service.PatientDetailsService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,11 +26,13 @@ public class VitalStatisticsController extends BaseController {
 
     private final AllVitalStatistics allVitalStatistics;
     private AllClinicVisits allClinicVisits;
+    private PatientDetailsService patientDetailsService;
 
     @Autowired
-    public VitalStatisticsController(AllVitalStatistics allVitalStatistics, AllClinicVisits allClinicVisits) {
+    public VitalStatisticsController(AllVitalStatistics allVitalStatistics, AllClinicVisits allClinicVisits, PatientDetailsService patientDetailsService) {
         this.allVitalStatistics = allVitalStatistics;
         this.allClinicVisits = allClinicVisits;
+        this.patientDetailsService = patientDetailsService;
     }
 
     public void createForm(String patientId, Model uiModel) {
@@ -86,6 +89,7 @@ public class VitalStatisticsController extends BaseController {
         if (vitalStatistics.getId() == null || vitalStatistics.getId().isEmpty()) {
             if (isNotEmpty(vitalStatistics)) {
                 allVitalStatistics.add(vitalStatistics, loggedInUserId(httpServletRequest));
+                patientDetailsService.update(vitalStatisticsUIModel.getPatientId());
                 allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
             }
         } else {
@@ -93,9 +97,11 @@ public class VitalStatisticsController extends BaseController {
             vitalStatistics.setRevision(savedVitalStatistics.getRevision());
             if (isNotEmpty(vitalStatistics)) {
                 allVitalStatistics.update(vitalStatistics, loggedInUserId(httpServletRequest));
+                patientDetailsService.update(vitalStatisticsUIModel.getPatientId());
                 allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
             } else {
                 allVitalStatistics.remove(savedVitalStatistics, loggedInUserId(httpServletRequest));
+                patientDetailsService.update(vitalStatisticsUIModel.getPatientId());
                 allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), null);
             }
         }
