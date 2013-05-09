@@ -1,16 +1,11 @@
 package org.motechproject.tama.web.model;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.drools.core.util.StringUtils;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PatientViewModel extends Patient {
 
-    private List<String> warnings = new ArrayList<>();
     private String incompleteImageUrl = StringUtils.EMPTY;
 
     public PatientViewModel(Patient patient) {
@@ -37,6 +32,7 @@ public class PatientViewModel extends Patient {
         this.setTravelTimeToClinicInMinutes(patient.getTravelTimeToClinicInMinutes());
         this.setDocumentType(patient.getDocumentType());
         this.setRevision(patient.getRevision());
+        this.setComplete(patient.isComplete());
     }
 
     public Patient getPatient() {
@@ -56,22 +52,22 @@ public class PatientViewModel extends Patient {
     }
 
     public String getPatientSummaryLink() {
-        return "patients/summary/"+getId();
+        return "patients/summary/" + getId();
     }
 
-    public String getStatusAction(){
-        if(isActivateEnabled())
+    public String getStatusAction() {
+        if (isActivateEnabled())
             return "Activate";
         else if (isReviveEnabled())
             return "Reactivate";
-        else if(isDeactivateEnabled())
+        else if (isDeactivateEnabled())
             return "Deactivate";
         else
             return null;
     }
 
-    public String getStatusActionUrl(){
-        if(isActivateEnabled())
+    public String getStatusActionUrl() {
+        if (isActivateEnabled())
             return "/patients/activate";
         else if (isReviveEnabled())
             return "/patients/revive";
@@ -81,20 +77,16 @@ public class PatientViewModel extends Patient {
             return null;
     }
 
-    public void setWarnings(List<String> warnings){
-        this.warnings = warnings;
-    }
-
-    public void setIncompleteImageUrl(String imageUrl){
+    public void setIncompleteImageUrl(String imageUrl) {
         this.incompleteImageUrl = imageUrl;
     }
 
-    public String getCompletionStatus(){
-        return getStatus().equals(Status.Active) && !CollectionUtils.isEmpty(warnings) ? "Incomplete" : null;
+    public String getCompletionStatus() {
+        return getStatus().equals(Status.Active) && !isComplete() ? "Incomplete" : null;
     }
 
     public String getCompletionStatusImageUrl() {
-        return getStatus().equals(Status.Active) && !CollectionUtils.isEmpty(warnings) ? incompleteImageUrl : null;
+        return getStatus().equals(Status.Active) && !isComplete() ? incompleteImageUrl : null;
 
     }
 

@@ -8,8 +8,6 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.Status;
 import org.motechproject.tama.refdata.domain.Gender;
 
-import java.util.Arrays;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.mockito.Mockito.mock;
@@ -37,11 +35,11 @@ public class PatientViewModelTest {
     }
 
     @Test
-    public void shouldReturnCompletionImageUrlForActivePatientWithWarnings(){
+    public void shouldReturnCompletionImageUrlForActivePatientWithIncompleteData(){
         when(patient.getStatus()).thenReturn(Status.Active);
+        when(patient.isComplete()).thenReturn(false);
 
         PatientViewModel listPatientViewModel = new PatientViewModel(patient);
-        listPatientViewModel.setWarnings(Arrays.asList("warning1", "warning2"));
         listPatientViewModel.setIncompleteImageUrl("imageUrl");
 
         String imageUrl = listPatientViewModel.getCompletionStatusImageUrl();
@@ -54,7 +52,6 @@ public class PatientViewModelTest {
         when(patient.getStatus()).thenReturn(Status.Inactive);
 
         PatientViewModel listPatientViewModel = new PatientViewModel(patient);
-        listPatientViewModel.setWarnings(Arrays.asList("warning1", "warning2"));
         listPatientViewModel.setIncompleteImageUrl("imageUrl");
 
         String imageUrl = listPatientViewModel.getCompletionStatusImageUrl();

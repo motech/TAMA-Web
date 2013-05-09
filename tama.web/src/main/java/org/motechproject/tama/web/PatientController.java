@@ -1,6 +1,5 @@
 package org.motechproject.tama.web;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
@@ -25,8 +24,8 @@ import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
 import org.motechproject.tama.web.model.DoseStatus;
 import org.motechproject.tama.web.model.IncompletePatientDataWarning;
-import org.motechproject.tama.web.model.PatientViewModel;
 import org.motechproject.tama.web.model.PatientSummary;
+import org.motechproject.tama.web.model.PatientViewModel;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,8 +45,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 @RequestMapping("/patients")
 @Controller
@@ -251,9 +252,7 @@ public class PatientController extends BaseController {
         List<PatientViewModel> listPatientViewModels = new ArrayList<>();
         for (Patient patient : allPatients.findByClinic(clinicId)) {
             PatientViewModel listPatientViewModel = new PatientViewModel(patient);
-            List<String> warning = new IncompletePatientDataWarning(listPatientViewModel, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
             listPatientViewModel.setIncompleteImageUrl(incompleteImageUrl);
-            listPatientViewModel.setWarnings(warning);
             listPatientViewModels.add(listPatientViewModel);
         }
         uiModel.addAttribute(PATIENTS, listPatientViewModels);
