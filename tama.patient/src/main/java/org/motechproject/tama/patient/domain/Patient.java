@@ -54,6 +54,8 @@ public class Patient extends CouchEntity {
     @Getter @Setter private String genderId;
     @Getter @Setter private String clinic_id;
 
+    @Getter @Setter private boolean complete;
+
     @Valid
     @Getter @Setter private PatientPreferences patientPreferences = new PatientPreferences();
     @Getter @Setter private MedicalHistory medicalHistory;
