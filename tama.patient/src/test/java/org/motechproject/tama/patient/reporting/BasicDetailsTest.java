@@ -7,6 +7,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.reports.contract.PatientRequest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class BasicDetailsTest {
 
@@ -41,6 +42,16 @@ public class BasicDetailsTest {
         PatientRequest request = new PatientRequest();
         new BasicDetails(patient).copyTo(request);
         assertEquals("Female", request.getGender());
+    }
+
+    @Test
+    public void shouldMapPatientCompleteionStatus() {
+        Patient patient = PatientBuilder.startRecording().withDefaults().build();
+        patient.setComplete(true);
+
+        PatientRequest request = new PatientRequest();
+        new BasicDetails(patient).copyTo(request);
+        assertTrue(request.getComplete());
     }
 
     @Test

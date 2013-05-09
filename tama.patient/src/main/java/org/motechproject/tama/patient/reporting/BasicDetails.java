@@ -19,6 +19,7 @@ public class BasicDetails {
     private Date registeredOn;
     private String status;
     private String notes;
+    private boolean complete;
 
     public BasicDetails(Patient patient) {
         patientId = patient.getPatientId();
@@ -29,6 +30,7 @@ public class BasicDetails {
         registeredOn = patient.getRegistrationDateAsDate();
         status = patient.getStatus().getDisplayName();
         notes = patient.getNotes();
+        complete = patient.isComplete();
         travelTimeToClinic = travelTimeToClinic(patient.getTravelTimeToClinicInDays(), patient.getTravelTimeToClinicInHours(), patient.getTravelTimeToClinicInMinutes());
     }
 
@@ -39,6 +41,7 @@ public class BasicDetails {
         dateOfBirth = patientRequest.getDateOfBirth();
         gender = patientRequest.getGender();
         notes = patientRequest.getNotes();
+        complete = patientRequest.getComplete();
         travelTimeToClinic = patientRequest.getTravelTimeToClinic();
         registeredOn = patientRequest.getRegisteredOn();
         status = patientRequest.getStatus();
@@ -49,6 +52,7 @@ public class BasicDetails {
         request.setPatientDocumentId(patientDocumentId);
         request.setDateOfBirth(dateOfBirth);
         request.setClinicId(clinicId);
+        request.setComplete(complete);
         request.setGender(gender);
         request.setNotes(notes);
         request.setRegisteredOn(registeredOn);

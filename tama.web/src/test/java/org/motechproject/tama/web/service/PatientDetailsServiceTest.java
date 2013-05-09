@@ -13,6 +13,7 @@ import org.motechproject.tama.patient.repository.AllLabResults;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
+import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.LabTest;
 
 import java.util.List;
@@ -38,15 +39,18 @@ public class PatientDetailsServiceTest {
     private AllVitalStatistics allVitalStatistics;
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
+    private PatientService patientService;
 
     private PatientDetailsService patientDetailsService;
+
 
     @Before
     public void setup() {
         initMocks(this);
         Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withStatus(Status.Active).build();
         when(allPatients.get(PATIENT_ID)).thenReturn(patient);
-        patientDetailsService = new PatientDetailsService(allPatients, allTreatmentAdvices, allVitalStatistics, allClinicVisits, allLabResults);
+        patientDetailsService = new PatientDetailsService(allPatients, patientService, allTreatmentAdvices, allVitalStatistics, allClinicVisits, allLabResults);
     }
 
     @Test
@@ -60,7 +64,7 @@ public class PatientDetailsServiceTest {
         patientDetailsService.update(PATIENT_ID);
 
         ArgumentCaptor<Patient> patientCapture = ArgumentCaptor.forClass(Patient.class);
-        verify(allPatients).update(patientCapture.capture(), anyString());
+        verify(patientService).update(patientCapture.capture(), anyString());
         assertTrue(patientCapture.getValue().isComplete());
     }
 
@@ -69,7 +73,7 @@ public class PatientDetailsServiceTest {
         patientDetailsService.update(PATIENT_ID);
 
         ArgumentCaptor<Patient> patientCapture = ArgumentCaptor.forClass(Patient.class);
-        verify(allPatients).update(patientCapture.capture(), anyString());
+        verify(patientService).update(patientCapture.capture(), anyString());
         assertFalse(patientCapture.getValue().isComplete());
     }
 

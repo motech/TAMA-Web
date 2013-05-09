@@ -144,9 +144,9 @@ public class ClinicVisitsController extends BaseController {
         List<String> labResultIds = labResultsController.create(labResultsUiModel, bindingResult, uiModel, httpServletRequest);
         String vitalStatisticsId = vitalStatisticsController.create(vitalStatistics, bindingResult, uiModel, httpServletRequest);
         String reportedOpportunisticInfectionsId = opportunisticInfectionsController.create(opportunisticInfections, bindingResult, uiModel, httpServletRequest);
-        patientDetailsService.update(patientId);
         try {
             allClinicVisits.updateVisitDetails(clinicVisitId, clinicVisitUIModel.getDefaultVisitDate(), patientId, treatmentAdviceId, labResultIds, vitalStatisticsId, reportedOpportunisticInfectionsId, loggedInUserId(httpServletRequest));
+            patientDetailsService.update(patientId);
         } catch (RuntimeException e) {
             httpServletRequest.setAttribute("flash.flashError", "Error occurred while creating clinic visit. Please try again: " + e.getMessage());
             return redirectToCreateFormUrl(clinicVisitId, treatmentAdvice.getPatientId());
