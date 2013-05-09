@@ -14,6 +14,7 @@ import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.model.VitalStatisticsUIModel;
+import org.motechproject.tama.web.service.PatientDetailsService;
 import org.motechproject.util.DateUtil;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
@@ -46,12 +47,15 @@ public class VitalStatisticsControllerTest {
     @Mock
     BindingResult bindingResult;
     @Mock
+    private PatientDetailsService patientDetailsService;
+    @Mock
     private Model uiModel;
+
 
     @Before
     public void setUp() {
         initMocks(this);
-        vitalStatisticsController = new VitalStatisticsController(allVitalStatistics, allClinicVisits);
+        vitalStatisticsController = new VitalStatisticsController(allVitalStatistics, allClinicVisits, patientDetailsService);
         when(httpServletRequest.getSession()).thenReturn(httpSession);
         when(user.getUsername()).thenReturn(USER_NAME);
         when(httpSession.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
