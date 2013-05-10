@@ -105,8 +105,8 @@ public class LabResultsController extends BaseController {
             final String labResultId = allLabResults.upsert(labResult, loggedInUserId(httpServletRequest));
             if (labResultId != null) allLabResultsIds.add(labResultId);
         }
-        patientDetailsService.update(labResultsUIModel.getPatientId());
         allClinicVisits.updateLabResults(labResultsUIModel.getPatientId(), labResultsUIModel.getClinicVisitId(), allLabResultsIds);
+        patientDetailsService.update(labResultsUIModel.getPatientId());
         return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(labResultsUIModel.getClinicVisitId(), httpServletRequest) + "?patientId=" + labResultsUIModel.getPatientId();
     }
 

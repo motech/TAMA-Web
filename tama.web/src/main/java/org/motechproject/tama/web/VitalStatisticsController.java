@@ -89,20 +89,20 @@ public class VitalStatisticsController extends BaseController {
         if (vitalStatistics.getId() == null || vitalStatistics.getId().isEmpty()) {
             if (isNotEmpty(vitalStatistics)) {
                 allVitalStatistics.add(vitalStatistics, loggedInUserId(httpServletRequest));
-                patientDetailsService.update(vitalStatisticsUIModel.getPatientId());
                 allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
+                patientDetailsService.update(vitalStatisticsUIModel.getPatientId());
             }
         } else {
             final VitalStatistics savedVitalStatistics = allVitalStatistics.get(vitalStatistics.getId());
             vitalStatistics.setRevision(savedVitalStatistics.getRevision());
             if (isNotEmpty(vitalStatistics)) {
                 allVitalStatistics.update(vitalStatistics, loggedInUserId(httpServletRequest));
-                patientDetailsService.update(vitalStatisticsUIModel.getPatientId());
                 allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), vitalStatistics.getId());
+                patientDetailsService.update(vitalStatisticsUIModel.getPatientId());
             } else {
                 allVitalStatistics.remove(savedVitalStatistics, loggedInUserId(httpServletRequest));
-                patientDetailsService.update(vitalStatisticsUIModel.getPatientId());
                 allClinicVisits.updateVitalStatistics(vitalStatisticsUIModel.getPatientId(), vitalStatisticsUIModel.getClinicVisitId(), null);
+                patientDetailsService.update(vitalStatisticsUIModel.getPatientId());
             }
         }
         return REDIRECT_AND_SHOW_CLINIC_VISIT + encodeUrlPathSegment(vitalStatisticsUIModel.getClinicVisitId(), httpServletRequest) + "?patientId=" + vitalStatisticsUIModel.getPatientId();
