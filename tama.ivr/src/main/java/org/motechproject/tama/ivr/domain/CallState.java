@@ -3,7 +3,6 @@ package org.motechproject.tama.ivr.domain;
 import org.motechproject.ivr.kookoo.controller.AllIVRURLs;
 import org.motechproject.tama.common.ControllerURLs;
 import org.motechproject.tama.ivr.context.TAMAIVRContext;
-import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.repository.AllPatients;
 
 import java.util.Arrays;
@@ -52,14 +51,9 @@ public enum CallState {
             if (context.isDialState()) {
                 return possibleTransitionURLs.get(2);
             } else {
-                Patient patient = allPatients.get(context.patientDocumentId());
-                if (!context.isMessagesPushed()) {
-                    if (patient.isOnDailyPillReminder() || context.isOutgoingCall()) {
-                        context.callState(PUSH_MESSAGES);
-                        return possibleTransitionURLs.get(0);
-                    } else {
-                        return possibleTransitionURLs.get(1);
-                    }
+                if (context.isOutgoingCall() && !context.isMessagesPushed()) {
+                    context.callState(PUSH_MESSAGES);
+                    return possibleTransitionURLs.get(0);
                 } else {
                     context.doNoPromptForHangUp(true);
                     return possibleTransitionURLs.get(1);

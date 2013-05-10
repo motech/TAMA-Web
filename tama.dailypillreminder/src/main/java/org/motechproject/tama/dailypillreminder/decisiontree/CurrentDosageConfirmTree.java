@@ -10,13 +10,17 @@ import org.motechproject.tama.dailypillreminder.command.MessageOnPillTakenDuring
 import org.motechproject.tama.dailypillreminder.command.UpdateAdherenceAsCapturedForCurrentDosageCommand;
 import org.motechproject.tama.ivr.TamaIVRMessage;
 import org.motechproject.tama.ivr.command.IncomingWelcomeMessage;
+import org.motechproject.tama.ivr.command.SymptomAndMessagesCommand;
+import org.motechproject.tama.ivr.decisiontree.TAMATransitionFactory;
 import org.motechproject.tama.ivr.decisiontree.TAMATreeRegistry;
 import org.motechproject.tama.ivr.decisiontree.TamaDecisionTree;
+import org.motechproject.tama.ivr.domain.CallState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CurrentDosageConfirmTree extends TamaDecisionTree {
+
     @Autowired
     private IncomingWelcomeMessage incomingWelcomeMessage;
     @Autowired
@@ -27,6 +31,8 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
     private UpdateAdherenceAsCapturedForCurrentDosageCommand updateAdherenceAsCapturedCommand;
     @Autowired
     private AdherenceMessageWhenPreviousDosageCapturedCommand adherenceWhenPreviousDosageCapturedCommand;
+    @Autowired
+    private SymptomAndMessagesCommand symptomAndMessagesCommand;
 
     @Autowired
     public CurrentDosageConfirmTree(TAMATreeRegistry tamaTreeRegistry) {
@@ -38,6 +44,7 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                 .setPrompts(
                         new AudioPrompt().setCommand(incomingWelcomeMessage),
                         new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),
+                        new MenuAudioPrompt().setCommand(symptomAndMessagesCommand),
                         new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_TAKEN_MENU_OPTION))
                 .setTransitions(new Object[][]{
                         {"1", new Transition()
@@ -49,6 +56,8 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                                                         new AudioPrompt().setCommand(adherenceWhenPreviousDosageCapturedCommand)
                                                 ))
                         },
+                        {"2", TAMATransitionFactory.createCallStateTransition(CallState.SYMPTOM_REPORTING)},
+                        {"3", TAMATransitionFactory.createCallStateTransition(CallState.PULL_MESSAGES_TREE)}
                 });
     }
 }

@@ -102,6 +102,7 @@ public class TAMACallFlowControllerTest {
 
     @Test
     public void completionOfSymptomReportingTreeOrPreviousDosageReminderTreeShouldCompleteTheTrees() {
+        tamaIVRContext.callDirection(CallDirection.Inbound);
         when(treeRegistry.isLeafTree(TAMATreeRegistry.REGIMEN_1_TO_6)).thenReturn(true);
         tamaCallFlowController.treeComplete(TAMATreeRegistry.REGIMEN_1_TO_6, kooKooIVRContext);
         assertEquals(CallState.ALL_TREES_COMPLETED, tamaIVRContext.callState());
@@ -109,6 +110,7 @@ public class TAMACallFlowControllerTest {
 
     @Test
     public void whenCurrentDosageIsConfirmedAndWhenPreviousDosageHasBeenCaptured_AllTreesAreCompleted() {
+        tamaIVRContext.callDirection(CallDirection.Outbound);
         tamaIVRContext.callState(CallState.AUTHENTICATED);
         when(pillModuleStrategy.previousDosageCaptured(tamaIVRContext)).thenReturn(true);
         tamaCallFlowController.treeComplete(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, kooKooIVRContext);
