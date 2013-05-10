@@ -117,17 +117,34 @@ public class TAMACallFlowControllerInboundCallTest {
     }
 
     @Test
-    public void shouldPushMessagesWhenAllTreesAreCompleteAndNoMessageWasPushedAndPatientIsOnDailyPillReminder() {
+    public void shouldPushMessagesWhenPreviousDosageWasCapturedDuringIncomingCall() {
         String patientDocumentId = "patientDocumentId";
         Patient patientNotOnDailyPillReminder = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
 
-        tamaIVRContextForTest.callState(CallState.ALL_TREES_COMPLETED);
+        tamaIVRContextForTest.callDirection(CallDirection.Inbound);
+        tamaIVRContextForTest.callState(CallState.AUTHENTICATED);
         tamaIVRContextForTest.patientDocumentId(patientDocumentId);
-        tamaIVRContextForTest.setMessagesPushed(false);
 
         when(allPatients.get(patientDocumentId)).thenReturn(patientNotOnDailyPillReminder);
 
-        assertEquals(ControllerURLs.PUSH_MESSAGES_URL, tamaCallFlowController.urlFor(kooKooIVRContext));
+        tamaCallFlowController.treeComplete(TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER, kooKooIVRContext);
+        assertEquals(CallState.PUSH_MESSAGES, tamaIVRContextForTest.callState());
+    }
+
+    @Test
+    public void shouldPushMessagesWhenCurrentDosageWasCapturedDuringIncomingCallAndPreviousDosageWasCapturedAlready() {
+        String patientDocumentId = "patientDocumentId";
+        Patient patientNotOnDailyPillReminder = PatientBuilder.startRecording().withDefaults().withCallPreference(CallPreference.DailyPillReminder).build();
+
+        tamaIVRContextForTest.callDirection(CallDirection.Inbound);
+        tamaIVRContextForTest.callState(CallState.AUTHENTICATED);
+        tamaIVRContextForTest.patientDocumentId(patientDocumentId);
+
+        when(pillModuleStrategy.previousDosageCaptured(tamaIVRContextForTest)).thenReturn(true);
+        when(allPatients.get(patientDocumentId)).thenReturn(patientNotOnDailyPillReminder);
+
+        tamaCallFlowController.treeComplete(TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM, kooKooIVRContext);
+        assertEquals(CallState.PUSH_MESSAGES, tamaIVRContextForTest.callState());
     }
 
     @Test

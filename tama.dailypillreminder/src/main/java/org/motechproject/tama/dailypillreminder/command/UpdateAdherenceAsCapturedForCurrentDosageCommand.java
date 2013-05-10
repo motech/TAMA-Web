@@ -5,6 +5,7 @@ import org.motechproject.tama.dailypillreminder.domain.DosageStatus;
 import org.motechproject.tama.dailypillreminder.domain.PillRegimen;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderService;
+import org.motechproject.tama.ivr.domain.CallState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,6 @@ public class UpdateAdherenceAsCapturedForCurrentDosageCommand extends DailyPillR
                 context.currentDose(),
                 newStatus,
                 context.callStartTime());
-
         return new String[0];
     }
 }
