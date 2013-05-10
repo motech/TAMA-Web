@@ -44,8 +44,8 @@ public class CurrentDosageConfirmTree extends TamaDecisionTree {
                 .setPrompts(
                         new AudioPrompt().setCommand(incomingWelcomeMessage),
                         new AudioPrompt().setCommand(messageForMedicinesDuringIncomingCall),
-                        new MenuAudioPrompt().setCommand(symptomAndMessagesCommand),
-                        new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_TAKEN_MENU_OPTION))
+                        new MenuAudioPrompt().setName(TamaIVRMessage.DOSE_TAKEN_MENU_OPTION),
+                        new MenuAudioPrompt().setCommand(symptomAndMessagesCommand))
                 .setTransitions(new Object[][]{
                         {"1", new Transition()
                                 .setDestinationNode(
