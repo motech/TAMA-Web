@@ -18,4 +18,10 @@ public enum PatientAlertType {
         if (displayName != null) return  displayName;
         return this.name();
     }
+
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+
 }
