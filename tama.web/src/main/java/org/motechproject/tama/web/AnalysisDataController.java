@@ -1,6 +1,7 @@
 package org.motechproject.tama.web;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.clinicvisits.contract.AppointmentCalenderReport;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisitSummary;
@@ -12,12 +13,12 @@ import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportS
 import org.motechproject.tama.facility.service.ClinicService;
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
+import org.motechproject.tama.patient.domain.PatientAlert;
+import org.motechproject.tama.patient.reporting.PatientAlertsReport;
+import org.motechproject.tama.patient.service.PatientAlertsReportService;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.web.model.*;
-import org.motechproject.tama.web.reportbuilder.AllAppointmentCalendarsBuilder;
-import org.motechproject.tama.web.reportbuilder.AllDailyPillReminderReportsBuilder;
-import org.motechproject.tama.web.reportbuilder.AllOutboxReportsBuilder;
-import org.motechproject.tama.web.reportbuilder.ClinicVisitReportBuilder;
+import org.motechproject.tama.web.reportbuilder.*;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.tama.web.service.CallLogExcelReportService;
 import org.slf4j.Logger;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -49,6 +51,7 @@ public class AnalysisDataController extends BaseController {
     private ClinicVisitReportService clinicVisitReportService;
     private CallLogExcelReportService callLogExcelReportService;
     private ClinicService clinicService;
+    private PatientAlertsReportService patientAlertsReportService;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -59,7 +62,7 @@ public class AnalysisDataController extends BaseController {
                                   OutboxMessageReportService outboxMessageReportService,
                                   DailyPillReminderReportService dailyPillReminderReportService,
                                   ClinicVisitReportService clinicVisitReportService, CallLogExcelReportService callLogExcelReportService,
-                                  ClinicService clinicService) {
+                                  ClinicService clinicService, PatientAlertsReportService patientAlertsReportService) {
         this.callSummaryController = callSummaryController;
         this.reportingProperties = reportingProperties;
         this.appointmentCalenderReportService = appointmentCalenderReportService;
@@ -68,6 +71,7 @@ public class AnalysisDataController extends BaseController {
         this.clinicVisitReportService = clinicVisitReportService;
         this.callLogExcelReportService = callLogExcelReportService;
         this.clinicService = clinicService;
+        this.patientAlertsReportService = patientAlertsReportService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -82,6 +86,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("messagesReportFilter", new ClinicAndDateFilter());
         uiModel.addAttribute("dosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
+        uiModel.addAttribute("patientAlertsReportFilter", new PatientAlertsReportFilter());
         callSummaryController.download(uiModel);
         return "analysisData/show";
     }
@@ -124,6 +129,34 @@ public class AnalysisDataController extends BaseController {
         } catch (Exception e) {
             logger.error("Error while generating excel report: " + e.getMessage());
         }
+    }
+
+
+    @RequestMapping(value = "/patientAlertsReport.xls", method = RequestMethod.GET)
+    public void downloadPatientAlertsReport(@RequestParam("clinicId") String clinicId,
+                                            @RequestParam("patientId") String patientId,
+                                            @RequestParam("startDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate startDate,
+                                            @RequestParam("endDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate endDate,
+                                            @RequestParam("patientAlertType") String patientAlertType,
+                                            @RequestParam("patientAlertStatus") String patientAlertStatus, Model uiModel, HttpServletResponse response) {
+
+        DateTime alertStartDate = DateTime.parse(startDate.toString());
+        DateTime alertEndDate = DateTime.parse(endDate.toString());
+
+        PatientAlertsReport patientAlertsReport = patientAlertsReportService.report(patientId, alertStartDate, alertEndDate, patientAlertType, clinicId, patientAlertStatus);
+        List<PatientAlert> alerts = new ArrayList<>();
+
+        for (int i = 0; i < patientAlertsReport.getPatientAlerts().size(); i++) {
+            alerts.add(patientAlertsReport.getPatientAlerts().get(i));
+        }
+        AllPatientAlertsReportsBuilder allPatientAlertsReportsBuilder = new AllPatientAlertsReportsBuilder(patientAlertsReport.getPatientReports(), alerts, patientId);
+
+        try {
+            writeExcelToResponse(response, allPatientAlertsReportsBuilder, "PatientAlertsReport");
+        } catch (Exception e) {
+            logger.error("Error while generating excel report: " + e.getMessage());
+        }
+
     }
 
     @RequestMapping(value = "/outboxMessageReport.xls", method = RequestMethod.GET)
@@ -187,7 +220,7 @@ public class AnalysisDataController extends BaseController {
     }
 
     @RequestMapping(value = "/callLogReport.xls", method = RequestMethod.GET)
-    public String downloadCallLogExcelReport(DateFilter filter, Model model,HttpServletResponse response) {
+    public String downloadCallLogExcelReport(DateFilter filter, Model model, HttpServletResponse response) {
         if (filter.isMoreThanOneYear()) {
             return error(model, "callLogReport_warning");
         }

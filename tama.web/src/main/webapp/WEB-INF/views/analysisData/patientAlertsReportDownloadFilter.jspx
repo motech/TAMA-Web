@@ -1,0 +1,88 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:spring="http://www.springframework.org/tags"
+     version="2.0"
+     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <div id="patientAlertsReportDownload" class="reportsDownload">
+        <c:if test="$patientAlertsReport_warning != null}">
+            <div class="center warning">c
+                <c:out value="${patientAlertsReport_warning}"/>
+            </div>
+        </c:if>
+        <spring:url value="/analysisData/patientAlertsReport.xls#patientAlertsReportDownload"
+                    var="download_patient_alert_url"/>
+        <util:panel id="patientAlertsReportPane" title="Patient Alerts Report" openPane="true">
+            <form id="patientAlertsReportForm" action="${download_patient_alert_url}" method="GET">
+
+
+                <div class="control-group">
+                    <label for="patientId">Patient Id *</label>
+                    <input id="patientAlertsReportPatientId" type="text" name="patientId"/>
+                </div>
+
+
+                <div class="control-group">
+                    <field:select field="patientAlertsReportFilter.patientAlertType"
+                                  id="patientAlertType"
+                                  items="${patientAlertsReportFilter.allPatientAlertType}"
+                                  path="/patientAlertsReportFilter.patientAlertType" required="false"
+                                  disableDefaultSelection="false"
+                                  label="Patient Alert Type"/>
+                </div>
+
+                <div class="control-group">
+                    <field:select field="patientAlertsReportFilter.patientAlertStatus"
+                                  id="patientAlertStatus"
+                                  items="${patientAlertsReportFilter.allPatientAlertStatus}"
+                                  path="/patientAlertsReportFilter.patientAlertStatus" required="false"
+                                  disableDefaultSelection="false"
+                                  label="Patient Alert Status"/>
+                </div>
+
+                <div class="control-group">
+                    <field:select field="patientAlertsReportFilter.clinicId" id="patientAlertsReportFilterClinicId"
+                                  items="${clinicFilter.allClinics}"
+                                  path="/clinicFilter.clinicId" itemLabel="name" itemValue="id" required="false"
+                                  disableDefaultSelection="false" label="Clinic Name"/>
+                </div>
+
+
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientAlertsReportFilter.startDate"
+                                id="c_org_motechproject_tama_calllog_startDate" label="Starting From" required="true"/>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="patientAlertsReportFilter.endDate"
+                                id="c_org_motechproject_tama_calllog_endDate" label="Till" required="true"/>
+                <div class="control-group">
+                    <input type="submit" id="downloadPatientAlertsReport" value="DOWNLOAD AS EXCEL"/>
+                </div>
+            </form>
+
+            <!--  <form:form action="${filter_url}" method="GET" modelAttribute="alertFilter">
+                <jsp:include page="../alerts/search.jspx" />
+            </form:form>-->
+        </util:panel>
+        <script type="text/javascript">
+            <![CDATA[
+                    dojo.addOnLoad(function() {
+                        var startDateObj = dijit.byId("_patientAlertsReportFilter.startDate_id");
+                        var endDateObj = dijit.byId("_patientAlertsReportFilter.endDate_id");
+                        setConstraintOnEndDate(startDateObj, endDateObj);
+                         Spring.addDecoration(new Spring.ElementDecoration({elementId : 'patientAlertsReportPatientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}));
+                        dojo.connect(dojo.byId("downloadPatientAlertsReport"), "onclick", function(event){
+                            event.preventDefault();
+                              Spring.decorations['patientAlertsReportPatientId'][0].validate();
+                            Spring.decorations['_patientAlertsReportFilter.startDate_id'][0].validate();
+                            Spring.decorations['_patientAlertsReportFilter.endDate_id'][0].validate();
+                            if(dijit.byId("patientAlertsReportPatientId").isValid() && startDateObj.isValid() && endDateObj.isValid()){
+                                dojo.byId('patientAlertsReportForm').submit();
+                            }
+                        });
+                        dojo.connect(startDateObj, "onChange", function() {
+                            setConstraintOnEndDate(startDateObj, endDateObj);
+                        });
+                    });
+                ]]>
+        </script>
+    </div>
+</div>
