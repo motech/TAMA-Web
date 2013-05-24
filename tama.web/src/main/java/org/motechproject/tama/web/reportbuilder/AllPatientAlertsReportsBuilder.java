@@ -84,20 +84,22 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
 
 
             if (PatientAlertType.SymptomReporting.getDisplayName().equals(patientAlertType)) {
-                populateSymptomAlertValues(patientReport, patientAlert, row);
+                populateSymptomAlertValues(patientAlert, row);
             } else if (PatientAlertType.FallingAdherence.getDisplayName().equals(patientAlertType) || PatientAlertType.AdherenceInRed.getDisplayName().equals(patientAlertType)) {
-                populateFallingAdherenceAlertValues(patientReport, patientAlert, row);
+                populateFallingAdherenceAlertValues(patientAlert, row);
             } else if (PatientAlertType.AppointmentReminder.getDisplayName().equals(patientAlertType) || PatientAlertType.AppointmentConfirmationMissed.getDisplayName().equals(patientAlertType)) {
-                populateAppointmentReminderAlertValues(patientReport, patientAlert, row);
+                populateAppointmentReminderAlertValues(patientAlert, row);
             } else if (PatientAlertType.VisitMissed.getDisplayName().equals(patientAlertType)) {
-                populateVisitMissedAlertValues(patientReport, patientAlert, row);
+                populateVisitMissedAlertValues(patientAlert, row);
             }
+            row.add(patientReport.getPatient().getPreviousStatus());
+            row.add(patientAlert.getPatient().getStatus());
         }
         return row;
     }
 
 
-    private List<Object> populateVisitMissedAlertValues(PatientReport patientReport, PatientAlert patientAlert, List<Object> row) {
+    private List<Object> populateVisitMissedAlertValues(PatientAlert patientAlert, List<Object> row) {
         row.add(null);
         row.add(null);
         row.add(patientAlert.getAppointmentDueDate().toString());
@@ -109,13 +111,12 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
         row.add(null);
         row.add(null);
         row.add(patientAlert.getNotes());
-        row.add(patientAlert.getStatusAction());
-        row.add(patientAlert.getPatient().getStatus());
+
         return row;
     }
 
 
-    private List<Object> populateSymptomAlertValues(PatientReport patientReport, PatientAlert patientAlert, List<Object> row) {
+    private List<Object> populateSymptomAlertValues(PatientAlert patientAlert, List<Object> row) {
         row.add(patientAlert.getAlertPriority());
         row.add(null);
         row.add(null);
@@ -127,12 +128,11 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
         row.add(patientAlert.getConnectedToDoctor());
         row.add(patientAlert.getDoctorsNotes());
         row.add(patientAlert.getNotes());
-        row.add(patientReport.getPatient().getStatus());
-        row.add(patientAlert.getPatient().getStatus());
+
         return row;
     }
 
-    private List<Object> populateFallingAdherenceAlertValues(PatientReport patientReport, PatientAlert patientAlert, List<Object> row) {
+    private List<Object> populateFallingAdherenceAlertValues(PatientAlert patientAlert, List<Object> row) {
         row.add(null);
         row.add(patientAlert.getDescription());
         row.add(null);
@@ -144,12 +144,11 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
         row.add(null);
         row.add(null);
         row.add(patientAlert.getNotes());
-        row.add(patientAlert.getStatusAction());
-        row.add(patientAlert.getPatient().getStatus());
+
         return row;
     }
 
-    private List<Object> populateAppointmentReminderAlertValues(PatientReport patientReport, PatientAlert patientAlert, List<Object> row) {
+    private List<Object> populateAppointmentReminderAlertValues(PatientAlert patientAlert, List<Object> row) {
         row.add(null);
         row.add(null);
         row.add(patientAlert.getAppointmentDueDate().toString());
@@ -161,8 +160,7 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
         row.add(null);
         row.add(null);
         row.add(patientAlert.getNotes());
-        row.add(patientAlert.getStatusAction());
-        row.add(patientAlert.getPatient().getStatus());
+
         return row;
     }
 
