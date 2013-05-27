@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.motechproject.model.DayOfWeek;
@@ -324,6 +325,8 @@ public class PatientController extends BaseController {
             return UPDATE_VIEW;
         }
         try {
+            List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
+            patient.setComplete(CollectionUtils.isEmpty(warning));
             patientService.update(patient, loggedInUserId(request));
             uiModel.asMap().clear();
         } catch (RuntimeException e) {
