@@ -470,8 +470,6 @@ public class PatientControllerTest {
         @Test
         public void shouldUpdatePatient() {
             Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withStatus(Status.Active).build();
-            Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withStatus(Status.Active).build();
-
             BindingResult bindingResult = mock(BindingResult.class);
             Map<String, Object> modelMap = new HashMap<String, Object>();
             modelMap.put("dummyKey", "dummyValue");
