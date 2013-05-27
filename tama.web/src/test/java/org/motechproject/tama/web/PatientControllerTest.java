@@ -469,19 +469,12 @@ public class PatientControllerTest {
     public static class Update extends SubjectUnderTest {
         @Test
         public void shouldUpdatePatient() {
-            Patient patientFromUI = mock(Patient.class);
-            when(patientFromUI.getPatientPreferences()).thenReturn(new PatientPreferences() {{
-                setCallPreference(CallPreference.DailyPillReminder);
-                setBestCallTime(new TimeOfDay());
-            }});
-            when(patientFromUI.getId()).thenReturn(PATIENT_ID);
+            Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withStatus(Status.Active).build();
+            Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withStatus(Status.Active).build();
+
             BindingResult bindingResult = mock(BindingResult.class);
             Map<String, Object> modelMap = new HashMap<String, Object>();
             modelMap.put("dummyKey", "dummyValue");
-
-            when(bindingResult.hasErrors()).thenReturn(false);
-            when(uiModel.asMap()).thenReturn(modelMap);
-            when(allPatients.get(PATIENT_ID)).thenReturn(patientFromUI);
 
             String updatePage = controller.update(patientFromUI, bindingResult, uiModel, request);
 
