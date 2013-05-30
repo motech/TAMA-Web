@@ -105,9 +105,11 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
 
     private List<Object> populateVisitMissedAlertValues(PatientAlert patientAlert, List<Object> row) {
         String date=getFormattedDateTime("dd/MM/yyyy h:mm aa",patientAlert.getConfirmedAppointmentDateTime().toDateTime());
+        DateTime datetime =  DateTime.parse(patientAlert.getAppointmentDueDate().toString());
+        String appointmentDueDate = getFormattedDateTime("dd/MM/yyyy",datetime);
         row.add(null);
         row.add(null);
-        row.add(patientAlert.getAppointmentDueDate().toString());
+        row.add(appointmentDueDate);
         row.add(date);
         row.add(patientAlert.getPatientCallPreference());
         row.add(null);
