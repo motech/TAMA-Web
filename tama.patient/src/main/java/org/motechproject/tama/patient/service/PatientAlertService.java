@@ -1,5 +1,6 @@
 package org.motechproject.tama.patient.service;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -149,4 +152,24 @@ public class PatientAlertService {
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, alertStatus);
         return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType).sortByAlertStatusAndTimeOfAlert();
     }
+    public PatientAlerts getAlertsForPatientIdAndDateRange(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
+        List<Patient> patients = patientId == null ? null : allPatients.findAllByPatientId(patientId);
+        PatientAlerts allAlerts = new PatientAlerts();
+        if (StringUtils.isNotEmpty(patientId) && CollectionUtils.isEmpty(patients)) {
+            return new PatientAlerts();
+        }
+        for (Patient patient: patients)
+        {
+        String patientDocId = StringUtils.isEmpty(patientId) ? null : patient.getId();
+        PatientAlerts patientAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, alertStatus);
+            Iterator iterator = patientAlerts.iterator();
+         while(iterator.hasNext())
+         {
+              allAlerts.add((PatientAlert)iterator.next());
+         }
+        }
+        return allAlerts.filterByAlertType(patientAlertType).sortByAlertStatusAndTimeOfAlert();
+    }
+
+
 }

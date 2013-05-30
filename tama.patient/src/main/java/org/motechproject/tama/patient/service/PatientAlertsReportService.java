@@ -34,6 +34,7 @@ public class PatientAlertsReportService {
 
     public PatientAlertsReport report(String patientId, DateTime startDate, DateTime endDate, String patientAlertType, String clinicId, String patientAlertStatus) {
         String ANY_TYPE_KEY_STATUS = "Any";
+        PatientAlerts patientAlerts = null;
         PatientReports patientReports = patientService.getPatientReports(patientId);
         PatientAlertType alertType = null;
         if (ANY_TYPE_KEY_STATUS.equals(patientAlertType)) {
@@ -45,9 +46,13 @@ public class PatientAlertsReportService {
             patientAlertStatus = "";
         }
 
-        PatientAlerts patientAlerts = patientAlertService.getAllAlertsFor(clinicId, patientId, alertType, startDate, endDate);
+        if ("".equals(clinicId)) {
+            patientAlerts = patientAlertService.getAlertsForPatientIdAndDateRange(clinicId, patientId, alertType, startDate, endDate, null);
+        } else {
+            patientAlerts = patientAlertService.getAllAlertsFor(clinicId, patientId, alertType, startDate, endDate);
+
+        }
         if (patientAlertStatus != null && !StringUtils.isEmpty(patientAlertStatus)) {
-            //yet to test
             patientAlerts = filterAlertsByStatus(patientAlerts, patientAlertStatus);
         }
 
