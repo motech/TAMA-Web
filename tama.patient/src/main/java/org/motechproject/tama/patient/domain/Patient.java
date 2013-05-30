@@ -60,7 +60,7 @@ public class Patient extends CouchEntity {
     @Getter @Setter private PatientPreferences patientPreferences = new PatientPreferences();
     @Getter @Setter private MedicalHistory medicalHistory;
     @Getter @Setter private Status status = Status.Inactive;
-    @Getter @Setter private Status previousStatus=  Status.Active;
+
     @Getter @Setter private String notes;
 
     @Getter @Setter private int travelTimeToClinicInDays;
@@ -77,11 +77,6 @@ public class Patient extends CouchEntity {
         return status.isActive();
     }
 
-    public void setStatus(Status status)
-    {
-        previousStatus=this.status;
-        this.status=status;
-    }
     @JsonIgnore
     public boolean allowOutboxCalls() {
         return status.isActive() || status.isSuspended();

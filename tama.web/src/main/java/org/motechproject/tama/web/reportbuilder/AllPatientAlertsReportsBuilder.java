@@ -3,6 +3,12 @@ package org.motechproject.tama.web.reportbuilder;
 
 import org.apache.poi.ss.usermodel.Cell;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 import org.motechproject.tama.patient.domain.PatientAlert;
 
 import org.motechproject.tama.patient.domain.PatientAlertType;
@@ -56,7 +62,6 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
         columns.add(new ExcelColumn("Connected To Doctor", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Doctors Notes Based On Direct Contact", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Notes", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Change In Patient Status Due To TAMA Advice ", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Current Patient Status", Cell.CELL_TYPE_STRING));
     }
 
@@ -75,8 +80,8 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
         if (null != patientAlert) {
 
             String patientAlertType = patientAlert.getType().getDisplayName();
-            row.add(patientReport.getPatientId());
-            row.add(patientReport.getClinicName());
+            row.add(patientAlert.getPatientId());
+            row.add(patientAlert.getPatient().getClinic().getName());
             row.add(patientAlertType);
             row.add(patientAlert.getGeneratedOnDate());
             row.add(patientAlert.getGeneratedOnTime());
@@ -92,7 +97,6 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
             } else if (PatientAlertType.VisitMissed.getDisplayName().equals(patientAlertType)) {
                 populateVisitMissedAlertValues(patientAlert, row);
             }
-            row.add(patientReport.getPatient().getPreviousStatus());
             row.add(patientAlert.getPatient().getStatus());
         }
         return row;
@@ -100,10 +104,11 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
 
 
     private List<Object> populateVisitMissedAlertValues(PatientAlert patientAlert, List<Object> row) {
+        String date=getFormattedDateTime("dd/MM/yyyy h:mm aa",patientAlert.getConfirmedAppointmentDateTime().toDateTime());
         row.add(null);
         row.add(null);
         row.add(patientAlert.getAppointmentDueDate().toString());
-        row.add(patientAlert.getConfirmedAppointmentDateTime().toString());
+        row.add(date);
         row.add(patientAlert.getPatientCallPreference());
         row.add(null);
         row.add(null);
@@ -115,8 +120,22 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
         return row;
     }
 
+    private String getFormattedDateTime(String format,DateTime dateTime){
+        return DateTimeFormat.forPattern(format).print(dateTime);
+    }
 
     private List<Object> populateSymptomAlertValues(PatientAlert patientAlert, List<Object> row) {
+        String yes="Yes";
+        String no="No";
+        String connectedToDoctor = patientAlert.getConnectedToDoctor();
+        if("NA".equals(connectedToDoctor))
+        {
+            connectedToDoctor=no;
+        }
+        if(!no.equalsIgnoreCase(connectedToDoctor))
+        {
+            connectedToDoctor=yes;
+        }
         row.add(patientAlert.getAlertPriority());
         row.add(null);
         row.add(null);
@@ -125,7 +144,7 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
         row.add(patientAlert.getSymptomReported());
         row.add(patientAlert.getAdviceGiven());
         row.add(patientAlert.getSymptomAlertStatus());
-        row.add(patientAlert.getConnectedToDoctor());
+        row.add(connectedToDoctor);
         row.add(patientAlert.getDoctorsNotes());
         row.add(patientAlert.getNotes());
 
@@ -149,9 +168,11 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
     }
 
     private List<Object> populateAppointmentReminderAlertValues(PatientAlert patientAlert, List<Object> row) {
+        DateTime date =  DateTime.parse(patientAlert.getAppointmentDueDate().toString());
+        String appointmentDueDate = getFormattedDateTime("dd/MM/yyyy",date);
         row.add(null);
         row.add(null);
-        row.add(patientAlert.getAppointmentDueDate().toString());
+        row.add(appointmentDueDate);
         row.add(null);
         row.add(patientAlert.getPatientCallPreference());
         row.add(null);
