@@ -58,9 +58,7 @@
                 </div>
             </form>
 
-            <!--  <form:form action="${filter_url}" method="GET" modelAttribute="alertFilter">
-                <jsp:include page="../alerts/search.jspx" />
-            </form:form>-->
+
         </util:panel>
         <script type="text/javascript">
             <![CDATA[
