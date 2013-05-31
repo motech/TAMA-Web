@@ -21,6 +21,7 @@ import org.motechproject.tama.web.model.*;
 import org.motechproject.tama.web.reportbuilder.*;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.tama.web.service.CallLogExcelReportService;
+import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,8 +141,16 @@ public class AnalysisDataController extends BaseController {
                                             @RequestParam("patientAlertType") String patientAlertType,
                                             @RequestParam("patientAlertStatus") String patientAlertStatus, Model uiModel, HttpServletResponse response) {
 
-        DateTime alertStartDate = DateTime.parse(startDate.toString());
-        DateTime alertEndDate = DateTime.parse(endDate.toString());
+        DateFilter dateFilter = new DateFilter().setDates(startDate, endDate);
+        DateTime alertStartDate = DateTime.parse(dateFilter.getStartDate().toString());
+        DateTime alertEndDate = DateTime.parse(dateFilter.getEndDate().toString());
+
+
+        if(alertEndDate.equals(alertStartDate))
+        {
+            alertEndDate=alertEndDate.plusDays(1);
+
+        }
 
         PatientAlertsReport patientAlertsReport = patientAlertsReportService.report(patientId, alertStartDate, alertEndDate, patientAlertType, clinicId, patientAlertStatus);
         List<PatientAlert> alerts = new ArrayList<>();
