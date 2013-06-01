@@ -144,13 +144,8 @@ public class AnalysisDataController extends BaseController {
         DateFilter dateFilter = new DateFilter().setDates(startDate, endDate);
         DateTime alertStartDate = DateTime.parse(dateFilter.getStartDate().toString());
         DateTime alertEndDate = DateTime.parse(dateFilter.getEndDate().toString());
+        alertEndDate=alertEndDate.plusDays(1);
 
-
-        if(alertEndDate.equals(alertStartDate))
-        {
-            alertEndDate=alertEndDate.plusDays(1);
-
-        }
 
         PatientAlertsReport patientAlertsReport = patientAlertsReportService.report(patientId, alertStartDate, alertEndDate, patientAlertType, clinicId, patientAlertStatus);
         List<PatientAlert> alerts = new ArrayList<>();
