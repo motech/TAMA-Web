@@ -4,17 +4,21 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
+import org.motechproject.tama.fourdayrecall.reporting.WeeklyAdherenceMapper;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.reporting.service.WeeklyPatientReportingService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class WeeklyAdherenceLogService {
+    protected WeeklyPatientReportingService weeklyPatientReportingService;
+    protected WeeklyAdherenceMapper weeklyAdherenceMapper;
     protected AllPatients allPatients;
     protected AllTreatmentAdvices allTreatmentAdvices;
     protected FourDayRecallDateService fourDayRecallDateService;
@@ -23,11 +27,14 @@ public class WeeklyAdherenceLogService {
     @Autowired
     public WeeklyAdherenceLogService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
                                      AllWeeklyAdherenceLogs allWeeklyAdherenceLogs,
-                                     FourDayRecallDateService fourDayRecallDateService) {
+                                     FourDayRecallDateService fourDayRecallDateService,WeeklyPatientReportingService weeklyPatientReportingService,
+                                     WeeklyAdherenceMapper weeklyAdherenceMapper) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.fourDayRecallDateService = fourDayRecallDateService;
+        this.weeklyPatientReportingService=weeklyPatientReportingService;
+        this.weeklyAdherenceMapper =weeklyAdherenceMapper;
     }
 
     public WeeklyAdherenceLog get(String patientId, int weeksBefore) {
@@ -76,9 +83,11 @@ public class WeeklyAdherenceLogService {
     private void upsertLog(WeeklyAdherenceLog currentLog, WeeklyAdherenceLog newLog) {
         if (currentLog == null) {
             allWeeklyAdherenceLogs.add(newLog);
+            weeklyPatientReportingService.save(weeklyAdherenceMapper.map(newLog));
         } else if (currentLog.getNotResponded()) {
             currentLog.merge(newLog);
             allWeeklyAdherenceLogs.update(currentLog);
+            weeklyPatientReportingService.update(weeklyAdherenceMapper.map(newLog));
         }
     }
 }
