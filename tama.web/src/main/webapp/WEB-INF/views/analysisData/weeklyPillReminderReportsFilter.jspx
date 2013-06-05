@@ -1,0 +1,54 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:spring="http://www.springframework.org/tags"
+     version="2.0"
+     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <div id="weeklyPillReminderReportDownload" class="reportsDownload">
+        <c:if test="${weeklyPillReminderReport_warning != null}">
+            <div class="center warning">
+                <c:out value="${weeklyPillReminderReport_warning}"/>
+            </div>
+        </c:if>
+        <spring:url value="/analysisData/weeklyPillReminderReport.xls#weeklyPillReminderReportDownload" var="download_weekly_dosage_adherence_report_url"/>
+        <util:panel id="dosageAdherenceReportPaneWeekly" title="Weekly Adherence Report" openPane="true">
+            <form id="dosageAdherenceReportFormWeekly" action="${download_weekly_dosage_adherence_report_url}" method="GET">
+                <div class="control-group">
+                    <label for="patientId">Patient Id * :</label>
+                    <input id="weeklyDosageAdherenceReportPatientId" type="text" name="patientId"/>
+                </div>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="weeklyDownloadDosageAdherenceReportFilter.startDate"
+                                id="c_org_motechproject_tama_dosage_adherence_filter_startDate_weekly" label="Starting From"
+                                required="true"/>
+                <field:datetime dateTimePattern="dd/MM/yyyy" field="weeklyDownloadDosageAdherenceReportFilter.endDate"
+                                id="c_org_motechproject_tama_dosage_adherence_filter_endDate_weekly" label="Till" required="true"/>
+                <div class="control-group">
+                    <input type="submit" id="weeklyDownloadDosageAdherenceReport" value="DOWNLOAD AS EXCEL"/>
+                </div>
+            </form>
+            <script type="text/javascript">
+                <![CDATA[
+                        dojo.addOnLoad(function() {
+                            var startDateObj = dijit.byId("_weeklyDownloadDosageAdherenceReportFilter.startDate_id");
+                            var endDateObj = dijit.byId("_weeklyDownloadDosageAdherenceReportFilter.endDate_id");
+                            setConstraintOnEndDate(startDateObj, endDateObj);
+                            Spring.addDecoration(new Spring.ElementDecoration({elementId : 'patientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}));
+                            dojo.connect(dojo.byId("downloadDosageAdherenceReport"), "onclick", function(event){
+                                event.preventDefault();
+                                Spring.decorations['patientId'][0].validate();
+                                Spring.decorations['_weeklyDownloadDosageAdherenceReportFilter.startDate_id'][0].validate();
+                                Spring.decorations['_weeklyDownloadDosageAdherenceReportFilter.endDate_id'][0].validate();
+                                if(dijit.byId("patientId").isValid() && startDateObj.isValid() && endDateObj.isValid()){
+                                    dojo.byId('dosageAdherenceReportFormWeekly').submit();
+                                }
+                            });
+                            dojo.connect(startDateObj, "onChange", function() {
+                                setConstraintOnEndDate(startDateObj, endDateObj);
+                            });
+                         });
+                     ]]>
+            </script>
+        </util:panel>
+    </div>
+</div>

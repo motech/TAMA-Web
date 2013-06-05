@@ -86,6 +86,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("outboxMessageReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("messagesReportFilter", new ClinicAndDateFilter());
         uiModel.addAttribute("dosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
+        uiModel.addAttribute("weeklyDownloadDosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
         uiModel.addAttribute("patientAlertsReportFilter", new PatientAlertsReportFilter());
         callSummaryController.download(uiModel);
@@ -134,8 +135,8 @@ public class AnalysisDataController extends BaseController {
 
 
     @RequestMapping(value = "/patientAlertsReport.xls", method = RequestMethod.GET)
-    public void downloadPatientAlertsReport(@RequestParam("clinicId") String clinicId,
-                                            @RequestParam("patientId") String patientId,
+    public void downloadPatientAlertsReport(@RequestParam("patientId") String patientId,
+                                            @RequestParam("clinicId") String clinicId,
                                             @RequestParam("startDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate startDate,
                                             @RequestParam("endDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate endDate,
                                             @RequestParam("patientAlertType") String patientAlertType,
@@ -144,7 +145,7 @@ public class AnalysisDataController extends BaseController {
         DateFilter dateFilter = new DateFilter().setDates(startDate, endDate);
         DateTime alertStartDate = DateTime.parse(dateFilter.getStartDate().toString());
         DateTime alertEndDate = DateTime.parse(dateFilter.getEndDate().toString());
-        alertEndDate=alertEndDate.plusDays(1);
+        alertEndDate = alertEndDate.plusDays(1);
 
 
         PatientAlertsReport patientAlertsReport = patientAlertsReportService.report(patientId, alertStartDate, alertEndDate, patientAlertType, clinicId, patientAlertStatus);
@@ -191,6 +192,21 @@ public class AnalysisDataController extends BaseController {
             logger.error("Error while generating excel report: " + e.getMessage());
         }
         return null;
+    }
+
+    @RequestMapping(value = "/weeklyPillReminderReport.xls", method = RequestMethod.GET)
+    public String downloadWeeklyPillReminderReport(@RequestParam("clinicId") String clinicId,
+                                                   @RequestParam("patientId") String patientId,
+                                                   @RequestParam("startDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate startDate,
+                                                   @RequestParam("endDate") @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT) LocalDate endDate,
+                                                   Model uiModel) {
+
+        DateFilter filter = new DateFilter().setDates(startDate, endDate);
+        if (filter.isMoreThanOneYear()) {
+            return error(uiModel, "patientEventReport_warning");
+        } else {
+            return format("redirect:/tama-reports/weekly/report?patientId=%s&clinicId=%s&startDate=%s&endDate=%s&eventName=%s", patientId, clinicId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"));
+        }
     }
 
     @RequestMapping(value = "/smsReport.xls", method = RequestMethod.GET)

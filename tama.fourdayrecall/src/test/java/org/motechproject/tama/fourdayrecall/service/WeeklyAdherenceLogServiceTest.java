@@ -11,6 +11,7 @@ import org.motechproject.model.DayOfWeek;
 import org.motechproject.tama.common.domain.TimeMeridiem;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
+import org.motechproject.tama.fourdayrecall.reporting.WeeklyAdherenceMapper;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.patient.builder.PatientBuilder;
 import org.motechproject.tama.patient.builder.TreatmentAdviceBuilder;
@@ -18,8 +19,10 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.reporting.service.WeeklyPatientReportingService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -42,6 +45,11 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
 
     private WeeklyAdherenceLogService weeklyAdherenceLogsService;
 
+    @Mock
+    private WeeklyPatientReportingService weeklyPatientReportingService;
+    @Mock
+    private WeeklyAdherenceMapper weeklyAdherenceMapper;
+
     @Before
     public void setUp() {
         initMocks(this);
@@ -50,7 +58,7 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
         setUpTreatmentAdvice();
 
         fourdayRecallDateService = new FourDayRecallDateService();
-        weeklyAdherenceLogsService = new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourdayRecallDateService);
+        weeklyAdherenceLogsService = new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourdayRecallDateService,weeklyPatientReportingService,weeklyAdherenceMapper);
     }
 
     private void setUpTime() {
@@ -167,7 +175,7 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
         when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDate)).thenReturn(weeklyAdherenceLog);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
 
-        new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourDayRecallDateService).createNotRespondedLog(patient.getId());
+        new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourDayRecallDateService,weeklyPatientReportingService,weeklyAdherenceMapper).createNotRespondedLog(patient.getId());
         verify(allWeeklyAdherenceLogs).update(Matchers.<WeeklyAdherenceLog>any());
     }
 
