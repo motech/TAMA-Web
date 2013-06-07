@@ -33,7 +33,7 @@ public class WeeklyAdherenceMapper {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(weeklyAdherenceLog.getPatientId());
         WeeklyAdherenceLogRequest weeklyAdherenceLogRequest = new WeeklyAdherenceLogRequest();
         weeklyAdherenceLogRequest.setPatientId(weeklyAdherenceLog.getPatientId());
-        weeklyAdherenceLogRequest.setClinicName(allPatients.findClinicFor(patient));
+        weeklyAdherenceLogRequest.setClinicName(patient.getClinic().getName());
         weeklyAdherenceLogRequest.setArtStartDate(patient.getActivationDate().toDate());
         weeklyAdherenceLogRequest.setTreatmentAdviceId(weeklyAdherenceLog.getTreatmentAdviceId());
         weeklyAdherenceLogRequest.setStartDate(treatmentAdvice.getStartDate());
