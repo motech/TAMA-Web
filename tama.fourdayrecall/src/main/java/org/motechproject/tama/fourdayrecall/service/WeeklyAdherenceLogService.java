@@ -34,7 +34,9 @@ public class WeeklyAdherenceLogService {
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.fourDayRecallDateService = fourDayRecallDateService;
         this.weeklyPatientReportingService=weeklyPatientReportingService;
+        //Temporary
         this.weeklyAdherenceMapper =weeklyAdherenceMapper;
+        this.weeklyAdherenceMapper = new WeeklyAdherenceMapper(allWeeklyAdherenceLogs,allPatients,allTreatmentAdvices);
     }
 
     public WeeklyAdherenceLog get(String patientId, int weeksBefore) {
