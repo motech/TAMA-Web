@@ -29,7 +29,7 @@ public class WeeklyAdherenceMapper {
     }
 
     public WeeklyAdherenceLogRequest map(WeeklyAdherenceLog weeklyAdherenceLog) {
-        Patient patient = allPatients.findByPatientId(weeklyAdherenceLog.getPatientId());
+        Patient patient = allPatients.get(weeklyAdherenceLog.getPatientId());
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(weeklyAdherenceLog.getPatientId());
         WeeklyAdherenceLogRequest weeklyAdherenceLogRequest = new WeeklyAdherenceLogRequest();
         weeklyAdherenceLogRequest.setPatientId(weeklyAdherenceLog.getPatientId());
