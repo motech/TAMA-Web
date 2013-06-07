@@ -34,10 +34,8 @@ public class WeeklyAdherenceLogService {
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.fourDayRecallDateService = fourDayRecallDateService;
         this.weeklyPatientReportingService=weeklyPatientReportingService;
-        //Temporary
         this.weeklyAdherenceMapper =weeklyAdherenceMapper;
-        this.weeklyAdherenceMapper = new WeeklyAdherenceMapper(allWeeklyAdherenceLogs,allPatients,allTreatmentAdvices);
-    }
+        }
 
     public WeeklyAdherenceLog get(String patientId, int weeksBefore) {
         Patient patient = allPatients.get(patientId);
@@ -83,11 +81,16 @@ public class WeeklyAdherenceLogService {
     }
 
     private void upsertLog(WeeklyAdherenceLog currentLog, WeeklyAdherenceLog newLog) {
+        this.weeklyAdherenceMapper = new WeeklyAdherenceMapper(allWeeklyAdherenceLogs,allPatients,allTreatmentAdvices);
+
+
         if (currentLog == null) {
             allWeeklyAdherenceLogs.add(newLog);
+            Patient patient = allPatients.findByPatientId(newLog.getPatientId());
             weeklyPatientReportingService.save(weeklyAdherenceMapper.map(newLog));
         } else if (currentLog.getNotResponded()) {
             currentLog.merge(newLog);
+            Patient patient = allPatients.findByPatientId(currentLog.getPatientId());
             allWeeklyAdherenceLogs.update(currentLog);
             weeklyPatientReportingService.update(weeklyAdherenceMapper.map(newLog));
         }
