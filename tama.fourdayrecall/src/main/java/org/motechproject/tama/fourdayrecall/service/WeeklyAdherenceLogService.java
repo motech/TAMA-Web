@@ -27,15 +27,15 @@ public class WeeklyAdherenceLogService {
     @Autowired
     public WeeklyAdherenceLogService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
                                      AllWeeklyAdherenceLogs allWeeklyAdherenceLogs,
-                                     FourDayRecallDateService fourDayRecallDateService,WeeklyPatientReportingService weeklyPatientReportingService,
+                                     FourDayRecallDateService fourDayRecallDateService, WeeklyPatientReportingService weeklyPatientReportingService,
                                      WeeklyAdherenceMapper weeklyAdherenceMapper) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.fourDayRecallDateService = fourDayRecallDateService;
-        this.weeklyPatientReportingService=weeklyPatientReportingService;
-        this.weeklyAdherenceMapper =weeklyAdherenceMapper;
-        }
+        this.weeklyPatientReportingService = weeklyPatientReportingService;
+        this.weeklyAdherenceMapper = weeklyAdherenceMapper;
+    }
 
     public WeeklyAdherenceLog get(String patientId, int weeksBefore) {
         Patient patient = allPatients.get(patientId);
@@ -81,7 +81,7 @@ public class WeeklyAdherenceLogService {
     }
 
     private void upsertLog(WeeklyAdherenceLog currentLog, WeeklyAdherenceLog newLog) {
-        this.weeklyAdherenceMapper = new WeeklyAdherenceMapper(allWeeklyAdherenceLogs,allPatients,allTreatmentAdvices);
+        this.weeklyAdherenceMapper = new WeeklyAdherenceMapper(allWeeklyAdherenceLogs, allPatients, allTreatmentAdvices);
 
 
         if (currentLog == null) {
