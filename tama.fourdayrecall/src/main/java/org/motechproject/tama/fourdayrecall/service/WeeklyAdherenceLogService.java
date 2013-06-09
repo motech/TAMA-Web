@@ -10,6 +10,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.reporting.service.WeeklyPatientReportingService;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +24,20 @@ public class WeeklyAdherenceLogService {
     protected AllTreatmentAdvices allTreatmentAdvices;
     protected FourDayRecallDateService fourDayRecallDateService;
     protected AllWeeklyAdherenceLogs allWeeklyAdherenceLogs;
+    protected AllRegimens allRegimens;
 
     @Autowired
     public WeeklyAdherenceLogService(AllPatients allPatients, AllTreatmentAdvices allTreatmentAdvices,
                                      AllWeeklyAdherenceLogs allWeeklyAdherenceLogs,
                                      FourDayRecallDateService fourDayRecallDateService, WeeklyPatientReportingService weeklyPatientReportingService,
-                                     WeeklyAdherenceMapper weeklyAdherenceMapper) {
+                                     WeeklyAdherenceMapper weeklyAdherenceMapper,AllRegimens allRegimens) {
         this.allPatients = allPatients;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.allWeeklyAdherenceLogs = allWeeklyAdherenceLogs;
         this.fourDayRecallDateService = fourDayRecallDateService;
         this.weeklyPatientReportingService = weeklyPatientReportingService;
         this.weeklyAdherenceMapper = weeklyAdherenceMapper;
+        this.allRegimens=allRegimens;
     }
 
     public WeeklyAdherenceLog get(String patientId, int weeksBefore) {

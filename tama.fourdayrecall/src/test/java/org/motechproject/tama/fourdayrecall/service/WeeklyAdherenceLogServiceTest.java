@@ -19,6 +19,7 @@ import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.reporting.service.WeeklyPatientReportingService;
 import org.motechproject.testing.utils.BaseUnitTest;
 import org.motechproject.util.DateUtil;
@@ -50,6 +51,9 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
     @Mock
     private WeeklyAdherenceMapper weeklyAdherenceMapper;
 
+    @Mock
+    private AllRegimens allRegimens;
+
     @Before
     public void setUp() {
         initMocks(this);
@@ -58,7 +62,7 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
         setUpTreatmentAdvice();
 
         fourdayRecallDateService = new FourDayRecallDateService();
-        weeklyAdherenceLogsService = new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourdayRecallDateService,weeklyPatientReportingService,weeklyAdherenceMapper);
+        weeklyAdherenceLogsService = new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourdayRecallDateService, weeklyPatientReportingService, weeklyAdherenceMapper, allRegimens);
     }
 
     private void setUpTime() {
@@ -175,7 +179,7 @@ public class WeeklyAdherenceLogServiceTest extends BaseUnitTest {
         when(allWeeklyAdherenceLogs.findLogByWeekStartDate(patient.getId(), treatmentAdvice.getId(), weekStartDate)).thenReturn(weeklyAdherenceLog);
         when(allTreatmentAdvices.currentTreatmentAdvice(patient.getId())).thenReturn(treatmentAdvice);
 
-        new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourDayRecallDateService,weeklyPatientReportingService,weeklyAdherenceMapper).createNotRespondedLog(patient.getId());
+        new WeeklyAdherenceLogService(allPatients, allTreatmentAdvices, allWeeklyAdherenceLogs, fourDayRecallDateService, weeklyPatientReportingService, weeklyAdherenceMapper, allRegimens).createNotRespondedLog(patient.getId());
         verify(allWeeklyAdherenceLogs).update(Matchers.<WeeklyAdherenceLog>any());
     }
 
