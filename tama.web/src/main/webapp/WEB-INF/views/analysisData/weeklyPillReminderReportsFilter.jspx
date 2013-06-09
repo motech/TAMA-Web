@@ -11,18 +11,27 @@
                 <c:out value="${weeklyPillReminderReport_warning}"/>
             </div>
         </c:if>
-        <spring:url value="/analysisData/weeklyPillReminderReport.xls#weeklyPillReminderReportDownload" var="download_weekly_dosage_adherence_report_url"/>
+        <spring:url value="/analysisData/weeklyPillReminderReport.xls#weeklyPillReminderReportDownload"
+                    var="download_weekly_dosage_adherence_report_url"/>
         <util:panel id="dosageAdherenceReportPaneWeekly" title="Weekly Adherence Report" openPane="true">
-            <form id="dosageAdherenceReportFormWeekly" action="${download_weekly_dosage_adherence_report_url}" method="GET">
+            <form id="dosageAdherenceReportFormWeekly" action="${download_weekly_dosage_adherence_report_url}"
+                  method="GET">
                 <div class="control-group">
                     <label for="patientId">Patient Id * :</label>
                     <input id="weeklyDosageAdherenceReportPatientId" type="text" name="patientId"/>
                 </div>
+                <div class="control-group">
+                    <field:select field="clinicFilter.clinicId" id="weeklyDosageAdherenceReportClinicId"
+                                  items="${clinicFilter.allClinics}" path="/clinicFilter.clinicId" itemLabel="name"
+                                  itemValue="id" required="false" disableDefaultSelection="false" label="Clinic Name"/>
+                </div>
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="weeklyDownloadDosageAdherenceReportFilter.startDate"
-                                id="c_org_motechproject_tama_dosage_adherence_filter_startDate_weekly" label="Starting From"
+                                id="c_org_motechproject_tama_dosage_adherence_filter_startDate_weekly"
+                                label="Starting From"
                                 required="true"/>
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="weeklyDownloadDosageAdherenceReportFilter.endDate"
-                                id="c_org_motechproject_tama_dosage_adherence_filter_endDate_weekly" label="Till" required="true"/>
+                                id="c_org_motechproject_tama_dosage_adherence_filter_endDate_weekly" label="Till"
+                                required="true"/>
                 <div class="control-group">
                     <input type="submit" id="weeklyDownloadDosageAdherenceReport" value="DOWNLOAD AS EXCEL"/>
                 </div>
