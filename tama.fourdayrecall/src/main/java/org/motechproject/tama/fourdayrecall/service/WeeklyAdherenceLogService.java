@@ -91,7 +91,7 @@ public class WeeklyAdherenceLogService {
             currentLog.merge(newLog);
             Patient patient = allPatients.findByPatientId(currentLog.getPatientId());
             allWeeklyAdherenceLogs.update(currentLog);
-            weeklyPatientReportingService.update(weeklyAdherenceMapper.map(newLog));
+            weeklyPatientReportingService.update(weeklyAdherenceMapper.map(currentLog));
         }
     }
 }
