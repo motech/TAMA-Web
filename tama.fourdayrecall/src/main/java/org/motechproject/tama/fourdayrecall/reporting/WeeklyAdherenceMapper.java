@@ -1,6 +1,10 @@
 package org.motechproject.tama.fourdayrecall.reporting;
 
 
+import org.joda.time.DateTime;
+
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
 import org.motechproject.tama.fourdayrecall.repository.AllWeeklyAdherenceLogs;
 import org.motechproject.tama.patient.domain.Patient;
@@ -12,6 +16,8 @@ import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.reports.contract.WeeklyAdherenceLogRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class WeeklyAdherenceMapper {
@@ -41,12 +47,26 @@ public class WeeklyAdherenceMapper {
         WeeklyAdherenceLogRequest weeklyAdherenceLogRequest = new WeeklyAdherenceLogRequest();
         weeklyAdherenceLogRequest.setPatientId(weeklyAdherenceLog.getPatientId());
         weeklyAdherenceLogRequest.setClinicName(patient.getClinic().getName());
-        weeklyAdherenceLogRequest.setArtStartDate(patient.getActivationDate().toDate());
+        weeklyAdherenceLogRequest.setArtStartDate(formatDate(patient.getActivationDate()).toDate());
         weeklyAdherenceLogRequest.setTreatmentAdviceId(regimen.getDisplayName());
-        weeklyAdherenceLogRequest.setStartDate(treatmentAdvice.getStartDate());
-        weeklyAdherenceLogRequest.setWeekStartDate(weeklyAdherenceLog.getWeekStartDate().toDate());
-        weeklyAdherenceLogRequest.setAdherenceLoggedDate(weeklyAdherenceLog.getLogDate().toDate());
+        weeklyAdherenceLogRequest.setStartDate(formatDate(treatmentAdvice.getStartDate()).toDate());
+        weeklyAdherenceLogRequest.setWeekStartDate(formatDate(weeklyAdherenceLog.getWeekStartDate().toDate()).toDate());
+        weeklyAdherenceLogRequest.setAdherenceLoggedDate(formatDate(weeklyAdherenceLog.getLogDate()).toDate());
         weeklyAdherenceLogRequest.setNumberOfDaysMissed(weeklyAdherenceLog.getNumberOfDaysMissed());
         return weeklyAdherenceLogRequest;
+    }
+
+    private DateTime formatDate(DateTime dateTime)
+    {
+        DateTimeFormatter format = DateTimeFormat.forPattern("dd/MM/yyyy");
+        DateTime time = format.parseDateTime(dateTime.toString());
+        return time;
+    }
+    private DateTime formatDate(Date date)
+    {
+        DateTimeFormatter format = DateTimeFormat.forPattern("dd/MM/yyyy");
+        DateTime time = format.parseDateTime(date.toString());
+        return time;
+
     }
 }
