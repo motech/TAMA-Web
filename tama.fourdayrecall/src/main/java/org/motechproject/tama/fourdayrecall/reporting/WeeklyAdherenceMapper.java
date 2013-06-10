@@ -47,24 +47,24 @@ public class WeeklyAdherenceMapper {
         WeeklyAdherenceLogRequest weeklyAdherenceLogRequest = new WeeklyAdherenceLogRequest();
         weeklyAdherenceLogRequest.setPatientId(weeklyAdherenceLog.getPatientId());
         weeklyAdherenceLogRequest.setClinicName(patient.getClinic().getName());
-        weeklyAdherenceLogRequest.setArtStartDate(formatDate(patient.getActivationDate()).toDate());
+        weeklyAdherenceLogRequest.setArtStartDate(formatDate("dd/MM/yyyy h:mm aa",patient.getActivationDate()).toDate());
         weeklyAdherenceLogRequest.setTreatmentAdviceId(regimen.getDisplayName());
-        weeklyAdherenceLogRequest.setStartDate(formatDate(treatmentAdvice.getStartDate()).toDate());
-        weeklyAdherenceLogRequest.setWeekStartDate(formatDate(weeklyAdherenceLog.getWeekStartDate().toDate()).toDate());
-        weeklyAdherenceLogRequest.setAdherenceLoggedDate(formatDate(weeklyAdherenceLog.getLogDate()).toDate());
+        weeklyAdherenceLogRequest.setStartDate(formatDate("dd/MM/yyyy h:mm aa",treatmentAdvice.getStartDate()).toDate());
+        weeklyAdherenceLogRequest.setWeekStartDate(formatDate("dd/MM/yyyy h:mm aa",weeklyAdherenceLog.getWeekStartDate().toDate()).toDate());
+        weeklyAdherenceLogRequest.setAdherenceLoggedDate(formatDate("dd/MM/yyyy h:mm aa",weeklyAdherenceLog.getLogDate()).toDate());
         weeklyAdherenceLogRequest.setNumberOfDaysMissed(weeklyAdherenceLog.getNumberOfDaysMissed());
         return weeklyAdherenceLogRequest;
     }
 
-    private DateTime formatDate(DateTime dateTime)
+    private DateTime formatDate(String dateFormat,DateTime dateTime)
     {
-        DateTimeFormatter format = DateTimeFormat.forPattern("dd/MM/yyyy");
+        DateTimeFormatter format = DateTimeFormat.forPattern(dateFormat);
         DateTime time = format.parseDateTime(dateTime.toString());
         return time;
     }
-    private DateTime formatDate(Date date)
+    private DateTime formatDate(String dateFormat,Date date)
     {
-        DateTimeFormatter format = DateTimeFormat.forPattern("dd/MM/yyyy");
+        DateTimeFormatter format = DateTimeFormat.forPattern(dateFormat);
         DateTime time = format.parseDateTime(date.toString());
         return time;
 
