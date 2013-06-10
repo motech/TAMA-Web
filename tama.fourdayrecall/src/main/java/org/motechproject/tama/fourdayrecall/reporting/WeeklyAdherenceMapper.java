@@ -3,6 +3,7 @@ package org.motechproject.tama.fourdayrecall.reporting;
 
 import org.joda.time.DateTime;
 
+import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.motechproject.tama.fourdayrecall.domain.WeeklyAdherenceLog;
@@ -16,6 +17,8 @@ import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.reports.contract.WeeklyAdherenceLogRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class WeeklyAdherenceMapper {
@@ -45,13 +48,18 @@ public class WeeklyAdherenceMapper {
         WeeklyAdherenceLogRequest weeklyAdherenceLogRequest = new WeeklyAdherenceLogRequest();
         weeklyAdherenceLogRequest.setPatientId(weeklyAdherenceLog.getPatientId());
         weeklyAdherenceLogRequest.setClinicName(patient.getClinic().getName());
-        weeklyAdherenceLogRequest.setArtStartDate(patient.getActivationDate().toDate());
+        weeklyAdherenceLogRequest.setArtStartDate(formatDate(patient.getActivationDate(),"dd/MM/yyyy h:mm aa"));
         weeklyAdherenceLogRequest.setTreatmentAdviceId(regimen.getDisplayName());
         weeklyAdherenceLogRequest.setStartDate(treatmentAdvice.getStartDate());
         weeklyAdherenceLogRequest.setWeekStartDate(weeklyAdherenceLog.getWeekStartDate().toDate());
         weeklyAdherenceLogRequest.setAdherenceLoggedDate(weeklyAdherenceLog.getLogDate().toDate());
         weeklyAdherenceLogRequest.setNumberOfDaysMissed(weeklyAdherenceLog.getNumberOfDaysMissed());
         return weeklyAdherenceLogRequest;
+    }
+
+    private Date formatDate(DateTime dateTime,String format)
+    {
+       return LocalDate.parse(DateTimeFormat.forPattern(format).print(dateTime)).toDate();
     }
 
 }

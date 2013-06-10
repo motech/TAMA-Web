@@ -205,7 +205,7 @@ public class AnalysisDataController extends BaseController {
         if (filter.isMoreThanOneYear()) {
             return error(uiModel, "patientEventReport_warning");
         } else {
-            return format("redirect:/tama-reports/weekly/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s",clinicId, patientId, startDate.toString("dd/MM/yyyy"), endDate.toString("dd/MM/yyyy"));
+            return format("redirect:/tama-reports/weekly/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s",clinicId, patientId, filter.startDate.toString("dd/MM/yyyy"), filter.getEndDate().toString("dd/MM/yyyy"));
         }
     }
 
