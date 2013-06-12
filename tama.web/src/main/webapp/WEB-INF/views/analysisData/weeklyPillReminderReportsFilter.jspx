@@ -42,13 +42,13 @@
                             var startDateObj = dijit.byId("_weeklyDownloadDosageAdherenceReportFilter.startDate_id");
                             var endDateObj = dijit.byId("_weeklyDownloadDosageAdherenceReportFilter.endDate_id");
                             setConstraintOnEndDate(startDateObj, endDateObj);
-                            Spring.addDecoration(new Spring.ElementDecoration({elementId : 'patientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}));
+                            Spring.addDecoration(new Spring.ElementDecoration({elementId : 'weeklyDosageAdherenceReportPatientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}));
                             dojo.connect(dojo.byId("downloadDosageAdherenceReport"), "onclick", function(event){
                                 event.preventDefault();
-                                Spring.decorations['patientId'][0].validate();
+                                Spring.decorations['weeklyDosageAdherenceReportPatientId'][0].validate();
                                 Spring.decorations['_weeklyDownloadDosageAdherenceReportFilter.startDate_id'][0].validate();
                                 Spring.decorations['_weeklyDownloadDosageAdherenceReportFilter.endDate_id'][0].validate();
-                                if(dijit.byId("patientId").isValid() && startDateObj.isValid() && endDateObj.isValid()){
+                                if(dijit.byId("weeklyDosageAdherenceReportPatientId").isValid() && startDateObj.isValid() && endDateObj.isValid()){
                                     dojo.byId('dosageAdherenceReportFormWeekly').submit();
                                 }
                             });
