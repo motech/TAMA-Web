@@ -1,5 +1,6 @@
 package org.motechproject.tama.web;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -108,6 +109,10 @@ public class ClinicVisitsController extends BaseController {
             treatmentAdviceController.createForm(patientDocId, uiModel);
         }
         List<String> warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
+        if(!CollectionUtils.isEmpty(warning))
+        {
+            warning.add(PatientController.PATIENT_WARNING_WARNING_RESOLVE_HELP);
+        }
         uiModel.addAttribute("patientId", patientDocId);
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
         uiModel.addAttribute("patient", clinicVisit.getPatient());
@@ -165,6 +170,10 @@ public class ClinicVisitsController extends BaseController {
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
         opportunisticInfectionsController.show(clinicVisit, uiModel);
         List<String> warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
+        if(!CollectionUtils.isEmpty(warning))
+        {
+            warning.add(PatientController.PATIENT_WARNING_WARNING_RESOLVE_HELP);
+        }
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
         uiModel.addAttribute("patient", clinicVisit.getPatient());
         uiModel.addAttribute(PatientController.WARNING, warning);
@@ -176,6 +185,10 @@ public class ClinicVisitsController extends BaseController {
         List<ClinicVisitUIModel> clinicVisitUIModels = allClinicVisits(patientDocId);
         Patient patient = clinicVisitUIModels.get(0).getPatient();
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
+        if(!CollectionUtils.isEmpty(warning))
+        {
+            warning.add(PatientController.PATIENT_WARNING_WARNING_RESOLVE_HELP);
+        }
         uiModel.addAttribute("clinicVisits", clinicVisitUIModels);
         uiModel.addAttribute("patient", new PatientViewModel(patient));
         uiModel.addAttribute(PatientController.WARNING, warning);
