@@ -79,6 +79,8 @@ public class PatientController extends BaseController {
     private static final String PHONE_NUMBER_AND_PASSCODE_ALREADY_IN_USE = "Sorry, the entered combination of phone number and TAMA-PIN is already in use.";
     public static final String PATIENT_INSERT_ERROR_KEY = "patientInsertError";
     private static final String PATIENT_INSERT_ERROR = "Sorry, there was an error while creating/updating the patient. Please try again.";
+    public static final String PATIENT_WARNING_WARNING_RESOLVE_HELP = "Please add missing data by accessing CLINIC VISIT/APPOINTMENTS tab and then clicking on link ACTIVATED IN TAMA ";
+    public static final String PATIENT_HAS_NOT_BEEN_ACTIVATED = "Patient has not been Activated";
 
     private AllPatients allPatients;
     private AllGendersCache allGenders;
@@ -126,6 +128,9 @@ public class PatientController extends BaseController {
         activatePatient(id, null, request);
         Patient activatedPatient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         List<String> warning = new IncompletePatientDataWarning(activatedPatient, null, null, null, null).value();
+        if (!CollectionUtils.isEmpty(warning)) {
+            warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
+        }
         uiModel.addAttribute("warning", warning);
         uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
         initUIModel(uiModel, activatedPatient);
@@ -148,7 +153,7 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/deactivate/{id}")
-    public String redirectToDeactivatePage(@PathVariable String id, Model model,  HttpServletRequest request) {
+    public String redirectToDeactivatePage(@PathVariable String id, Model model, HttpServletRequest request) {
         model.addAttribute("patientId", id);
         model.addAttribute("patient", allPatients.findByIdAndClinicId(id, loggedInClinic(request)));
         model.addAttribute(DEACTIVATION_STATUSES, Status.deactivationStatuses());
@@ -164,7 +169,7 @@ public class PatientController extends BaseController {
         patient.setPatientPreferences(patientPreferences);
         uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
         initUIModel(uiModel, patient);
-        uiModel.addAttribute("selectedMenuItem","NEW_PATIENT");
+        uiModel.addAttribute("selectedMenuItem", "NEW_PATIENT");
         return CREATE_VIEW;
     }
 
@@ -205,6 +210,13 @@ public class PatientController extends BaseController {
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         if (patient == null) return "authorizationFailure";
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
+        if (!CollectionUtils.isEmpty(warning)) {
+            if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED))
+            {
+                warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
+            }
+
+        }
         uiModel.addAttribute(PATIENT, new PatientViewModel(patient));
         uiModel.addAttribute(ITEM_ID, id);  // TODO: is this even used?
         uiModel.addAttribute(DEACTIVATION_STATUSES, Status.deactivationStatuses());
@@ -226,6 +238,12 @@ public class PatientController extends BaseController {
         ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patient.getId());
         Double runningAdherencePercentage = getRunningAdherencePercentage(patient);
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
+        if (!CollectionUtils.isEmpty(warning)) {
+            if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED))
+            {
+                warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
+            }
+        }
         PatientSummary patientSummary = new PatientSummary(new PatientViewModel(patient), earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen,
                 clinicVisits, patientStatusChangeHistory, runningAdherencePercentage, warning);
         //Do not change name of form bean - currently used by graphs to get data.
@@ -248,7 +266,7 @@ public class PatientController extends BaseController {
 
         String applicationVersion = getApplicationVersion(request);
         String contextPath = request.getSession().getServletContext().getContextPath();
-        String incompleteImageUrl = String.format("%s/resources-%s/images/warning.png",contextPath, applicationVersion);
+        String incompleteImageUrl = String.format("%s/resources-%s/images/warning.png", contextPath, applicationVersion);
 
         List<PatientViewModel> listPatientViewModels = new ArrayList<>();
         for (Patient patient : allPatients.findByClinic(clinicId)) {
@@ -257,7 +275,7 @@ public class PatientController extends BaseController {
             listPatientViewModels.add(listPatientViewModel);
         }
         uiModel.addAttribute(PATIENTS, listPatientViewModels);
-        uiModel.addAttribute("selectedMenuItem","ALL_PATIENTS");
+        uiModel.addAttribute("selectedMenuItem", "ALL_PATIENTS");
         addDateTimeFormat(uiModel);
         return LIST_VIEW;
     }
@@ -269,8 +287,9 @@ public class PatientController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/saveAndActivate")
-    public String saveAndActivate(@Valid Patient patient,BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
-        return create(patient, bindingResult, uiModel, request, true);    }
+    public String saveAndActivate(@Valid Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest request) {
+        return create(patient, bindingResult, uiModel, request, true);
+    }
 
 
     @RequestMapping(method = RequestMethod.POST)
@@ -278,7 +297,7 @@ public class PatientController extends BaseController {
         return create(patient, bindingResult, uiModel, request, false);
     }
 
-    private String create(Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest request, Boolean shouldActivate){
+    private String create(Patient patient, BindingResult bindingResult, Model uiModel, HttpServletRequest request, Boolean shouldActivate) {
         uiModel.addAttribute(EXPRESS_REGISTRATION, "true");
 
         if (bindingResult.hasErrors()) {
@@ -286,14 +305,20 @@ public class PatientController extends BaseController {
             return CREATE_VIEW;
         }
 
-        try{
+        try {
             patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
             String redirectUrl = REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
-            if(shouldActivate){
+            if (shouldActivate) {
                 redirectUrl = activatePatient(patient.getId(), REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request), request);
             }
             Patient savedPatient = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), loggedInClinic(request));
             List<String> warning = new IncompletePatientDataWarning(savedPatient, null, null, null, null).value();
+            if (!CollectionUtils.isEmpty(warning)) {
+                if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED))
+                {
+                    warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
+                }
+            }
             uiModel.addAttribute("warning", warning);
             initUIModel(uiModel, savedPatient);
             return redirectUrl;
@@ -326,6 +351,9 @@ public class PatientController extends BaseController {
         }
         try {
             List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
+            if (!CollectionUtils.isEmpty(warning)) {
+                warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
+            }
             patient.setComplete(CollectionUtils.isEmpty(warning));
             patientService.update(patient, loggedInUserId(request));
             uiModel.asMap().clear();
@@ -413,7 +441,7 @@ public class PatientController extends BaseController {
         uiModel.addAttribute("daysOfWeek", Arrays.asList(DayOfWeek.values()));
         uiModel.addAttribute("timeMeridiems", Arrays.asList(TimeMeridiem.values()));
 
-        if(uiModel.asMap().containsKey(EXPRESS_REGISTRATION))
+        if (uiModel.asMap().containsKey(EXPRESS_REGISTRATION))
             uiModel.addAttribute("systemCategories", SystemCategoryDefinition.allExpressRegistration());
         else
             uiModel.addAttribute("systemCategories", SystemCategoryDefinition.all());
