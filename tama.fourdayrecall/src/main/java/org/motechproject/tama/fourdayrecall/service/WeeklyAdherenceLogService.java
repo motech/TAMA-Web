@@ -86,12 +86,12 @@ public class WeeklyAdherenceLogService {
     private void upsertLog(WeeklyAdherenceLog currentLog, WeeklyAdherenceLog newLog) {
           if (currentLog == null) {
             allWeeklyAdherenceLogs.add(newLog);
-
+              weeklyPatientReportingService.save(weeklyAdherenceMapper.map(currentLog));
         } else if (currentLog.getNotResponded()) {
             currentLog.merge(newLog);
             Patient patient = allPatients.findByPatientId(currentLog.getPatientId());
             allWeeklyAdherenceLogs.update(currentLog);
-            weeklyPatientReportingService.save(weeklyAdherenceMapper.map(currentLog));
+            weeklyPatientReportingService.update(weeklyAdherenceMapper.map(currentLog));
         }
     }
 }
