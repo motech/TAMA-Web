@@ -128,9 +128,10 @@ public class TAMACallFlowController implements CallFlowController {
     public void treeComplete(String treeName, KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext ivrContext = factory.create(kooKooIVRContext);
         ivrContext.lastCompletedTree(treeName);
-        if (ivrContext.isIncomingCall() && TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER.equals(treeName)) {
+        if (ivrContext.isIncomingCall() && TAMATreeRegistry.PREVIOUS_DOSAGE_REMINDER.equals(treeName) && !CallState.SYMPTOM_REPORTING.name().equals(ivrContext.callState().name())) {
             ivrContext.callState(CallState.PUSH_MESSAGES);
-        } else if (ivrContext.isIncomingCall() && TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM.equals(treeName) && pillModuleStrategy.previousDosageCaptured(ivrContext)) {
+        } else if (ivrContext.isIncomingCall() && TAMATreeRegistry.CURRENT_DOSAGE_CONFIRM.equals(treeName) && pillModuleStrategy.previousDosageCaptured(ivrContext)
+                && !CallState.SYMPTOM_REPORTING.name().equals(ivrContext.callState().name())) {
             ivrContext.callState(CallState.PUSH_MESSAGES);
         } else if ((onCurrentDosage(treeName) && pillModuleStrategy.previousDosageCaptured(ivrContext) && CallState.AUTHENTICATED.equals(ivrContext.callState())) || treeRegistry.isLeafTree(treeName)) {
             ivrContext.callState(CallState.ALL_TREES_COMPLETED);
