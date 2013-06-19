@@ -54,6 +54,7 @@ public class WeeklyAdherenceMapper {
         weeklyAdherenceLogRequest.setWeekStartDate(weeklyAdherenceLog.getWeekStartDate().toDate());
         weeklyAdherenceLogRequest.setAdherenceLoggedDate(weeklyAdherenceLog.getLogDate().toDate());
         weeklyAdherenceLogRequest.setNumberOfDaysMissed(weeklyAdherenceLog.getNumberOfDaysMissed());
+        weeklyAdherenceLogRequest.setDateOfUpdateInsert(LocalDate.now().toDate());
         return weeklyAdherenceLogRequest;
     }
 
