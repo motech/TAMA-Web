@@ -202,6 +202,7 @@ public class AnalysisDataController extends BaseController {
                                                    Model uiModel) {
 
         DateFilter filter = new DateFilter().setDates(startDate, endDate);
+        endDate.plusDays(1);
         if (filter.isMoreThanOneYear()) {
             return error(uiModel, "weeklyPillReminderReport_warning");
         } else {
