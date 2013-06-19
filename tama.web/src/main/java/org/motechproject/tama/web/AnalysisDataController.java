@@ -202,11 +202,11 @@ public class AnalysisDataController extends BaseController {
                                                    Model uiModel) {
 
         DateFilter filter = new DateFilter().setDates(startDate, endDate);
-        endDate.plusDays(1);
+
         if (filter.isMoreThanOneYear()) {
             return error(uiModel, "weeklyPillReminderReport_warning");
         } else {
-            return format("redirect:/tama-reports/weekly/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s",clinicId, patientId, filter.startDate.toString("dd/MM/yyyy"), filter.getEndDate().toString("dd/MM/yyyy"));
+            return format("redirect:/tama-reports/weekly/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s",clinicId, patientId, filter.startDate.toString("dd/MM/yyyy"), filter.getEndDate().plusDays(1).toString("dd/MM/yyyy"));
         }
     }
 
