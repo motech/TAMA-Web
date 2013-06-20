@@ -52,6 +52,7 @@ public class WeeklyAdherenceMapper {
         weeklyAdherenceLogRequest.setTreatmentAdviceId(regimen.getDisplayName());
         weeklyAdherenceLogRequest.setStartDate(treatmentAdvice.getStartDate());
         weeklyAdherenceLogRequest.setWeekStartDate(weeklyAdherenceLog.getWeekStartDate().toDate());
+        weeklyAdherenceLogRequest.setFirstCallDate(DateTime.now().toDate());
         weeklyAdherenceLogRequest.setAdherenceLoggedDate(weeklyAdherenceLog.getLogDate().toDate());
         weeklyAdherenceLogRequest.setNumberOfDaysMissed(weeklyAdherenceLog.getNumberOfDaysMissed());
         weeklyAdherenceLogRequest.setDateOfUpdateInsert(LocalDate.now().toDate());
