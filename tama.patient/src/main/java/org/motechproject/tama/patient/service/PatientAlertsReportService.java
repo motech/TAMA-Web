@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
 
+import org.motechproject.server.alerts.domain.AlertStatus;
 import org.motechproject.tama.patient.domain.PatientAlert;
 import org.motechproject.tama.patient.domain.PatientAlertType;
 import org.motechproject.tama.patient.domain.PatientAlerts;
@@ -49,7 +50,7 @@ public class PatientAlertsReportService {
         if ("".equals(clinicId)) {
             patientAlerts = patientAlertService.getAlertsForPatientIdAndDateRange(clinicId, patientId, alertType, startDate, endDate, null);
         } else {
-            patientAlerts = patientAlertService.getAllAlertsFor(clinicId, patientId, alertType, startDate, endDate);
+            patientAlerts = patientAlertService.getAlertsForParameters(clinicId, patientId, alertType, startDate, endDate);
 
         }
         if (patientAlertStatus != null && !StringUtils.isEmpty(patientAlertStatus)) {

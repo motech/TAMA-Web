@@ -18,7 +18,7 @@
 
 
                 <div class="control-group">
-                    <label for="patientId">Patient Id *</label>
+                    <label for="patientId">Patient Id</label>
                     <input id="patientAlertsReportPatientId" type="text" name="patientId"/>
                 </div>
 
@@ -66,13 +66,12 @@
                         var startDateObj = dijit.byId("_patientAlertsReportFilter.startDate_id");
                         var endDateObj = dijit.byId("_patientAlertsReportFilter.endDate_id");
                         setConstraintOnEndDate(startDateObj, endDateObj);
-                         Spring.addDecoration(new Spring.ElementDecoration({elementId : 'patientAlertsReportPatientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}));
+                       <!--  Spring.addDecoration(new Spring.ElementDecoration({elementId : 'patientAlertsReportPatientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}))dijit.byId("patientAlertsReportPatientId").isValid() &&;-->
                         dojo.connect(dojo.byId("downloadPatientAlertsReport"), "onclick", function(event){
                             event.preventDefault();
-                              Spring.decorations['patientAlertsReportPatientId'][0].validate();
                             Spring.decorations['_patientAlertsReportFilter.startDate_id'][0].validate();
                             Spring.decorations['_patientAlertsReportFilter.endDate_id'][0].validate();
-                            if(dijit.byId("patientAlertsReportPatientId").isValid() && startDateObj.isValid() && endDateObj.isValid()){
+                            if( startDateObj.isValid() && endDateObj.isValid()){
                                 dojo.byId('patientAlertsReportForm').submit();
                             }
                         });

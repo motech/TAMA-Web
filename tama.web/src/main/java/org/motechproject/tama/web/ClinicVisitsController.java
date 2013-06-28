@@ -111,7 +111,10 @@ public class ClinicVisitsController extends BaseController {
         List<String> warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
         if(!CollectionUtils.isEmpty(warning))
         {
-            warning.add(PatientController.PATIENT_WARNING_WARNING_RESOLVE_HELP);
+            if (!warning.get(0).equals(PatientController.PATIENT_HAS_NOT_BEEN_ACTIVATED))
+            {
+                warning.add(PatientController.PATIENT_WARNING_WARNING_RESOLVE_HELP);
+            }
         }
         uiModel.addAttribute("patientId", patientDocId);
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
@@ -172,7 +175,10 @@ public class ClinicVisitsController extends BaseController {
         List<String> warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
         if(!CollectionUtils.isEmpty(warning))
         {
-            warning.add(PatientController.PATIENT_WARNING_WARNING_RESOLVE_HELP);
+            if (!warning.get(0).equals(PatientController.PATIENT_HAS_NOT_BEEN_ACTIVATED))
+            {
+                warning.add(PatientController.PATIENT_WARNING_WARNING_RESOLVE_HELP);
+            }
         }
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
         uiModel.addAttribute("patient", clinicVisit.getPatient());
@@ -187,7 +193,10 @@ public class ClinicVisitsController extends BaseController {
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
         if(!CollectionUtils.isEmpty(warning))
         {
-            warning.add(PatientController.PATIENT_WARNING_WARNING_RESOLVE_HELP);
+            if (!warning.get(0).equals(PatientController.PATIENT_HAS_NOT_BEEN_ACTIVATED))
+            {
+                warning.add(PatientController.PATIENT_WARNING_WARNING_RESOLVE_HELP);
+            }
         }
         uiModel.addAttribute("clinicVisits", clinicVisitUIModels);
         uiModel.addAttribute("patient", new PatientViewModel(patient));

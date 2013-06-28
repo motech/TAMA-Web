@@ -70,7 +70,11 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
     protected List<Object> getRowData(Object object) {
 
         List<Object> row = new ArrayList<>();
-        PatientReport patientReportSummary = patientReports.getPatientReport(patientReports.getPatientDocIds().get(0));
+        PatientReport patientReportSummary = null;
+        if(patientReports.getPatientDocIds().size()!=0)
+        {
+                patientReports.getPatientReport(patientReports.getPatientDocIds().get(0));
+        }
         PatientAlert patientAlert = (PatientAlert) object;
         populateColumnValuesForEachAlert(patientReportSummary, patientAlert, row);
         return row;

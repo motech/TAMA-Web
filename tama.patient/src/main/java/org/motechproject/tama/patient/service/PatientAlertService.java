@@ -152,21 +152,57 @@ public class PatientAlertService {
         PatientAlerts allAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, alertStatus);
         return allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType).sortByAlertStatusAndTimeOfAlert();
     }
+
+    public PatientAlerts getAlertsForParameters(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate) {
+        Patient patient = null;
+        PatientAlerts allAlerts = new PatientAlerts();
+        if (StringUtils.isNotEmpty(patientId) && clinicId != null) {
+            patient = patientId == null ? null : allPatients.findByPatientIdAndClinicId(patientId, clinicId);
+            if (StringUtils.isNotEmpty(patientId) && patient == null) {
+                return new PatientAlerts();
+            }
+            String patientDocId = StringUtils.isEmpty(patientId) ? null : patient.getId();
+            allAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, null);
+
+            allAlerts = allAlerts.filterByClinic(clinicId).filterByAlertType(patientAlertType).sortByAlertStatusAndTimeOfAlert();
+        } else if (clinicId != null && StringUtils.isEmpty(patientId)) {
+            List<Patient> patients = allPatients.findByClinic(clinicId);
+            for (Patient patientAlertObject : patients) {
+
+                String patientDocId = patientAlertObject.getId();
+                PatientAlerts patientAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, null);
+
+                Iterator iterator = patientAlerts.iterator();
+                while (iterator.hasNext()) {
+                    allAlerts.add((PatientAlert) iterator.next());
+                }
+
+            }
+
+            allAlerts = allAlerts.filterByAlertType(patientAlertType).sortByAlertStatusAndTimeOfAlert();
+        }
+        return allAlerts;
+    }
+
     public PatientAlerts getAlertsForPatientIdAndDateRange(String clinicId, String patientId, PatientAlertType patientAlertType, DateTime startDate, DateTime endDate, AlertStatus alertStatus) {
-        List<Patient> patients = patientId == null ? null : allPatients.findAllByPatientId(patientId);
+        List<Patient> patients = null;
         PatientAlerts allAlerts = new PatientAlerts();
         if (StringUtils.isNotEmpty(patientId) && CollectionUtils.isEmpty(patients)) {
-            return new PatientAlerts();
+            patients = allPatients.findAllByPatientId(patientId);
+        } else if (StringUtils.isEmpty(patientId)) {
+            patients = allPatients.getAll();
         }
-        for (Patient patient: patients)
-        {
-        String patientDocId = StringUtils.isEmpty(patientId) ? null : patient.getId();
-        PatientAlerts patientAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, alertStatus);
-            Iterator iterator = patientAlerts.iterator();
-         while(iterator.hasNext())
-         {
-              allAlerts.add((PatientAlert)iterator.next());
-         }
+        for (Patient patient : patients) {
+            String patientDocId = patient.getId();
+            if (patientDocId != null) {
+                PatientAlerts patientAlerts = patientAlertSearchService.search(patientDocId, startDate, endDate, alertStatus);
+                if (!patientAlerts.isEmpty()) {
+                    Iterator iterator = patientAlerts.iterator();
+                    while (iterator.hasNext()) {
+                        allAlerts.add((PatientAlert) iterator.next());
+                    }
+                }
+            }
         }
         return allAlerts.filterByAlertType(patientAlertType).sortByAlertStatusAndTimeOfAlert();
     }
