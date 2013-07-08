@@ -9,6 +9,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <spring:url value="/resources-${applicationVersion}/js/list_patients.js" var="list_patients_js"/>
     <spring:url value="/resources-${applicationVersion}/images/warning.png" var="incompleteImageUrl"/>
+    <spring:url value="/resources-${applicationVersion}/images/duplicate_phone_number_warning.png" var="duplicateImageUrl"/>
     <script src="${list_patients_js}" type="text/javascript"/>
 
     <page:list id="pl_org_motechproject_tama_domain_patient" items="${patients}" z="L3I+a9K75zBL/mAhB/RvaBuiT6g=">
@@ -21,6 +22,7 @@
                      z="2Ch8Rsuo+HKPkCTAjOPDVh1ATvE="
                      create="false" update="false" delete="false" show_label="Patient Dashboard">
             <table:column id="c_org_motechproject_tama_domain_patient_completion_image" label=" " property="completionStatus" imageUrl="completionStatusImageUrl" z="user-managed"/>
+            <table:column id="c_org_motechproject_tama_domain_patient_duplicate_image" label=" " property="uniqueMobileCheckStatus" imageUrl="duplicateImageUrl" z="user-managed"/>
             <table:column id="c_org_motechproject_tama_domain_patient_patientId" property="patientId"
                           z="4I1LBMUNYSxNw1zomaU2BkBlauc=" url="patientSummaryLink"/>
             <table:column id="c_org_motechproject_tama_domain_patient_mobilePhoneNumber" property="mobilePhoneNumber"
@@ -38,7 +40,18 @@
         <br/><br/>
         <div class="inline-block">
             <img src="${incompleteImageUrl}" alt="Incomplete Image Url"/>
-            <c:out value=" Incomplete patient details"/>
+            <c:out value=" Incomplete patient details"/> <br/>
+        </div>
+        <br/>
+        <div class="inline-block">
+            <img src="${duplicateImageUrl}" alt="DuplicatePhoneNumber Image Url"/>
+            <c:out value=" Duplicate phone number"/>
         </div>
     </page:list>
+    <script>
+        document.getElementById('menu').appendChild(
+        document.getElementById('duplicateWarning')
+        );
+    </script>
+
 </div>

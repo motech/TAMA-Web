@@ -22,7 +22,7 @@
         <jsp:include page="nextToPatientPreferences.jspx" />
         <jsp:include page="patientPreferences.jspx" />
     </form:create>
-
+    <spring:url value="/resources-${applicationVersion}/images/warning.png" var="incompleteImageUrl"/>
     <script type="text/javascript">
         dojo.require("dijit.form.Button");
         dojo.require("dijit.Dialog");
@@ -34,7 +34,50 @@
 		<button dojoType="dijit.form.Button" type="submit" id="four_week_warning_confirm">Yes</button>
 		<button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="four_week_warning_cancel">Cancel</button>
 	</div>
+    <spring:url value="/patients/validateMobileNumberUniqueness.json" var="validateMobileNumber"/>
 
+
+    <script src="${uniqueMobilePopupUrl}"><!--required--></script>
+
+    <script type="text/javascript">
+
+        function validateMobileNumberUniqueness() {
+        // get the form values
+
+        var mobileNumber = dijit.byId('_mobilePhoneNumber_id').value;
+        var codeExecuted = false;
+
+        if(codeExecuted == false)
+        {
+
+        AjaxCall.get({
+        url: "${validateMobileNumber}",
+        content: {mobileNumber:mobileNumber},
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        sync: true,
+        load: handleResults
+
+        });
+        }
+        }
+
+        function handleResults(response,ioArgs) {
+        if(response.status == "FAIL")
+        {
+        if(Spring.validateAll()){
+        codeExecuted=true;
+        alert("Warning !   The phone number entered for the patient is already in use");
+        }
+
+        }
+        else
+        {
+        console.log("PASSED");
+        }
+        }
+
+    </script>
     <spring:url value="/resources-${applicationVersion}/js/createPatient.js" var="createPatientScriptUrl"/>
     <script src="${createPatientScriptUrl}"><!--required--></script>
 

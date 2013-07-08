@@ -12,6 +12,8 @@
         <jsp:param name="selectedIndex" value="2"/>
     </jsp:include>
 
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+    <spring:url value="/resources-${applicationVersion}/images/warning.png" var="incompleteImageUrl"/>
     <c:if test="${warning != null}">
         <div class="warning">
             <ul>
@@ -22,6 +24,27 @@
         </div>
     </c:if>
 
+    <div class="menu" style="float:left" id="duplicateWarning">
+        <c:if test="${patientsWithSameMobileNumber != null}">
+            <div class="warningUniqueMobileNumber">
+                <div class="inline-block redText">
+                    <img src="${incompleteImageUrl}" alt="Incomplete Image Url"/>
+                    <span style="padding-left:8px"><b>WARNING:</b></span>
+                </div>
+                <c:forEach items="${warningMessage}" var="warningMessageCheck">
+                    <p><c:out value= "${warningMessageCheck}"/> <br/> </p>
+                </c:forEach>
+                <ul>
+                    <c:forEach items="${patientsWithSameMobileNumber}" var="warningMessageDuplicatePhNumber">
+                        <li><c:out value="${warningMessageDuplicatePhNumber}"/></li>
+                    </c:forEach>
+                </ul>
+                <c:forEach items="${adviceMessage}" var="adviceMessageCheck">
+                    <p><b>ADVICE: </b> <c:out value= "${adviceMessageCheck}"/> <br/> </p>
+                </c:forEach>
+            </div>
+        </c:if>
+    </div>
     <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
     <spring:url value="/resources-${applicationVersion}/styles/clinic-visit.css" var="clinicVisit_css"/>
@@ -91,4 +114,15 @@
         <br/>
 
     </util:panel>
+    <div id='blank' style='background:white;' class="blank">
+    </div>
+    <script>
+        document.getElementById('menu').appendChild(
+        document.getElementById('blank')
+        );
+        document.getElementById('menu').appendChild(
+        document.getElementById('duplicateWarning')
+        );
+    </script>
+
 </div>
