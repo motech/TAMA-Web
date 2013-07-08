@@ -15,7 +15,9 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.service.ClinicService;
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientAlertsReportService;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.web.model.*;
 import org.motechproject.tama.web.service.CallLogExcelReportService;
@@ -58,6 +60,11 @@ public class AnalysisDataControllerTest {
 
     private PatientAlertsReportService patientAlertsReportService;
 
+    @Mock
+    private AllTreatmentAdvices allTreatmentAdvices;
+    @Mock
+    private AllRegimens allRegimens;
+
     @Before
     public void setup() {
         initMocks(this);
@@ -66,7 +73,8 @@ public class AnalysisDataControllerTest {
                 appointmentCalenderReportService,
                 outboxMessageReportService,
                 dailyPillReminderReportService,
-                clinicVisitReportService, callLogExcelReportService, clinicService, patientAlertsReportService
+                clinicVisitReportService, callLogExcelReportService, clinicService, patientAlertsReportService,
+                allTreatmentAdvices,allRegimens
         );
     }
 

@@ -7,6 +7,10 @@ import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.domain.PatientReports;
+import org.motechproject.tama.patient.domain.TreatmentAdvice;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
+import org.motechproject.tama.refdata.domain.Regimen;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
@@ -19,14 +23,18 @@ import java.util.List;
 public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<ClinicVisit> {
 
     private PatientReports patientReport;
+    private AllTreatmentAdvices allTreatmentAdvices;
+    private AllRegimens allRegimens;
 
     public AllAppointmentCalendarsBuilder(List<ClinicVisit> clinicVisits) {
         super(clinicVisits);
     }
 
-    public AllAppointmentCalendarsBuilder(List<ClinicVisit> clinicVisits, PatientReports patientReports) {
+    public AllAppointmentCalendarsBuilder(List<ClinicVisit> clinicVisits, PatientReports patientReports,AllTreatmentAdvices allTreatmentAdvices,AllRegimens allRegimens) {
         super(clinicVisits);
         this.patientReport = patientReports;
+        this.allTreatmentAdvices=allTreatmentAdvices;
+        this.allRegimens=allRegimens;
     }
 
     @Override
@@ -58,12 +66,24 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
     protected List<Object> getRowData(Object object) {
         ClinicVisitUIModel clinicVisit = new ClinicVisitUIModel((ClinicVisit) object);
         List<Object> row = new ArrayList<>();
+        ClinicVisit visit =  (ClinicVisit) object;
         row.add(patientReport.getPatientReport(clinicVisit.getPatientDocId()).getPatientId());
         row.add(patientReport.getPatientReport(clinicVisit.getPatientDocId()).getClinicName());
         row.add(clinicVisit.getTitle());
         addARTStartDate(patientReport.getPatientReport(clinicVisit.getPatientDocId()), row);
-        row.add(patientReport.getPatientReport(clinicVisit.getPatientDocId()).getCurrentRegimenName());
-        addCurrentRegimenStartDate(patientReport.getPatientReport(clinicVisit.getPatientDocId()), row);
+        if(visit.getTreatmentAdviceId()!=null)
+        {
+            TreatmentAdvice treatmentAdvice = allTreatmentAdvices.get(visit.getTreatmentAdviceId());
+            Regimen regimen = allRegimens.get(treatmentAdvice.getRegimenId());
+            String currentRegimenStartDate = treatmentAdvice.getStartDate() != null ? DateUtil.newDate(treatmentAdvice.getStartDate()).toString("yyyy-MM-dd") : null;
+            row.add(regimen.getDisplayName());
+            row.add(currentRegimenStartDate);
+        }
+        else
+        {
+         row.add(patientReport.getPatientReport(clinicVisit.getPatientDocId()).getCurrentRegimenName());
+         addCurrentRegimenStartDate(patientReport.getPatientReport(clinicVisit.getPatientDocId()), row);
+        }
         addAppointmentDueDate(clinicVisit, row);
         addAdjustedDueDate(clinicVisit, row);
         addAppointmentConfirmedDate(clinicVisit, row);

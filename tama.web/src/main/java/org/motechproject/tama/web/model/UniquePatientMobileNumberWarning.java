@@ -88,6 +88,32 @@ public class UniquePatientMobileNumberWarning {
         return patientsWithNonUniqueMobileNumbers;
     }
 
+
+    public List<String> findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(String mobileNumber,String patientID,String clinicID)
+    {
+        List<Patient> patients = allPatients.findAllByMobileNumber(mobileNumber);
+        String message = null;
+        if(!CollectionUtils.isEmpty(patients))
+        {
+            patientsWithNonUniqueMobileNumbers = new ArrayList<>();
+
+
+            for(int i=0;i<patients.size();i++)
+            {
+                if(!(patientID.equals(patients.get(i).getId()) && mobileNumber.equals(patients.get(i).getMobilePhoneNumber()) && clinicID.equals(patients.get(i).getClinic().getName())))
+                {
+                    message  = PATIENT+patients.get(i).getPatientId()+OF+CLINIC+patients.get(i).getClinic().getName();
+                    patientsWithNonUniqueMobileNumbers.add(message);
+                }
+            }
+        }
+        if(patientsWithNonUniqueMobileNumbers==null || patientsWithNonUniqueMobileNumbers.size()==0)
+        {
+            return null;
+        }
+        return patientsWithNonUniqueMobileNumbers;
+    }
+
     public List<String> findAllMobileNumbersWhichMatchTheGivenNumberOnUpdate(String mobileNumber,String patientID,String clinicID)
     {
         List<Patient> patients = allPatients.findAllByMobileNumber(mobileNumber);
