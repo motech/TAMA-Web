@@ -43,6 +43,7 @@
 		<button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="four_week_warning_cancel">Cancel</button>
 	</div>
 
+    <spring:url value="/patients/validateMobileNumberUniquenessOnUpdate.json" var="validateMobileNumber"/>
     <script type="text/javascript">
         function openAllPanels() {
             openPanel([basicInformationPanelWidget, medicalHistoryPanelWidget, preferencesPanelWidget]);
@@ -78,6 +79,41 @@
                 }
             }
         }
+        function validateMobileNumberUniqueness() {
+        // get the form values
+
+        var mobileNumber = dijit.byId('_mobilePhoneNumber_id').value;
+        var codeExecuted = false;
+
+        if(codeExecuted == false)
+        {
+
+        AjaxCall.get({
+        url: "${validateMobileNumber}",
+        content: {mobileNumber:mobileNumber},
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        sync: true,
+        load: handleResults
+
+        });
+        }
+        }
+
+        function handleResults(response,ioArgs) {
+        if(response.status == "FAIL")
+        {
+        if(Spring.validateAll()){
+        codeExecuted=true;
+        alert("Warning !   The phone number entered for the patient is already in use");
+        }
+
+        }
+        else
+        {
+        console.log("PASSED");
+        }
+        }
 
         dojo.addOnLoad(function() {
             dojo.parser.parse();
@@ -94,7 +130,9 @@
             }
 
             disableTransitionsForASuspendedPatient();
-            dojo.connect(dojo.byId('proceed'), 'onclick', warningWhenStartingOnFourDayRecall);
+        dojo.connect(dojo.byId('proceed'), 'onclick', validateMobileNumberUniqueness);
+
+        dojo.connect(dojo.byId('proceed'), 'onclick', warningWhenStartingOnFourDayRecall);
 
         });
     </script>

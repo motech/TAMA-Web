@@ -23,10 +23,7 @@ import org.motechproject.tama.refdata.objectcache.AllGendersCache;
 import org.motechproject.tama.refdata.objectcache.AllHIVTestReasonsCache;
 import org.motechproject.tama.refdata.objectcache.AllIVRLanguagesCache;
 import org.motechproject.tama.refdata.objectcache.AllModesOfTransmissionCache;
-import org.motechproject.tama.web.model.DoseStatus;
-import org.motechproject.tama.web.model.IncompletePatientDataWarning;
-import org.motechproject.tama.web.model.PatientSummary;
-import org.motechproject.tama.web.model.PatientViewModel;
+import org.motechproject.tama.web.model.*;
 import org.motechproject.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,10 +34,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -81,6 +75,8 @@ public class PatientController extends BaseController {
     private static final String PATIENT_INSERT_ERROR = "Sorry, there was an error while creating/updating the patient. Please try again.";
     public static final String PATIENT_WARNING_WARNING_RESOLVE_HELP = "Please add missing data by accessing CLINIC VISIT/APPOINTMENTS tab and then clicking on link ACTIVATED IN TAMA ";
     public static final String PATIENT_HAS_NOT_BEEN_ACTIVATED = "Patient has not been Activated";
+    public static final String WARNING_DUPLICATE_PHONE_NUMBERS = "The below patients are registered with the same mobile number in TAMA";
+    public static final String WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION = "Every patient should have unique mobile number to avoid confusion to all.";
 
     private AllPatients allPatients;
     private AllGendersCache allGenders;
@@ -207,6 +203,8 @@ public class PatientController extends BaseController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String show(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         addDateTimeFormat(uiModel);
+        List<String> warningMessage = null;
+        List<String> adviceMessage = null;
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         if (patient == null) return "authorizationFailure";
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
@@ -217,6 +215,17 @@ public class PatientController extends BaseController {
             }
 
         }
+        List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName());
+        if(!CollectionUtils.isEmpty(patientsWithSameMobileNumber))
+        {
+            warningMessage = new ArrayList<>();
+            warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
+            adviceMessage = new ArrayList<>();
+            adviceMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION);
+        }
+        uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
+        uiModel.addAttribute("warningMessage", warningMessage);
+        uiModel.addAttribute("adviceMessage", adviceMessage);
         uiModel.addAttribute(PATIENT, new PatientViewModel(patient));
         uiModel.addAttribute(ITEM_ID, id);  // TODO: is this even used?
         uiModel.addAttribute(DEACTIVATION_STATUSES, Status.deactivationStatuses());
@@ -229,6 +238,8 @@ public class PatientController extends BaseController {
     @RequestMapping(value = "/summary/{id}", method = RequestMethod.GET)
     public ModelAndView showSummary(@PathVariable("id") String id, Model uiModel, HttpServletRequest request) {
         addDateTimeFormat(uiModel);
+        List<String> warningMessage = null;
+        List<String> adviceMessage = null;
         Patient patient = allPatients.findByIdAndClinicId(id, loggedInClinic(request));
         if (patient == null) return new ModelAndView("authorizationFailure", "", null);
         TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(id);
@@ -244,6 +255,18 @@ public class PatientController extends BaseController {
                 warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
             }
         }
+        List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName());
+        if(!CollectionUtils.isEmpty(patientsWithSameMobileNumber))
+        {
+            warningMessage = new ArrayList<>();
+            warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
+            adviceMessage = new ArrayList<>();
+            adviceMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION);
+        }
+        uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
+        uiModel.addAttribute("warningMessage", warningMessage);
+        uiModel.addAttribute("adviceMessage", adviceMessage);
+
         PatientSummary patientSummary = new PatientSummary(new PatientViewModel(patient), earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen,
                 clinicVisits, patientStatusChangeHistory, runningAdherencePercentage, warning);
         //Do not change name of form bean - currently used by graphs to get data.
@@ -267,11 +290,14 @@ public class PatientController extends BaseController {
         String applicationVersion = getApplicationVersion(request);
         String contextPath = request.getSession().getServletContext().getContextPath();
         String incompleteImageUrl = String.format("%s/resources-%s/images/warning.png", contextPath, applicationVersion);
-
+        String duplicateImageUrl = String.format("%s/resources-%s/images/duplicate_phone_number_warning.png", contextPath, applicationVersion);
         List<PatientViewModel> listPatientViewModels = new ArrayList<>();
         for (Patient patient : allPatients.findByClinic(clinicId)) {
             PatientViewModel listPatientViewModel = new PatientViewModel(patient);
             listPatientViewModel.setIncompleteImageUrl(incompleteImageUrl);
+            boolean checkIfGivenMobileNumberIsUnique = new UniquePatientMobileNumberWarning(allPatients).checkIfGivenMobileNumberIsUnique(patient.getMobilePhoneNumber(),patient.getPatientId(),clinicId);
+            listPatientViewModel.setDuplicateImageUrl(duplicateImageUrl);
+            listPatientViewModel.setHasUniqueMobileNumber(checkIfGivenMobileNumberIsUnique);
             listPatientViewModels.add(listPatientViewModel);
         }
         uiModel.addAttribute(PATIENTS, listPatientViewModels);
@@ -304,7 +330,9 @@ public class PatientController extends BaseController {
             initUIModel(uiModel, patient);
             return CREATE_VIEW;
         }
-
+        List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber()
+                ,patient.getPatientId(),loggedInClinic(request));
+        uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
         try {
             patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
             String redirectUrl = REDIRECT_TO_SHOW_VIEW + encodeUrlPathSegment(patient.getId(), request);
@@ -319,7 +347,9 @@ public class PatientController extends BaseController {
                     warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
                 }
             }
+
             uiModel.addAttribute("warning", warning);
+
             initUIModel(uiModel, savedPatient);
             return redirectUrl;
         } catch (RuntimeException e) {
@@ -350,11 +380,25 @@ public class PatientController extends BaseController {
             return UPDATE_VIEW;
         }
         try {
+            List<String> warningMessage = null;
+            List<String> adviceMessage = null;
             List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
             if (!CollectionUtils.isEmpty(warning)) {
                 warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
             }
             patient.setComplete(CollectionUtils.isEmpty(warning));
+            List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumberOnUpdate(patient.getMobilePhoneNumber(), patient.getPatientId(),
+                    loggedInClinic(request).toString());
+            if(!CollectionUtils.isEmpty(patientsWithSameMobileNumber))
+            {
+                warningMessage = new ArrayList<>();
+                warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
+                adviceMessage = new ArrayList<>();
+                adviceMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION);
+            }
+            uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
+            uiModel.addAttribute("warningMessage", warningMessage);
+            uiModel.addAttribute("adviceMessage", adviceMessage);
             patientService.update(patient, loggedInUserId(request));
             uiModel.asMap().clear();
         } catch (RuntimeException e) {
@@ -449,5 +493,39 @@ public class PatientController extends BaseController {
 
     private void addDateTimeFormat(Model uiModel) {
         uiModel.addAttribute(DATE_OF_BIRTH_FORMAT, DateTimeFormat.patternForStyle("S-", LocaleContextHolder.getLocale()));
+    }
+
+
+    @RequestMapping(value = "/validateMobileNumberUniqueness.json", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse validateMobileNumberUniqueness(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,HttpServletRequest request) {
+        JsonResponse res = new JsonResponse();
+
+        boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).checkIfMobileNumberIsDuplicateOrNot(mobileNumber);
+        if(!isMobileNumberUnique)
+        {
+            res.setStatus("FAIL");
+        }
+        else
+        {
+            res.setStatus("SUCCESS");
+        }
+        return res;
+    }
+    @RequestMapping(value = "/validateMobileNumberUniquenessOnUpdate.json", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse validateMobileNumberUniquenessOnUpdate(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,HttpServletRequest request) {
+        JsonResponse res = new JsonResponse();
+
+        boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).checkIfMobileNumberIsDuplicateOrNotOnUpdate(mobileNumber);
+        if(!isMobileNumberUnique)
+        {
+            res.setStatus("FAIL");
+        }
+        else
+        {
+            res.setStatus("SUCCESS");
+        }
+        return res;
     }
 }

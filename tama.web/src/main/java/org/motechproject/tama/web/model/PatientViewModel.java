@@ -7,7 +7,8 @@ import org.motechproject.tama.patient.domain.Status;
 public class PatientViewModel extends Patient {
 
     private String incompleteImageUrl = StringUtils.EMPTY;
-
+    private String duplicateImageUrl = StringUtils.EMPTY;
+    private boolean hasUniqueMobileNumber=false;
     public PatientViewModel(Patient patient) {
         this.setId(patient.getId());
         this.setDateOfBirth(patient.getDateOfBirth());
@@ -81,6 +82,19 @@ public class PatientViewModel extends Patient {
         this.incompleteImageUrl = imageUrl;
     }
 
+    public void setDuplicateImageUrl(String imageUrl) {
+        this.duplicateImageUrl = imageUrl;
+    }
+    public void setHasUniqueMobileNumber(boolean hasUniqueMobileNumber)
+    {
+        this.hasUniqueMobileNumber=hasUniqueMobileNumber;
+    }
+
+    public String getUniqueMobileCheckStatus()
+    {
+        return hasUniqueMobileNumber ? "Duplicate" : null;
+    }
+
     public String getCompletionStatus() {
         return getStatus().equals(Status.Active) && !isComplete() ? "Incomplete" : null;
     }
@@ -88,6 +102,11 @@ public class PatientViewModel extends Patient {
     public String getCompletionStatusImageUrl() {
         return getStatus().equals(Status.Active) && !isComplete() ? incompleteImageUrl : null;
 
+    }
+
+    public String  getDuplicateImageUrl()
+    {
+        return hasUniqueMobileNumber ? duplicateImageUrl:null;
     }
 
 }

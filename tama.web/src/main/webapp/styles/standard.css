@@ -604,6 +604,24 @@ fieldset th {
     margin-bottom: 5px;
 }
 
+
+
+ .warningUniqueMobileNumber {
+     min-height: 10%;
+     background-color:#eee ;
+     color: BLACK;
+     padding: 10px;
+     font-weight: 500;
+     text-align: left;
+     margin-left: 1px;
+     position: relative;
+     width: 195px;
+     clear: both;
+     overflow: hidden;
+     border:2px solid;
+     border-color:BLACK;
+ }
+
 .center.warning {
     text-align:center;
 }
@@ -616,6 +634,13 @@ fieldset th {
     font-weight: bold;
     text-align: center;
     margin-bottom: 5px;
+}
+
+.blank {
+    height: 20px;
+    background-color: WHITE;
+
+    margin-bottom: 0px;
 }
 
 .errorBanner {

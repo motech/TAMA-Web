@@ -8,61 +8,131 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-    <util:panel id="fc_org_motechproject_tama_domain_patient_Express_Registration" title="Express Registration" openPane="true">
+    <util:panel id="fc_org_motechproject_tama_domain_patient_Express_Registration" title="Express Registration"
+                openPane="true">
 
-    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+        <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
 
-    <spring:url value="/resources-${applicationVersion}/styles/create-patient.css" var="create_patient_css_url" />
-    <link rel="stylesheet" type="text/css" media="screen" href="${create_patient_css_url}"><!-- required --></link>
+        <spring:url value="/resources-${applicationVersion}/styles/create-patient.css" var="create_patient_css_url"/>
+        <link rel="stylesheet" type="text/css" media="screen" href="${create_patient_css_url}"><!-- required --></link>
 
-    <c:if test="${patientInsertError != null}">
-        <div class="errorBanner"> <c:out value="${patientInsertError}"/> </div>
-    </c:if>
-    <spring:url value="/patients" var="form_url"/>
-    <form:form name="express_registration_form" modelAttribute="patient" method="POST" id="patient" action="${form_url}" z="HkT/39qeIawAHTgF7FpZDeoTr94=" enctype="application/x-www-form-urlencoded">
+        <c:if test="${patientInsertError != null}">
+            <div class="errorBanner">
+                <c:out value="${patientInsertError}"/>
+            </div>
+        </c:if>
+        <spring:url value="/patients" var="form_url"/>
+        <form:form name="express_registration_form" modelAttribute="patient" method="POST" id="patient"
+                   action="${form_url}" z="HkT/39qeIawAHTgF7FpZDeoTr94=" enctype="application/x-www-form-urlencoded">
 
-        <jsp:include page="createBasicInformation.jspx">
-            <jsp:param name="context" value="expressRegistration"/>
-        </jsp:include>
+            <jsp:include page="createBasicInformation.jspx">
+                <jsp:param name="context" value="expressRegistration"/>
+            </jsp:include>
 
-        <jsp:include page="medicalHistoryForm.jspx">
-            <jsp:param name="context" value="expressRegistration"/>
-        </jsp:include>
+            <jsp:include page="medicalHistoryForm.jspx">
+                <jsp:param name="context" value="expressRegistration"/>
+            </jsp:include>
 
-        <jsp:include page="patientPreferences.jspx" />
+            <jsp:include page="patientPreferences.jspx"/>
 
-        <div class="submit">
+            <div class="submit">
+                <script type="text/javascript">
+                    Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'savePatient', event:'onclick'}));
+                    Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'activatePatient',
+                    event:'onclick'}));
+                </script>
+                <input type="submit" id="activatePatient" value="Save And Activate"
+                       onclick="validateMobileNumberUniqueness()"/>
+                <input type="submit" id="savePatient" value="Save"  onclick="validateMobileNumberUniqueness()"/>
+            </div>
+
             <script type="text/javascript">
-                Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'savePatient', event:'onclick'}));
-                Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'activatePatient', event:'onclick'}));
-            </script>
-            <input type="submit" id="activatePatient" value="Save And Activate"/>
-            <input type="submit" id="savePatient" value="Save"/>
-        </div>
-
-        <script type="text/javascript">
-            dojo.connect(dojo.byId("activatePatient"), "onclick", function(evt) {
-                dojo.byId("patient").action =  "${form_url}" + "/saveAndActivate";
-            });
-            dojo.connect(dojo.byId("savePatient"), "onclick", function(evt) {
+                dojo.connect(dojo.byId("activatePatient"), "onclick", function(evt) {
+                dojo.byId("patient").action = "${form_url}" + "/saveAndActivate";
+                });
+                dojo.connect(dojo.byId("savePatient"), "onclick", function(evt) {
                 dojo.byId("patient").action = "${form_url}";
-            });
-        </script>
-    </form:form>
+                });
+            </script>
+        </form:form>
     </util:panel>
+
 
     <script type="text/javascript">
         dojo.require("dijit.form.Button");
         dojo.require("dijit.Dialog");
     </script>
 
+    <spring:url value="/patients/validateMobileNumberUniqueness.json" var="validateMobileNumber"/>
+
+
+    <script src="${uniqueMobilePopupUrl}"><!--required--></script>
+
+    <script type="text/javascript">
+
+        function validateMobileNumberUniqueness() {
+            // get the form values
+
+            var mobileNumber = dijit.byId('_mobilePhoneNumber_id').value;
+            var codeExecuted = false;
+
+            if(codeExecuted == false)
+            {
+
+                AjaxCall.get({
+                    url: "${validateMobileNumber}",
+                    content: {mobileNumber:mobileNumber},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    sync: true,
+                    load: handleResults
+
+                });
+            }
+        }
+
+        function handleResults(response,ioArgs) {
+            if(response.status == "FAIL")
+            {
+                if(Spring.validateAll()){
+                    codeExecuted=true;
+                    alert("Warning !    The phone number entered for the patient is already in use");
+                }
+
+            }
+            else
+            {
+             console.log("PASSED");
+            }
+        }
+
+    </script>
+
+
     <div id="patientPreferences.fourWeekWarningDialog" title="Warning" data-dojo-type="dijit.Dialog">
-        The patient has not been on 'Daily Pill Reminder' calls for sufficient amount of time. <br/>
-        Are you sure you want to enroll him/her on 'Weekly Adherence'? <br/>
+        The patient has not been on 'Daily Pill Reminder' calls for sufficient amount of time.
+        <br/>
+        Are you sure you want to enroll him/her on 'Weekly Adherence'?
+        <br/>
         <button dojoType="dijit.form.Button" type="submit" id="four_week_warning_confirm">Yes</button>
-        <button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="four_week_warning_cancel">Cancel</button>
+        <button dojoType="dijit.form.Button" type="button" onClick="dialog.onCancel();" id="four_week_warning_cancel">
+            Cancel
+        </button>
     </div>
 
+    <div style="display: none;">
+        <div id="uniqueMobileNumberWarning" data-dojo-type="dijit.Dialog" title="Warning">
+            <div style="margin: 10px;">
+
+
+                <br/>
+                <br/>
+                <div class="submit">
+                    <input id="save" type="submit" class="popupOk" style="float: right;" value="Save"/>
+                </div>
+            </div>
+        </div>
+    </div>
     <spring:url value="/resources-${applicationVersion}/js/createPatient.js" var="createPatientScriptUrl"/>
     <script src="${createPatientScriptUrl}"><!--required--></script>
 
