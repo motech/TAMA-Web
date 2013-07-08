@@ -15,7 +15,9 @@ import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.domain.PatientAlert;
 import org.motechproject.tama.patient.reporting.PatientAlertsReport;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientAlertsReportService;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.reporting.properties.ReportingProperties;
 import org.motechproject.tama.web.model.*;
 import org.motechproject.tama.web.reportbuilder.*;
@@ -53,6 +55,8 @@ public class AnalysisDataController extends BaseController {
     private CallLogExcelReportService callLogExcelReportService;
     private ClinicService clinicService;
     private PatientAlertsReportService patientAlertsReportService;
+    private AllTreatmentAdvices allTreatmentAdvices;
+    private AllRegimens allRegimens;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -63,7 +67,7 @@ public class AnalysisDataController extends BaseController {
                                   OutboxMessageReportService outboxMessageReportService,
                                   DailyPillReminderReportService dailyPillReminderReportService,
                                   ClinicVisitReportService clinicVisitReportService, CallLogExcelReportService callLogExcelReportService,
-                                  ClinicService clinicService, PatientAlertsReportService patientAlertsReportService) {
+                                  ClinicService clinicService, PatientAlertsReportService patientAlertsReportService,AllTreatmentAdvices allTreatmentAdvices,AllRegimens allRegimens) {
         this.callSummaryController = callSummaryController;
         this.reportingProperties = reportingProperties;
         this.appointmentCalenderReportService = appointmentCalenderReportService;
@@ -73,6 +77,8 @@ public class AnalysisDataController extends BaseController {
         this.callLogExcelReportService = callLogExcelReportService;
         this.clinicService = clinicService;
         this.patientAlertsReportService = patientAlertsReportService;
+        this.allTreatmentAdvices=allTreatmentAdvices;
+        this.allRegimens=allRegimens;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -125,7 +131,7 @@ public class AnalysisDataController extends BaseController {
     @RequestMapping(value = "/appointmentCalendarReport.xls", method = RequestMethod.GET)
     public void downloadAppointmentCalenderReport(@RequestParam(value = "patientId", required = true) String patientId, HttpServletResponse response) {
         AppointmentCalenderReport appointmentCalendarReport = appointmentCalenderReportService.appointmentCalendarReport(patientId);
-        AllAppointmentCalendarsBuilder appointmentCalendarBuilder = new AllAppointmentCalendarsBuilder(appointmentCalendarReport.getClinicVisits(), appointmentCalendarReport.getPatientReports());
+        AllAppointmentCalendarsBuilder appointmentCalendarBuilder = new AllAppointmentCalendarsBuilder(appointmentCalendarReport.getClinicVisits(), appointmentCalendarReport.getPatientReports(),allTreatmentAdvices,allRegimens);
         try {
             writeExcelToResponse(response, appointmentCalendarBuilder, "AppointmentCalendarReport");
         } catch (Exception e) {

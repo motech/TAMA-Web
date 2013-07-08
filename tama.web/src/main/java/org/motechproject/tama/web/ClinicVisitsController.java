@@ -238,7 +238,7 @@ public class ClinicVisitsController extends BaseController {
             }
         }
         List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).
-                findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(),patientDocId,patient.getClinic().getName());
+                findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(),patientDocId,patient.getClinic().getName());
         if(!CollectionUtils.isEmpty(patientsWithSameMobileNumber))
         {
             warningMessage = new ArrayList<>();
