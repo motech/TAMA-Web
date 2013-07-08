@@ -70,6 +70,7 @@
             dialog.execute = function () {
                 dojo.byId("patient").submit();
             };
+            validateMobileNumberUniqueness;
             var currentCallPreference = getCallPreference();
             var canTransitionToWeekly = dojo.byId('can_transition_to_weekly').value;
             if (storedCallPreference === 'dailyReminderCall' &amp;&amp; currentCallPreference === 'weeklyReminderCall' &amp;&amp; canTransitionToWeekly==='false') {
