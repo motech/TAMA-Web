@@ -15,10 +15,13 @@ public class DailyPillReminderSummary {
     private DosageStatus eveningDoseStatus;
     private Time NOON_TIME = new Time(12, 0);
     private String patientDocId;
+    private String regimenId;
+    private String treatmentAdviceId;
 
     public DailyPillReminderSummary(DosageAdherenceLogPerDay dosageAdherenceLogPerDay) {
         this.date = dosageAdherenceLogPerDay.getDate();
         this.patientDocId = dosageAdherenceLogPerDay.getPatientDocId();
+
         for (DosageAdherenceLogSummary dosageAdherenceLogSummary : dosageAdherenceLogPerDay.getLogs()) {
             if (dosageAdherenceLogSummary.getDosageTime().ge(NOON_TIME)) {
                 setEveningDoseTime(dosageAdherenceLogSummary.getDosageTime());
@@ -27,11 +30,13 @@ public class DailyPillReminderSummary {
                 setMorningDoseTime(dosageAdherenceLogSummary.getDosageTime());
                 setMorningDoseStatus(dosageAdherenceLogSummary.getDosageStatus());
             }
+            this.regimenId = dosageAdherenceLogSummary.getRegimenId();
+            this.treatmentAdviceId = dosageAdherenceLogSummary.getTreatmentAdviceId();
         }
     }
 
     public String getDate() {
-        return date.toString();
+        return date.toString("dd/MM/yyyy");
     }
 
     public String getMorningDoseTime() {
@@ -86,5 +91,13 @@ public class DailyPillReminderSummary {
 
     public String getPatientDocId() {
         return patientDocId;
+    }
+
+    public String getRegimenId() {
+        return regimenId;
+    }
+    public String getTreatmentAdviceId()
+    {
+        return treatmentAdviceId;
     }
 }
