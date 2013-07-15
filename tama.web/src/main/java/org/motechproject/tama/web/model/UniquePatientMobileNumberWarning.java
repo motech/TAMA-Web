@@ -29,17 +29,10 @@ public class UniquePatientMobileNumberWarning {
             this.allPatients=allPatients;
     }
 
-    public boolean checkIfMobileNumberIsDuplicateOrNot(String mobileNumber)
+    public boolean isDuplicate(String mobileNumber)
     {
         List<Patient> patients = allPatients.findAllByMobileNumber(mobileNumber);
-        if(!CollectionUtils.isEmpty(patients))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return CollectionUtils.isEmpty(patients);
     }
 
     public boolean checkIfMobileNumberIsDuplicateOrNotOnUpdate(String mobileNumber)

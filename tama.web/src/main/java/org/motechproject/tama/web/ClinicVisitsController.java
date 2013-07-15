@@ -15,6 +15,7 @@ import org.motechproject.tama.patient.domain.TreatmentAdvice;
 import org.motechproject.tama.patient.domain.VitalStatistics;
 import org.motechproject.tama.patient.repository.*;
 import org.motechproject.tama.patient.service.PatientService;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.model.*;
 import org.motechproject.tama.web.reportbuilder.AppointmentCalendarBuilder;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
@@ -55,6 +56,7 @@ public class ClinicVisitsController extends BaseController {
     private PatientService patientService;
     private PatientDetailsService patientDetailsService;
     private AllPatients allPatients;
+    private AllRegimens allRegimens;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -70,7 +72,7 @@ public class ClinicVisitsController extends BaseController {
                                   AllClinicVisits allClinicVisits,
                                   PatientService patientService,
                                   PatientDetailsService patientDetailsService,
-                                  AllPatients allPatients) {
+                                  AllPatients allPatients,AllRegimens allRegimens) {
 
         this.treatmentAdviceController = treatmentAdviceController;
         this.allTreatmentAdvices = allTreatmentAdvices;
@@ -83,6 +85,7 @@ public class ClinicVisitsController extends BaseController {
         this.patientService = patientService;
         this.patientDetailsService = patientDetailsService;
         this.allPatients = allPatients;
+        this.allRegimens=allRegimens;
     }
 
     @RequestMapping(value = "/newVisit")
@@ -262,9 +265,9 @@ public class ClinicVisitsController extends BaseController {
         response.setHeader("Content-Disposition", "inline; filename=AppointmentCalendar.xls");
         response.setContentType("application/vnd.ms-excel");
         try {
-            List<ClinicVisitUIModel> clinicVisitUIModels = allClinicVisits(patientDocId);
+            ClinicVisits clinicVisits = allClinicVisits.clinicVisits(patientDocId);
             PatientReport patientReport = patientService.getPatientReport(patientDocId);
-            AppointmentCalendarBuilder appointmentCalendarBuilder = new AppointmentCalendarBuilder(clinicVisitUIModels, patientReport);
+            AppointmentCalendarBuilder appointmentCalendarBuilder = new AppointmentCalendarBuilder(clinicVisits, patientReport,allTreatmentAdvices,allRegimens);
             writeExcelToResponse(response, appointmentCalendarBuilder);
         } catch (Exception e) {
             logger.error("Error while generating excel report: " + e.getMessage());

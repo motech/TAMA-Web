@@ -400,7 +400,7 @@ public class PatientControllerTest {
             BindingResult bindingResult = mock(BindingResult.class);
             Map<String, Object> modelMap = new HashMap<String, Object>();
             modelMap.put("dummyKey", "dummyValue");
-
+            patientFromUI.setMobilePhoneNumber("1111111111");
             when(bindingResult.hasErrors()).thenReturn(false);
             when(patientFromUI.getId()).thenReturn(PATIENT_ID);
             when(uiModel.asMap()).thenReturn(modelMap);
@@ -470,10 +470,12 @@ public class PatientControllerTest {
         @Test
         public void shouldUpdatePatient() {
             Patient patientFromUI = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withStatus(Status.Active).build();
+            patientFromUI.setMobilePhoneNumber("2222222222");
             BindingResult bindingResult = mock(BindingResult.class);
             Map<String, Object> modelMap = new HashMap<String, Object>();
             modelMap.put("dummyKey", "dummyValue");
-
+            when(user.getClinicId()).thenReturn(USER_NAME);
+            when(session.getAttribute(LoginSuccessHandler.LOGGED_IN_USER)).thenReturn(user);
             String updatePage = controller.update(patientFromUI, bindingResult, uiModel, request);
 
             assertEquals("redirect:/patients/" + PATIENT_ID, updatePage);

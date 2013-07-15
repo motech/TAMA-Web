@@ -384,7 +384,10 @@ public class PatientController extends BaseController {
             List<String> adviceMessage = null;
             List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
             if (!CollectionUtils.isEmpty(warning)) {
-                warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
+                if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED))
+                {
+                    warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
+                }
             }
             patient.setComplete(CollectionUtils.isEmpty(warning));
             List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumberOnUpdate(patient.getMobilePhoneNumber(), patient.getPatientId(),
@@ -501,7 +504,7 @@ public class PatientController extends BaseController {
     public JsonResponse validateMobileNumberUniqueness(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,HttpServletRequest request) {
         JsonResponse res = new JsonResponse();
 
-        boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).checkIfMobileNumberIsDuplicateOrNot(mobileNumber);
+        boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).isDuplicate(mobileNumber);
         if(!isMobileNumberUnique)
         {
             res.setStatus("FAIL");
@@ -519,6 +522,23 @@ public class PatientController extends BaseController {
 
         boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).checkIfMobileNumberIsDuplicateOrNotOnUpdate(mobileNumber);
         if(!isMobileNumberUnique)
+        {
+            res.setStatus("FAIL");
+        }
+        else
+        {
+            res.setStatus("SUCCESS");
+        }
+        return res;
+    }
+
+    @RequestMapping(value = "/checkIfPatientIsOnWeekly.json", method = RequestMethod.GET)
+    @ResponseBody
+    public JsonResponse checkIfPatientIsOnWeekly(@RequestParam(value = "isDaily", required = true) boolean isDaily,HttpServletRequest request) {
+        JsonResponse res = new JsonResponse();
+
+
+        if(!isDaily)
         {
             res.setStatus("FAIL");
         }

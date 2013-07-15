@@ -77,8 +77,8 @@ public class DailyPillReminderReportServiceTest {
         assertEquals(2, logs.length());
         JSONObject report_1 = (JSONObject) logs.get(0);
         JSONObject report_2 = (JSONObject) logs.get(1);
-        assertEquals("{\"eveningDoseStatus\":\"NOT_TAKEN\",\"eveningDoseTime\":\"05:50\",\"morningDoseStatus\":\"TAKEN\",\"patientDocId\":null,\"morningDoseTime\":\"11:45\",\"date\":\"2012-01-02\"}", report_1.toString());
-        assertEquals("{\"eveningDoseStatus\":null,\"eveningDoseTime\":null,\"morningDoseStatus\":\"TAKEN\",\"patientDocId\":null,\"morningDoseTime\":\"10:45\",\"date\":\"2012-01-10\"}", report_2.toString());
+        assertEquals("{\"eveningDoseStatus\":\"NOT_TAKEN\",\"regimenId\":null,\"eveningDoseTime\":\"05:50\",\"morningDoseStatus\":\"TAKEN\",\"patientDocId\":null,\"morningDoseTime\":\"11:45\",\"date\":\"2012-01-02\",\"treatmentAdviceId\":null}", report_1.toString());
+        assertEquals("{\"eveningDoseStatus\":null,\"regimenId\":null,\"eveningDoseTime\":null,\"morningDoseStatus\":\"TAKEN\",\"patientDocId\":null,\"morningDoseTime\":\"10:45\",\"date\":\"2012-01-10\",\"treatmentAdviceId\":null}", report_2.toString());
     }
 
     @Test

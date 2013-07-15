@@ -20,6 +20,7 @@ import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.service.CallLogExcelReportService;
 import org.motechproject.util.DateUtil;
 import org.springframework.ui.Model;
@@ -53,13 +54,15 @@ public class ReportsControllerTest {
     private AllSMSLogs allSMSLogs;
     @Mock
     private Model uiModel;
+    @Mock
+    private AllRegimens allRegimens;
 
     private ReportsController reportsController;
 
     @Before
     public void setUp() {
         initMocks(this);
-        reportsController = new ReportsController(patientService, dailyPillReminderReportService, outboxReportService, allOutboxMessageSummaries, callLogExcelReportService, allSMSLogs);
+        reportsController = new ReportsController(patientService, dailyPillReminderReportService, outboxReportService, allOutboxMessageSummaries, callLogExcelReportService, allSMSLogs,allRegimens,allTreatmentAdvices);
     }
 
     private void initializePatientService(String patientDocumentId) {

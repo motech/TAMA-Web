@@ -191,7 +191,8 @@ public class AnalysisDataController extends BaseController {
             return error(uiModel, "dailyPillReminderReport_warning");
         }
         DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(filter.getPatientId(), filter.getStartDate(), filter.getEndDate());
-        AllDailyPillReminderReportsBuilder allDailyPillReminderReportsBuilder = new AllDailyPillReminderReportsBuilder(dailyPillReminderReport.getDailyPillReminderSummaries(), dailyPillReminderReport.getPatientReports());
+        AllDailyPillReminderReportsBuilder allDailyPillReminderReportsBuilder = new AllDailyPillReminderReportsBuilder(dailyPillReminderReport.getDailyPillReminderSummaries(),
+                dailyPillReminderReport.getPatientReports(),allRegimens,allTreatmentAdvices,filter.getStartDate(),filter.getEndDate());
         try {
             writeExcelToResponse(response, allDailyPillReminderReportsBuilder, "DailyPillReminderReport");
         } catch (Exception e) {

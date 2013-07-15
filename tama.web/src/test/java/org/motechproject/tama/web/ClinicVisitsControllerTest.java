@@ -24,6 +24,7 @@ import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.repository.AllVitalStatistics;
 import org.motechproject.tama.patient.service.PatientService;
 import org.motechproject.tama.refdata.domain.Gender;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.security.AuthenticatedUser;
 import org.motechproject.tama.security.LoginSuccessHandler;
 import org.motechproject.tama.web.model.ClinicVisitUIModel;
@@ -101,6 +102,8 @@ public class ClinicVisitsControllerTest {
 
         @Mock
         protected AllPatients allPatients;
+        @Mock
+        private AllRegimens allRegimens;
 
         protected ClinicVisitsController clinicVisitsController;
         protected DateTime now;
@@ -110,7 +113,7 @@ public class ClinicVisitsControllerTest {
             initMocks(this);
             now = DateUtil.now();
             mockCurrentDate(now);
-            clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, allVitalStatistics, allLabResults, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits, patientService, patientDetailsService,allPatients);
+            clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, allVitalStatistics, allLabResults, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits, patientService, patientDetailsService,allPatients,allRegimens);
             when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
             when(allLabResults.allLabResults(PATIENT_ID)).thenReturn(new LabResults());

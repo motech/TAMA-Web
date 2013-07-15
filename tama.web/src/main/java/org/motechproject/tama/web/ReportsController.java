@@ -12,7 +12,9 @@ import org.motechproject.tama.outbox.domain.OutboxMessageSummary;
 import org.motechproject.tama.outbox.integration.repository.AllOutboxMessageSummaries;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.domain.PatientReport;
+import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientService;
+import org.motechproject.tama.refdata.repository.AllRegimens;
 import org.motechproject.tama.web.model.PatientViewModel;
 import org.motechproject.tama.web.reportbuilder.DailyPillReminderReportBuilder;
 import org.motechproject.tama.web.reportbuilder.OutboxReportBuilder;
@@ -44,6 +46,8 @@ public class ReportsController {
     private AllOutboxMessageSummaries allOutboxMessageSummaries;
     private CallLogExcelReportService callLogExcelReportService;
     private AllSMSLogs allSMSLogs;
+    private AllRegimens allRegimens;
+    private AllTreatmentAdvices allTreatmentAdvices;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -54,13 +58,16 @@ public class ReportsController {
                              OutboxMessageReportService outboxMessageReportService,
                              AllOutboxMessageSummaries allOutboxMessageSummaries,
                              CallLogExcelReportService callLogExcelReportService,
-                             AllSMSLogs allSMSLogs) {
+                             AllSMSLogs allSMSLogs,AllRegimens allRegimens,
+                             AllTreatmentAdvices allTreatmentAdvices) {
         this.patientService = patientService;
         this.dailyPillReminderReportService = dailyPillReminderReportService;
         this.outboxMessageReportService = outboxMessageReportService;
         this.allOutboxMessageSummaries = allOutboxMessageSummaries;
         this.callLogExcelReportService = callLogExcelReportService;
         this.allSMSLogs = allSMSLogs;
+        this.allRegimens = allRegimens;
+        this.allTreatmentAdvices = allTreatmentAdvices;
     }
 
     @RequestMapping(value = "/patients/{patientDocId}/reports", method = RequestMethod.GET)
@@ -100,7 +107,7 @@ public class ReportsController {
                                                   @RequestParam LocalDate endDate,
                                                   HttpServletResponse response) {
         List<DailyPillReminderSummary> summaryList = dailyPillReminderReportService.create(patientDocId, startDate, endDate);
-        DailyPillReminderReportBuilder dailyPillReminderReportBuilder = new DailyPillReminderReportBuilder(summaryList, patientService.getPatientReport(patientDocId), startDate, endDate);
+        DailyPillReminderReportBuilder dailyPillReminderReportBuilder = new DailyPillReminderReportBuilder(summaryList, patientService.getPatientReport(patientDocId), startDate, endDate,allRegimens,allTreatmentAdvices);
         writeExcelToResponse(response, createExcelReport(dailyPillReminderReportBuilder), "DailyPillReminderReport.xls");
     }
 
