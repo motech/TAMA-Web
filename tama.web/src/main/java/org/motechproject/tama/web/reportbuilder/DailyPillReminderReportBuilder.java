@@ -57,13 +57,13 @@ public class DailyPillReminderReportBuilder extends InMemoryReportBuilder<DailyP
     @Override
     protected void initializeColumns() {
         columns = new ArrayList<ExcelColumn>();
-        columns.add(new ExcelColumn("Date (yyyy-mm-dd)", Cell.CELL_TYPE_STRING, 5000));
-        columns.add(new ExcelColumn("Morning Dose Time", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Date of daily Adherence  (dd-mm-yyyy)", Cell.CELL_TYPE_STRING, 5000));
+        columns.add(new ExcelColumn("Morning Pill Time hh:mm", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Morning Adherence", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Evening Dose Time", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Evening Pill Time hh:mm", Cell.CELL_TYPE_STRING));
         columns.add(new ExcelColumn("Evening Adherence", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Regimen", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Start Date of Regimen", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Current Regimen", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Start Date of Current Regimen", Cell.CELL_TYPE_STRING));
     }
 
     @Override
@@ -102,10 +102,8 @@ public class DailyPillReminderReportBuilder extends InMemoryReportBuilder<DailyP
         buildSummaryRow(worksheet, cellStyles, "Start Date of Current Regimen", DateUtil.newDate(patientReport.getCurrentRegimenStartDate()).toString(TAMAConstants.DATE_FORMAT));
         buildSummaryRow(worksheet, cellStyles, "Report Start Date", startDate.toString(TAMAConstants.DATE_FORMAT));
         buildSummaryRow(worksheet, cellStyles, "Report End Date", endDate.toString(TAMAConstants.DATE_FORMAT));
-        buildSummaryRow(worksheet, cellStyles, " ", " ");
-        buildSummaryRow(worksheet, cellStyles, " ", " ");
-
-        buildSummaryRow(worksheet, cellStyles, "Treatment Advised Regimen Name ", " Start date ");
+        buildSummaryRow(worksheet, cellStyles, "Regimen Change History", "  ");
+        buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
         List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(patientReport.getPatientDocId());
 
         for(TreatmentAdvice treatmentAdvice :treatmentAdvices)
