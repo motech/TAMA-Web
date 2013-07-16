@@ -27,6 +27,7 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
     private LocalDate startDate;
     private LocalDate endDate;
     private static final String CURRENT_REGIMEN = "(Current Regimen)";
+    private static final String ON_DAILY_PILL_REMINDER = "Daily";
 
     public AllDailyPillReminderReportsBuilder(List<DailyPillReminderSummary> objects, PatientReports patientReports,AllRegimens allRegimens,AllTreatmentAdvices allTreatmentAdvices,
                                               LocalDate startDate,LocalDate endDate) {
@@ -53,13 +54,14 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
         columns = new ArrayList<>();
         columns.add(new ExcelColumn("Patient Id", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Clinic Name", Cell.CELL_TYPE_STRING, 10000));
-        columns.add(new ExcelColumn("ART Started On", Cell.CELL_TYPE_STRING, 10000));
+        columns.add(new ExcelColumn("ART Started On (dd-mm-yyyy)", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Current Regimen", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Start Date of Current Regimen", Cell.CELL_TYPE_STRING, 10000));
-        columns.add(new ExcelColumn("Date (dd-mm-yyyy)", Cell.CELL_TYPE_STRING, 5000));
-        columns.add(new ExcelColumn("Morning Dose Time", Cell.CELL_TYPE_STRING, 10000));
+        columns.add(new ExcelColumn("Medicine adherence report calls",Cell.CELL_TYPE_STRING, 10000));
+        columns.add(new ExcelColumn("Date of daily Adherence  (dd-mm-yyyy)", Cell.CELL_TYPE_STRING, 5000));
+        columns.add(new ExcelColumn("Morning Pill Time hh:mm", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Morning Adherence", Cell.CELL_TYPE_STRING, 10000));
-        columns.add(new ExcelColumn("Evening Dose Time", Cell.CELL_TYPE_STRING, 10000));
+        columns.add(new ExcelColumn("Evening Pill Time hh:mm", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Evening Adherence", Cell.CELL_TYPE_STRING, 10000));
 
     }
@@ -77,6 +79,7 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
         row.add(artStartDate);
         row.add(getRegimenName((messageSummary.getTreatmentAdviceId())));
         row.add(currentRegimenStartDate);
+        row.add(ON_DAILY_PILL_REMINDER);
         row.add(messageSummary.getDate());
         row.add(messageSummary.getMorningDoseTime());
         row.add(messageSummary.getMorningDoseStatus());
