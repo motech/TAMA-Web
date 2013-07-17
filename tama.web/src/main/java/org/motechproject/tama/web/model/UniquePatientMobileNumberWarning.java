@@ -28,17 +28,20 @@ public class UniquePatientMobileNumberWarning {
         return CollectionUtils.isEmpty(patients);
     }
 
-    public boolean shouldDisplayWarningForPatientsMobileNumberDuplicate(String mobileNumber) {
+    public boolean shouldDisplayWarningForPatientsMobileNumberDuplicate(String mobileNumber,String patientID,String clinicID) {
         List<Patient> patients = allPatients.findAllByMobileNumber(mobileNumber);
         if (!CollectionUtils.isEmpty(patients)) {
-            if (patients.size() > 1) {
-                return false;
-            } else {
-                return true;
+            patientsWithNonUniqueMobileNumbers = new ArrayList<>();
+
+
+            for (int i = 0; i < patients.size(); i++) {
+                if (!((patients.get(i).hasSamePatientDocumentID(patientID) && patients.get(i).hasSamePhoneNumber(mobileNumber) && patients.get(i).hasSameClinicId(clinicID)))) {
+                    StringBuffer message = new StringBuffer(PATIENT).append(patients.get(i).getPatientId()).append(OF + CLINIC).append(patients.get(i).getClinic().getName());
+                    patientsWithNonUniqueMobileNumbers.add(message.toString());
+                }
             }
-        } else {
-            return true;
         }
+        return CollectionUtils.isEmpty(patientsWithNonUniqueMobileNumbers);
     }
 
 

@@ -163,7 +163,7 @@ public class UniquePatientMobileNumberWarningTest {
         patients.add(duplicatePatient);
         patients.add(patient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
-        assertFalse(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber()));
+        assertFalse(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId()));
     }
 
     @Test
@@ -172,7 +172,7 @@ public class UniquePatientMobileNumberWarningTest {
         List<Patient> patients = new ArrayList<>();
         patients.add(patient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
-        assertTrue(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber()));
+        assertTrue(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId()));
     }
 
     @Test
@@ -182,7 +182,7 @@ public class UniquePatientMobileNumberWarningTest {
         List<Patient> patients = new ArrayList<>();
         patients.add(patient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
-        assertTrue(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber()));
+        assertTrue(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId()));
     }
     @Test
     public void checkIfGivenMobileNumberIsNotUnique()
@@ -192,7 +192,7 @@ public class UniquePatientMobileNumberWarningTest {
         patients.add(patient);
         patients.add(duplicatePatient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
-        assertFalse(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber()));
+        assertFalse(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId()));
     }
 }
 

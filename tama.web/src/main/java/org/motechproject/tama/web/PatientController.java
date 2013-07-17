@@ -517,10 +517,10 @@ public class PatientController extends BaseController {
     }
     @RequestMapping(value = "/validateMobileNumberUniquenessOnUpdate.json", method = RequestMethod.GET)
     @ResponseBody
-    public UniqueMobileNumberResponse validateMobileNumberUniquenessOnUpdate(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,HttpServletRequest request) {
+    public UniqueMobileNumberResponse validateMobileNumberUniquenessOnUpdate(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,String patientId,String clinicId,HttpServletRequest request) {
         UniqueMobileNumberResponse res = new UniqueMobileNumberResponse();
 
-        boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).shouldDisplayWarningForPatientsMobileNumberDuplicate(mobileNumber);
+        boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).shouldDisplayWarningForPatientsMobileNumberDuplicate(mobileNumber,patientId,clinicId);
         if(!isMobileNumberUnique)
         {
             res.setStatus("FAIL");
