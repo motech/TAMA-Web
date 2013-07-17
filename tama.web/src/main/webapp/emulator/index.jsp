@@ -7,42 +7,10 @@
 <%@page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
 <%
     boolean fakeTimeAvailable = false;
-    String os = (String) System.getenv().get("OS");
+   String os = (String) System.getenv().get("OS");
     if (os == null || os.indexOf("indows") < 0) {
         try {
-                    java.lang.reflect.Method m = java.lang.ClassLoader.class.getDeclaredMethod("loadLibrary", Class.class, String.class, Boolean.TYPE);
-                    m.setAccessible(true);
-                    m.invoke(null, java.lang.System.class, "jvmfaketime", false);
-                    System.startFakingTime();
 
-
-                    if (request.getMethod() == "POST") {
-                        try {
-
-                            String date = request.getParameter("date");
-                            String time = request.getParameter("time");
-                            Date dateValue = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-                            Date timeValue = new SimpleDateFormat("HH:mm:ss").parse(time.substring(1, time.length()));
-                            dateValue.setHours(timeValue.getHours());
-                            dateValue.setMinutes(timeValue.getMinutes());
-                            dateValue.setSeconds(timeValue.getSeconds());
-                            System.out.println("Posted date " + time.substring(1, time.length() - 1));
-
-                            System.resetTime();
-
-                            long diffValue = (dateValue.getTime() - System.currentTimeMillis());
-
-                            System.out.println("offset calculated " + diffValue);
-                            System.moveTimeBy(diffValue);
-                            System.out.println("Date :" + new Date());
-                        } catch (java.lang.Exception e) {
-                            out.println("Error: " + e.getMessage());
-                            return;
-                        }
-                        out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-                        return;
-                    }
-                    fakeTimeAvailable = true;
                 } catch (Exception ignore) {
                 }
     }

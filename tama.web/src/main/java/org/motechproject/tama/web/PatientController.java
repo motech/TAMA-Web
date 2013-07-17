@@ -501,8 +501,8 @@ public class PatientController extends BaseController {
 
     @RequestMapping(value = "/validateMobileNumberUniqueness.json", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResponse validateMobileNumberUniqueness(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,HttpServletRequest request) {
-        JsonResponse res = new JsonResponse();
+    public UniqueMobileNumberResponse validateMobileNumberUniqueness(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,HttpServletRequest request) {
+        UniqueMobileNumberResponse res = new UniqueMobileNumberResponse();
 
         boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).isDuplicate(mobileNumber);
         if(!isMobileNumberUnique)
@@ -517,10 +517,10 @@ public class PatientController extends BaseController {
     }
     @RequestMapping(value = "/validateMobileNumberUniquenessOnUpdate.json", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResponse validateMobileNumberUniquenessOnUpdate(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,HttpServletRequest request) {
-        JsonResponse res = new JsonResponse();
+    public UniqueMobileNumberResponse validateMobileNumberUniquenessOnUpdate(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,HttpServletRequest request) {
+        UniqueMobileNumberResponse res = new UniqueMobileNumberResponse();
 
-        boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).checkIfMobileNumberIsDuplicateOrNotOnUpdate(mobileNumber);
+        boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).shouldDisplayWarningForPatientsMobileNumberDuplicate(mobileNumber);
         if(!isMobileNumberUnique)
         {
             res.setStatus("FAIL");
@@ -534,8 +534,8 @@ public class PatientController extends BaseController {
 
     @RequestMapping(value = "/checkIfPatientIsOnWeekly.json", method = RequestMethod.GET)
     @ResponseBody
-    public JsonResponse checkIfPatientIsOnWeekly(@RequestParam(value = "isDaily", required = true) boolean isDaily,HttpServletRequest request) {
-        JsonResponse res = new JsonResponse();
+    public UniqueMobileNumberResponse checkIfPatientIsOnWeekly(@RequestParam(value = "isDaily", required = true) boolean isDaily,HttpServletRequest request) {
+        UniqueMobileNumberResponse res = new UniqueMobileNumberResponse();
 
 
         if(!isDaily)

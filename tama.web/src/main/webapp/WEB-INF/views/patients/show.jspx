@@ -37,28 +37,7 @@
             </ul>
         </div>
     </c:if>
-    <spring:url value="/resources-${applicationVersion}/images/warning.png" var="incompleteImageUrl"/>
-    <div class="menu" style="float:left" id="duplicateWarning">
-        <c:if test="${patientsWithSameMobileNumber != null}">
-            <div class="warningUniqueMobileNumber">
-                <div class="inline-block redText">
-                    <img src="${incompleteImageUrl}" alt="Incomplete Image Url"/>
-                    <span style="padding-left:8px"><b>WARNING:</b></span>
-                </div>
-                <c:forEach items="${warningMessage}" var="warningMessageCheck">
-                    <p><c:out value= "${warningMessageCheck}"/> <br/> </p>
-                </c:forEach>
-                <ul>
-                    <c:forEach items="${patientsWithSameMobileNumber}" var="warningMessageDuplicatePhNumber">
-                        <li><c:out value="${warningMessageDuplicatePhNumber}"/></li>
-                    </c:forEach>
-                </ul>
-                <c:forEach items="${adviceMessage}" var="adviceMessageCheck">
-                    <p><b>ADVICE: </b> <c:out value= "${adviceMessageCheck}"/> <br/> </p>
-                </c:forEach>
-            </div>
-        </c:if>
-    </div>
+    <jsp:include page="uniqueNumberWarning.jspx"/>
 
     <c:if test="${flashError != null}">
         <div class="error"><c:out value="${flashError}"/></div>

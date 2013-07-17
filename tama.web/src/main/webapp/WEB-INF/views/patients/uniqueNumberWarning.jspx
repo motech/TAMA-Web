@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div class='show_patient_summary'
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+     xmlns:form="urn:jsptagdir:/WEB-INF/tags/form"
+     xmlns:springform="http://www.springframework.org/tags/form"
+     xmlns:joda="http://www.joda.org/joda/time/tags"
+     xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:spring="http://www.springframework.org/tags"
+     xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     version="2.0">
+
+    <spring:eval expression="@tamaProperties['application.version']" var="applicationVersion"/>
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <spring:url value="/resources-${applicationVersion}/styles/show-patient.css" var="show_patient_css_url"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="${show_patient_css_url}"></link>
+
+    <spring:url value="/resources-${applicationVersion}/images/warning.png" var="incompleteImageUrl"/>
+    <div class="menu" style="float:left" id="duplicateWarning">
+        <c:if test="${patientsWithSameMobileNumber != null}">
+            <div class="warningUniqueMobileNumber">
+                <div class="inline-block redText">
+                    <img src="${incompleteImageUrl}" alt="Incomplete Image Url"/>
+                    <span style="padding-left:8px"><b>WARNING:</b></span>
+                </div>
+                <c:forEach items="${warningMessage}" var="warningMessageCheck">
+                    <p><c:out value= "${warningMessageCheck}"/> <br/> </p>
+                </c:forEach>
+                <ul>
+                    <c:forEach items="${patientsWithSameMobileNumber}" var="warningMessageDuplicatePhNumber">
+                        <li><c:out value="${warningMessageDuplicatePhNumber}"/></li>
+                    </c:forEach>
+                </ul>
+                <c:forEach items="${adviceMessage}" var="adviceMessageCheck">
+                    <p><b>ADVICE: </b> <c:out value= "${adviceMessageCheck}"/> <br/> </p>
+                </c:forEach>
+            </div>
+        </c:if>
+    </div>
+
+
+</div>

@@ -269,4 +269,27 @@ public class Patient extends CouchEntity {
     public boolean shouldReceiveAppointmentReminder() {
         return getPatientPreferences().getActivateAppointmentReminders();
     }
+
+    public boolean hasSamePatientID(String patientId) {
+        return this.patientId.equals(patientId);
+    }
+
+    public boolean hasSamePatientDocumentID(String patientDocumentId) {
+        return this.getId().equals(patientDocumentId);
+    }
+
+    public boolean hasSamePhoneNumber(String mobilePhoneNumber) {
+
+        return  this.mobilePhoneNumber.equals(mobilePhoneNumber);
+    }
+
+    public boolean hasSameClinicName(String clinicName)
+    {
+        return this.clinic.getName().equals(clinicName);
+    }
+
+    public boolean hasSameClinicId(String clinicId)
+    {
+        return this.clinic_id.equals(clinicId);
+    }
 }
