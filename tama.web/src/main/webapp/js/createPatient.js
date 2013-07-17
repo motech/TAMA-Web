@@ -59,14 +59,10 @@ function showPatientPreferences() {
         if(response.status == "FAIL")
         {
         if(Spring.validateAll()){
-        codeExecuted=true;
-        alert("Warning !   The phone number entered for the patient is already in use");
+            codeExecuted=true;
+            alert("Warning !   The phone number entered for the patient is already in use");
         }
 
-        }
-        else
-        {
-        console.log("PASSED");
         }
   }
 

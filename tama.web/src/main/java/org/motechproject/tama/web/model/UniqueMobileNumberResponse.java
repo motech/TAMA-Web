@@ -1,7 +1,7 @@
 package org.motechproject.tama.web.model;
 
 
-public class JsonResponse {
+public class UniqueMobileNumberResponse {
 
 
     private String status = null;

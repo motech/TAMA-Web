@@ -12,6 +12,7 @@ public class PatientRegistrationPage extends Page {
     private CreatePatientMedicalHistorySection createPatientMedicalHistorySection;
     private CreatePatientPreferencesSection createPatientPreferencesSection;
     private ConfirmCreationDialog confirmCreationDialog;
+    private ConfirmWarning confirmWarning;
 
     public PatientRegistrationPage(WebDriver webDriver) {
         super(webDriver);
@@ -19,6 +20,7 @@ public class PatientRegistrationPage extends Page {
         createPatientMedicalHistorySection = PageFactory.initElements(webDriver, CreatePatientMedicalHistorySection.class);
         createPatientPreferencesSection = PageFactory.initElements(webDriver, CreatePatientPreferencesSection.class);
         confirmCreationDialog = PageFactory.initElements(webDriver, ConfirmCreationDialog.class);
+        confirmWarning = PageFactory.initElements(webDriver, ConfirmWarning.class);
     }
 
     @Override
@@ -27,6 +29,7 @@ public class PatientRegistrationPage extends Page {
         createPatientMedicalHistorySection.postInitialize();
         createPatientPreferencesSection.postInitialize();
         confirmCreationDialog.postInitialize();
+        confirmWarning.postInitialize();
     }
 
     @Override
@@ -47,6 +50,7 @@ public class PatientRegistrationPage extends Page {
         createPatientMedicalHistorySection.enterDetails(patient);
         createPatientPreferencesSection.enterDetails(patient);
         createPatientPreferencesSection.getPasscode().submit();
+        confirmWarning.confirm();
         confirmCreationDialog.confirm();
         return MyPageFactory.initElements(webDriver, ShowPatientPage.class);
     }
