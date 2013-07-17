@@ -84,6 +84,10 @@
         // get the form values
 
         var mobileNumber = dijit.byId('_mobilePhoneNumber_id').value;
+
+        var label=document.getElementsByName('clinic_id');
+        var clinicID = label[0].defaultValue;
+        var patientID =  '${patient.id}';
         var codeExecuted = false;
 
         if(codeExecuted == false)
@@ -91,7 +95,7 @@
 
         AjaxCall.get({
         url: "${validateMobileNumber}",
-        content: {mobileNumber:mobileNumber},
+        content: {mobileNumber:mobileNumber,patientId:patientID,clinicId:clinicID},
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         sync: true,
