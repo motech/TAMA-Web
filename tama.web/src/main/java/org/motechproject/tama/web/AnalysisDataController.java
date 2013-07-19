@@ -97,6 +97,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
         uiModel.addAttribute("patientAlertsReportFilter", new PatientAlertsReportFilter());
         uiModel.addAttribute("patientAlertsReportFilter", new PatientAlertsReportFilter());
+        uiModel.addAttribute("weeklyAdherenceReportFilter", new WeeklyAdherenceReportFilter());
         callSummaryController.download(uiModel);
         return "analysisData/show";
     }
