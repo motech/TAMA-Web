@@ -170,7 +170,7 @@ public class AnalysisDataControllerTest {
         FilterWithPatientIDAndDateRange filter = mock(FilterWithPatientIDAndDateRange.class);
         when(filter.isMoreThanOneYear()).thenReturn(true);
 
-        String view = analysisDataController.downloadDailyPillReminderReport(filter, model, response);
+        String view = analysisDataController.downloadDailyPillReminderReport(filter, "clinic", model, response);
         verify(model).addAttribute(eq("dailyPillReminderReport_warning"), anyString());
         assertEquals("analysisData/show", view);
     }
@@ -262,7 +262,7 @@ public class AnalysisDataControllerTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(dailyPillReminderReportService.reports(patientId, startDate, endDate)).thenReturn(new DailyPillReminderReport(null, null));
 
-        analysisDataController.downloadDailyPillReminderReport(filter, model, response);
+        analysisDataController.downloadDailyPillReminderReport(filter, "clinic", model, response);
         verify(response).setContentType("application/vnd.ms-excel");
         verify(response).setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
     }

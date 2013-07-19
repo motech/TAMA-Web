@@ -1,6 +1,7 @@
 package org.motechproject.tama.patient.service;
 
 import ch.lambdaj.function.matcher.Predicate;
+import org.apache.commons.collections.CollectionUtils;
 import org.motechproject.tama.patient.domain.*;
 import org.motechproject.tama.patient.reporting.MedicalHistoryRequestMapper;
 import org.motechproject.tama.patient.reporting.PatientRequestMapper;
@@ -17,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static ch.lambdaj.Lambda.filter;
@@ -61,10 +64,9 @@ public class PatientService {
 
         List<SystemCategory> populatedSystemCategories = getSystemCategories(SystemCategoryDefinition.all(), existingSystemCategories);
         nonHivMedicalHistory.setSystemCategories(populatedSystemCategories);
-        try{
+        try {
             allPatients.addToClinic(patient, clinicId, userName);
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             nonHivMedicalHistory.setSystemCategories(existingSystemCategories);
             throw ex;
         }
@@ -133,9 +135,81 @@ public class PatientService {
         List<Patient> patients = allPatients.findAllByPatientId(patientId);
         PatientReports reports = new PatientReports();
         for (Patient patient : patients) {
-            reports.add(patientReport(patient));
+            reports.addReport(patientReport(patient));
         }
         return reports;
+    }
+
+    public PatientReports getAllPatientReports() {
+        List<Patient> patients = allPatients.getAll();
+        PatientReports reports = new PatientReports();
+        for (Patient patient : patients) {
+            PatientReport patientReport =  patientReportAdd(patient);
+            if(patientReport!=null)
+            {
+             reports.addReport(patientReport);
+            }
+        }
+        return reports;
+    }
+
+    public PatientReports getPatientReports(String patientId, String clinicId) {
+        PatientReports patientReports = new PatientReports();
+        if (patientId != null && clinicId == null) {
+            patientReports = getPatientReports(patientId);
+        } else if (patientId == null && clinicId != null) {
+            patientReports = getPatientReportsUsingClinicId(clinicId);
+        } else if (patientId != null && clinicId != null) {
+            patientReports = getPatientReportsUsingPatientIdAndClinicId(patientId, clinicId);
+        } else {
+            patientReports = getAllPatientReports();
+        }
+
+        return patientReports;
+
+    }
+
+    public PatientReports getPatientReportsUsingClinicId(String clinicId) {
+        PatientReports reports = new PatientReports();
+        List<Patient> patients = allPatients.findByClinic(clinicId);
+        for (Patient patient : patients) {
+            reports.addReport(patientReport(patient));
+        }
+        return reports;
+
+    }
+
+
+    public PatientReports filterByClinic(String clinicId,PatientReports reports) {
+        ArrayList<PatientReport> filteredAlerts = new ArrayList<PatientReport>();
+        CollectionUtils.select(reports, getSelectorForClinicId(clinicId), filteredAlerts);
+        return new PatientReports(filteredAlerts);
+    }
+
+
+    private org.apache.commons.collections.Predicate getSelectorForClinicId(final String clinicId) {
+        return new org.apache.commons.collections.Predicate() {
+            @Override
+            public boolean evaluate(Object o) {
+                PatientReport patientReport = (PatientReport) o;
+                return patientReport.getPatient().getClinic_id().equals(clinicId);
+            }
+        };
+    }
+
+
+    public PatientReports getPatientReportsUsingPatientIdAndClinicId(String patientId, String clinicId) {
+        List<Patient> patients = allPatients.findAllByPatientId(patientId);
+        PatientReports patientReports = new PatientReports();
+        for (Patient patient : patients) {
+            PatientReport patientReport = patientReportAdd(patient);
+            if (patientReport != null) {
+                patientReports.add(patientReport);
+            }
+        }
+        patientReports = filterByClinic(clinicId, patientReports);
+
+        return patientReports;
     }
 
     public List<PatientEventLog> getStatusHistory(String patientDocId) {
@@ -149,16 +223,29 @@ public class PatientService {
         return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen(patient));
     }
 
+    private PatientReport patientReportAdd(Patient patient) {
+        TreatmentAdvice earliestTreatmentAdvice = allTreatmentAdvices.earliestTreatmentAdvice(patient.getId());
+        TreatmentAdvice currentTreatmentAdvice = allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
+        if (currentTreatmentAdvice != null)
 
-    private List<SystemCategory> getSystemCategories(List<SystemCategory> allSystemCategories, List<SystemCategory> patientSystemCategories){
-        if(allSystemCategories.size() == patientSystemCategories.size())
+            return new PatientReport(patient, earliestTreatmentAdvice, currentTreatmentAdvice, currentRegimen(patient));
+
+        else
+
+            return null;
+
+    }
+
+
+    private List<SystemCategory> getSystemCategories(List<SystemCategory> allSystemCategories, List<SystemCategory> patientSystemCategories) {
+        if (allSystemCategories.size() == patientSystemCategories.size())
             return patientSystemCategories;
 
-        for(SystemCategory category: patientSystemCategories){
+        for (SystemCategory category : patientSystemCategories) {
             int index = allSystemCategories.indexOf(category);
-            if(index > -1){
+            if (index > -1) {
                 SystemCategory systemCategory = allSystemCategories.get(index);
-                if(systemCategory.getAilments().hasOtherAilments() && !category.getAilments().hasOtherAilments()){
+                if (systemCategory.getAilments().hasOtherAilments() && !category.getAilments().hasOtherAilments()) {
                     category.getAilments().setOtherAilments(systemCategory.getAilments().getOtherAilments());
                 }
                 allSystemCategories.set(index, category);
