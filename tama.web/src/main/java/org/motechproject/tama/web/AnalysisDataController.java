@@ -96,7 +96,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("weeklyDownloadDosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
         uiModel.addAttribute("patientAlertsReportFilter", new PatientAlertsReportFilter());
-        uiModel.addAttribute("weeklyAdherenceReportFilter", new WeeklyAdherenceReportFilter());
+        uiModel.addAttribute("patientAlertsReportFilter", new PatientAlertsReportFilter());
         callSummaryController.download(uiModel);
         return "analysisData/show";
     }
@@ -203,10 +203,9 @@ public class AnalysisDataController extends BaseController {
             shouldAddSummary = false;
             patientId = null;
         }
-        //DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(patientId,clinicId, filter.getStartDate(), filter.getEndDate());
         DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(patientId,filter.getStartDate(), filter.getEndDate());
         AllDailyPillReminderReportsBuilder allDailyPillReminderReportsBuilder = new AllDailyPillReminderReportsBuilder(dailyPillReminderReport.getDailyPillReminderSummaries(),
-                dailyPillReminderReport.getPatientReports(),allRegimens,allTreatmentAdvices,filter.getStartDate(),filter.getEndDate(),shouldAddSummary);
+                dailyPillReminderReport.getPatientReports(),allRegimens,allTreatmentAdvices,filter.getStartDate(),filter.getEndDate());
         try {
             writeExcelToResponse(response, allDailyPillReminderReportsBuilder, "DailyPillReminderReport");
         } catch (Exception e) {
