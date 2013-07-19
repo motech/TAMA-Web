@@ -203,7 +203,8 @@ public class AnalysisDataController extends BaseController {
             shouldAddSummary = false;
             patientId = null;
         }
-        DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(patientId,clinicId, filter.getStartDate(), filter.getEndDate());
+        //DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(patientId,clinicId, filter.getStartDate(), filter.getEndDate());
+        DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(patientId,filter.getStartDate(), filter.getEndDate());
         AllDailyPillReminderReportsBuilder allDailyPillReminderReportsBuilder = new AllDailyPillReminderReportsBuilder(dailyPillReminderReport.getDailyPillReminderSummaries(),
                 dailyPillReminderReport.getPatientReports(),allRegimens,allTreatmentAdvices,filter.getStartDate(),filter.getEndDate(),shouldAddSummary);
         try {
