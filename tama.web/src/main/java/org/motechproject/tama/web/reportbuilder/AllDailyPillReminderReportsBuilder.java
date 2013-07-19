@@ -28,15 +28,17 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
     private LocalDate endDate;
     private static final String CURRENT_REGIMEN = "(Current Regimen)";
     private static final String ON_DAILY_PILL_REMINDER = "Daily";
+    private boolean shouldAddSummary = true;
 
-    public AllDailyPillReminderReportsBuilder(List<DailyPillReminderSummary> objects, PatientReports patientReports,AllRegimens allRegimens,AllTreatmentAdvices allTreatmentAdvices,
-                                              LocalDate startDate,LocalDate endDate) {
+    public AllDailyPillReminderReportsBuilder(List<DailyPillReminderSummary> objects, PatientReports patientReports, AllRegimens allRegimens, AllTreatmentAdvices allTreatmentAdvices,
+                                                                                              LocalDate startDate, LocalDate endDate, boolean shouldAddSummary) {
         super(objects);
         this.patientReports = patientReports;
         this.allRegimens = allRegimens;
         this.allTreatmentAdvices = allTreatmentAdvices;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.shouldAddSummary = shouldAddSummary;
     }
 
     @Override
@@ -114,35 +116,37 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
         buildSummaryRow(worksheet, cellStyles, "Reports Start Date", startDate.toString("dd/MM/yyyy"));
         buildSummaryRow(worksheet, cellStyles, "Reports End Date", endDate.toString("dd/MM/yyyy"));
         buildSummaryRow(worksheet, cellStyles, "                ", " ");
-        List<String> patientDocumentIds =  patientReports.getPatientDocIds();
+        if (shouldAddSummary) {
+            List<String> patientDocumentIds =  patientReports.getPatientDocIds();
 
-        for(String patientDocumentId: patientDocumentIds )
-        {
-
-            PatientReport report = patientReports.getPatientReport(patientDocumentId);
-            buildSummaryRow(worksheet, cellStyles, "Patient Id", report.getPatientId());
-            buildSummaryRow(worksheet, cellStyles, "Clinic Name", report.getClinicName());
-            buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(report.getARTStartedOn()).toString(TAMAConstants.DATE_FORMAT));
-           // buildSummaryRow(worksheet, cellStyles, "Current Regimen", report.getCurrentRegimenName() + "       ");
-            //buildSummaryRow(worksheet, cellStyles, "Start Date of Current Regimen", DateUtil.newDate(report.getCurrentRegimenStartDate()).toString(TAMAConstants.DATE_FORMAT));
-            buildSummaryRow(worksheet, cellStyles, "Regimen Change History", "  ");
-            buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
-            List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(report.getPatientDocId());
-
-            for(TreatmentAdvice treatmentAdvice :treatmentAdvices)
+            for(String patientDocumentId: patientDocumentIds )
             {
-                if(treatmentAdvice.getEndDate()==null)
-                 buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName() + " " +CURRENT_REGIMEN,
-                        DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
-                else
-                 buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName(),
+
+                PatientReport report = patientReports.getPatientReport(patientDocumentId);
+                buildSummaryRow(worksheet, cellStyles, "Patient Id", report.getPatientId());
+                buildSummaryRow(worksheet, cellStyles, "Clinic Name", report.getClinicName());
+                buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(report.getARTStartedOn()).toString(TAMAConstants.DATE_FORMAT));
+               // buildSummaryRow(worksheet, cellStyles, "Current Regimen", report.getCurrentRegimenName() + "       ");
+                //buildSummaryRow(worksheet, cellStyles, "Start Date of Current Regimen", DateUtil.newDate(report.getCurrentRegimenStartDate()).toString(TAMAConstants.DATE_FORMAT));
+                buildSummaryRow(worksheet, cellStyles, "Regimen Change History", "  ");
+                buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
+                List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(report.getPatientDocId());
+
+                for(TreatmentAdvice treatmentAdvice :treatmentAdvices)
+                {
+                    if(treatmentAdvice.getEndDate()==null)
+                     buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName() + " " +CURRENT_REGIMEN,
                             DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
+                    else
+                     buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName(),
+                                DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
+
+                }
+                buildSummaryRow(worksheet, cellStyles, "            ", "      ");
+                worksheet.createRow(worksheet.getLastRowNum()+1);
+                buildSummaryRow(worksheet, cellStyles, "             ", " ");
 
             }
-            buildSummaryRow(worksheet, cellStyles, "            ", "      ");
-            worksheet.createRow(worksheet.getLastRowNum()+1);
-            buildSummaryRow(worksheet, cellStyles, "             ", " ");
-
         }
     }
 }
