@@ -17,11 +17,11 @@
             <form id="dosageAdherenceReportFormWeekly" action="${download_weekly_dosage_adherence_report_url}"
                   method="GET">
                 <div class="control-group">
-                    <label for="patientId">Patient Id * :</label>
+                    <label for="patientId">Patient Id :</label>
                     <input id="weeklyPatientId" type="text" name="patientId"/>
                 </div>
                 <div class="control-group">
-                    <field:select field="clinicFilter.clinicId" id="weeklyDosageAdherenceReportClinicId"
+                    <field:select field="weeklyAdherenceReportFilter.clinicId" id="dosageAdherenceReportFormWeeklyClinicId"
                                   items="${clinicFilter.allClinics}" path="/clinicFilter.clinicId" itemLabel="name"
                                   itemValue="id" required="false" disableDefaultSelection="false" label="Clinic Name"/>
                 </div>
@@ -42,13 +42,11 @@
                         var startDateObj = dijit.byId("_weeklyDownloadDosageAdherenceReportFilter.startDate_id");
                         var endDateObj = dijit.byId("_weeklyDownloadDosageAdherenceReportFilter.endDate_id");
                         setConstraintOnEndDate(startDateObj, endDateObj);
-                         Spring.addDecoration(new Spring.ElementDecoration({elementId : 'weeklyPatientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}));
                         dojo.connect(dojo.byId("weeklyDownloadDosageAdherenceReport"), "onclick", function(event){
                             event.preventDefault();
-                              Spring.decorations['weeklyPatientId'][0].validate();
                             Spring.decorations['_weeklyDownloadDosageAdherenceReportFilter.startDate_id'][0].validate();
                             Spring.decorations['_weeklyDownloadDosageAdherenceReportFilter.endDate_id'][0].validate();
-                            if(dijit.byId("weeklyPatientId").isValid() && startDateObj.isValid() && endDateObj.isValid()){
+                            if(startDateObj.isValid() && endDateObj.isValid()){
                                 dojo.byId('dosageAdherenceReportFormWeekly').submit();
                             }
                         });

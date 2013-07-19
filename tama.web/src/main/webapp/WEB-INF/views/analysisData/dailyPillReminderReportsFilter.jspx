@@ -15,8 +15,13 @@
         <util:panel id="dosageAdherenceReportPane" title="Daily Adherence Report" openPane="true">
             <form id="dosageAdherenceReportForm" action="${download_dosage_adherence_report_url}" method="GET">
                 <div class="control-group">
-                    <label for="patientId">Patient Id * :</label>
+                    <label for="patientId">Patient Id :</label>
                     <input id="dosageAdherenceReportPatientId" type="text" name="patientId"/>
+                </div>
+                <div class="control-group">
+                    <field:select field="clinicFilter.clinicId" id="dosageAdherenceReportClinicId"
+                                  items="${clinicFilter.allClinics}" path="/clinicFilter.clinicId" itemLabel="name"
+                                  itemValue="id" required="false" disableDefaultSelection="false" label="Clinic Name"/>
                 </div>
                 <field:datetime dateTimePattern="dd/MM/yyyy" field="dosageAdherenceReportFilter.startDate"
                                 id="c_org_motechproject_tama_dosage_adherence_filter_startDate" label="Starting From"
@@ -33,13 +38,11 @@
                             var startDateObj = dijit.byId("_dosageAdherenceReportFilter.startDate_id");
                             var endDateObj = dijit.byId("_dosageAdherenceReportFilter.endDate_id");
                             setConstraintOnEndDate(startDateObj, endDateObj);
-                            Spring.addDecoration(new Spring.ElementDecoration({elementId : 'dosageAdherenceReportPatientId', widgetType : 'dijit.form.ValidationTextBox', widgetAttrs : {promptMessage: 'Enter patient id', invalidMessage: 'Required', required : true}}));
                             dojo.connect(dojo.byId("downloadDosageAdherenceReport"), "onclick", function(event){
                                 event.preventDefault();
-                                Spring.decorations['dosageAdherenceReportPatientId'][0].validate();
                                 Spring.decorations['_dosageAdherenceReportFilter.startDate_id'][0].validate();
                                 Spring.decorations['_dosageAdherenceReportFilter.endDate_id'][0].validate();
-                                if(dijit.byId("dosageAdherenceReportPatientId").isValid() && startDateObj.isValid() && endDateObj.isValid()){
+                                if(startDateObj.isValid() && endDateObj.isValid()){
                                     dojo.byId('dosageAdherenceReportForm').submit();
                                 }
                             });

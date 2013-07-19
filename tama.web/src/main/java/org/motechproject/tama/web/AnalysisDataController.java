@@ -24,6 +24,7 @@ import org.motechproject.tama.web.reportbuilder.*;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.tama.web.service.CallLogExcelReportService;
 import org.motechproject.util.DateUtil;
+import org.motechproject.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("weeklyDownloadDosageAdherenceReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("reports_url", reportingProperties.reportingURL());
         uiModel.addAttribute("patientAlertsReportFilter", new PatientAlertsReportFilter());
+        uiModel.addAttribute("weeklyAdherenceReportFilter", new WeeklyAdherenceReportFilter());
         callSummaryController.download(uiModel);
         return "analysisData/show";
     }
@@ -186,13 +188,24 @@ public class AnalysisDataController extends BaseController {
     }
 
     @RequestMapping(value = "/dailyPillReminderReport.xls", method = RequestMethod.GET)
-    public String downloadDailyPillReminderReport(FilterWithPatientIDAndDateRange filter, Model uiModel, HttpServletResponse response) {
+    public String downloadDailyPillReminderReport(FilterWithPatientIDAndDateRange filter,@RequestParam("clinicId") String clinicId, Model uiModel, HttpServletResponse response) {
+        String patientId = filter.getPatientId();
+        boolean shouldAddSummary = true;
         if (filter.isMoreThanOneYear()) {
             return error(uiModel, "dailyPillReminderReport_warning");
         }
-        DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(filter.getPatientId(), filter.getStartDate(), filter.getEndDate());
+        if(StringUtil.isNullOrEmpty(clinicId))
+        {
+            clinicId = null;
+        }
+        if(StringUtil.isNullOrEmpty(patientId))
+        {
+            shouldAddSummary = false;
+            patientId = null;
+        }
+        DailyPillReminderReport dailyPillReminderReport = dailyPillReminderReportService.reports(patientId,clinicId, filter.getStartDate(), filter.getEndDate());
         AllDailyPillReminderReportsBuilder allDailyPillReminderReportsBuilder = new AllDailyPillReminderReportsBuilder(dailyPillReminderReport.getDailyPillReminderSummaries(),
-                dailyPillReminderReport.getPatientReports(),allRegimens,allTreatmentAdvices,filter.getStartDate(),filter.getEndDate());
+                dailyPillReminderReport.getPatientReports(),allRegimens,allTreatmentAdvices,filter.getStartDate(),filter.getEndDate(),shouldAddSummary);
         try {
             writeExcelToResponse(response, allDailyPillReminderReportsBuilder, "DailyPillReminderReport");
         } catch (Exception e) {

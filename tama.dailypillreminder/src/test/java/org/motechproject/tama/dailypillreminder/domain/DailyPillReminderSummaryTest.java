@@ -18,7 +18,7 @@ public class DailyPillReminderSummaryTest {
         DosageAdherenceLogPerDay dosageAdherenceLogPerDay = new DosageAdherenceLogPerDay().setLogs(dosageAdherenceLogSummaries).setDate(DateUtil.newDate(2010, 9, 23));
         DailyPillReminderSummary dailyPillReminderSummary = new DailyPillReminderSummary(dosageAdherenceLogPerDay);
 
-        assertEquals("2010-09-23", dailyPillReminderSummary.getDate());
+        assertEquals("23/09/2010", dailyPillReminderSummary.getDate());
         assertEquals("TAKEN", dailyPillReminderSummary.getMorningDoseStatus());
         assertEquals("11:45", dailyPillReminderSummary.getMorningDoseTime());
         assertNull(dailyPillReminderSummary.getEveningDoseTime());

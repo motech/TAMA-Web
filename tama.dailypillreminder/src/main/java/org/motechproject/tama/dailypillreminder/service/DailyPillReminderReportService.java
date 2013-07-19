@@ -55,4 +55,14 @@ public class DailyPillReminderReportService {
         }
         return new DailyPillReminderReport(patientReports, dailyPillReminderSummaries);
     }
+    public DailyPillReminderReport reports(String patientId, String clinicId, LocalDate startDate, LocalDate endDate) {
+        PatientReports patientReports = patientService.getPatientReports(patientId,clinicId);
+        List<DailyPillReminderSummary> dailyPillReminderSummaries = new ArrayList<>();
+        for (String patientDocId : patientReports.getPatientDocIds()) {
+            dailyPillReminderSummaries.addAll(create(patientDocId, startDate, endDate));
+        }
+        return new DailyPillReminderReport(patientReports, dailyPillReminderSummaries);
+    }
+
+
 }
