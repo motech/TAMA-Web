@@ -123,29 +123,31 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
             {
 
                 PatientReport report = patientReports.getPatientReport(patientDocumentId);
-                buildSummaryRow(worksheet, cellStyles, "Patient Id", report.getPatientId());
-                buildSummaryRow(worksheet, cellStyles, "Clinic Name", report.getClinicName());
-                buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(report.getARTStartedOn()).toString(TAMAConstants.DATE_FORMAT));
-               // buildSummaryRow(worksheet, cellStyles, "Current Regimen", report.getCurrentRegimenName() + "       ");
-                //buildSummaryRow(worksheet, cellStyles, "Start Date of Current Regimen", DateUtil.newDate(report.getCurrentRegimenStartDate()).toString(TAMAConstants.DATE_FORMAT));
-                buildSummaryRow(worksheet, cellStyles, "Regimen Change History", "  ");
-                buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
-                List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(report.getPatientDocId());
-
-                for(TreatmentAdvice treatmentAdvice :treatmentAdvices)
+                if(report.getPatient().isOnDailyPillReminder())
                 {
-                    if(treatmentAdvice.getEndDate()==null)
-                     buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName() + " " +CURRENT_REGIMEN,
-                            DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
-                    else
-                     buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName(),
+                    buildSummaryRow(worksheet, cellStyles, "Patient Id", report.getPatientId());
+                    buildSummaryRow(worksheet, cellStyles, "Clinic Name", report.getClinicName());
+                    buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(report.getARTStartedOn()).toString(TAMAConstants.DATE_FORMAT));
+                   // buildSummaryRow(worksheet, cellStyles, "Current Regimen", report.getCurrentRegimenName() + "       ");
+                    //buildSummaryRow(worksheet, cellStyles, "Start Date of Current Regimen", DateUtil.newDate(report.getCurrentRegimenStartDate()).toString(TAMAConstants.DATE_FORMAT));
+                    buildSummaryRow(worksheet, cellStyles, "Regimen Change History", "  ");
+                    buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
+                    List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(report.getPatientDocId());
+
+                    for(TreatmentAdvice treatmentAdvice :treatmentAdvices)
+                    {
+                        if(treatmentAdvice.getEndDate()==null)
+                         buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName() + " " +CURRENT_REGIMEN,
                                 DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
+                        else
+                         buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName(),
+                                    DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
 
+                    }
+                    buildSummaryRow(worksheet, cellStyles, "            ", "      ");
+                    worksheet.createRow(worksheet.getLastRowNum()+1);
+                    buildSummaryRow(worksheet, cellStyles, "             ", " ");
                 }
-                buildSummaryRow(worksheet, cellStyles, "            ", "      ");
-                worksheet.createRow(worksheet.getLastRowNum()+1);
-                buildSummaryRow(worksheet, cellStyles, "             ", " ");
-
             }
         }
     }
