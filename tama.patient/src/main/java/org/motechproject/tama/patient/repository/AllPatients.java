@@ -109,6 +109,13 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         return patient;
     }
 
+    public Patient findByMobileNumberAndPasscodeAndPatientId(String phoneNumber, String passcode,String patientId) {
+        List<Patient> patients = findAllByMobileNumberAndPasscodeAndPatientId(phoneNumber, passcode,patientId);
+        Patient patient = singleResult(patients);
+        loadPatientDependencies(patient, true);
+        return patient;
+    }
+
     @View(name = "find_by_patient_id_and_clinic_id", map = "function(doc) {if (doc.documentType =='Patient' && doc.patientId && doc.clinic_id) {emit([doc.patientId.toLowerCase(), doc.clinic_id.toLowerCase()], doc._id);}}")
     public Patient findByPatientIdAndClinicId(final String patientId, final String clinicId) {
         ComplexKey key = ComplexKey.of(patientId.toLowerCase(), clinicId.toLowerCase());
@@ -219,6 +226,14 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
         ViewQuery q = createQuery("find_by_mobile_number_and_passcode").key(key).includeDocs(true);
         return db.queryView(q, Patient.class);
     }
+
+    @View(name = "find_by_mobile_number_and_passcode_and_patient_document_id", map = "function(doc) {if (doc.documentType =='Patient' && doc.mobilePhoneNumber && doc.patientPreferences.passcode && doc._id) {emit([doc.mobilePhoneNumber, doc.patientPreferences.passcode], doc._id);}}")
+    private List<Patient> findAllByMobileNumberAndPasscodeAndPatientId(String phoneNumber, String passcode,String patientDocumentId) {
+        ComplexKey key = ComplexKey.of(phoneNumber, passcode);
+        ViewQuery q = createQuery("find_by_mobile_number_and_passcode_and_patient_document_id").key(key).includeDocs(true);
+        return db.queryView(q, Patient.class);
+    }
+
 
     protected void loadPatientDependencies(Patient patient, boolean shouldLoadClinic) {
         if (patient == null) return;

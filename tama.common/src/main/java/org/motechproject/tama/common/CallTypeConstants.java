@@ -13,5 +13,5 @@ public class CallTypeConstants {
     public static final String PUSHED_MESSAGES = "Pushed Messages";
     public static final String MESSAGES = "Messages";
     public static final String UNAUTHENTICATED = "Unauthenticated";
-
+    public static final String NO_RESPONSE="No Response";
 }
