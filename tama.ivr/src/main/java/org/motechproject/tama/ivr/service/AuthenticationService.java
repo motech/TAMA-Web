@@ -63,15 +63,9 @@ public class AuthenticationService {
         return status.allowCall(isOutgoingCall || patient.allowIncomingCalls()).language(patient.getPatientPreferences().getIvrLanguage().getCode());
     }
     protected IVRAuthenticationStatus checkAccessOutGoingCall(String patientID, String phoneNumber, String passcode, int attemptNumber, String sid, boolean isOutgoingCall) {
-        Patient likelyPatient = allPatients.findByMobileNumber(phoneNumber);
-        if (likelyPatient == null) {
-            ivrCallAudits.add(new IVRCallAudit(phoneNumber, sid, "", IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
-            return IVRAuthenticationStatus.notFound();
-        }
-
-        Patient patient = allPatients.findByMobileNumberAndPasscodeAndPatientId(phoneNumber, passcode,patientID);
+      Patient patient = allPatients.findByMobileNumberAndPasscodeAndPatientId(phoneNumber, passcode,patientID);
         if (patient == null) {
-            ivrCallAudits.add(new IVRCallAudit(phoneNumber, sid, likelyPatient.getId(), IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
+            ivrCallAudits.add(new IVRCallAudit(phoneNumber, sid, patient.getId(), IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
             IVRAuthenticationStatus ivrAuthenticationStatus = IVRAuthenticationStatus.notAuthenticated();
             ivrAuthenticationStatus.allowRetry(StringUtils.isEmpty(passcode) || !maxNoOfAttempts.equals(attemptNumber));
             ivrAuthenticationStatus.loginAttemptNumber(StringUtils.isEmpty(passcode) ? --attemptNumber : attemptNumber);
