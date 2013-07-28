@@ -24,6 +24,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.motechproject.util.DateUtil.today;
@@ -77,8 +78,30 @@ public class DailyPillReminderReportServiceTest {
         assertEquals(2, logs.length());
         JSONObject report_1 = (JSONObject) logs.get(0);
         JSONObject report_2 = (JSONObject) logs.get(1);
-        assertEquals("{\"eveningDoseStatus\":\"NOT_TAKEN\",\"regimenId\":null,\"eveningDoseTime\":\"05:50\",\"morningDoseStatus\":\"TAKEN\",\"patientDocId\":null,\"morningDoseTime\":\"11:45\",\"date\":\"02/01/2012\",\"treatmentAdviceId\":null}", report_1.toString());
-        assertEquals("{\"eveningDoseStatus\":null,\"regimenId\":null,\"eveningDoseTime\":null,\"morningDoseStatus\":\"TAKEN\",\"patientDocId\":null,\"morningDoseTime\":\"10:45\",\"date\":\"10/01/2012\",\"treatmentAdviceId\":null}", report_2.toString());
+
+        assertEquals("05:50",report_1.get("eveningDoseTime"));
+        assertTrue(report_1.get("regimenId").equals(JSONObject.NULL));
+        assertEquals("NOT_TAKEN",report_1.get("eveningDoseStatus"));
+        assertEquals("TAKEN",report_1.get("morningDoseStatus"));
+        assertEquals("11:45",report_1.get("morningDoseTime"));
+        assertEquals("02/01/2012",report_1.get("date"));
+        assertEquals(JSONObject.NULL,report_1.get("treatmentAdviceId"));
+        assertEquals(JSONObject.NULL,report_1.get("patientDocId"));
+
+
+        assertEquals(JSONObject.NULL,report_2.get("eveningDoseTime"));
+        assertEquals(JSONObject.NULL,report_2.get("regimenId"));
+        assertEquals(JSONObject.NULL,report_2.get("eveningDoseStatus"));
+        assertEquals("TAKEN",report_2.get("morningDoseStatus"));
+        assertEquals("10:45",report_2.get("morningDoseTime"));
+        assertEquals("10/01/2012",report_2.get("date"));
+        assertEquals(JSONObject.NULL,report_2.get("treatmentAdviceId"));
+        assertEquals(JSONObject.NULL,report_2.get("patientDocId"));
+
+
+
+        //assertEquals("{\"eveningDoseStatus\":\"NOT_TAKEN\",\"regimenId\":null,\"eveningDoseTime\":\"05:50\",\"morningDoseStatus\":\"TAKEN\",\"patientDocId\":null,\"morningDoseTime\":\"11:45\",\"date\":\"02/01/2012\",\"treatmentAdviceId\":null}", report_1.toString());
+        //assertEquals("{\"eveningDoseStatus\":null,\"regimenId\":null,\"eveningDoseTime\":null,\"morningDoseStatus\":\"TAKEN\",\"patientDocId\":null,\"morningDoseTime\":\"10:45\",\"date\":\"10/01/2012\",\"treatmentAdviceId\":null}", report_2.toString());
     }
 
     @Test

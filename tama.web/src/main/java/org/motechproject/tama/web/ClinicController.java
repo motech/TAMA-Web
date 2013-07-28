@@ -2,6 +2,7 @@ package org.motechproject.tama.web;
 
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.facility.service.ClinicService;
 import org.motechproject.tama.refdata.domain.City;
 import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.web.view.ClinicsView;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,10 +63,18 @@ public class ClinicController extends BaseController {
 
     @RequestMapping(method = RequestMethod.PUT)
     public String update(@Valid Clinic clinic, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
+        ObjectError objectError = clinic.validateClinicianContact(clinic.getClinicianContacts());
+          if(objectError!=null)
+          {
+              bindingResult.addError(objectError);
+          }
         if (bindingResult.hasErrors()) {
             uiModel.addAttribute("clinic", clinic);
+            uiModel.addAttribute("mode", "update");
             return "clinics/clinicForm";
         }
+        ClinicService clinicService = new ClinicService(allClinics);
+        clinicService.findIfClinicContactsExistsAndUpdate(clinic);
         uiModel.asMap().clear();
         clinic.setRevision(allClinics.get(clinic.getId()).getRevision());
         allClinics.update(clinic, loggedInUserId(httpServletRequest));
@@ -75,6 +85,7 @@ public class ClinicController extends BaseController {
     public String updateForm(@PathVariable("id") String id, Model uiModel) {
         uiModel.addAttribute("clinic", allClinics.get(id));
         uiModel.addAttribute("mode", "update");
+
         return "clinics/clinicForm";
     }
 

@@ -50,7 +50,7 @@ public class IncompletePatientDataWarning {
     }
 
     private void findAllRequiredInfo() {
-        if (patient.getStatus().isActive()) {
+        if (patient.getStatus().isActive() || patient.getStatus().isTemporarilyDeactivated() || patient.getStatus().isSuspended()) {
             findRequiredVitalStatistics();
             findRequiredTreatmentAdvice();
             findBaseLineLabResults();

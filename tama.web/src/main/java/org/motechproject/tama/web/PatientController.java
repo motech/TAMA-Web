@@ -75,7 +75,7 @@ public class PatientController extends BaseController {
     private static final String PATIENT_INSERT_ERROR = "Sorry, there was an error while creating/updating the patient. Please try again.";
     public static final String PATIENT_WARNING_WARNING_RESOLVE_HELP = "Please add missing data by accessing CLINIC VISIT/APPOINTMENTS tab and then clicking on link ACTIVATED IN TAMA ";
     public static final String PATIENT_HAS_NOT_BEEN_ACTIVATED = "Patient has not been Activated";
-    public static final String WARNING_DUPLICATE_PHONE_NUMBERS = "The below patients are registered with the same mobile number in TAMA";
+    public static final String WARNING_DUPLICATE_PHONE_NUMBERS = "The below patients are also registered with the same mobile number in TAMA";
     public static final String WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION = "Every patient should have unique mobile number to avoid confusion to all.";
 
     private AllPatients allPatients;
@@ -389,7 +389,7 @@ public class PatientController extends BaseController {
                     warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
                 }
             }
-            patient.setComplete(CollectionUtils.isEmpty(warning));
+            patient.setComplete(!CollectionUtils.isNotEmpty(warning));
             List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumberOnUpdate(patient.getMobilePhoneNumber(), patient.getPatientId(),
                     loggedInClinic(request).toString());
             if(!CollectionUtils.isEmpty(patientsWithSameMobileNumber))

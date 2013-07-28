@@ -30,20 +30,6 @@ public class ClinicTest {
     }
 
     @Test
-    public void clinicianContactWithoutANameIsInvalid() {
-        Clinic.ClinicianContact contact = new Clinic.ClinicianContact();
-        Set<ConstraintViolation<Clinic.ClinicianContact>> constraintViolations = validator.validate(contact);
-        ValidationUtil.assertConstraintViolation(constraintViolations, "name", "Clinician name is mandatory");
-    }
-
-    @Test
-    public void clinicianContactWithoutANumberIsInvalid() {
-        Clinic.ClinicianContact contact = new Clinic.ClinicianContact();
-        Set<ConstraintViolation<Clinic.ClinicianContact>> constraintViolations = validator.validate(contact);
-        ValidationUtil.assertConstraintViolation(constraintViolations, "phoneNumber", "Phone number is mandatory");
-    }
-
-    @Test
     public void clinicianContactWithAnInvalidNumberIsInvalid() {
         Clinic.ClinicianContact contact = new Clinic.ClinicianContact();
         contact.setPhoneNumber("abcde");
