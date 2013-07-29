@@ -48,7 +48,6 @@ public class IVRAuthenticationController extends SafeIVRController {
     public KookooIVRResponseBuilder gotDTMF(KooKooIVRContext kooKooIVRContext) {
         TAMAIVRContext tamaivrContext = contextFactory.create(kooKooIVRContext);
         String callId = tamaivrContext.callId();
-        System.out.println("TAMAIVR CONTECT OUT GOING CALL :"+tamaivrContext.isOutgoingCall());
         IVRAuthenticationStatus authenticationStatus = authenticationService.checkAccess(tamaivrContext);
         if (!authenticationStatus.isFound() ||
                 (authenticationStatus.isAuthenticated() && (!authenticationStatus.allowCall()))) {
