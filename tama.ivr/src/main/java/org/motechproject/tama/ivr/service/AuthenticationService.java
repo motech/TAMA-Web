@@ -35,7 +35,7 @@ public class AuthenticationService {
     public IVRAuthenticationStatus checkAccess(TAMAIVRContext context) {
         if(context.isOutgoingCall())
         {
-            return checkAccessOutGoingCall(context.patientDocumentId(),context.callerId(), context.dtmfInput(), context.numberOfLoginAttempts() + 1, context.callId(), context.isOutgoingCall());
+            return checkAccessOutGoingCall(context.getKooKooIVRContext().externalId(),context.callerId(), context.dtmfInput(), context.numberOfLoginAttempts() + 1, context.callId(), context.isOutgoingCall());
         }
         else
         {
