@@ -65,7 +65,7 @@ public class AuthenticationService {
     protected IVRAuthenticationStatus checkAccessOutGoingCall(String patientID, String phoneNumber, String passcode, int attemptNumber, String sid, boolean isOutgoingCall) {
       Patient patient = allPatients.findByMobileNumberAndPasscodeAndPatientId(phoneNumber, passcode,patientID);
         if (patient == null) {
-            ivrCallAudits.add(new IVRCallAudit(phoneNumber, sid, patient.getId(), IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
+            ivrCallAudits.add(new IVRCallAudit(phoneNumber, sid, patientID, IVRCallAudit.State.PASSCODE_ENTRY_FAILED));
             IVRAuthenticationStatus ivrAuthenticationStatus = IVRAuthenticationStatus.notAuthenticated();
             ivrAuthenticationStatus.allowRetry(StringUtils.isEmpty(passcode) || !maxNoOfAttempts.equals(attemptNumber));
             ivrAuthenticationStatus.loginAttemptNumber(StringUtils.isEmpty(passcode) ? --attemptNumber : attemptNumber);
