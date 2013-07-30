@@ -389,7 +389,7 @@ public class PatientController extends BaseController {
                     warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
                 }
             }
-            patient.setComplete(!CollectionUtils.isNotEmpty(warning));
+            patient.setComplete(CollectionUtils.isEmpty(warning));
             List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumberOnUpdate(patient.getMobilePhoneNumber(), patient.getPatientId(),
                     loggedInClinic(request).toString());
             if(!CollectionUtils.isEmpty(patientsWithSameMobileNumber))
@@ -522,23 +522,6 @@ public class PatientController extends BaseController {
 
         boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).shouldDisplayWarningForPatientsMobileNumberDuplicate(mobileNumber,patientId,clinicId);
         if(!isMobileNumberUnique)
-        {
-            res.setStatus("FAIL");
-        }
-        else
-        {
-            res.setStatus("SUCCESS");
-        }
-        return res;
-    }
-
-    @RequestMapping(value = "/checkIfPatientIsOnWeekly.json", method = RequestMethod.GET)
-    @ResponseBody
-    public UniqueMobileNumberResponse checkIfPatientIsOnWeekly(@RequestParam(value = "isDaily", required = true) boolean isDaily,HttpServletRequest request) {
-        UniqueMobileNumberResponse res = new UniqueMobileNumberResponse();
-
-
-        if(!isDaily)
         {
             res.setStatus("FAIL");
         }
