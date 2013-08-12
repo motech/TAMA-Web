@@ -224,10 +224,14 @@ public class AnalysisDataController extends BaseController {
 
         DateFilter filter = new DateFilter().setDates(startDate, endDate);
 
+
+            filter.startDate = startDate.toDateTimeAtStartOfDay().toLocalDate();
+            filter.endDate = endDate.toDateMidnight().toLocalDate();
+
         if (filter.isMoreThanOneYear()) {
             return error(uiModel, "weeklyPillReminderReport_warning");
         } else {
-            return format("redirect:/tama-reports/weekly/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s",clinicId, patientId, filter.startDate.toString("dd/MM/yyyy"), filter.getEndDate().plusDays(1).toString("dd/MM/yyyy"));
+            return format("redirect:/tama-reports/weekly/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s",clinicId, patientId, filter.startDate.toString("dd/MM/yyyy"), filter.getEndDate().toString("dd/MM/yyyy"));
         }
     }
 

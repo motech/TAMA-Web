@@ -32,11 +32,15 @@ public class Patient extends CouchEntity {
     public static final String CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT = "Constraint:Unique:Clinic/PatientId::";
     public static final String PHONE_NUMBER_AND_PASSCODE_UNIQUE_CONSTRAINT = "Constraint:Unique:PhoneNumber/Passcode::";
 
-    @Getter @Setter protected String patientId;
+    @Getter
+    @Setter
+    protected String patientId;
 
     @NotNull
     @Pattern(regexp = TAMAConstants.MOBILE_NUMBER_REGEX, message = TAMAMessages.MOBILE_NUMBER_REGEX_MESSAGE)
-    @Getter @Setter protected String mobilePhoneNumber;
+    @Getter
+    @Setter
+    protected String mobilePhoneNumber;
 
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
@@ -51,21 +55,41 @@ public class Patient extends CouchEntity {
     @JsonProperty
     private Clinic clinic;
 
-    @Getter @Setter private String genderId;
-    @Getter @Setter private String clinic_id;
+    @Getter
+    @Setter
+    private String genderId;
+    @Getter
+    @Setter
+    private String clinic_id;
 
-    @Getter @Setter private boolean complete;
+    @Getter
+    @Setter
+    private boolean complete;
 
     @Valid
-    @Getter @Setter private PatientPreferences patientPreferences = new PatientPreferences();
-    @Getter @Setter private MedicalHistory medicalHistory;
-    @Getter @Setter private Status status = Status.Inactive;
+    @Getter
+    @Setter
+    private PatientPreferences patientPreferences = new PatientPreferences();
+    @Getter
+    @Setter
+    private MedicalHistory medicalHistory;
+    @Getter
+    @Setter
+    private Status status = Status.Inactive;
 
-    @Getter @Setter private String notes;
+    @Getter
+    @Setter
+    private String notes;
 
-    @Getter @Setter private int travelTimeToClinicInDays;
-    @Getter @Setter private int travelTimeToClinicInHours;
-    @Getter @Setter private int travelTimeToClinicInMinutes;
+    @Getter
+    @Setter
+    private int travelTimeToClinicInDays;
+    @Getter
+    @Setter
+    private int travelTimeToClinicInHours;
+    @Getter
+    @Setter
+    private int travelTimeToClinicInMinutes;
 
     private Date registrationDateAsDate;
     private DateTime lastSuspendedDate;
@@ -280,16 +304,18 @@ public class Patient extends CouchEntity {
 
     public boolean hasSamePhoneNumber(String mobilePhoneNumber) {
 
-        return  this.mobilePhoneNumber.equals(mobilePhoneNumber);
+        return this.mobilePhoneNumber.equals(mobilePhoneNumber);
     }
 
-    public boolean hasSameClinicName(String clinicName)
-    {
+    public boolean hasSameClinicName(String clinicName) {
         return this.clinic.getName().equals(clinicName);
     }
 
-    public boolean hasSameClinicId(String clinicId)
-    {
+    public boolean hasSameClinicId(String clinicId) {
         return this.clinic_id.equals(clinicId);
+    }
+
+    public boolean hasSameIdClinicId(String id) {
+        return this.clinic.getId().equals(id);
     }
 }

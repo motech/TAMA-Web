@@ -42,8 +42,16 @@
                     <p><c:out value= "${warningMessageCheck}"/> <br/> </p>
                 </c:forEach>
                 <ul>
-                    <c:forEach items="${patientsWithSameMobileNumber}" var="warningMessageDuplicatePhNumber">
-                        <li><c:out value="${warningMessageDuplicatePhNumber}"/></li>
+                    <c:forEach  var="warningMessageDuplicatePhNumber" items="${patientsWithSameMobileNumber}" varStatus="status">
+                        <li>
+
+                            <span style="padding-right:6px;padding-left:0px">Patient :-</span>
+                            <i><span style="padding-left:3px;color:#0000ff;"> <c:out value="${warningMessageDuplicatePhNumber}"/>
+                            </span></i> <span style="padding-left:6px">Of</span>
+                            <span style="padding-left:6px;padding-right:3px">Clinic :-</span> <i> <span style="padding-left:4px;color:#0000ff;">
+                            <c:out value="${patientsClinicWithSameMobileNumber[status.index]}"/> </span> </i>
+
+                        </li>
                     </c:forEach>
                 </ul>
                 <c:forEach items="${adviceMessage}" var="adviceMessageCheck">

@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.model;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -56,9 +57,9 @@ public class UniquePatientMobileNumberWarningTest {
         patients.add(patient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
         when(patient.getClinic().getName()).thenReturn("clinic1");
-        List<String> duplicatePatientList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName());
+        List<String> duplicatePatientList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(),"patient");
         assertNotNull(duplicatePatientList);
-        assertEquals("Patient - "+duplicatePatient.getPatientId()+" of Clinic - clinic1",duplicatePatientList.get(0));
+        assertEquals(duplicatePatient.getPatientId(),duplicatePatientList.get(0));
        }
 
     @Test
@@ -74,9 +75,9 @@ public class UniquePatientMobileNumberWarningTest {
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
         when(patient.getClinic().getName()).thenReturn("clinic1");
 
-        List<String> duplicatePatientList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patient.getId(), patient.getClinic().getName());
+        List<String> duplicatePatientList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patient.getId(), patient.getClinic().getName(),"patient");
         assertNotNull(duplicatePatientList);
-        assertEquals("Patient - "+duplicatePatient.getPatientId()+" of Clinic - clinic1",duplicatePatientList.get(0));
+        assertEquals(duplicatePatient.getPatientId(),duplicatePatientList.get(0));
     }
     @Test
     public void findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisitNoDuplicateNumbers() {
@@ -88,7 +89,7 @@ public class UniquePatientMobileNumberWarningTest {
         patients.add(patient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
         when(patient.getClinic().getName()).thenReturn("clinic1");
-        List<String> patientsList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patient.getId(), patient.getClinic().getName());
+        List<String> patientsList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patient.getId(), patient.getClinic().getName(),"Clinic");
         assertNull(patientsList);
     }
     @Test
@@ -108,7 +109,7 @@ public class UniquePatientMobileNumberWarningTest {
 
         List<String> duplicatePatientList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberOnUpdate(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName());
         assertNotNull(duplicatePatientList);
-        assertEquals("Patient - "+duplicatePatient.getPatientId()+" of Clinic - clinic1",duplicatePatientList.get(0));
+        assertEquals(duplicatePatient.getPatientId(),duplicatePatientList.get(0));
     }
 
     @Test
@@ -138,7 +139,7 @@ public class UniquePatientMobileNumberWarningTest {
         when(patient.getClinic().getName()).thenReturn("clinic1");
         when(patient.getClinic().getId()).thenReturn("clinic1");
 
-        assertNull(uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName()));
+        assertNull(uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(),"patient"));
     }
 
     @Test
@@ -163,7 +164,7 @@ public class UniquePatientMobileNumberWarningTest {
         patients.add(duplicatePatient);
         patients.add(patient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
-        assertFalse(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId()));
+        assertFalse(CollectionUtils.isEmpty(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId())));
     }
 
     @Test
@@ -172,7 +173,7 @@ public class UniquePatientMobileNumberWarningTest {
         List<Patient> patients = new ArrayList<>();
         patients.add(patient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
-        assertTrue(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId()));
+        assertTrue(CollectionUtils.isEmpty(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId())));
     }
 
     @Test
@@ -182,7 +183,7 @@ public class UniquePatientMobileNumberWarningTest {
         List<Patient> patients = new ArrayList<>();
         patients.add(patient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
-        assertTrue(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId()));
+        assertTrue(CollectionUtils.isEmpty(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId())));
     }
     @Test
     public void checkIfGivenMobileNumberIsNotUnique()
@@ -192,7 +193,7 @@ public class UniquePatientMobileNumberWarningTest {
         patients.add(patient);
         patients.add(duplicatePatient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
-        assertFalse(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId()));
+        assertFalse(CollectionUtils.isEmpty(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId())));
     }
 }
 

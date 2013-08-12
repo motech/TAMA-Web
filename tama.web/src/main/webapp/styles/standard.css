@@ -604,9 +604,16 @@ fieldset th {
     margin-bottom: 5px;
 }
 
+.height{
+   min-height: 1px;
+    background-color: GRAY;
+     margin-bottom: 1px;
+}
+
 
 
  .warningUniqueMobileNumber {
+     box-shadow:0px  -15px #648C1D;
      min-height: 10%;
      background-color:#eee ;
      color: BLACK;
@@ -637,7 +644,7 @@ fieldset th {
 }
 
 .blank {
-    height: 20px;
+    height: 40px;
     background-color: WHITE;
 
     margin-bottom: 0px;

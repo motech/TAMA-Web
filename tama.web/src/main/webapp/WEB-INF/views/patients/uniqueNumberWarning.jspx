@@ -19,23 +19,49 @@
     <link rel="stylesheet" type="text/css" media="screen" href="${show_patient_css_url}"></link>
 
     <spring:url value="/resources-${applicationVersion}/images/warning.png" var="incompleteImageUrl"/>
+
     <div class="menu" style="float:left" id="duplicateWarning">
         <c:if test="${patientsWithSameMobileNumber != null}">
             <div class="warningUniqueMobileNumber">
                 <div class="inline-block redText">
                     <img src="${incompleteImageUrl}" alt="Incomplete Image Url"/>
-                    <span style="padding-left:8px"><b>WARNING:</b></span>
+                    <span style="padding-left:8px">
+                        <b>WARNING:</b>
+                    </span>
                 </div>
                 <c:forEach items="${warningMessage}" var="warningMessageCheck">
-                    <p><c:out value= "${warningMessageCheck}"/> <br/> </p>
+                    <p>
+                        <i>
+                            <c:out value="${warningMessageCheck}"/>
+                        </i>
+                        <br/>
+                    </p>
                 </c:forEach>
+                <hr class="height"></hr>
+
                 <ul>
-                    <c:forEach items="${patientsWithSameMobileNumber}" var="warningMessageDuplicatePhNumber">
-                        <li><c:out value="${warningMessageDuplicatePhNumber}"/></li>
+                    <c:forEach  var="warningMessageDuplicatePhNumber" items="${patientsWithSameMobileNumber}" varStatus="status">
+                        <li>
+
+                            <span style="padding-right:6px;padding-left:0px">Patient :-</span>  <i><span style="padding-left:3px;color:#0000FF;"> <c:out value="${warningMessageDuplicatePhNumber}"/> </span></i>     <span style="padding-left:8px">Of</span>
+                            <span style="padding-left:6px;padding-right:3px">Clinic :-</span>      <i> <span style="padding-left:3px;color:#0000FF;"> <c:out value="${patientsClinicWithSameMobileNumber[status.index]}"/> </span> </i>
+
+                        </li>
                     </c:forEach>
+
                 </ul>
+
+                <hr class="height"></hr>
+
+
                 <c:forEach items="${adviceMessage}" var="adviceMessageCheck">
-                    <p><b>ADVICE: </b> <c:out value= "${adviceMessageCheck}"/> <br/> </p>
+                    <p>
+                        <b>ADVICE : </b>
+                        <i>
+                            <c:out value="${adviceMessageCheck}"/>
+                        </i>
+                        <br/>
+                    </p>
                 </c:forEach>
             </div>
         </c:if>
