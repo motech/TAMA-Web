@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.reportbuilder;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,6 +18,8 @@ import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<ClinicVisit> {
@@ -75,7 +78,7 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
         {
             TreatmentAdvice treatmentAdvice = allTreatmentAdvices.get(visit.getTreatmentAdviceId());
             Regimen regimen = allRegimens.get(treatmentAdvice.getRegimenId());
-            String currentRegimenStartDate = treatmentAdvice.getStartDate() != null ? DateUtil.newDate(treatmentAdvice.getStartDate()).toString("yyyy-MM-dd") : null;
+            String currentRegimenStartDate = treatmentAdvice.getStartDate() != null ? DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT) : null;
             row.add(regimen.getDisplayName());
             row.add(currentRegimenStartDate);
         }
@@ -111,7 +114,7 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
             buildSummaryRow(worksheet, cellStyles, "Regimen Change History", "  ");
             buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
             List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(report.getPatientDocId());
-
+            Collections.sort(treatmentAdvices);
             for(TreatmentAdvice treatmentAdvice :treatmentAdvices)
             {
                 if(treatmentAdvice.getEndDate()==null)
@@ -130,12 +133,12 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
     }
 
     private void addCurrentRegimenStartDate(PatientReport patientReport, List<Object> row) {
-        String currentRegimenStartDate = patientReport.getCurrentRegimenStartDate() != null ? DateUtil.newDate(patientReport.getCurrentRegimenStartDate()).toString("yyyy-MM-dd") : null;
+        String currentRegimenStartDate = patientReport.getCurrentRegimenStartDate() != null ? DateUtil.newDate(patientReport.getCurrentRegimenStartDate()).toString(TAMAConstants.DATE_FORMAT) : null;
         row.add(currentRegimenStartDate);
     }
 
     private void addARTStartDate(PatientReport patientReport, List<Object> row) {
-        String artStartDate = patientReport.getARTStartedOn() != null ? DateUtil.newDate(patientReport.getARTStartedOn()).toString("yyyy-MM-dd") : null;
+        String artStartDate = patientReport.getARTStartedOn() != null ? DateUtil.newDate(patientReport.getARTStartedOn()).toString(TAMAConstants.DATE_FORMAT) : null;
         row.add(artStartDate);
     }
 
@@ -155,7 +158,7 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
     }
 
     private void addVisitDate(ClinicVisitUIModel clinicVisit, List<Object> row) {
-        String visitDate = clinicVisit.getVisitDate() != null ? clinicVisit.getVisitDate().toLocalDate().toString() : null;
+        String visitDate = clinicVisit.getVisitDate() != null ? DateUtil.newDate(clinicVisit.getVisitDate()).toString(TAMAConstants.DATE_FORMAT) : null;
         visitDate = clinicVisit.isMissed() ? "Missed" : visitDate;
         row.add(visitDate);
     }

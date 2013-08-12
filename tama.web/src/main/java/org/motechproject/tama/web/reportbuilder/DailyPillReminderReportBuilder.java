@@ -18,6 +18,8 @@ import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
 import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.motechproject.tama.common.TAMAConstants.DATETIME_YYYY_MM_DD_FORMAT;
@@ -58,12 +60,12 @@ public class DailyPillReminderReportBuilder extends InMemoryReportBuilder<DailyP
     protected void initializeColumns() {
         columns = new ArrayList<ExcelColumn>();
         columns.add(new ExcelColumn("Date of daily Adherence  (dd-mm-yyyy)", Cell.CELL_TYPE_STRING, 5000));
-        columns.add(new ExcelColumn("Morning Pill Time hh:mm", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Morning Adherence", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Evening Pill Time hh:mm", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Evening Adherence", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Current Regimen", Cell.CELL_TYPE_STRING));
-        columns.add(new ExcelColumn("Start Date of Current Regimen", Cell.CELL_TYPE_STRING));
+        columns.add(new ExcelColumn("Morning Pill Time hh:mm", Cell.CELL_TYPE_STRING,8000));
+        columns.add(new ExcelColumn("Morning Adherence", Cell.CELL_TYPE_STRING,8000));
+        columns.add(new ExcelColumn("Evening Pill Time hh:mm", Cell.CELL_TYPE_STRING,8000));
+        columns.add(new ExcelColumn("Evening Adherence", Cell.CELL_TYPE_STRING,8000));
+        columns.add(new ExcelColumn("Current Regimen", Cell.CELL_TYPE_STRING,8000));
+        columns.add(new ExcelColumn("Start Date of Current Regimen", Cell.CELL_TYPE_STRING,8000));
     }
 
     @Override
@@ -95,17 +97,19 @@ public class DailyPillReminderReportBuilder extends InMemoryReportBuilder<DailyP
     protected void buildSummary(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
         buildSummaryRow(worksheet, cellStyles, " ", " ");
+        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("dd/MM/yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Report Start Date", startDate.toString(TAMAConstants.DATE_FORMAT));
+        buildSummaryRow(worksheet, cellStyles, "Report End Date", endDate.toString(TAMAConstants.DATE_FORMAT));
+        buildSummaryRow(worksheet, cellStyles, " ", " ");
         buildSummaryRow(worksheet, cellStyles, "Patient Id", patientReport.getPatientId());
         buildSummaryRow(worksheet, cellStyles, "Clinic Name", patientReport.getClinicName());
         buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(patientReport.getARTStartedOn()).toString(TAMAConstants.DATE_FORMAT));
         buildSummaryRow(worksheet, cellStyles, "Current Regimen", patientReport.getCurrentRegimenName());
         buildSummaryRow(worksheet, cellStyles, "Start Date of Current Regimen", DateUtil.newDate(patientReport.getCurrentRegimenStartDate()).toString(TAMAConstants.DATE_FORMAT));
-        buildSummaryRow(worksheet, cellStyles, "Report Start Date", startDate.toString(TAMAConstants.DATE_FORMAT));
-        buildSummaryRow(worksheet, cellStyles, "Report End Date", endDate.toString(TAMAConstants.DATE_FORMAT));
         buildSummaryRow(worksheet, cellStyles, "Regimen Change History", "  ");
         buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
         List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(patientReport.getPatientDocId());
-
+        Collections.sort(treatmentAdvices);
         for(TreatmentAdvice treatmentAdvice :treatmentAdvices)
         {
             buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName(),

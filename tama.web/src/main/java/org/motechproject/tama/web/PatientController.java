@@ -75,8 +75,10 @@ public class PatientController extends BaseController {
     private static final String PATIENT_INSERT_ERROR = "Sorry, there was an error while creating/updating the patient. Please try again.";
     public static final String PATIENT_WARNING_WARNING_RESOLVE_HELP = "Please add missing data by accessing CLINIC VISIT/APPOINTMENTS tab and then clicking on link ACTIVATED IN TAMA ";
     public static final String PATIENT_HAS_NOT_BEEN_ACTIVATED = "Patient has not been Activated";
-    public static final String WARNING_DUPLICATE_PHONE_NUMBERS = "The below patients are also registered with the same mobile number in TAMA";
-    public static final String WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION = "Every patient should have unique mobile number to avoid confusion to all.";
+    public static final String WARNING_DUPLICATE_PHONE_NUMBERS = "The patients below are also registered with the same mobile number in TAMA";
+    public static final String WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION = "  Every patient should have unique mobile number to avoid confusion to all.";
+
+    public static final String CLINIC = "Clinic";
 
     private AllPatients allPatients;
     private AllGendersCache allGenders;
@@ -209,21 +211,21 @@ public class PatientController extends BaseController {
         if (patient == null) return "authorizationFailure";
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
         if (!CollectionUtils.isEmpty(warning)) {
-            if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED))
-            {
+            if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED)) {
                 warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
             }
 
         }
-        List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName());
-        if(!CollectionUtils.isEmpty(patientsWithSameMobileNumber))
-        {
+        List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(), PATIENT);
+        List<String> patientsClinicWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(), CLINIC);
+        if (!CollectionUtils.isEmpty(patientsWithSameMobileNumber)) {
             warningMessage = new ArrayList<>();
             warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
             adviceMessage = new ArrayList<>();
             adviceMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION);
         }
         uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
+        uiModel.addAttribute("patientsClinicWithSameMobileNumber", patientsClinicWithSameMobileNumber);
         uiModel.addAttribute("warningMessage", warningMessage);
         uiModel.addAttribute("adviceMessage", adviceMessage);
         uiModel.addAttribute(PATIENT, new PatientViewModel(patient));
@@ -250,20 +252,20 @@ public class PatientController extends BaseController {
         Double runningAdherencePercentage = getRunningAdherencePercentage(patient);
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
         if (!CollectionUtils.isEmpty(warning)) {
-            if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED))
-            {
+            if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED)) {
                 warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
             }
         }
-        List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName());
-        if(!CollectionUtils.isEmpty(patientsWithSameMobileNumber))
-        {
+        List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(), PATIENT);
+        List<String> patientsClinicWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(), CLINIC);
+        if (!CollectionUtils.isEmpty(patientsWithSameMobileNumber)) {
             warningMessage = new ArrayList<>();
             warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
             adviceMessage = new ArrayList<>();
             adviceMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION);
         }
         uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
+        uiModel.addAttribute("patientsClinicWithSameMobileNumber", patientsClinicWithSameMobileNumber);
         uiModel.addAttribute("warningMessage", warningMessage);
         uiModel.addAttribute("adviceMessage", adviceMessage);
 
@@ -295,7 +297,7 @@ public class PatientController extends BaseController {
         for (Patient patient : allPatients.findByClinic(clinicId)) {
             PatientViewModel listPatientViewModel = new PatientViewModel(patient);
             listPatientViewModel.setIncompleteImageUrl(incompleteImageUrl);
-            boolean checkIfGivenMobileNumberIsUnique = new UniquePatientMobileNumberWarning(allPatients).checkIfGivenMobileNumberIsUnique(patient.getMobilePhoneNumber(),patient.getPatientId(),clinicId);
+            boolean checkIfGivenMobileNumberIsUnique = new UniquePatientMobileNumberWarning(allPatients).checkIfGivenMobileNumberIsUnique(patient.getMobilePhoneNumber(), patient.getPatientId(), clinicId);
             listPatientViewModel.setDuplicateImageUrl(duplicateImageUrl);
             listPatientViewModel.setHasUniqueMobileNumber(checkIfGivenMobileNumberIsUnique);
             listPatientViewModels.add(listPatientViewModel);
@@ -331,7 +333,7 @@ public class PatientController extends BaseController {
             return CREATE_VIEW;
         }
         List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber()
-                ,patient.getPatientId(),loggedInClinic(request));
+                , patient.getPatientId(), loggedInClinic(request), PATIENT);
         uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
         try {
             patientService.create(patient, loggedInClinic(request), loggedInUserId(request));
@@ -342,8 +344,7 @@ public class PatientController extends BaseController {
             Patient savedPatient = allPatients.findByPatientIdAndClinicId(patient.getPatientId(), loggedInClinic(request));
             List<String> warning = new IncompletePatientDataWarning(savedPatient, null, null, null, null).value();
             if (!CollectionUtils.isEmpty(warning)) {
-                if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED))
-                {
+                if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED)) {
                     warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
                 }
             }
@@ -384,22 +385,21 @@ public class PatientController extends BaseController {
             List<String> adviceMessage = null;
             List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
             if (!CollectionUtils.isEmpty(warning)) {
-                if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED))
-                {
+                if (!warning.get(0).equals(PATIENT_HAS_NOT_BEEN_ACTIVATED)) {
                     warning.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
                 }
             }
             patient.setComplete(CollectionUtils.isEmpty(warning));
-            List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumberOnUpdate(patient.getMobilePhoneNumber(), patient.getPatientId(),
-                    loggedInClinic(request).toString());
-            if(!CollectionUtils.isEmpty(patientsWithSameMobileNumber))
-            {
+            List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), loggedInClinic(request).toString(), PATIENT);
+            List<String> patientsClinicWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), loggedInClinic(request).toString(), CLINIC);
+            if (!CollectionUtils.isEmpty(patientsWithSameMobileNumber)) {
                 warningMessage = new ArrayList<>();
                 warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
                 adviceMessage = new ArrayList<>();
                 adviceMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION);
             }
             uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
+            uiModel.addAttribute("patientsClinicWithSameMobileNumber", patientsClinicWithSameMobileNumber);
             uiModel.addAttribute("warningMessage", warningMessage);
             uiModel.addAttribute("adviceMessage", adviceMessage);
             patientService.update(patient, loggedInUserId(request));
@@ -501,32 +501,27 @@ public class PatientController extends BaseController {
 
     @RequestMapping(value = "/validateMobileNumberUniqueness.json", method = RequestMethod.GET)
     @ResponseBody
-    public UniqueMobileNumberResponse validateMobileNumberUniqueness(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,HttpServletRequest request) {
+    public UniqueMobileNumberResponse validateMobileNumberUniqueness(@RequestParam(value = "mobileNumber", required = true) String mobileNumber, HttpServletRequest request) {
         UniqueMobileNumberResponse res = new UniqueMobileNumberResponse();
 
         boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).isDuplicate(mobileNumber);
-        if(!isMobileNumberUnique)
-        {
+        if (!isMobileNumberUnique) {
             res.setStatus("FAIL");
-        }
-        else
-        {
+        } else {
             res.setStatus("SUCCESS");
         }
         return res;
     }
+
     @RequestMapping(value = "/validateMobileNumberUniquenessOnUpdate.json", method = RequestMethod.GET)
     @ResponseBody
-    public UniqueMobileNumberResponse validateMobileNumberUniquenessOnUpdate(@RequestParam(value = "mobileNumber", required = true) String mobileNumber,String patientId,String clinicId,HttpServletRequest request) {
+    public UniqueMobileNumberResponse validateMobileNumberUniquenessOnUpdate(@RequestParam(value = "mobileNumber", required = true) String mobileNumber, String patientId, String clinicId, HttpServletRequest request) {
         UniqueMobileNumberResponse res = new UniqueMobileNumberResponse();
 
-        boolean isMobileNumberUnique = new UniquePatientMobileNumberWarning(allPatients).shouldDisplayWarningForPatientsMobileNumberDuplicate(mobileNumber,patientId,clinicId);
-        if(!isMobileNumberUnique)
-        {
+        boolean isMobileNumberUnique = CollectionUtils.isEmpty(new UniquePatientMobileNumberWarning(allPatients).shouldDisplayWarningForPatientsMobileNumberDuplicateWhenPatientIdIsPassed(mobileNumber, patientId, clinicId));
+        if (!isMobileNumberUnique) {
             res.setStatus("FAIL");
-        }
-        else
-        {
+        } else {
             res.setStatus("SUCCESS");
         }
         return res;

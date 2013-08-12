@@ -17,6 +17,7 @@ import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -74,6 +75,7 @@ public class AllClinicVisits {
         for (String patientDocumentId : patientDocumentIds) {
             result.addAll(clinicVisits(patientDocumentId));
         }
+        Collections.sort(result);
         return result;
     }
 

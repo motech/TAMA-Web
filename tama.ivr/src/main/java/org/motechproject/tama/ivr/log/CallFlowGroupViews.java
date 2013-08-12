@@ -91,7 +91,7 @@ public class CallFlowGroupViews {
         } else if (missed) {
             flows = getCurrentCallFlowGroupView().toString();
         } else {
-            flows = CallTypeConstants.NO_RESPONSE;
+            flows = CallTypeConstants.UNAUTHENTICATED;
         }
     }
 
