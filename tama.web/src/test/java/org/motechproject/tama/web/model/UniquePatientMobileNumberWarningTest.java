@@ -124,7 +124,7 @@ public class UniquePatientMobileNumberWarningTest {
         when(patient.getClinic().getName()).thenReturn("clinic1");
         when(patient.getClinic().getId()).thenReturn("clinic1");
 
-        assertNull(uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberOnUpdate(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getId()));
+        assertNull(uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberOnUpdate(patient.getMobilePhoneNumber(), patient.getId(), patient.getClinic().getId()));
     }
 
     @Test
@@ -183,7 +183,7 @@ public class UniquePatientMobileNumberWarningTest {
         List<Patient> patients = new ArrayList<>();
         patients.add(patient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
-        assertTrue(CollectionUtils.isEmpty(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicate(patient.getMobilePhoneNumber(),patient.getId(),patient.getClinic().getId())));
+        assertTrue(CollectionUtils.isEmpty(uniquePatientMobileNumberWarning.shouldDisplayWarningForPatientsMobileNumberDuplicateWhenIdOfClinicIsPassed(patient.getMobilePhoneNumber(),patient.getPatientId(),patient.getClinic().getId())));
     }
     @Test
     public void checkIfGivenMobileNumberIsNotUnique()

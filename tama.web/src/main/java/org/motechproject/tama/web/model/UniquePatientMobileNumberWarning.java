@@ -82,7 +82,7 @@ public class UniquePatientMobileNumberWarning {
         List<Patient> patients = allPatients.findAllByMobileNumber(mobileNumber);
         List<String> patientsWithNonUniqueMobileNumbers = new ArrayList<>();
         for (Patient patient : patients) {
-            if (!((patient.hasSamePatientDocumentID(patientID) && patient.hasSamePhoneNumber(mobileNumber) && patient.hasSameIdClinicId(idOfClinic)))) {
+            if (!((patient.hasSamePatientID(patientID) && patient.hasSamePhoneNumber(mobileNumber) && patient.hasSameIdClinicId(idOfClinic)))) {
                 patientsWithNonUniqueMobileNumbers.add(patient.getPatientId());
             }
         }
