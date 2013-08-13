@@ -154,7 +154,8 @@ public class AnalysisDataController extends BaseController {
         DateFilter dateFilter = new DateFilter().setDates(startDate, endDate);
         DateTime alertStartDate = DateTime.parse(dateFilter.getStartDate().toString());
         DateTime alertEndDate = DateTime.parse(dateFilter.getEndDate().toString());
-        alertEndDate = alertEndDate.plusDays(1);
+        alertEndDate = alertEndDate.plusHours(23);
+        alertEndDate = alertEndDate.plusMinutes(59);
 
 
         PatientAlertsReport patientAlertsReport = patientAlertsReportService.report(patientId, alertStartDate, alertEndDate, patientAlertType, clinicId, patientAlertStatus);
@@ -163,7 +164,7 @@ public class AnalysisDataController extends BaseController {
         for (int i = 0; i < patientAlertsReport.getPatientAlerts().size(); i++) {
             alerts.add(patientAlertsReport.getPatientAlerts().get(i));
         }
-        AllPatientAlertsReportsBuilder allPatientAlertsReportsBuilder = new AllPatientAlertsReportsBuilder(patientAlertsReport.getPatientReports(), alerts, patientId);
+        AllPatientAlertsReportsBuilder allPatientAlertsReportsBuilder = new AllPatientAlertsReportsBuilder(patientAlertsReport.getPatientReports(), alerts, patientId,alertStartDate,alertEndDate);
 
         try {
             writeExcelToResponse(response, allPatientAlertsReportsBuilder, "PatientAlertsReport");
@@ -223,15 +224,15 @@ public class AnalysisDataController extends BaseController {
                                                    Model uiModel) {
 
         DateFilter filter = new DateFilter().setDates(startDate, endDate);
+        DateTime alertStartDate = DateTime.parse(filter.getStartDate().toString());
+        DateTime alertEndDate = DateTime.parse(filter.getEndDate().toString());
+        alertEndDate = alertEndDate.plusHours(23).plusMinutes(59);
 
-
-            filter.startDate = startDate.toDateTimeAtStartOfDay().toLocalDate();
-            filter.endDate = endDate.toDateMidnight().toLocalDate();
 
         if (filter.isMoreThanOneYear()) {
             return error(uiModel, "weeklyPillReminderReport_warning");
         } else {
-            return format("redirect:/tama-reports/weekly/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s",clinicId, patientId, filter.startDate.toString("dd/MM/yyyy"), filter.getEndDate().toString("dd/MM/yyyy"));
+            return format("redirect:/tama-reports/weekly/report?clinicId=%s&patientId=%s&startDate=%s&endDate=%s",clinicId, patientId, alertStartDate.toString("dd/MM/yyyy"), alertEndDate.toString("dd/MM/yyyy"));
         }
     }
 

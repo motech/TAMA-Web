@@ -1,6 +1,8 @@
 package org.motechproject.tama.web.reportbuilder;
 
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
 
 import org.joda.time.DateTime;
@@ -16,6 +18,7 @@ import org.motechproject.tama.patient.domain.PatientReport;
 import org.motechproject.tama.patient.domain.PatientReports;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.tama.web.reportbuilder.model.ExcelColumn;
+import org.motechproject.util.DateUtil;
 
 import java.util.ArrayList;
 
@@ -24,11 +27,14 @@ import java.util.List;
 public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<PatientAlert> {
 
     private PatientReports patientReports;
+    private DateTime alertStartDate;
+    private DateTime alertEndDate;
 
-    public AllPatientAlertsReportsBuilder(PatientReports patientReports, List<PatientAlert> alerts, String patientId) {
+    public AllPatientAlertsReportsBuilder(PatientReports patientReports, List<PatientAlert> alerts, String patientId,DateTime alertStartDate,DateTime alertEndDate) {
         super(alerts);
         this.patientReports = patientReports;
-
+        this.alertStartDate = alertStartDate;
+        this.alertEndDate = alertEndDate;
     }
 
 
@@ -197,6 +203,16 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
             return PatientReport.nullPatientReport();
         }
         return patientReport;
+
+    }
+    @Override
+    protected void buildSummary(HSSFSheet worksheet) {
+        List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
+
+        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("dd/MM/yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Report Start Date", alertStartDate.toString("dd/MM/yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Report End Date", alertEndDate.toString("dd/MM/yyyy"));
+        buildSummaryRow(worksheet, cellStyles, " ", " ");
 
     }
 }
