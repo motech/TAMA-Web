@@ -209,7 +209,7 @@ public class AllPatientAlertsReportsBuilder extends InMemoryReportBuilder<Patien
     protected void buildSummary(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
 
-        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("dd/MM/yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Date of Report", DateUtil.today().toString("dd/MM/yyyy"));
         buildSummaryRow(worksheet, cellStyles, "Report Start Date", alertStartDate.toString("dd/MM/yyyy"));
         buildSummaryRow(worksheet, cellStyles, "Report End Date", alertEndDate.toString("dd/MM/yyyy"));
         buildSummaryRow(worksheet, cellStyles, " ", " ");
