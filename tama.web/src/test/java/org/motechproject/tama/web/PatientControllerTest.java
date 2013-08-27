@@ -16,6 +16,7 @@ import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TamaException;
 import org.motechproject.tama.common.domain.TimeOfDay;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderAdherenceService;
+import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.fourdayrecall.service.ResumeFourDayRecallService;
 import org.motechproject.tama.ivr.service.AdherenceService;
@@ -397,17 +398,18 @@ public class PatientControllerTest {
         @Test
         public void shouldNotCreateAPatient_WhenThePatientIdIsNotUniqueWithTheClinic_AndRedirectToCreatePage() {
             Patient patientFromUI = mock(Patient.class);
+            Clinic clinic = ClinicBuilder.startRecording().withDefaults().build();
             BindingResult bindingResult = mock(BindingResult.class);
             Map<String, Object> modelMap = new HashMap<String, Object>();
             modelMap.put("dummyKey", "dummyValue");
             patientFromUI.setMobilePhoneNumber("1111111111");
+            clinic.setName("clinic1");
+            patientFromUI.setClinic(clinic);
             when(bindingResult.hasErrors()).thenReturn(false);
             when(patientFromUI.getId()).thenReturn(PATIENT_ID);
             when(uiModel.asMap()).thenReturn(modelMap);
             when(request.getSession()).thenReturn(session);
-
-            when(user.getClinicId()).thenThrow(new TamaException(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "some STUFF", new UpdateConflictException()));
-
+            when(user.getUsername()).thenThrow(new TamaException(Patient.CLINIC_AND_PATIENT_ID_UNIQUE_CONSTRAINT + "some STUFF", new UpdateConflictException()));
             String createPage = controller.create(patientFromUI, bindingResult, uiModel, request);
 
             verify(bindingResult).addError(new FieldError("Patient", "patientId", patientFromUI.getPatientId(), false,

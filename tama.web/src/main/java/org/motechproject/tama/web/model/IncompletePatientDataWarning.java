@@ -1,5 +1,6 @@
 package org.motechproject.tama.web.model;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
@@ -17,6 +18,8 @@ import java.util.Set;
 import static java.util.Arrays.asList;
 
 public class IncompletePatientDataWarning {
+    public static final String PATIENT_WARNING_WARNING_RESOLVE_HELP = "Please add missing data by accessing CLINIC VISIT/APPOINTMENTS tab and then clicking on link ACTIVATED IN TAMA ";
+    public static final String PATIENT_HAS_NOT_BEEN_ACTIVATED = "Patient has not been Activated";
 
     private class RequiredPatientDetail {
         public Object container;
@@ -60,12 +63,17 @@ public class IncompletePatientDataWarning {
     public List<String> value() {
         findAllRequiredInfo();
         if (patient.getStatus().isInactive())
-            return asList("Patient has not been Activated");
+            return asList(PATIENT_HAS_NOT_BEEN_ACTIVATED);
 
         List<String> message = new ArrayList<String>();
         for (RequiredPatientDetail detail : this.requiredPatientDetails) {
             if (detail.container == null)
                 message.add("The " + detail.containerName + " need to be filled so that the patient can access " + StringUtils.join(detail.requiredFor, " and "));
+        }
+        if(CollectionUtils.isNotEmpty(message)){
+            if(!message.contains(PATIENT_HAS_NOT_BEEN_ACTIVATED)){
+               message.add(PATIENT_WARNING_WARNING_RESOLVE_HELP);
+            }
         }
 
         return message.isEmpty() ? null : message;

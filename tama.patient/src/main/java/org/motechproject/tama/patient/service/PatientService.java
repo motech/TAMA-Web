@@ -179,35 +179,17 @@ public class PatientService {
 
     }
 
-
-    public PatientReports filterByClinic(String clinicId,PatientReports reports) {
-        ArrayList<PatientReport> filteredAlerts = new ArrayList<PatientReport>();
-        CollectionUtils.select(reports, getSelectorForClinicId(clinicId), filteredAlerts);
-        return new PatientReports(filteredAlerts);
-    }
-
-
-    private org.apache.commons.collections.Predicate getSelectorForClinicId(final String clinicId) {
-        return new org.apache.commons.collections.Predicate() {
-            @Override
-            public boolean evaluate(Object o) {
-                PatientReport patientReport = (PatientReport) o;
-                return patientReport.getPatient().getClinic_id().equals(clinicId);
-            }
-        };
-    }
-
-
     public PatientReports getPatientReportsUsingPatientIdAndClinicId(String patientId, String clinicId) {
         List<Patient> patients = allPatients.findAllByPatientId(patientId);
         PatientReports patientReports = new PatientReports();
+        List<PatientReport> patientReportsList = new ArrayList<>();
         for (Patient patient : patients) {
             PatientReport patientReport = patientReportAdd(patient);
             if (patientReport != null) {
-                patientReports.add(patientReport);
+                patientReportsList.add(patientReport);
             }
         }
-        patientReports = filterByClinic(clinicId, patientReports);
+        patientReports = patientReports.filterByClinic(clinicId, patientReportsList);
 
         return patientReports;
     }

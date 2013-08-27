@@ -46,23 +46,6 @@ public class UniquePatientMobileNumberWarningTest {
     }
 
     @Test
-    public void findAllMobileNumbersWhichMatchTheGivenNumber() {
-        patient.setMobilePhoneNumber("2222222222");
-        List<Patient> patients = new ArrayList<>();
-        Clinic clinic = mock(Clinic.class);
-        patient.setClinic(clinic);
-        clinic.setName("clinic2");
-        duplicatePatient.setClinic(clinic);
-        patients.add(duplicatePatient);
-        patients.add(patient);
-        when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
-        when(patient.getClinic().getName()).thenReturn("clinic1");
-        List<String> duplicatePatientList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(),"patient");
-        assertNotNull(duplicatePatientList);
-        assertEquals(duplicatePatient.getPatientId(),duplicatePatientList.get(0));
-       }
-
-    @Test
     public void findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit() {
         patient.setMobilePhoneNumber("2222222222");
         List<Patient> patients = new ArrayList<>();
@@ -76,10 +59,35 @@ public class UniquePatientMobileNumberWarningTest {
         when(patient.getClinic().getName()).thenReturn("clinic1");
 
         List<String> duplicatePatientList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patient.getId(), patient.getClinic().getName(),"patient");
+        List<String> duplicatePatientClinicList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(),"Clinic");
         assertNotNull(duplicatePatientList);
+        assertNotNull(duplicatePatientClinicList);
         assertEquals(duplicatePatient.getPatientId(),duplicatePatientList.get(0));
+        assertEquals(duplicatePatient.getClinic().getName(),duplicatePatientClinicList.get(0));
+
     }
+
     @Test
+    public void findAllMobileNumbersWhichMatchTheGivenNumber() {
+        patient.setMobilePhoneNumber("2222222222");
+        List<Patient> patients = new ArrayList<>();
+        Clinic clinic = mock(Clinic.class);
+        patient.setClinic(clinic);
+        clinic.setName("clinic2");
+        duplicatePatient.setClinic(clinic);
+        patients.add(duplicatePatient);
+        patients.add(patient);
+        when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
+        when(patient.getClinic().getName()).thenReturn("clinic1");
+        List<String> duplicatePatientList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(),"patient");
+        List<String> duplicatePatientClinicList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(),"Clinic");
+        assertNotNull(duplicatePatientList);
+        assertNotNull(duplicatePatientClinicList);
+        assertEquals(duplicatePatient.getPatientId(),duplicatePatientList.get(0));
+        assertEquals(duplicatePatient.getClinic().getName(),duplicatePatientClinicList.get(0));
+       }
+
+       @Test
     public void findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisitNoDuplicateNumbers() {
         patient.setMobilePhoneNumber("2222222222");
         List<Patient> patients = new ArrayList<>();
@@ -89,8 +97,10 @@ public class UniquePatientMobileNumberWarningTest {
         patients.add(patient);
         when(allPatients.findAllByMobileNumber("2222222222")).thenReturn(patients);
         when(patient.getClinic().getName()).thenReturn("clinic1");
-        List<String> patientsList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patient.getId(), patient.getClinic().getName(),"Clinic");
+        List<String> patientsClinicList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patient.getId(), patient.getClinic().getName(),"Clinic");
+        List<String> patientsList = uniquePatientMobileNumberWarning.findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patient.getId(), patient.getClinic().getName(),"patient");
         assertNull(patientsList);
+        assertNull(patientsClinicList);
     }
     @Test
     public void findAllMobileNumbersWhichMatchTheGivenNumberUpdateFindsDuplicate() {

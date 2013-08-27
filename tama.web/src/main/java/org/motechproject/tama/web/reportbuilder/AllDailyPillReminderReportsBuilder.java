@@ -1,6 +1,5 @@
 package org.motechproject.tama.web.reportbuilder;
 
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.ss.usermodel.Cell;
@@ -31,7 +30,7 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
     private boolean shouldAddSummary = true;
 
     public AllDailyPillReminderReportsBuilder(List<DailyPillReminderSummary> objects, PatientReports patientReports, AllRegimens allRegimens, AllTreatmentAdvices allTreatmentAdvices,
-                                                                                              LocalDate startDate, LocalDate endDate, boolean shouldAddSummary) {
+                                              LocalDate startDate, LocalDate endDate, boolean shouldAddSummary) {
         super(objects);
         this.patientReports = patientReports;
         this.allRegimens = allRegimens;
@@ -59,7 +58,7 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
         columns.add(new ExcelColumn("ART Started On (dd-mm-yyyy)", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Current Regimen", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Start Date of Current Regimen", Cell.CELL_TYPE_STRING, 10000));
-        columns.add(new ExcelColumn("Medicine adherence report calls",Cell.CELL_TYPE_STRING, 10000));
+        columns.add(new ExcelColumn("Medicine adherence report calls", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Date of daily Adherence  (dd-mm-yyyy)", Cell.CELL_TYPE_STRING, 5000));
         columns.add(new ExcelColumn("Morning Pill Time hh:mm", Cell.CELL_TYPE_STRING, 10000));
         columns.add(new ExcelColumn("Morning Adherence", Cell.CELL_TYPE_STRING, 10000));
@@ -74,7 +73,6 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
         List<Object> row = new ArrayList<>();
         PatientReport patientReportSummary = getPatientReport(messageSummary);
         String artStartDate = patientReportSummary.getARTStartedOn() != null ? DateUtil.newDate(patientReportSummary.getARTStartedOn()).toString(TAMAConstants.DATE_FORMAT) : null;
-       //String currentRegimenStartDate = patientReportSummary.getCurrentRegimenStartDate() != null ? DateUtil.newDate(patientReportSummary.getCurrentRegimenStartDate()).toString("dd/MM/yyyy") : null;
         String currentRegimenStartDate = getRegimenStartDate(messageSummary.getTreatmentAdviceId());
         row.add(patientReportSummary.getPatientId());
         row.add(patientReportSummary.getClinicName());
@@ -98,33 +96,30 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
         return report;
     }
 
-    private String getRegimenName(String treatmentAdviceId)
-    {
+    private String getRegimenName(String treatmentAdviceId) {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices.get(treatmentAdviceId);
         return allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName();
     }
-    private String getRegimenStartDate(String treatmentAdviceId)
-    {
+
+    private String getRegimenStartDate(String treatmentAdviceId) {
         return DateUtil.newDate(allTreatmentAdvices.get(treatmentAdviceId).getStartDate()).toString("dd/MM/yyyy");
     }
 
     @Override
     protected void buildSummary(HSSFSheet worksheet) {
         List<HSSFCellStyle> cellStyles = buildCellStylesForSummary(worksheet);
-       buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("dd/MM/yyyy"));
+        buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("dd/MM/yyyy"));
 
         buildSummaryRow(worksheet, cellStyles, "Reports Start Date", startDate.toString("dd/MM/yyyy"));
         buildSummaryRow(worksheet, cellStyles, "Reports End Date", endDate.toString("dd/MM/yyyy"));
         buildSummaryRow(worksheet, cellStyles, "                ", " ");
         if (shouldAddSummary) {
-            List<String> patientDocumentIds =  patientReports.getPatientDocIds();
+            List<String> patientDocumentIds = patientReports.getPatientDocIds();
 
-            for(String patientDocumentId: patientDocumentIds )
-            {
+            for (String patientDocumentId : patientDocumentIds) {
 
                 PatientReport report = patientReports.getPatientReport(patientDocumentId);
-                if(report.getPatient().isOnDailyPillReminder())
-                {
+                if (report.getPatient().isOnDailyPillReminder()) {
                     buildSummaryRow(worksheet, cellStyles, "Patient Id", report.getPatientId());
                     buildSummaryRow(worksheet, cellStyles, "Clinic Name", report.getClinicName());
                     buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(report.getARTStartedOn()).toString(TAMAConstants.DATE_FORMAT));
@@ -132,21 +127,21 @@ public class AllDailyPillReminderReportsBuilder extends InMemoryReportBuilder<Da
                     buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
                     List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(report.getPatientDocId());
 
-                    for(TreatmentAdvice treatmentAdvice :treatmentAdvices)
-                    {
-                        if(treatmentAdvice.getEndDate()==null)
-                         buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName() + " " +CURRENT_REGIMEN,
-                                DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
+                    for (TreatmentAdvice treatmentAdvice : treatmentAdvices) {
+                        if (treatmentAdvice.getEndDate() == null)
+                            buildSummaryRow(worksheet, cellStyles, allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName() + " " + CURRENT_REGIMEN,
+                                    DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
                         else
-                         buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName(),
+                            buildSummaryRow(worksheet, cellStyles, allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName(),
                                     DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
 
                     }
                     buildSummaryRow(worksheet, cellStyles, "            ", "      ");
-                    worksheet.createRow(worksheet.getLastRowNum()+1);
-                    buildSummaryRow(worksheet, cellStyles, "             ", " ");
+                    worksheet.createRow(worksheet.getLastRowNum() + 1);
+                    buildSummaryRow(worksheet, cellStyles, "             ", "      ");
                 }
             }
         }
+
     }
 }
