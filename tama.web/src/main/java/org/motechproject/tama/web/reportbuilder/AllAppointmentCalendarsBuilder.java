@@ -107,6 +107,7 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
             buildSummaryRow(worksheet, cellStyles, "Patient Id", report.getPatientId());
             buildSummaryRow(worksheet, cellStyles, "Clinic Name", report.getClinicName());
             buildSummaryRow(worksheet, cellStyles, "ART Started On", DateUtil.newDate(report.getARTStartedOn()).toString(TAMAConstants.DATE_FORMAT));
+            buildSummaryRow(worksheet, cellStyles, " ", " ");
             buildSummaryRow(worksheet, cellStyles, "Regimen Change History", "  ");
             buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
             List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(report.getPatientDocId());

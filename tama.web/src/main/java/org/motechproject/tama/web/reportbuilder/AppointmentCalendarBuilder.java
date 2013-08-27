@@ -107,6 +107,7 @@ public class AppointmentCalendarBuilder extends InMemoryReportBuilder<ClinicVisi
         buildSummaryRow(worksheet, cellStyles, "Patient Id", patientReport.getPatientId());
         buildSummaryRow(worksheet, cellStyles, "Clinic Name", patientReport.getClinicName());
         buildSummaryRow(worksheet, cellStyles, "ART Started On", artStartDate);
+        buildSummaryRow(worksheet, cellStyles, "            ", "      ");
         buildSummaryRow(worksheet, cellStyles, "Current Regimen", patientReport.getCurrentRegimenName());
         buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
         List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(patientReport.getPatientDocId());
