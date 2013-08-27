@@ -33,11 +33,11 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
         super(clinicVisits);
     }
 
-    public AllAppointmentCalendarsBuilder(List<ClinicVisit> clinicVisits, PatientReports patientReports,AllTreatmentAdvices allTreatmentAdvices,AllRegimens allRegimens) {
+    public AllAppointmentCalendarsBuilder(List<ClinicVisit> clinicVisits, PatientReports patientReports, AllTreatmentAdvices allTreatmentAdvices, AllRegimens allRegimens) {
         super(clinicVisits);
         this.patientReports = patientReports;
-        this.allTreatmentAdvices=allTreatmentAdvices;
-        this.allRegimens=allRegimens;
+        this.allTreatmentAdvices = allTreatmentAdvices;
+        this.allRegimens = allRegimens;
     }
 
     @Override
@@ -69,23 +69,20 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
     protected List<Object> getRowData(Object object) {
         ClinicVisitUIModel clinicVisit = new ClinicVisitUIModel((ClinicVisit) object);
         List<Object> row = new ArrayList<>();
-        ClinicVisit visit =  (ClinicVisit) object;
+        ClinicVisit visit = (ClinicVisit) object;
         row.add(patientReports.getPatientReport(clinicVisit.getPatientDocId()).getPatientId());
         row.add(patientReports.getPatientReport(clinicVisit.getPatientDocId()).getClinicName());
         row.add(clinicVisit.getTitle());
         addARTStartDate(patientReports.getPatientReport(clinicVisit.getPatientDocId()), row);
-        if(visit.getTreatmentAdviceId()!=null)
-        {
+        if (visit.getTreatmentAdviceId() != null) {
             TreatmentAdvice treatmentAdvice = allTreatmentAdvices.get(visit.getTreatmentAdviceId());
             Regimen regimen = allRegimens.get(treatmentAdvice.getRegimenId());
             String currentRegimenStartDate = treatmentAdvice.getStartDate() != null ? DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT) : null;
             row.add(regimen.getDisplayName());
             row.add(currentRegimenStartDate);
-        }
-        else
-        {
-         row.add(patientReports.getPatientReport(clinicVisit.getPatientDocId()).getCurrentRegimenName());
-         addCurrentRegimenStartDate(patientReports.getPatientReport(clinicVisit.getPatientDocId()), row);
+        } else {
+            row.add(patientReports.getPatientReport(clinicVisit.getPatientDocId()).getCurrentRegimenName());
+            addCurrentRegimenStartDate(patientReports.getPatientReport(clinicVisit.getPatientDocId()), row);
         }
         addAppointmentDueDate(clinicVisit, row);
         addAdjustedDueDate(clinicVisit, row);
@@ -102,10 +99,9 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
         buildSummaryRow(worksheet, cellStyles, "Date", DateUtil.today().toString("dd/MM/yyyy"));
 
         buildSummaryRow(worksheet, cellStyles, " ", " ");
-        List<String> patientDocumentIds =  patientReports.getPatientDocIds();
+        List<String> patientDocumentIds = patientReports.getPatientDocIds();
 
-        for(String patientDocumentId: patientDocumentIds )
-        {
+        for (String patientDocumentId : patientDocumentIds) {
 
             PatientReport report = patientReports.getPatientReport(patientDocumentId);
             buildSummaryRow(worksheet, cellStyles, "Patient Id", report.getPatientId());
@@ -115,19 +111,18 @@ public class AllAppointmentCalendarsBuilder extends InMemoryReportBuilder<Clinic
             buildSummaryRow(worksheet, cellStyles, "Regimen Name ", " Start date ");
             List<TreatmentAdvice> treatmentAdvices = allTreatmentAdvices.find_by_patient_id(report.getPatientDocId());
             Collections.sort(treatmentAdvices);
-            for(TreatmentAdvice treatmentAdvice :treatmentAdvices)
-            {
-                if(treatmentAdvice.getEndDate()==null)
-                    buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName() + " " +CURRENT_REGIMEN,
+            for (TreatmentAdvice treatmentAdvice : treatmentAdvices) {
+                if (treatmentAdvice.getEndDate() == null)
+                    buildSummaryRow(worksheet, cellStyles, allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName() + " " + CURRENT_REGIMEN,
                             DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
                 else
-                    buildSummaryRow(worksheet, cellStyles,  allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName(),
+                    buildSummaryRow(worksheet, cellStyles, allRegimens.get(treatmentAdvice.getRegimenId()).getDisplayName(),
                             DateUtil.newDate(treatmentAdvice.getStartDate()).toString(TAMAConstants.DATE_FORMAT));
 
             }
             buildSummaryRow(worksheet, cellStyles, "            ", "      ");
-            worksheet.createRow(worksheet.getLastRowNum()+1);
-            buildSummaryRow(worksheet, cellStyles, "             ", " ");
+            worksheet.createRow(worksheet.getLastRowNum() + 1);
+            buildSummaryRow(worksheet, cellStyles, "             ", "     ");
 
         }
     }

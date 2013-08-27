@@ -2,6 +2,7 @@ package org.motechproject.tama.web;
 
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,6 +16,9 @@ import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.service.ClinicService;
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
+import org.motechproject.tama.patient.domain.PatientAlerts;
+import org.motechproject.tama.patient.domain.PatientReports;
+import org.motechproject.tama.patient.reporting.PatientAlertsReport;
 import org.motechproject.tama.patient.repository.AllTreatmentAdvices;
 import org.motechproject.tama.patient.service.PatientAlertsReportService;
 import org.motechproject.tama.refdata.repository.AllRegimens;
@@ -57,7 +61,7 @@ public class AnalysisDataControllerTest {
     private CallLogExcelReportService callLogExcelReportService;
 
     private AnalysisDataController analysisDataController;
-
+     @Mock
     private PatientAlertsReportService patientAlertsReportService;
 
     @Mock
@@ -202,6 +206,13 @@ public class AnalysisDataControllerTest {
     }
 
     @Test
+    public void shouldRedirectToDownloadOfWeeklyAdherenceReport() {
+        LocalDate today = DateUtil.today();
+        String view = analysisDataController.downloadWeeklyPillReminderReport("clinic", "patientId", today, today,model);
+        assertTrue(view.contains("redirect:/tama-reports/weekly/report"));
+    }
+
+    @Test
     public void shouldRedirectToDownloadOfMessagesReport() {
         LocalDate today = DateUtil.today();
         String view = analysisDataController.downloadMessagesReport("clinic", "patientId", today, today, model);
@@ -260,9 +271,67 @@ public class AnalysisDataControllerTest {
         filter.setEndDate(endDate);
 
         HttpServletResponse response = mock(HttpServletResponse.class);
-        when(dailyPillReminderReportService.reports(patientId, startDate, endDate)).thenReturn(new DailyPillReminderReport(null, null));
+        when(dailyPillReminderReportService.reports(patientId,"clinic", startDate, endDate)).thenReturn(new DailyPillReminderReport(null, null));
 
         analysisDataController.downloadDailyPillReminderReport(filter, "clinic", model, response);
+        verify(response).setContentType("application/vnd.ms-excel");
+        verify(response).setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
+    }
+
+    @Test
+    public void shouldDownloadDailyPillReminderReportGivenOnlyClinicID() throws IOException {
+        LocalDate startDate = DateUtil.today().minusDays(3);
+        LocalDate endDate = DateUtil.today();
+        String patientId = "";
+
+        FilterWithPatientIDAndDateRange filter = new FilterWithPatientIDAndDateRange();
+        filter.setPatientId(patientId);
+        filter.setStartDate(startDate);
+        filter.setEndDate(endDate);
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        when(dailyPillReminderReportService.reports(null,"clinic", startDate, endDate)).thenReturn(new DailyPillReminderReport(null, null));
+
+        analysisDataController.downloadDailyPillReminderReport(filter, "clinic", model, response);
+        verify(response).setContentType("application/vnd.ms-excel");
+        verify(response).setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
+    }
+
+
+    @Test
+    public void shouldDownloadDailyPillReminderReportGivenOnlyPatientId() throws IOException {
+        LocalDate startDate = DateUtil.today().minusDays(3);
+        LocalDate endDate = DateUtil.today();
+        String patientId = "patientId";
+
+        FilterWithPatientIDAndDateRange filter = new FilterWithPatientIDAndDateRange();
+        filter.setPatientId(patientId);
+        filter.setStartDate(startDate);
+        filter.setEndDate(endDate);
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        when(dailyPillReminderReportService.reports(patientId,null, startDate, endDate)).thenReturn(new DailyPillReminderReport(null, null));
+
+        analysisDataController.downloadDailyPillReminderReport(filter, null, model, response);
+        verify(response).setContentType("application/vnd.ms-excel");
+        verify(response).setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
+    }
+
+    @Test
+    public void shouldDownloadDailyPillReminderReportGivenEmptyPatientIdClinicId() throws IOException {
+        LocalDate startDate = DateUtil.today().minusDays(3);
+        LocalDate endDate = DateUtil.today();
+        String patientId = "";
+
+        FilterWithPatientIDAndDateRange filter = new FilterWithPatientIDAndDateRange();
+        filter.setPatientId(patientId);
+        filter.setStartDate(startDate);
+        filter.setEndDate(endDate);
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        when(dailyPillReminderReportService.reports(null,null,startDate, endDate)).thenReturn(new DailyPillReminderReport(null, null));
+
+        analysisDataController.downloadDailyPillReminderReport(filter, null, model, response);
         verify(response).setContentType("application/vnd.ms-excel");
         verify(response).setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
     }
@@ -285,4 +354,71 @@ public class AnalysisDataControllerTest {
         filter.setDates(startDate, endDate);
         return filter;
     }
+
+
+    @Test
+    public void shouldDownloadPatientAlertReportGivenPatientId() throws IOException {
+        LocalDate startDate = DateUtil.today().minusDays(3);
+        LocalDate endDate = DateUtil.today();
+        String patientId = "patientDocId";
+        String clinicId = "ClinicId";
+        String patientAlertType = "Any";
+        String patientAlertStatus = "Any";
+
+        DateFilter dateFilter = new DateFilter().setDates(startDate, endDate);
+        DateTime alertStartDate = DateTime.parse(dateFilter.getStartDate().toString());
+        DateTime alertEndDate = DateTime.parse(dateFilter.getEndDate().toString());
+        alertEndDate = alertEndDate.plusHours(23);
+        alertEndDate = alertEndDate.plusMinutes(59);
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        when(patientAlertsReportService.report(patientId, alertStartDate, alertEndDate, patientAlertType, clinicId, patientAlertStatus)).thenReturn(new PatientAlertsReport(new PatientAlerts(), new PatientReports()));
+        analysisDataController.downloadPatientAlertsReport(patientId, clinicId, startDate, endDate, patientAlertType, patientAlertStatus, model, response);
+        verify(response).setContentType("application/vnd.ms-excel");
+        verify(response).setHeader("Content-Disposition", "inline; filename=PatientAlertsReport.xls");
+    }
+
+    @Test
+    public void shouldDownloadPatientAlertReportGivenClinicId() throws IOException {
+        LocalDate startDate = DateUtil.today().minusDays(3);
+        LocalDate endDate = DateUtil.today();
+        String patientId = "";
+        String clinicId = "ClinicId";
+        String patientAlertType = "Any";
+        String patientAlertStatus = "Any";
+
+        DateFilter dateFilter = new DateFilter().setDates(startDate, endDate);
+        DateTime alertStartDate = DateTime.parse(dateFilter.getStartDate().toString());
+        DateTime alertEndDate = DateTime.parse(dateFilter.getEndDate().toString());
+        alertEndDate = alertEndDate.plusHours(23);
+        alertEndDate = alertEndDate.plusMinutes(59);
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        when(patientAlertsReportService.report(patientId, alertStartDate, alertEndDate, patientAlertType, clinicId, patientAlertStatus)).thenReturn(new PatientAlertsReport(new PatientAlerts(), new PatientReports()));
+        analysisDataController.downloadPatientAlertsReport(patientId, clinicId, startDate, endDate, patientAlertType, patientAlertStatus, model, response);
+        verify(response).setContentType("application/vnd.ms-excel");
+        verify(response).setHeader("Content-Disposition", "inline; filename=PatientAlertsReport.xls");
+    }
+     @Test
+    public void shouldDownloadPatientAlertReportGivenDateRangeOnly() throws IOException {
+        LocalDate startDate = DateUtil.today().minusDays(3);
+        LocalDate endDate = DateUtil.today();
+        String patientId = "";
+        String clinicId = "";
+        String patientAlertType = "Any";
+        String patientAlertStatus = "Any";
+
+        DateFilter dateFilter = new DateFilter().setDates(startDate, endDate);
+        DateTime alertStartDate = DateTime.parse(dateFilter.getStartDate().toString());
+        DateTime alertEndDate = DateTime.parse(dateFilter.getEndDate().toString());
+        alertEndDate = alertEndDate.plusHours(23);
+        alertEndDate = alertEndDate.plusMinutes(59);
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        when(patientAlertsReportService.report(patientId, alertStartDate, alertEndDate, patientAlertType, clinicId, patientAlertStatus)).thenReturn(new PatientAlertsReport(new PatientAlerts(), new PatientReports()));
+        analysisDataController.downloadPatientAlertsReport(patientId, clinicId, startDate, endDate, patientAlertType, patientAlertStatus, model, response);
+        verify(response).setContentType("application/vnd.ms-excel");
+        verify(response).setHeader("Content-Disposition", "inline; filename=PatientAlertsReport.xls");
+    }
+
 }
