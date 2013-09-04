@@ -10,6 +10,7 @@ import org.junit.runners.Suite;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.motechproject.appointments.api.service.contract.VisitResponse;
 import org.motechproject.tama.clinicvisits.builder.ClinicVisitBuilder;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.domain.ClinicVisits;
@@ -113,7 +114,7 @@ public class ClinicVisitsControllerTest {
             initMocks(this);
             now = DateUtil.now();
             mockCurrentDate(now);
-            clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, allVitalStatistics, allLabResults, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits, patientService, patientDetailsService,allPatients,allRegimens);
+            clinicVisitsController = new ClinicVisitsController(treatmentAdviceController, allTreatmentAdvices, allVitalStatistics, allLabResults, labResultsController, vitalStatisticsController, opportunisticInfectionsController, allClinicVisits, patientService, patientDetailsService, allPatients, allRegimens);
             when(allVitalStatistics.findLatestVitalStatisticByPatientId(PATIENT_ID)).thenReturn(null);
             when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
             when(allLabResults.allLabResults(PATIENT_ID)).thenReturn(new LabResults());
@@ -131,11 +132,14 @@ public class ClinicVisitsControllerTest {
                 TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").build();
                 String clinicVisitId = "clinicVisitId";
 
-                ClinicVisit clinicVisit = mock(ClinicVisit.class);
-                when(clinicVisit.getTreatmentAdviceId()).thenReturn(treatmentAdvice.getId());
-                when(clinicVisit.getVisitDate()).thenReturn(DateUtil.now());
+                ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording("Unscheduled").withDefaults().withVisitDate(DateTime.now()).build();
 
-                when(allClinicVisits.get(PATIENT_ID, clinicVisitId)).thenReturn(clinicVisit);
+                ClinicVisits clinicVisits = new ClinicVisits();
+                clinicVisits.add(clinicVisit);
+
+                when(allClinicVisits.get(anyString(), anyString())).thenReturn(clinicVisit);
+                when(allClinicVisits.clinicVisits("patientId")).thenReturn(clinicVisits);
+
                 when(allTreatmentAdvices.get(treatmentAdvice.getId())).thenReturn(treatmentAdvice);
 
                 String redirectURL = clinicVisitsController.createForm(PATIENT_ID, clinicVisitId, uiModel, request);
@@ -148,16 +152,14 @@ public class ClinicVisitsControllerTest {
             public void shouldRedirectToCreateClinicVisits_WhenVisitDetailsWasNotEdited() {
                 TreatmentAdvice treatmentAdvice = TreatmentAdviceBuilder.startRecording().withId("treatmentAdviceId").build();
                 String clinicVisitId = "clinicVisitId";
+                ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording("Baseline").withDefaults().withVisitDate(null).build();
+                ClinicVisits clinicVisits = new ClinicVisits();
+                clinicVisits.add(clinicVisit);
 
-                ClinicVisit clinicVisit = mock(ClinicVisit.class);
-                Patient patient = PatientBuilder.startRecording().withDefaults().withId(PATIENT_ID).withStatus(Status.Active).build();
-                when(clinicVisit.getTreatmentAdviceId()).thenReturn(null);
-                when(clinicVisit.getVisitDate()).thenReturn(null);
-                when(clinicVisit.getPatient()).thenReturn(patient);
-
-
-                when(allClinicVisits.get(PATIENT_ID, clinicVisitId)).thenReturn(clinicVisit);
-                when(allTreatmentAdvices.get(treatmentAdvice.getId())).thenReturn(null);
+                when(allClinicVisits.get(anyString(), anyString())).thenReturn(clinicVisit);
+                when(allClinicVisits.clinicVisits("patientId")).thenReturn(clinicVisits);
+                when(allTreatmentAdvices.get("treatmentAdviceId")).thenReturn(null);
+                when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
                 when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(treatmentAdvice);
 
                 String redirectURL = clinicVisitsController.createForm(PATIENT_ID, clinicVisitId, uiModel, request);
@@ -174,13 +176,20 @@ public class ClinicVisitsControllerTest {
         public static class WhenPatientDoesNotHaveTreatmentAdvice extends CreateForm {
             @Test
             public void shouldRedirectToCreateClinicVisits() {
-                ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording().withTreatmentAdviceId("treatmentAdviceId").build();
+                ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording("Baseline").withDefaults().build();
+                ClinicVisit clinicVisit8 = ClinicVisitBuilder.startRecording("Scheduled").withDefaults().build();
+                ClinicVisit clinicVisit24 = ClinicVisitBuilder.startRecording("Scheduled").withDefaults().build();
+                ClinicVisits clinicVisits = new ClinicVisits();
+                clinicVisits.add(clinicVisit);
+                clinicVisits.add(clinicVisit8);
+                clinicVisits.add(clinicVisit24);
+                clinicVisits.add(clinicVisit);
                 when(allClinicVisits.get(anyString(), anyString())).thenReturn(clinicVisit);
+                when(allClinicVisits.clinicVisits("patientId")).thenReturn(clinicVisits);
                 when(allTreatmentAdvices.get("treatmentAdviceId")).thenReturn(null);
                 when(allTreatmentAdvices.currentTreatmentAdvice(PATIENT_ID)).thenReturn(null);
 
                 String redirectURL = clinicVisitsController.createForm(PATIENT_ID, "clinicVisitId", uiModel, request);
-
                 assertEquals("clinicvisits/create", redirectURL);
                 verify(treatmentAdviceController).createForm(PATIENT_ID, uiModel);
                 verify(labResultsController).createForm(PATIENT_ID, uiModel);
@@ -274,8 +283,8 @@ public class ClinicVisitsControllerTest {
             Model uiModel = mock(Model.class);
             DateTime visit1Date = DateUtil.now().plusDays(1);
             DateTime visit2Date = DateUtil.now().plusDays(2);
-            final ClinicVisit visit1 = ClinicVisitBuilder.startRecording().withDefaults().withId("visit1").withAppointmentDueDate(visit1Date).withAppointmentAdjustedDate(visit1Date).build();
-            final ClinicVisit visit2 = ClinicVisitBuilder.startRecording().withDefaults().withId("visit2").withAppointmentDueDate(visit2Date).withAppointmentAdjustedDate(visit2Date).build();
+            final ClinicVisit visit1 = ClinicVisitBuilder.startRecording("Unscheduled").withDefaults().withId("visit1").withAppointmentDueDate(visit1Date).withAppointmentAdjustedDate(visit1Date).build();
+            final ClinicVisit visit2 = ClinicVisitBuilder.startRecording("Unscheduled").withDefaults().withId("visit2").withAppointmentDueDate(visit2Date).withAppointmentAdjustedDate(visit2Date).build();
 
             visit1.getPatient().setStatus(Status.Active);
 
@@ -301,9 +310,9 @@ public class ClinicVisitsControllerTest {
                     .withStatus(Status.Inactive)
                     .withId(PATIENT_ID)
                     .build();
-
+            ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording("Unscheduled").withDefaults().withId("visit1").withVisitDate(null).build();
             ClinicVisits clinicVisits = new ClinicVisits();
-            clinicVisits.add(new ClinicVisit(inactivePatient, null));
+            clinicVisits.add(clinicVisit);
 
             when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(clinicVisits);
             assertEquals("clinicvisits/view_list", clinicVisitsController.list(PATIENT_ID, uiModel));
@@ -370,12 +379,28 @@ public class ClinicVisitsControllerTest {
 
         @Test
         public void shouldCreateVisit() {
+            ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording("Baseline").withDefaults().withTreatmentAdviceId("tId").build();
+            ClinicVisit clinicVisit1 = ClinicVisitBuilder.startRecording("Scheduled").withDefaults().build();
+            ClinicVisit clinicVisit2 = ClinicVisitBuilder.startRecording("Unscheduled").withDefaults().build();
+            ClinicVisits clinicVisits = new ClinicVisits();
+            clinicVisits.add(clinicVisit);
+            clinicVisits.add(clinicVisit1);
+            when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(clinicVisits);
+            when(allClinicVisits.get(anyString(), anyString())).thenReturn(clinicVisit2);
             clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
             verify(allClinicVisits).createUnscheduledVisit(PATIENT_ID, now, TypeOfVisit.Unscheduled, USER_NAME);
         }
 
         @Test
         public void shouldRedirectToCreate() {
+            ClinicVisit clinicVisit = ClinicVisitBuilder.startRecording("Baseline").withDefaults().withTreatmentAdviceId("tId").build();
+            ClinicVisit clinicVisit1 = ClinicVisitBuilder.startRecording("Scheduled").withDefaults().build();
+            ClinicVisit clinicVisit2 = ClinicVisitBuilder.startRecording("Unscheduled").withDefaults().build();
+            ClinicVisits clinicVisits = new ClinicVisits();
+            clinicVisits.add(clinicVisit);
+            clinicVisits.add(clinicVisit1);
+            when(allClinicVisits.clinicVisits(PATIENT_ID)).thenReturn(clinicVisits);
+            when(allClinicVisits.get(anyString(), anyString())).thenReturn(clinicVisit2);
             String responseURL = clinicVisitsController.newVisit(PATIENT_ID, uiModel, request);
             assertEquals("clinicvisits/create", responseURL);
         }

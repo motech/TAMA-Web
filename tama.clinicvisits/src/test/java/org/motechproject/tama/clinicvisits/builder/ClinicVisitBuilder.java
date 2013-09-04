@@ -19,6 +19,11 @@ public class ClinicVisitBuilder {
         clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().withId("patientId").build(), visitResponse);
     }
 
+    public ClinicVisitBuilder(String typeOfVisit) {
+        visitResponse = new VisitResponse().setTypeOfVisit(typeOfVisit);
+        clinicVisit = new ClinicVisit(PatientBuilder.startRecording().withDefaults().withId("patientId").build(), visitResponse);
+    }
+
     public ClinicVisit build() {
         return this.clinicVisit;
     }
@@ -27,9 +32,15 @@ public class ClinicVisitBuilder {
         return new ClinicVisitBuilder();
     }
 
+    public static ClinicVisitBuilder startRecording(String typeOfVisit) {
+        return new ClinicVisitBuilder(typeOfVisit);
+    }
+
     public ClinicVisitBuilder withDefaults() {
         return this.withId("baseline").withVisitDate(DateUtil.now()).withTreatmentAdviceId("treatmentAdviceId").
-                withLabResultIds(new ArrayList<String>() {{ add("labResultId"); }}).withVitalStatisticsId("vitalStatisticsId");
+                withLabResultIds(new ArrayList<String>() {{
+                    add("labResultId");
+                }}).withVitalStatisticsId("vitalStatisticsId");
     }
 
     public ClinicVisitBuilder withVisitDate(DateTime visitDate) {
