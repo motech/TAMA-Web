@@ -232,7 +232,7 @@ public class ClinicVisitsController extends BaseController {
                 findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patientDocId, patient.getClinic().getName(), PatientController.PATIENT);
         List<String> patientsClinicWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).
                 findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patientDocId, patient.getClinic().getName(), PatientController.CLINIC);
-        if (!CollectionUtils.isNotEmpty(patientsWithSameMobileNumber)) {
+        if (CollectionUtils.isNotEmpty(patientsWithSameMobileNumber)) {
             warningMessage = new ArrayList<>();
             warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
             adviceMessage = new ArrayList<>();

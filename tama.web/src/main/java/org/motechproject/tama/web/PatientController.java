@@ -242,7 +242,7 @@ public class PatientController extends BaseController {
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
         List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(), PATIENT);
         List<String> patientsClinicWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(patient.getMobilePhoneNumber(), patient.getPatientId(), patient.getClinic().getName(), CLINIC);
-        if (!CollectionUtils.isNotEmpty(patientsWithSameMobileNumber)) {
+        if (CollectionUtils.isNotEmpty(patientsWithSameMobileNumber)) {
             warningMessage = new ArrayList<>();
             warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
             adviceMessage = new ArrayList<>();
