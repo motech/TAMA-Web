@@ -18,7 +18,7 @@ public class PatientViewModelTest {
     Patient patient;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         patient = mock(Patient.class);
         Clinic clinic = mock(Clinic.class);
 
@@ -35,7 +35,7 @@ public class PatientViewModelTest {
     }
 
     @Test
-    public void shouldReturnCompletionImageUrlForActivePatientWithIncompleteData(){
+    public void shouldReturnCompletionImageUrlForActivePatientWithIncompleteData() {
         when(patient.getStatus()).thenReturn(Status.Active);
         when(patient.isComplete()).thenReturn(false);
 
@@ -48,14 +48,14 @@ public class PatientViewModelTest {
     }
 
     @Test
-    public void shouldNotReturnCompletionImageUrlForNonActivePatient(){
+    public void shouldReturnCompletionImageUrlForNonActivePatient() {
         when(patient.getStatus()).thenReturn(Status.Inactive);
 
         PatientViewModel listPatientViewModel = new PatientViewModel(patient);
         listPatientViewModel.setIncompleteImageUrl("imageUrl");
 
         String imageUrl = listPatientViewModel.getCompletionStatusImageUrl();
-        assertNull(imageUrl);
+        assertEquals("imageUrl", imageUrl);
 
     }
 }

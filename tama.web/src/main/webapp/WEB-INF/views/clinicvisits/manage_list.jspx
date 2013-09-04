@@ -296,6 +296,9 @@
     </div>
 
     <script>
+        if(${baseLineVisitTreatmentAdviceExists}==false){
+        alert("ALERT !   You are trying to enter Treatment Advice Details in a visit other than Baseline Visit or are trying to Create Visit before entering Baseline Details. Please use Activated in TAMA link to enter Baseline details first.");
+        }
         document.getElementById('menu').appendChild(
         document.getElementById('blank')
         );
