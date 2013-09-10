@@ -305,7 +305,7 @@
     </script>
 
     <script> if(${baseLineVisitTreatmentAdviceExists}==false){
-        alert("ALERT !   You have not entered Treatment Advice for Baseline visit yet. Please use "Activated in TAMA" link to enter baseline Treatment Advice. You will not be allowed to enter details in any other visit or Create Visit till then");
+        alert("ALERT !   You have not entered Treatment Advice for Baseline visit yet. Please use 'Activated in TAMA' link to enter baseline Treatment Advice. You will not be allowed to enter details in any other visit or Create Visit till then");
         }
     </script>
 
