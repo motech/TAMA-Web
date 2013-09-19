@@ -20,6 +20,7 @@ import org.motechproject.tama.web.model.*;
 import org.motechproject.tama.web.reportbuilder.AppointmentCalendarBuilder;
 import org.motechproject.tama.web.reportbuilder.abstractbuilder.InMemoryReportBuilder;
 import org.motechproject.tama.web.service.PatientDetailsService;
+import org.motechproject.tama.web.service.UniqueMobileNumberWarningService;
 import org.motechproject.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,9 +105,6 @@ public class ClinicVisitsController extends BaseController {
     public String createForm(@RequestParam(value = "patientId", required = true) String patientDocId, @RequestParam(value = "clinicVisitId", required = true) String clinicVisitId, Model uiModel, HttpServletRequest httpServletRequest) {
         ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
         final String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
-        List<String> warningMessage = null;
-        List<String> adviceMessage = null;
-
         if (canAllowUpdateOfClinicVisits(clinicVisit, patientDocId)) {
 
             TreatmentAdvice adviceForPatient = null;
@@ -122,19 +120,8 @@ public class ClinicVisitsController extends BaseController {
             } else {
                 treatmentAdviceController.createForm(patientDocId, uiModel);
             }
-            List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(clinicVisit.getPatient().getMobilePhoneNumber(), clinicVisit.getPatient().getPatientId(), clinicVisit.getPatient().getClinic().getName(), PatientController.PATIENT);
-            List<String> patientsClinicWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(clinicVisit.getPatient().getMobilePhoneNumber(), clinicVisit.getPatient().getPatientId(), clinicVisit.getPatient().getClinic().getName(), PatientController.CLINIC);
-            if (CollectionUtils.isNotEmpty(patientsWithSameMobileNumber)) {
-                warningMessage = new ArrayList<>();
-                warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
-                adviceMessage = new ArrayList<>();
-                adviceMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION);
-            }
-            uiModel.addAttribute("patientsClinicWithSameMobileNumber", patientsClinicWithSameMobileNumber);
-            uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
-            uiModel.addAttribute("warningMessage", warningMessage);
-            uiModel.addAttribute("adviceMessage", adviceMessage);
-
+            UniqueMobileNumberWarningService uniqueMobileNumberWarningService = new UniqueMobileNumberWarningService(allPatients);
+            uiModel = uniqueMobileNumberWarningService.checkUniquenessOfPatientMobileNumberAndRenderWarning(uiModel, clinicVisit.getPatient());
             List<String> warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
             uiModel.addAttribute("patientId", patientDocId);
             uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
@@ -192,8 +179,6 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(value = "/{clinicVisitId}", method = RequestMethod.GET)
     public String show(@PathVariable("clinicVisitId") String clinicVisitId, @RequestParam(value = "patientId", required = true) String patientDocId, Model uiModel) {
-        List<String> warningMessage = null;
-        List<String> adviceMessage = null;
         ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
         String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
         if (treatmentAdviceId == null)
@@ -203,18 +188,10 @@ public class ClinicVisitsController extends BaseController {
         vitalStatisticsController.show(clinicVisit.getVitalStatisticsId(), uiModel);
         opportunisticInfectionsController.show(clinicVisit, uiModel);
         List<String> warning = new IncompletePatientDataWarning(clinicVisit.getPatient(), allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
-        List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(clinicVisit.getPatient().getMobilePhoneNumber(), clinicVisit.getPatient().getPatientId(), clinicVisit.getPatient().getClinic().getName(), PatientController.PATIENT);
-        List<String> patientsClinicWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).findAllMobileNumbersWhichMatchTheGivenNumber(clinicVisit.getPatient().getMobilePhoneNumber(), clinicVisit.getPatient().getPatientId(), clinicVisit.getPatient().getClinic().getName(), PatientController.CLINIC);
-        if (CollectionUtils.isNotEmpty(patientsWithSameMobileNumber)) {
-            warningMessage = new ArrayList<>();
-            warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
-            adviceMessage = new ArrayList<>();
-            adviceMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION);
-        }
-        uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
-        uiModel.addAttribute("patientsClinicWithSameMobileNumber", patientsClinicWithSameMobileNumber);
-        uiModel.addAttribute("warningMessage", warningMessage);
-        uiModel.addAttribute("adviceMessage", adviceMessage);
+        UniqueMobileNumberWarningService uniqueMobileNumberWarningService = new UniqueMobileNumberWarningService(allPatients);
+
+        uiModel = uniqueMobileNumberWarningService.checkUniquenessOfPatientMobileNumberAndRenderWarning(uiModel, clinicVisit.getPatient());
+
         uiModel.addAttribute("clinicVisit", new ClinicVisitUIModel(clinicVisit));
         uiModel.addAttribute("patient", clinicVisit.getPatient());
         uiModel.addAttribute(PatientController.WARNING, warning);
@@ -223,26 +200,14 @@ public class ClinicVisitsController extends BaseController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(@RequestParam(value = "patientId", required = true) String patientDocId, Model uiModel) {
-        List<String> warningMessage = null;
-        List<String> adviceMessage = null;
+
         List<ClinicVisitUIModel> clinicVisitUIModels = allClinicVisits(patientDocId);
         Patient patient = clinicVisitUIModels.get(0).getPatient();
         List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
-        List<String> patientsWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).
-                findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patientDocId, patient.getClinic().getName(), PatientController.PATIENT);
-        List<String> patientsClinicWithSameMobileNumber = new UniquePatientMobileNumberWarning(allPatients).
-                findAllMobileNumbersWhichMatchTheGivenNumberCreateClinicVisit(patient.getMobilePhoneNumber(), patientDocId, patient.getClinic().getName(), PatientController.CLINIC);
-        if (CollectionUtils.isNotEmpty(patientsWithSameMobileNumber)) {
-            warningMessage = new ArrayList<>();
-            warningMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS);
-            adviceMessage = new ArrayList<>();
-            adviceMessage.add(PatientController.WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION);
-        }
+        UniqueMobileNumberWarningService uniqueMobileNumberWarningService = new UniqueMobileNumberWarningService(allPatients);
+        uiModel = uniqueMobileNumberWarningService.checkUniquenessOfPatientMobileNumberAndRenderWarning(uiModel, patient);
         boolean checkIfBaseLineVisitHasTreatmentAdviceId = checkIfBaseLineVisitHasTreatmentAdviceId(allClinicVisits.clinicVisits(patientDocId));
-        uiModel.addAttribute("patientsWithSameMobileNumber", patientsWithSameMobileNumber);
-        uiModel.addAttribute("patientsClinicWithSameMobileNumber", patientsClinicWithSameMobileNumber);
-        uiModel.addAttribute("warningMessage", warningMessage);
-        uiModel.addAttribute("adviceMessage", adviceMessage);
+
         uiModel.addAttribute("clinicVisits", clinicVisitUIModels);
         uiModel.addAttribute("patient", new PatientViewModel(patient));
         uiModel.addAttribute(PatientController.WARNING, warning);
@@ -352,4 +317,5 @@ public class ClinicVisitsController extends BaseController {
         }
         return allowUpdate;
     }
+
 }
