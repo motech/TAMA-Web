@@ -151,7 +151,8 @@ public class AllPatients extends AuditableCouchRepository<Patient> {
 
     @Override
     public void update(Patient entity, String userName) {
-        allUniquePatientFields.update(entity);
+        Patient dbPatient = get(entity.getId());
+        allUniquePatientFields.update(entity,dbPatient);
         super.update(entity, userName);
     }
 

@@ -73,8 +73,6 @@ public class ClinicController extends BaseController {
             uiModel.addAttribute("mode", "update");
             return "clinics/clinicForm";
         }
-        ClinicService clinicService = new ClinicService(allClinics);
-        clinicService.findIfClinicContactsExistsAndUpdate(clinic);
         uiModel.asMap().clear();
         clinic.setRevision(allClinics.get(clinic.getId()).getRevision());
         allClinics.update(clinic, loggedInUserId(httpServletRequest));

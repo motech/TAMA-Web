@@ -668,6 +668,8 @@ fieldset th {
 
 .bold{ font-weight: bold; }
 
+.italicized{ font-style:italic ; }
+
 .pageNavigation {
     margin: 5px 0px 10px 0px;
     text-align: right;

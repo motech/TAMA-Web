@@ -62,6 +62,7 @@
             if(dojo.byId('dailyReminderCall').checked == true)
                 return "dailyReminderCall";
             else
+                dojo.byId('dailyReminderCall').disabled = true;
                 return "weeklyReminderCall";
         }
 
