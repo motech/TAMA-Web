@@ -77,8 +77,6 @@ public class PatientController extends BaseController {
     public static final String WARNING_DUPLICATE_PHONE_NUMBERS = "The patients below are also registered with the same mobile number in TAMA";
     public static final String WARNING_DUPLICATE_PHONE_NUMBERS_SUGGESTION = "  Every patient should have unique mobile number to avoid confusion to all.";
 
-    public static final String CLINIC = "Clinic";
-
     private AllPatients allPatients;
     private AllGendersCache allGenders;
     private AllIVRLanguagesCache allIVRLanguages;
@@ -335,8 +333,6 @@ public class PatientController extends BaseController {
             return UPDATE_VIEW;
         }
         try {
-            List<String> warningMessage = null;
-            List<String> adviceMessage = null;
             List<String> warning = new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).value();
             patient.setComplete(CollectionUtils.isEmpty(warning));
             uiModel = checkForUniquenessOfMobileNumberClinicId(uiModel,patient,loggedInClinic(request));
