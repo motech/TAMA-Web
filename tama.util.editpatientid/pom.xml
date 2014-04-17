@@ -23,6 +23,7 @@
         <tama.reporting.version>1.0-SNAPSHOT</tama.reporting.version>
         <motech.contrib.version>0.10-SNAPSHOT</motech.contrib.version>
         <powermock.version>1.4.9</powermock.version>
+        <tama.version>0.7-SNAPSHOT</tama.version>
     </properties>
    <repositories>
         <repository>
@@ -433,32 +434,32 @@
              <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.common</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>${tama.version}</version>
             </dependency>
              <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.facility</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>${tama.version}</version>
             </dependency>
              <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.refdata</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>${tama.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.reporting</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>${tama.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.patient</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>${tama.version}</version>
             </dependency>
              <dependency>
                 <groupId>org.motechproject.tama</groupId>
                 <artifactId>tama.ivr</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>${tama.version}</version>
             </dependency> 
     </dependencies>
     
