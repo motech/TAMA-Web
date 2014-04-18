@@ -8,20 +8,19 @@ import org.springframework.stereotype.Component;
 import org.motechproject.tama.patient.domain.Patient;
 
 @Component
-public class EditPatientIdInUniquePatientFieldDoc extends AllUniquePatientFields{
-	
-	
+public class EditPatientIdInUniquePatientFieldDoc extends
+		AllUniquePatientFields {
+
 	@Autowired
-	public EditPatientIdInUniquePatientFieldDoc(@Qualifier("tamaDbConnector") CouchDbConnector db) {
+	public EditPatientIdInUniquePatientFieldDoc(
+			@Qualifier("tamaDbConnector") CouchDbConnector db) {
 		super(db);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
-	public void updatingNewPatientIds(Patient patient)
-	{
+
+	public void updatingNewPatientIds(Patient patient) {
 		remove(patient);
 		add(patient);
-    }
+	}
 
 }

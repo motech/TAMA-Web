@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.ektorp.CouchDbConnector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,9 @@ import org.motechproject.tama.patient.repository.AllUniquePatientFields;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring/applicationContext.xml" })
 public class UpdateConstraintsInUniquePatientFieldDoc {
+
+	private static final Logger LOGGER = Logger
+			.getLogger(UpdateConstraintsInUniquePatientFieldDoc.class);
 
 	@Autowired
 	protected CouchDbConnector tamaDbConnector;
@@ -46,24 +50,26 @@ public class UpdateConstraintsInUniquePatientFieldDoc {
 		StringBuilder csvdata = new StringBuilder();
 
 		for (Patient patient : patients) {
-			System.out.printf("For Patient::::%s",patient.getPatientId());
+			LOGGER.debug("For Patient::::" + patient.getPatientId() + "::");
 			List<UniquePatientField> uniqueFields = allUniquePatientFields
 					.get(patient);
 
-			if (uniqueFields.size() == 2) { System.out.println("Size is 2");
+			if (uniqueFields.size() == 2) {
+				LOGGER.debug("Size is 2");
 			}
 
-			else if (uniqueFields.isEmpty()) { System.out.println("Size is 0");
+			else if (uniqueFields.isEmpty()) {
+				LOGGER.debug("Size is 0");
 				if (!checkDummyPatientId(patient)) {
-					allUniquePatientFields.add(new UniquePatientField(
-							patient.clinicAndPatientId(), patient.getId()));
+					allUniquePatientFields.add(new UniquePatientField(patient
+							.clinicAndPatientId(), patient.getId()));
 				}
-				if (!checkDummyPaasscode(patient)){
-					allUniquePatientFields.add(new UniquePatientField(
-							patient.phoneNumberAndPasscode(), patient
-									.getId()));
+				if (!checkDummyPaasscode(patient)) {
+					allUniquePatientFields.add(new UniquePatientField(patient
+							.phoneNumberAndPasscode(), patient.getId()));
 				}
-			} else if (uniqueFields.size() == 1) { System.out.println("Size is 1");
+			} else if (uniqueFields.size() == 1) {
+				LOGGER.debug("Size is 1");
 				for (UniquePatientField uniqueField : uniqueFields) {
 					if (uniqueField.getId()
 							.equals(patient.clinicAndPatientId())) {
@@ -75,8 +81,10 @@ public class UpdateConstraintsInUniquePatientFieldDoc {
 					} else if (uniqueField.getId().equals(
 							patient.phoneNumberAndPasscode())) {
 						if (!checkDummyPatientId(patient)) {
-						allUniquePatientFields.add(new UniquePatientField(
-								patient.clinicAndPatientId(), patient.getId()));}
+							allUniquePatientFields.add(new UniquePatientField(
+									patient.clinicAndPatientId(), patient
+											.getId()));
+						}
 					}
 				}
 			}
