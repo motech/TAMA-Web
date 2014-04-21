@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.motechproject.tama.ivr.domain.CallLog;
 import org.motechproject.tama.ivr.domain.CallLogSearch;
 import org.motechproject.tama.patient.domain.Patient;
+import org.motechproject.tama.patient.repository.AllPatients;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,6 +41,8 @@ public class EditPatientIdInDataBase {
 	@Autowired
 	EditPatientIdInPatientsDoc allPatientsNew;
 	@Autowired
+	AllPatients allPatients;
+	@Autowired
 	EditPatientIdInUniquePatientFieldDoc allUniquePatientFieldsNew;
 	@Autowired
 	protected CouchDbConnector tamaDbConnector;
@@ -55,73 +58,80 @@ public class EditPatientIdInDataBase {
 
 	private DateTime toDate = new DateTime().now();
 
-	private CallLogSearch callLogSearch;
-
 	private static final String DELIMITER = ",";
 
 	@Test
-	public void edit() throws IOException {
+	public void correctErrorneousPatientids() throws IOException {
 		input = new FileInputStream("config.properties");
 		prop.load(input);
 		DATABASE_URL = prop.getProperty("DATABASE_URL");
 		USERNAME = prop.getProperty("USERNAME");
 		PASSWORD = prop.getProperty("PASSWORD");
 		String path = prop.getProperty("pathCSV");
-		migrate(path);
+		readFromCSVAndMigrate(path);
 	}
 
-	public void migrate(String filePath) {
+	public void readFromCSVAndMigrate(String filePath) {
 		File migrationFile = FileUtils.getFile(filePath);
-		List<Patient> patients = allPatientsNew.getAll();
+		// List<Patient> patients = allPatientsNew.getAll();
+
 		try {
 			List<String> fileContents = FileUtils.readLines(migrationFile);
 			for (String row : fileContents) {
 				String[] rowContents = StringUtils.tokenizeToStringArray(row,
 						DELIMITER, false, false);
 				String oldPatientId = rowContents[0];
-				String clinicId = rowContents[1];
-				String newPatientId = rowContents[2];
+				String docid = rowContents[1];
+				String clinicId = rowContents[2];
+				String newPatientId = rowContents[3];
 				boolean hasPatientId = false;
+				List<Patient> patients = allPatients
+						.findAllByPatientId(oldPatientId);
 				for (Patient patient : patients) {
-					if (patient.getPatientId().equals(oldPatientId)) {
-						test(oldPatientId, clinicId, newPatientId);
+					if (patient.getId().equals(docid)) {
+						migrate(oldPatientId, docid, clinicId, newPatientId);
 						hasPatientId = true;
 					}
 				}
 				if (hasPatientId == false)
-					LOGGER.debug(oldPatientId
+					LOGGER.info(oldPatientId
 							+ "Patient Id is not in the couch Db .");
 			}
 			editPatientIdInPsql(fileContents);
 		}
 
 		catch (IOException e) {
-			LOGGER.debug("Error while processing file given." + filePath);
+			LOGGER.error("Error while processing file given." + filePath);
 		}
 
 	}
 
-	public void test(String oldPatientId, String clinicId, String newPatientId)
-			throws IOException {
-		editPatientsIdInCallLogDoc(oldPatientId, clinicId, newPatientId);
-		editPatientsIdInPatientDoc(oldPatientId, clinicId, newPatientId);
+	public void migrate(String oldPatientId, String docid, String clinicId,
+			String newPatientId) throws IOException {
+		editPatientsIdInCallLogDoc(oldPatientId, docid, clinicId, newPatientId);
+		editPatientsIdInPatientDoc(oldPatientId, docid, clinicId, newPatientId);
 	}
 
-	public void editPatientsIdInPatientDoc(String oldPatientId,
+	public void editPatientsIdInPatientDoc(String oldPatientId, String docid,
 			String clinicId, String newPatientId) {
-		allPatientsNew.editPatientId(oldPatientId, clinicId, newPatientId);
+		allPatientsNew.editPatientId(oldPatientId, docid, clinicId,
+				newPatientId);
 	}
 
-	public void editPatientsIdInCallLogDoc(String oldPatientId,
+	public void editPatientsIdInCallLogDoc(String oldPatientId, String docid,
 			String clinicId, String newPatientId) {
-		callLogSearch = new CallLogSearch(fromDate, toDate,
-				CallLog.CallLogType.Answered, oldPatientId.toLowerCase(), true,
-				clinicId);
-		allCallLogsNew.editPatientId(callLogSearch, newPatientId);
-		callLogSearch = new CallLogSearch(fromDate, toDate,
-				CallLog.CallLogType.Missed, oldPatientId.toLowerCase(), true,
-				clinicId);
-		allCallLogsNew.editPatientId(callLogSearch, newPatientId);
+		CallLogSearch callLogSearchForAnswered = new CallLogSearch(fromDate,
+				toDate, CallLog.CallLogType.Answered,
+				oldPatientId.toLowerCase(), true, clinicId);
+		CallLogSearch callLogSearchForMissed = new CallLogSearch(fromDate,
+				toDate, CallLog.CallLogType.Missed, oldPatientId.toLowerCase(),
+				true, clinicId);
+		List<CallLog> callLogs = allCallLogsNew
+				.findCallLogsForDateRangePatientIdAndClinic(callLogSearchForAnswered);
+		callLogs.addAll(allCallLogsNew
+				.findCallLogsForDateRangePatientIdAndClinic(callLogSearchForMissed));
+		allCallLogsNew.editPatientId(callLogs, docid, oldPatientId,
+				newPatientId);
 	}
 
 	public void editPatientIdInPsql(List<String> fileContents) {
@@ -134,20 +144,22 @@ public class EditPatientIdInDataBase {
 			c.setAutoCommit(false);
 			for (String row : fileContents) {
 				String[] rowContents = StringUtils.tokenizeToStringArray(row,
-						DELIMITER);
+						DELIMITER, false, false);
 				String oldPatientId = rowContents[0];
-				String clinicId = rowContents[1];
-				String newPatientId = rowContents[2];
+				String docid = rowContents[1];
+				String clinicId = rowContents[2];
+				String newPatientId = rowContents[3];
 				stmt = c.createStatement();
 				stmt1 = c.createStatement();
 				String sql = "UPDATE tama_reports.patient set patient_id ='"
 						+ newPatientId + "'where patient_id='" + oldPatientId
-						+ "'and clinic_id='" + clinicId + "';";
+						+ "'and clinic_id='" + clinicId
+						+ "'and patient_document_id='" + docid + "';";
 				String sql1 = "UPDATE tama_reports.medical_history set patient_id ='"
 						+ newPatientId
 						+ "'where patient_id='"
 						+ oldPatientId
-						+ "';";
+						+ "'and patient_document_id='" + docid + "';";
 				stmt.executeUpdate(sql);
 				stmt1.executeUpdate(sql1);
 				c.commit();
@@ -156,7 +168,7 @@ public class EditPatientIdInDataBase {
 			}
 			c.close();
 		} catch (Exception e) {
-			LOGGER.debug(e.getClass().getName() + ": " + e.getMessage());
+			LOGGER.error(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);
 		}
 

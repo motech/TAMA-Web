@@ -50,15 +50,16 @@ public class EditPatientIdInPatientsDoc {
 	@Autowired
 	private AllPatients allPatients;
 
-	public void editPatientId(String patientId, String clinicId,
+	public void editPatientId(String patientId, String docid, String clinicId,
 			String newPatientId) {
-		Patient editPatient = allPatients.findByPatientIdAndClinicId(patientId,
-				clinicId);
-		if (editPatient.getPatientId().equals(newPatientId)) {
-			LOGGER.debug("same patint id no need to update.");
+		List<Patient> patients = allPatients.findAllByPatientId(patientId);
+		for (Patient patient : patients) {
+			if (patient.getId().equals(docid)) {
+				patient.setPatientId(newPatientId);
+				updateUniqueFieldDoc(patient, "karthik@beehyv");
+			}
 		}
-		editPatient.setPatientId(newPatientId);
-		updateUniqueFieldDoc(editPatient, "karthik@beehyv");
+
 	}
 
 	public void updateUniqueFieldDoc(Patient entity, String userName) {

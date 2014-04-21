@@ -25,20 +25,21 @@ public class EditPatientIdInCallLogsDoc extends AllCallLogs {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void editPatientId(CallLogSearch callLogSearch, String patientId) {
-		List<CallLog> callLogs = findCallLogsForDateRangePatientIdAndClinic(callLogSearch);
+	public void editPatientId(List<CallLog> callLogs, String docid,
+			String oldPatientId, String patientId) {
 		List<String> likelyPatientIds = null;
 		for (CallLog callLog : callLogs) {
-			likelyPatientIds = callLog.getLikelyPatientIds();
-			for (int i = 0; i < likelyPatientIds.size(); i++) {
-				if ((likelyPatientIds.get(i).equals((callLogSearch
-						.getPatientId())))) {
-					likelyPatientIds.set(i, patientId);
+			if (callLog.getPatientDocumentId().equals(docid)) {
+				likelyPatientIds = callLog.getLikelyPatientIds();
+				for (int i = 0; i < likelyPatientIds.size(); i++) {
+					if ((likelyPatientIds.get(i).equals((oldPatientId)))) {
+						likelyPatientIds.set(i, patientId);
+					}
 				}
+				callLog.setLikelyPatientIds(likelyPatientIds);
+				callLog.patientId(patientId);
+				super.update(callLog);
 			}
-			callLog.setLikelyPatientIds(likelyPatientIds);
-			callLog.patientId(patientId);
-			super.update(callLog);
 		}
 	}
 
