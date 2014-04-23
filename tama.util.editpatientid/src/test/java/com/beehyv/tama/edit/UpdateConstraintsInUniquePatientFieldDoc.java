@@ -1,9 +1,5 @@
 package com.beehyv.tama.edit;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -14,13 +10,13 @@ import org.apache.log4j.Logger;
 import org.ektorp.CouchDbConnector;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.motechproject.tama.patient.domain.Patient;
 import org.motechproject.tama.patient.domain.UniquePatientField;
 import org.motechproject.tama.patient.repository.AllPatients;
 import org.motechproject.tama.patient.repository.AllUniquePatientFields;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring/applicationContext.xml" })
@@ -42,12 +38,14 @@ public class UpdateConstraintsInUniquePatientFieldDoc {
 	InputStream input = null;
 
 	List<Patient> patients = new ArrayList<Patient>();
+	
+	private int count = 0;
 
 	@Test
 	public void addConstraints() throws IOException {
 
+		count++;
 		patients = allPatients.getAll();
-		StringBuilder csvdata = new StringBuilder();
 
 		for (Patient patient : patients) {
 			LOGGER.debug("For Patient::::" + patient.getPatientId() + "::");
@@ -61,12 +59,16 @@ public class UpdateConstraintsInUniquePatientFieldDoc {
 			else if (uniqueFields.isEmpty()) {
 				LOGGER.debug("Size is 0");
 				if (!checkDummyPatientId(patient)) {
+					System.out.println("entered to add patient.");
 					allUniquePatientFields.add(new UniquePatientField(patient
 							.clinicAndPatientId(), patient.getId()));
+					System.out.println("add patient successfull.");
 				}
 				if (!checkDummyPaasscode(patient)) {
+					System.out.println("entered to add mobile no.");
 					allUniquePatientFields.add(new UniquePatientField(patient
 							.phoneNumberAndPasscode(), patient.getId()));
+					System.out.println("add mobile no successfull.");
 				}
 			} else if (uniqueFields.size() == 1) {
 				LOGGER.debug("Size is 1");
@@ -74,25 +76,41 @@ public class UpdateConstraintsInUniquePatientFieldDoc {
 					if (uniqueField.getId()
 							.equals(patient.clinicAndPatientId())) {
 						if (!checkDummyPaasscode(patient)) {
+							System.out.println("entered to add patient.");
 							allUniquePatientFields.add(new UniquePatientField(
 									patient.phoneNumberAndPasscode(), patient
 											.getId()));
+							System.out.println("add patient successfull.");
 						}
 					} else if (uniqueField.getId().equals(
 							patient.phoneNumberAndPasscode())) {
 						if (!checkDummyPatientId(patient)) {
+							System.out.println("entered toadd mobile no.");
 							allUniquePatientFields.add(new UniquePatientField(
 									patient.clinicAndPatientId(), patient
 											.getId()));
+							System.out.println("add mobile no successfull.");
 						}
 					}
 				}
 			}
 		}
+		if(totalNoOfConstraints() < 2*(patients.size()) && count < 3){
+			 addConstraints();
+		}
 
 	}
 
-	public boolean checkDummyPatientId(Patient patient) {
+	private int totalNoOfConstraints(){
+		int total = 0;
+		for (Patient patient : patients) {
+			List<UniquePatientField> uniqueFields = allUniquePatientFields.get(patient);
+			total +=uniqueFields.size();
+		}
+		return total;		
+	}
+	
+	private boolean checkDummyPatientId(Patient patient) {
 		for (Patient dbPatient : patients) {
 			if (dbPatient.getPatientId().equals(patient.getPatientId())
 					&& !dbPatient.getId().equals(patient.getId())
@@ -103,7 +121,7 @@ public class UpdateConstraintsInUniquePatientFieldDoc {
 		return false;
 	}
 
-	public boolean checkDummyPaasscode(Patient patient) {
+	private boolean checkDummyPaasscode(Patient patient) {
 		for (Patient dbPatient : patients) {
 			if (dbPatient.getMobilePhoneNumber().equals(
 					patient.getMobilePhoneNumber())
