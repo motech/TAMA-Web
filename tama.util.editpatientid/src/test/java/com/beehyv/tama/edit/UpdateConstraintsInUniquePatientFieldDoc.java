@@ -59,16 +59,12 @@ public class UpdateConstraintsInUniquePatientFieldDoc {
 			else if (uniqueFields.isEmpty()) {
 				LOGGER.debug("Size is 0");
 				if (!checkDummyPatientId(patient)) {
-					System.out.println("entered to add patient.");
 					allUniquePatientFields.add(new UniquePatientField(patient
 							.clinicAndPatientId(), patient.getId()));
-					System.out.println("add patient successfull.");
 				}
 				if (!checkDummyPaasscode(patient)) {
-					System.out.println("entered to add mobile no.");
 					allUniquePatientFields.add(new UniquePatientField(patient
 							.phoneNumberAndPasscode(), patient.getId()));
-					System.out.println("add mobile no successfull.");
 				}
 			} else if (uniqueFields.size() == 1) {
 				LOGGER.debug("Size is 1");
@@ -76,20 +72,16 @@ public class UpdateConstraintsInUniquePatientFieldDoc {
 					if (uniqueField.getId()
 							.equals(patient.clinicAndPatientId())) {
 						if (!checkDummyPaasscode(patient)) {
-							System.out.println("entered to add patient.");
 							allUniquePatientFields.add(new UniquePatientField(
 									patient.phoneNumberAndPasscode(), patient
 											.getId()));
-							System.out.println("add patient successfull.");
 						}
 					} else if (uniqueField.getId().equals(
 							patient.phoneNumberAndPasscode())) {
 						if (!checkDummyPatientId(patient)) {
-							System.out.println("entered toadd mobile no.");
 							allUniquePatientFields.add(new UniquePatientField(
 									patient.clinicAndPatientId(), patient
 											.getId()));
-							System.out.println("add mobile no successfull.");
 						}
 					}
 				}
