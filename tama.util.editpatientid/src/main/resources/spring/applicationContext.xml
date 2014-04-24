@@ -27,9 +27,9 @@
     <context:component-scan base-package="com.beehyv.tama"/>
       <!--  <context:component-scan base-package="org.motechproject.tama"/>-->
 	<import resource="classpath*:/applicationPlatformServerAPI.xml"/>
-				               <import resource="classpath:applicationCommonContext.xml"/>
-							    <import resource="classpath:applicationReportingContext.xml"/>
-							    <import resource="classpath:applicationFacilityContext.xml"/>
+				               <import resource="classpath:*applicationCommonContext.xml"/>
+							    <import resource="classpath:*applicationReportingContext.xml"/>
+							    <import resource="classpath:*applicationFacilityContext.xml"/>
 							    <import resource="classpath*:/applicationPatientContext.xml"/>
 
     <bean id="httpClient" class="org.ektorp.spring.HttpClientFactoryBean">

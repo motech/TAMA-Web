@@ -15,7 +15,6 @@ public class EditPatientIdInUniquePatientFieldDoc extends
 	public EditPatientIdInUniquePatientFieldDoc(
 			@Qualifier("tamaDbConnector") CouchDbConnector db) {
 		super(db);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void updatingNewPatientIds(Patient patient) {

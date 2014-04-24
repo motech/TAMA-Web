@@ -37,13 +37,13 @@ public class EditPatientIdInDataBase {
 			.getLogger(EditPatientIdInDataBase.class);
 
 	@Autowired
-	EditPatientIdInCallLogsDoc allCallLogsNew;
+	EditPatientIdInCallLogsDoc editPatientIdInCallLogsDoc;
 	@Autowired
-	EditPatientIdInPatientsDoc allPatientsNew;
+	EditPatientIdInPatientsDoc editPatientIdInPatientsDoc;
 	@Autowired
 	AllPatients allPatients;
 	@Autowired
-	EditPatientIdInUniquePatientFieldDoc allUniquePatientFieldsNew;
+	EditPatientIdInUniquePatientFieldDoc editPatientIdInUniquePatientFieldDoc;
 	@Autowired
 	protected CouchDbConnector tamaDbConnector;
 
@@ -60,6 +60,7 @@ public class EditPatientIdInDataBase {
 
 	private static final String DELIMITER = ",";
 
+	
 	@Test
 	public void correctErrorneousPatientids() throws IOException {
 		input = new FileInputStream("config.properties");
@@ -73,7 +74,6 @@ public class EditPatientIdInDataBase {
 
 	public void readFromCSVAndMigrate(String filePath) {
 		File migrationFile = FileUtils.getFile(filePath);
-		// List<Patient> patients = allPatientsNew.getAll();
 
 		try {
 			List<String> fileContents = FileUtils.readLines(migrationFile);
@@ -114,7 +114,7 @@ public class EditPatientIdInDataBase {
 
 	public void editPatientsIdInPatientDoc(String oldPatientId, String docid,
 			String clinicId, String newPatientId) {
-		allPatientsNew.editPatientId(oldPatientId, docid, clinicId,
+		editPatientIdInPatientsDoc.editPatientId(oldPatientId, docid, clinicId,
 				newPatientId);
 	}
 
@@ -126,11 +126,11 @@ public class EditPatientIdInDataBase {
 		CallLogSearch callLogSearchForMissed = new CallLogSearch(fromDate,
 				toDate, CallLog.CallLogType.Missed, oldPatientId.toLowerCase(),
 				true, clinicId);
-		List<CallLog> callLogs = allCallLogsNew
+		List<CallLog> callLogs = editPatientIdInCallLogsDoc
 				.findCallLogsForDateRangePatientIdAndClinic(callLogSearchForAnswered);
-		callLogs.addAll(allCallLogsNew
+		callLogs.addAll(editPatientIdInCallLogsDoc
 				.findCallLogsForDateRangePatientIdAndClinic(callLogSearchForMissed));
-		allCallLogsNew.editPatientId(callLogs, docid, oldPatientId,
+		editPatientIdInCallLogsDoc.editPatientId(callLogs, docid, oldPatientId,
 				newPatientId);
 	}
 

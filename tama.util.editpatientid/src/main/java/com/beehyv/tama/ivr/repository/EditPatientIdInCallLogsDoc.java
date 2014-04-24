@@ -22,7 +22,6 @@ public class EditPatientIdInCallLogsDoc extends AllCallLogs {
 	protected EditPatientIdInCallLogsDoc(
 			@Qualifier("tamaDbConnector") CouchDbConnector db) {
 		super(db);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void editPatientId(List<CallLog> callLogs, String docid,
