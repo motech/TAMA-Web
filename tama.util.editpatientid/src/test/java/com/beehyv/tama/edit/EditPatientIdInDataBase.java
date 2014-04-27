@@ -26,8 +26,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
 
 import com.beehyv.tama.ivr.repository.EditPatientIdInCallLogsDoc;
-import com.beehyv.tama.patient.repository.one.EditPatientIdInPatientsDoc;
-import com.beehyv.tama.patient.repository.one.EditPatientIdInUniquePatientFieldDoc;
+import com.beehyv.tama.patient.repository.EditPatientIdInPatientsDoc;
+import com.beehyv.tama.patient.repository.EditPatientIdInUniquePatientFieldDoc;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/spring/applicationContext.xml" })
