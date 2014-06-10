@@ -12,6 +12,10 @@
             <menu:item id="i_clinician_new" messageCode="global_menu_new" url="/clinicians?form" z="He31CdTMtJw3/V8zehvWm7LkjnU="/>
             <menu:item id="i_clinician_list" messageCode="global_menu_list" url="/clinicians"/>
         </menu:category>
+                <menu:category id="c_monitoringAgent" z="">
+            <menu:item id="i_monitoringAgent_new" messageCode="global_menu_new" url="/monitoringAgents?form" z=""/>
+            <menu:item id="i_monitoringAgent_list" messageCode="global_menu_list" url="/monitoringAgents"/>
+        </menu:category>
         <menu:category id="c_analyst">
             <menu:item id="i_analyst_list" messageCode="global_menu_list" url="/analysts"/>
         </menu:category>

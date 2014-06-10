@@ -1,7 +1,9 @@
 package org.motechproject.tama.web;
 
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.MonitoringAgent;
 import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.facility.repository.AllMonitoringAgents;
 import org.motechproject.tama.facility.service.ClinicService;
 import org.motechproject.tama.refdata.domain.City;
 import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +27,8 @@ import java.util.List;
 public class ClinicController extends BaseController {
     private AllClinics allClinics;
     private AllCitiesCache allCities;
+    @Autowired
+    private AllMonitoringAgents allMonitoringAgents;
 
     @Autowired
     public ClinicController(AllClinics allClinics, AllCitiesCache allCities) {
@@ -85,6 +90,12 @@ public class ClinicController extends BaseController {
         uiModel.addAttribute("mode", "update");
 
         return "clinics/clinicForm";
+    }
+    
+    @ModelAttribute("monitoringagents")
+    public Collection<MonitoringAgent> populateMonitoringAgents(){
+    	List<MonitoringAgent> allMonitoringAgents =  this.allMonitoringAgents.getAll();
+    	return allMonitoringAgents;
     }
 
     @ModelAttribute("cities")

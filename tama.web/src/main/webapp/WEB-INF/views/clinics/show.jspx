@@ -24,5 +24,10 @@
                 </div>
             </c:forEach>
         </div>
+        
+        <div class='contacts'>
+            <div class='title'>Monitoring Agent</div>
+            <field:display field="monitoringAgent" id="s_org_motechproject_tama_domain_Clinic_monitoringagent" object="${clinic}" />
+		</div>
     </page:show>
 </div>

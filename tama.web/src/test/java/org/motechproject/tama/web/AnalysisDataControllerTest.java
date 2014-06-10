@@ -14,6 +14,7 @@ import org.motechproject.tama.dailypillreminder.contract.DailyPillReminderReport
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.service.ClinicService;
+import org.motechproject.tama.facility.service.MonitoringAgentService;
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.domain.PatientAlerts;
@@ -29,6 +30,7 @@ import org.motechproject.util.DateUtil;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -56,6 +58,8 @@ public class AnalysisDataControllerTest {
     @Mock
     private ClinicService clinicService;
     @Mock
+    private MonitoringAgentService monitoringAgentService;
+    @Mock
     private ClinicVisitReportService clinicVisitReportService;
     @Mock
     private CallLogExcelReportService callLogExcelReportService;
@@ -63,7 +67,6 @@ public class AnalysisDataControllerTest {
     private AnalysisDataController analysisDataController;
      @Mock
     private PatientAlertsReportService patientAlertsReportService;
-
     @Mock
     private AllTreatmentAdvices allTreatmentAdvices;
     @Mock
@@ -77,7 +80,7 @@ public class AnalysisDataControllerTest {
                 appointmentCalenderReportService,
                 outboxMessageReportService,
                 dailyPillReminderReportService,
-                clinicVisitReportService, callLogExcelReportService, clinicService, patientAlertsReportService,
+                clinicVisitReportService, callLogExcelReportService, clinicService,monitoringAgentService, patientAlertsReportService,
                 allTreatmentAdvices,allRegimens
         );
     }

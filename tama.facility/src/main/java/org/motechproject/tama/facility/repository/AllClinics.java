@@ -28,6 +28,8 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
 
     private AllCitiesCache allCities;
     private ClinicReportingService clinicReportingService;
+    @Autowired
+    private AllMonitoringAgents allMonitoringAgents;
 
     @Autowired
     public AllClinics(@Qualifier("tamaDbConnector") CouchDbConnector db, AllCitiesCache allCities, AllAuditRecords allAuditRecords, ClinicReportingService clinicReportingService) {
@@ -80,8 +82,12 @@ public class AllClinics extends AuditableCouchRepository<Clinic> {
 
     protected void loadDependencies(List<Clinic> clinicList) {
         for (Clinic clinic : clinicList) {
-            if (!StringUtils.isEmpty(clinic.getCityId()))
+            if (!StringUtils.isEmpty(clinic.getCityId())){
                 clinic.setCity(allCities.getBy(clinic.getCityId()));
+            }
+            if (!StringUtils.isEmpty(clinic.getMonitoringAgentId())){
+                clinic.setMonitoringAgent(allMonitoringAgents.get(clinic.getMonitoringAgentId()));
+            }
         }
     }
 }

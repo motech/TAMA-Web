@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:list id="pl_org_motechproject_tama_domain_MonitoringAgent" items="${monitoringAgents}" z="">
+        <table:table data="${monitoringAgents}" id="l_org_motechproject_tama_domain_MonitoringAgent" path="/monitoringAgents" z="" delete="false">
+            <table:column id="c_org_motechproject_tama_domain_MonitoringAgent_name" property="name" z=""/>
+            <table:column id="c_org_motechproject_tama_domain_MonitoringAgent_contactNumber" property="contactNumber" z=""/>
+            <table:column id="c_org_motechproject_tama_domain_MonitoringAgent_clinics" property="clinics" z=""/>
+        </table:table>
+    </page:list>
+</div>

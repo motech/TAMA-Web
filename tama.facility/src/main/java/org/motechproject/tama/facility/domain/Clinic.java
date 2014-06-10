@@ -1,15 +1,8 @@
 package org.motechproject.tama.facility.domain;
 
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.ektorp.support.TypeDiscriminator;
-import org.motechproject.tama.common.TAMAConstants;
-import org.motechproject.tama.common.TAMAMessages;
-import org.motechproject.tama.common.domain.CouchEntity;
-import org.motechproject.tama.common.util.StringUtil;
-import org.motechproject.tama.common.util.UUIDUtil;
-import org.motechproject.tama.refdata.domain.City;
-import org.springframework.validation.ObjectError;
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -17,9 +10,16 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.ektorp.support.TypeDiscriminator;
+import org.motechproject.tama.common.TAMAConstants;
+import org.motechproject.tama.common.TAMAMessages;
+import org.motechproject.tama.common.domain.CouchEntity;
+import org.motechproject.tama.common.util.UUIDUtil;
+import org.motechproject.tama.refdata.domain.City;
+import org.springframework.validation.ObjectError;
 
 @TypeDiscriminator("doc.documentType == 'Clinic'")
 public class Clinic extends CouchEntity implements Comparable<Clinic> {
@@ -42,6 +42,12 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
 
     private List<ClinicianContact> clinicianContacts = new LinkedList<ClinicianContact>();
 
+    @ManyToOne
+    private MonitoringAgent monitoringAgent;
+    
+    private String monitoringAgentId;
+    
+    
     @ManyToOne
     private City city;
 
@@ -101,6 +107,26 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
 
     public void setClinicianContacts(List<ClinicianContact> clinicianContacts) {
         this.clinicianContacts = clinicianContacts;
+    }
+    
+    
+    
+    @JsonIgnore
+    public MonitoringAgent getMonitoringAgent() {
+        return monitoringAgent;
+    }
+    
+    public void setMonitoringAgent(MonitoringAgent monitoringAgent) {
+        this.monitoringAgent = monitoringAgent;
+        this.monitoringAgentId = monitoringAgent.getId();
+    }
+    
+    public String getMonitoringAgentId() {
+        return monitoringAgentId;
+    }
+
+    public void setMonitoringAgentId(String monitoringAgentId) {
+        this.monitoringAgentId = monitoringAgentId;
     }
 
     @JsonIgnore
