@@ -1,6 +1,7 @@
 package org.motechproject.tama.facility.builder;
 
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.MonitoringAgent;
 import org.motechproject.tama.refdata.domain.City;
 
 import java.util.Arrays;
@@ -51,7 +52,17 @@ public class ClinicBuilder {
         this.clinic.setCityId(cityId);
         return this;
     }
-
+    
+    public ClinicBuilder withMonitoringAgent(MonitoringAgent monitoringAgent) {
+        this.clinic.setMonitoringAgent(monitoringAgent);
+        return this;
+    }
+    
+    public ClinicBuilder withMonitoringAgentId(String  monitoringAgentId) {
+        this.clinic.setMonitoringAgentId(monitoringAgentId);
+        return this;
+    }
+    
     public ClinicBuilder withClinicianContacts(Clinic.ClinicianContact... contacts) {
         this.clinic.setClinicianContacts(Arrays.asList(contacts));
         return this;
@@ -63,6 +74,8 @@ public class ClinicBuilder {
                 .withPhoneNumber("1234567890")
                 .withAddress("DefaultAddress")
                 .withCity(City.newCity("Pune"))
+                .withMonitoringAgent(MonitoringAgent.newMonitoringAgent("testMonitoringAgent"))
+                .withMonitoringAgentId("monAgent_id")
                 .withGreetingName("greetingName")
                 .withCityId("city_id")
                 .withClinicianContacts(contact);

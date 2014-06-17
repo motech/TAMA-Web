@@ -52,6 +52,6 @@
             <div class='title'>Monitoring Agent</div>
             <field:select field="monitoringAgent" id="c_org_motechproject_tama_domain_Clinic_monitoringagent" itemValue="id"  items="${monitoringagents}" required="false" disableDefaultSelection="false" path="/monitoringagents"/>
 		</div>
-		
+
     </form:create>
 </div>

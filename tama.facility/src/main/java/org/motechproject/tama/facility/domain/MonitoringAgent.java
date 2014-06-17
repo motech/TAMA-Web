@@ -1,7 +1,5 @@
 package org.motechproject.tama.facility.domain;
 
-import java.util.List;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
@@ -37,6 +35,11 @@ public class MonitoringAgent extends CouchEntity {
 		return new MonitoringAgent();
 	}
 	
+	public static MonitoringAgent newMonitoringAgent(String name){
+		MonitoringAgent monitoringAgent = new MonitoringAgent();
+		monitoringAgent.setName(name);
+		return monitoringAgent;
+	}
 	/*
 	
 	public List<String> getClinicsOfAgent() { return clinics; }

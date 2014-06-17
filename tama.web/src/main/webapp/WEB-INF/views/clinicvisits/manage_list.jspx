@@ -118,9 +118,7 @@
                                         <a href="javascript:void(0);" class="markAsMissed" visitid="${visit.id}" patientid="${visit.patientDocId}">Mark as missed</a>
                                     </c:when>
                                     <c:otherwise>
-                                        <a class="setVisitDate" href="javascript:void(0);" visitid="${visit.id}" patientid="${visit.patientDocId}">
                                             <spring:eval expression="visit.visitDate"/>
-                                        </a>
                                     </c:otherwise>
                                 </c:choose>
                             </c:when>
