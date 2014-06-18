@@ -7,6 +7,7 @@ import org.motechproject.tama.clinicvisits.domain.ClinicVisit;
 import org.motechproject.tama.clinicvisits.repository.AllClinicVisits;
 import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.MonitoringAgent;
 import org.motechproject.tama.ivr.dto.SendSMSRequest;
 import org.motechproject.tama.ivr.reporting.SMSType;
 import org.motechproject.tama.ivr.service.SendSMSService;
@@ -101,7 +102,16 @@ public class SymptomReportingService {
         String symptomsReported = StringUtils.join(symptoms, ",");
         String adviceGiven = fullAdviceGiven(symptomReport.getAdviceGiven());
         String message = String.format("%s (%s):%s:%s, trying to contact. %s. %s", patient.getPatientId(), patient.getClinic().getName(), patient.getMobilePhoneNumber(), regimen.getDisplayName(), symptomsReported, adviceGiven);
-        sendSMSService.send(clinicianContacts, message, SMSType.Clinician);
+        sendSmsToAll(message, clinicianContacts, patient);
+        /*sendSMSService.send(clinicianContacts, message, SMSType.Clinician);
+        sendSMSService.send(additionalNumbersToSendSMS(), message, SMSType.AdditionalSMS);*/
+    }
+    
+    public void sendSmsToAll(String message,List<SendSMSRequest> clinicianContacts,Patient patient){
+    	MonitoringAgent monitoringAgent = (patient.getClinic().getMonitoringAgent());
+    	SendSMSRequest monitoringAgentsMobileNumber = new SendSMSRequest(monitoringAgent.getContactNumber(),monitoringAgent.getId());
+    	sendSMSService.send(clinicianContacts, message, SMSType.Clinician);
+    	sendSMSService.send(monitoringAgentsMobileNumber, message, SMSType.MonitoringAgent);
         sendSMSService.send(additionalNumbersToSendSMS(), message, SMSType.AdditionalSMS);
     }
 

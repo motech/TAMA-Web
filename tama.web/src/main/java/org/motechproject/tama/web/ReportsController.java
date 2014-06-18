@@ -149,6 +149,18 @@ public class ReportsController {
         writeExcelToResponse(response, createExcelReport(smsReportBuilder), "SMSReport.xls");
     }
 
+    @RequestMapping(value = "/reports/agentSmsReport.xls", method = RequestMethod.GET)
+    public void buildAgentSMSExcelReport(@DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                    @RequestParam LocalDate startDate,
+                                    @DateTimeFormat(style = "S-", pattern = TAMAConstants.DATE_FORMAT)
+                                    @RequestParam LocalDate endDate,
+                                    HttpServletResponse response) {
+        List<SMSLog> allSMSLogsForDateRange = allSMSLogs.findAllSMSLogsForDateRange(DateUtil.newDateTime(startDate, 0, 0, 0), DateUtil.newDateTime(endDate, 23, 59, 59));
+        SMSReportBuilder smsReportBuilder = new SMSReportBuilder(startDate, endDate, allSMSLogsForDateRange);
+        writeExcelToResponse(response, createExcelReport(smsReportBuilder), "AgentSMSReport.xls");
+    }
+
+    
     private HSSFWorkbook createExcelReport(ReportBuilder reportBuilder) {
         try {
             return reportBuilder.getExcelWorkbook();

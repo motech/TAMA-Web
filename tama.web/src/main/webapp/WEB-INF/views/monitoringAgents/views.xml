@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="default" name="monitoringAgents/list">
+        <put-attribute name="body" value="/WEB-INF/views/monitoringAgents/list.jspx"/>
+    </definition>
+<definition extends="default" name="monitoringAgents/show">
+        <put-attribute name="body" value="/WEB-INF/views/monitoringAgents/show.jspx"/>
+    </definition>
+<definition extends="default" name="monitoringAgents/create">
+        <put-attribute name="body" value="/WEB-INF/views/monitoringAgents/create.jspx"/>
+    </definition>
+<definition extends="default" name="monitoringAgents/update">
+        <put-attribute name="body" value="/WEB-INF/views/monitoringAgents/update.jspx"/>
+    </definition>
+</tiles-definitions>

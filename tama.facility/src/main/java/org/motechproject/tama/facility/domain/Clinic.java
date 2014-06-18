@@ -43,6 +43,12 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
     private List<ClinicianContact> clinicianContacts = new LinkedList<ClinicianContact>();
 
     @ManyToOne
+    private MonitoringAgent monitoringAgent;
+    
+    private String monitoringAgentId;
+    
+    
+    @ManyToOne
     private City city;
 
     private String cityId;
@@ -101,6 +107,26 @@ public class Clinic extends CouchEntity implements Comparable<Clinic> {
 
     public void setClinicianContacts(List<ClinicianContact> clinicianContacts) {
         this.clinicianContacts = clinicianContacts;
+    }
+    
+    
+    
+    @JsonIgnore
+    public MonitoringAgent getMonitoringAgent() {
+        return monitoringAgent;
+    }
+    
+    public void setMonitoringAgent(MonitoringAgent monitoringAgent) {
+        this.monitoringAgent = monitoringAgent;
+        this.monitoringAgentId = monitoringAgent.getId();
+    }
+    
+    public String getMonitoringAgentId() {
+        return monitoringAgentId;
+    }
+
+    public void setMonitoringAgentId(String monitoringAgentId) {
+        this.monitoringAgentId = monitoringAgentId;
     }
 
     @JsonIgnore

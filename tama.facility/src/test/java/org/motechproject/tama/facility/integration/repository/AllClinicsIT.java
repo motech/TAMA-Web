@@ -7,7 +7,9 @@ import org.junit.Test;
 import org.motechproject.tama.common.integration.repository.SpringIntegrationTest;
 import org.motechproject.tama.facility.builder.ClinicBuilder;
 import org.motechproject.tama.facility.domain.Clinic;
+import org.motechproject.tama.facility.domain.MonitoringAgent;
 import org.motechproject.tama.facility.repository.AllClinics;
+import org.motechproject.tama.facility.repository.AllMonitoringAgents;
 import org.motechproject.tama.refdata.domain.City;
 import org.motechproject.tama.refdata.objectcache.AllCitiesCache;
 import org.motechproject.tama.refdata.repository.AllCities;
@@ -27,12 +29,15 @@ public class AllClinicsIT extends SpringIntegrationTest {
     private AllCities allCities;
     @Autowired
     private AllCitiesCache allCitiesCache;
+    @Autowired
+    private AllMonitoringAgents allMonitoringAgents;
 
     @Before
     public void before() {
         super.before();
         markForDeletion(allClinics.getAll().toArray());
         markForDeletion(allCities.getAll().toArray());
+        markForDeletion(allMonitoringAgents.getAll().toArray());
         deleteAll();
     }
 
@@ -40,6 +45,7 @@ public class AllClinicsIT extends SpringIntegrationTest {
     public void after() {
         markForDeletion(allClinics.getAll().toArray());
         markForDeletion(allCities.getAll().toArray());
+        markForDeletion(allMonitoringAgents.getAll().toArray());
         super.after();
     }
 
@@ -47,12 +53,15 @@ public class AllClinicsIT extends SpringIntegrationTest {
     public void shouldFindClinicianContactByPhoneNumber() {
         City city = City.newCity("Pune");
         allCities.add(city);
+        
+        MonitoringAgent monitoringAgent = MonitoringAgent.newMonitoringAgent("testMonitoringAgent");
+        allMonitoringAgents.add(monitoringAgent);
 
         allCitiesCache.refresh();
 
         Clinic.ClinicianContact contact = new Clinic.ClinicianContact("name", "1234");
 
-        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withClinicianContacts(contact).build();
+        Clinic clinic = ClinicBuilder.startRecording().withDefaults().withCity(city).withMonitoringAgent(monitoringAgent).withClinicianContacts(contact).build();
         allClinics.add(clinic, "user");
         markForDeletion(clinic);
 

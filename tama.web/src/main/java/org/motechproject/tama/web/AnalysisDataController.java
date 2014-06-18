@@ -11,6 +11,7 @@ import org.motechproject.tama.common.TAMAConstants;
 import org.motechproject.tama.dailypillreminder.contract.DailyPillReminderReport;
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
 import org.motechproject.tama.facility.service.ClinicService;
+import org.motechproject.tama.facility.service.MonitoringAgentService;
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.domain.PatientAlert;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,9 @@ public class AnalysisDataController extends BaseController {
     private ClinicVisitReportService clinicVisitReportService;
     private CallLogExcelReportService callLogExcelReportService;
     private ClinicService clinicService;
+
+    private MonitoringAgentService monitoringAgentService;
+
     private PatientAlertsReportService patientAlertsReportService;
     private AllTreatmentAdvices allTreatmentAdvices;
     private AllRegimens allRegimens;
@@ -68,7 +73,8 @@ public class AnalysisDataController extends BaseController {
                                   OutboxMessageReportService outboxMessageReportService,
                                   DailyPillReminderReportService dailyPillReminderReportService,
                                   ClinicVisitReportService clinicVisitReportService, CallLogExcelReportService callLogExcelReportService,
-                                  ClinicService clinicService, PatientAlertsReportService patientAlertsReportService,AllTreatmentAdvices allTreatmentAdvices,AllRegimens allRegimens) {
+                                  ClinicService clinicService,MonitoringAgentService monitoringAgentService, PatientAlertsReportService patientAlertsReportService,AllTreatmentAdvices allTreatmentAdvices,AllRegimens allRegimens) {
+
         this.callSummaryController = callSummaryController;
         this.reportingProperties = reportingProperties;
         this.appointmentCalenderReportService = appointmentCalenderReportService;
@@ -77,6 +83,7 @@ public class AnalysisDataController extends BaseController {
         this.clinicVisitReportService = clinicVisitReportService;
         this.callLogExcelReportService = callLogExcelReportService;
         this.clinicService = clinicService;
+        this.monitoringAgentService = monitoringAgentService;
         this.patientAlertsReportService = patientAlertsReportService;
         this.allTreatmentAdvices=allTreatmentAdvices;
         this.allRegimens=allRegimens;
@@ -89,6 +96,7 @@ public class AnalysisDataController extends BaseController {
         uiModel.addAttribute("patientReportFilter", new ClinicAndDateFilter());
         uiModel.addAttribute("otcSmsFilter", new ClinicAndDateFilter());
         uiModel.addAttribute("clinicianSmsFilter", new ClinicAndDateFilter());
+        uiModel.addAttribute("monitoringAgentSmsFilter", new MonitoringAgentSmsFilter(monitoringAgentService.getAllMonitoringAgents()));
         uiModel.addAttribute("patientEventFilter", new PatientEventFilter());
         uiModel.addAttribute("outboxMessageReportFilter", new FilterWithPatientIDAndDateRange());
         uiModel.addAttribute("messagesReportFilter", new ClinicAndDateFilter());
@@ -252,6 +260,21 @@ public class AnalysisDataController extends BaseController {
         }
     }
 
+    @RequestMapping(value = "/agentSmsReport.xls", method = RequestMethod.GET)
+    public String downloadAgentSMSReport(DateFilter filter, @RequestParam("externalId") String externalId, @RequestParam("type") String type, Model model) {
+        if (filter.isMoreThanOneYear()) {
+            return error(model, type + "Report_warning");
+        } else {
+            return format(
+                    "redirect:/tama-reports/smsLog/agentReport?externalId=%s&startDate=%s&endDate=%s&type=%s",
+                    externalId,
+                    filter.getStartDate().toString("dd/MM/yyyy"),
+                    filter.getEndDate().toString("dd/MM/yyyy"),
+                    type
+            );
+        }
+    }
+    
     @RequestMapping(value = "/messagesReport.xls", method = RequestMethod.GET)
     public String downloadMessagesReport(@RequestParam("clinicId") String clinicId,
                                          @RequestParam("patientId") String patientId,

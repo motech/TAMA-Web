@@ -14,6 +14,7 @@ import org.motechproject.tama.dailypillreminder.contract.DailyPillReminderReport
 import org.motechproject.tama.dailypillreminder.service.DailyPillReminderReportService;
 import org.motechproject.tama.facility.domain.Clinic;
 import org.motechproject.tama.facility.service.ClinicService;
+import org.motechproject.tama.facility.service.MonitoringAgentService;
 import org.motechproject.tama.outbox.contract.OutboxMessageReport;
 import org.motechproject.tama.outbox.service.OutboxMessageReportService;
 import org.motechproject.tama.patient.domain.PatientAlerts;
@@ -29,6 +30,7 @@ import org.motechproject.util.DateUtil;
 import org.springframework.ui.Model;
 
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -56,6 +58,8 @@ public class AnalysisDataControllerTest {
     @Mock
     private ClinicService clinicService;
     @Mock
+    private MonitoringAgentService monitoringAgentService;
+    @Mock
     private ClinicVisitReportService clinicVisitReportService;
     @Mock
     private CallLogExcelReportService callLogExcelReportService;
@@ -77,8 +81,8 @@ public class AnalysisDataControllerTest {
                 appointmentCalenderReportService,
                 outboxMessageReportService,
                 dailyPillReminderReportService,
-                clinicVisitReportService, callLogExcelReportService, clinicService, patientAlertsReportService,
-                allTreatmentAdvices,allRegimens
+                clinicVisitReportService, callLogExcelReportService, clinicService,monitoringAgentService, patientAlertsReportService,
+ allTreatmentAdvices,allRegimens
         );
     }
 
@@ -272,7 +276,6 @@ public class AnalysisDataControllerTest {
 
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(dailyPillReminderReportService.reports(patientId,"clinic", startDate, endDate)).thenReturn(new DailyPillReminderReport(null, null));
-
         analysisDataController.downloadDailyPillReminderReport(filter, "clinic", model, response);
         verify(response).setContentType("application/vnd.ms-excel");
         verify(response).setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");
@@ -330,7 +333,6 @@ public class AnalysisDataControllerTest {
 
         HttpServletResponse response = mock(HttpServletResponse.class);
         when(dailyPillReminderReportService.reports(null,null,startDate, endDate)).thenReturn(new DailyPillReminderReport(null, null));
-
         analysisDataController.downloadDailyPillReminderReport(filter, null, model, response);
         verify(response).setContentType("application/vnd.ms-excel");
         verify(response).setHeader("Content-Disposition", "inline; filename=DailyPillReminderReport.xls");

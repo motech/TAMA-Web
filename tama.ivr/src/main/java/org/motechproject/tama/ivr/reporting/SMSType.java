@@ -5,6 +5,7 @@ public enum SMSType {
 
     OTC("O"),
     Clinician("C"),
+    MonitoringAgent("M"),
     AdditionalSMS("A");
 
     private String code;
