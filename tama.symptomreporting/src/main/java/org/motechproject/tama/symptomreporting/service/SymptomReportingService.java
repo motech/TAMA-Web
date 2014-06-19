@@ -1,5 +1,6 @@
 package org.motechproject.tama.symptomreporting.service;
 
+
 import org.apache.commons.lang.StringUtils;
 import org.motechproject.ivr.kookoo.domain.KookooCallDetailRecord;
 import org.motechproject.ivr.kookoo.service.KookooCallDetailRecordsService;
@@ -27,7 +28,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-
 @Component
 public class SymptomReportingService {
     private AllPatients allPatients;
@@ -103,8 +103,6 @@ public class SymptomReportingService {
         String adviceGiven = fullAdviceGiven(symptomReport.getAdviceGiven());
         String message = String.format("%s (%s):%s:%s, trying to contact. %s. %s", patient.getPatientId(), patient.getClinic().getName(), patient.getMobilePhoneNumber(), regimen.getDisplayName(), symptomsReported, adviceGiven);
         sendSmsToAll(message, clinicianContacts, patient);
-        /*sendSMSService.send(clinicianContacts, message, SMSType.Clinician);
-        sendSMSService.send(additionalNumbersToSendSMS(), message, SMSType.AdditionalSMS);*/
     }
     
     public void sendSmsToAll(String message,List<SendSMSRequest> clinicianContacts,Patient patient){
