@@ -9,10 +9,7 @@ import org.ektorp.support.GenerateView;
 import org.motechproject.tama.common.repository.AllAuditRecords;
 import org.motechproject.tama.common.repository.AuditableCouchRepository;
 import org.motechproject.tama.facility.domain.Clinic;
-import org.motechproject.tama.facility.domain.Clinician;
 import org.motechproject.tama.facility.domain.MonitoringAgent;
-import org.motechproject.tama.facility.dto.MonitoringAgentDto;
-import org.motechproject.tama.facility.reporting.ClinicianRequestMapper;
 import org.motechproject.tama.facility.reporting.MonitoringAgentRequestMapper;
 import org.motechproject.tama.reporting.service.MonitoringAgentReportingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,21 +87,6 @@ public class AllMonitoringAgents extends
 		return monitoringAgentList;
 	}
 
-	/*
-	 * public MonitoringAgentDto getMonitoringAgentDto(MonitoringAgent
-	 * monitoringAgent){ MonitoringAgentDto monitoringAgentDto = new
-	 * MonitoringAgentDto();
-	 * monitoringAgentDto.setContactNumber(monitoringAgent.getContactNumber());
-	 * monitoringAgentDto.setName(monitoringAgent.getName()); List<Clinic>
-	 * clinics = allClinics.getAll(); allClinics.loadDependencies(clinics);
-	 * for(Clinic clinic:clinics){ if(clinic.getMonitoringAgentId() != null){
-	 * if(clinic.getMonitoringAgentId().equals(monitoringAgent.getId())){
-	 * monitoringAgentDto.addClinicName(clinic.getName()); } } }
-	 * monitoringAgentDto.setClinics();
-	 * System.out.println(monitoringAgentDto.getClinics()); return
-	 * monitoringAgentDto; }
-	 */
-
 	public MonitoringAgent getClinicNames(MonitoringAgent dbMonitoringAgent) {
 		List<Clinic> clinics = allClinics.getAll();
 		List<Clinic> addedClinics = new ArrayList<Clinic>();
@@ -122,23 +104,5 @@ public class AllMonitoringAgents extends
 		}
 		return dbMonitoringAgent;
 	}
-
-	/*
-	 * public List<String> getClinicNames(String id){ List<String> clinicNames =
-	 * new ArrayList<String>(); MonitoringAgent monitoringAgent = super.get(id);
-	 * for(Clinic clinic:monitoringAgent.getClinics()){
-	 * clinicNames.add(clinic.getName()); } return clinicNames; }
-	 */
-
-	/*
-	 * public void addClinicNameToMonitoringAgent(Clinic clinic,String user){
-	 * if(
-	 * !clinic.getMonitoringAgent().getClinicsOfAgent().contains(clinic.getName
-	 * ())){
-	 * update(clinic.getMonitoringAgent().addClinic(clinic.getName()),user); } }
-	 */
-
-	// TODO write a query to fetch the list of clinic Id's and loop to find the
-	// exact clinic ID
 
 }
