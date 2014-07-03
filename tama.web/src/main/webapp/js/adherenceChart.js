@@ -4,15 +4,20 @@ dojo.require("dojox.charting.action2d.Tooltip");
 var DAILY_ADHERENCE_TYPE = "dailyAdherenceSummary"
 var WEEKLY_ADHERENCE_TYPE = "weeklyAdherenceSummary"
 
-var AdherencePerWeekData = function(data){
-    this.mergeAndSortData(data);
+var AdherencePerWeekData = function(data, isDaily){
+    this.mergeAndSortData(data, isDaily);
 }
 
 AdherencePerWeekData.prototype = {
-    mergeAndSortData: function(data){
-        data.dailyAdherenceSummary.forEach(function(elt){ elt.type = DAILY_ADHERENCE_TYPE});
-        data.weeklyAdherenceSummary.forEach(function(elt){ elt.type = WEEKLY_ADHERENCE_TYPE});
-        var mergedList = data.dailyAdherenceSummary.concat(data.weeklyAdherenceSummary);
+    mergeAndSortData: function(data, isDaily){
+	    var mergedList = null;
+		if(isDaily){
+        	data.dailyAdherenceSummary.forEach(function(elt){ elt.type = DAILY_ADHERENCE_TYPE});
+        	 mergedList = data.dailyAdherenceSummary;
+		}else{
+        	data.weeklyAdherenceSummary.forEach(function(elt){ elt.type = WEEKLY_ADHERENCE_TYPE});
+        	mergedList = data.weeklyAdherenceSummary;
+		}
         this.sortedList = mergedList.sort(function(eltA, eltB){ return (eltA.date > eltB.date) ? 1 : -1; });
     },
 
@@ -70,10 +75,13 @@ AdherenceOverTimeWidget.prototype = {
     draw: function(){
         var self = this;
         this.fetchData(function(jsonData){
-            var adherencePerWeekData = new AdherencePerWeekData(jsonData);
-            if(jsonData.dailyAdherenceSummary.length > 0) self.dailyAdherenceOverTimeChart.draw(adherencePerWeekData);
-            if(jsonData.weeklyAdherenceSummary.length > 0) self.weeklyAdherenceOverTimeChart.draw(adherencePerWeekData);
-            if(jsonData.dailyAdherenceSummary.length == 0 && jsonData.weeklyAdherenceSummary.length == 0) self.noticeBanner.setMessage("No Adherence Recorded yet.");
+            var adherencePerWeekDataDaily = new AdherencePerWeekData(jsonData, true);
+             var adherencePerWeekDataWeekly = new AdherencePerWeekData(jsonData, false);
+            if(jsonData.dailyAdherenceSummary.length > 0) self.dailyAdherenceOverTimeChart.draw(adherencePerWeekDataDaily);
+            if(jsonData.weeklyAdherenceSummary.length > 0) self.weeklyAdherenceOverTimeChart.draw(adherencePerWeekDataWeekly);
+            if(jsonData.dailyAdherenceSummary.length == 0 && jsonData.weeklyAdherenceSummary.length == 0) {
+            	self.noticeBanner.setMessage("No Adherence Recorded yet.");
+            }
         });
     },
 }
