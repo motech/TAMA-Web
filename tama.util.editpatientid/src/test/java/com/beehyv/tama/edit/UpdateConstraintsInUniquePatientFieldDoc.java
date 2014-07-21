@@ -87,7 +87,7 @@ public class UpdateConstraintsInUniquePatientFieldDoc {
 				}
 			}
 		}
-		if(totalNoOfConstraints() < 2*(patients.size()) ){
+		if(totalNoOfConstraints() < 2*(patients.size()) && count < 3){
 			 addConstraints();
 		}
 
