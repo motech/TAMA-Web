@@ -38,7 +38,7 @@ public class AppointmentReminderMessageProvider implements MessageProvider {
         LocalDate today = today();
         AppointmentReminderMessage message = message(context, today);
         boolean isAppointmentRemindersActivated = patientOnCall.getPatient(context).getPatientPreferences().getActivateAppointmentReminders();
-        return shouldPlay(method, context, type, message) && message.isValid(today) && isAppointmentRemindersActivated;
+        return isAppointmentRemindersActivated  && message.isValid(today) && shouldPlay(method, context, type, message);
     }
 
     @Override
