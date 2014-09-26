@@ -27,7 +27,11 @@ public class ClinicVisitUIModel {
         this.defaultVisitDate = DateUtil.now();
     }
 
-    public String getId() {
+    public ClinicVisit getClinicVisit() {
+		return clinicVisit;
+	}
+
+	public String getId() {
         return clinicVisit.getId();
     }
 

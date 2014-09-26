@@ -91,6 +91,23 @@ public class IncompletePatientDataWarning {
         }
         requiredPatientDetails.add(new RequiredPatientDetail(cd4Result, "Baseline CD4 count", requiredFor));
     }
+    
+    public boolean baseLineLabResults(){
+    	  ClinicVisit baselineVisit = allClinicVisits == null ? null : allClinicVisits.getBaselineVisit(patient.getId());
+          LabResult cd4Result = null;
+          if (baselineVisit != null) {
+              List<LabResult> labResults = allLabResults.withIds(baselineVisit.getLabResultIds());
+              cd4Result = new LabResults(labResults).latestResultOf(TAMAConstants.LabTestType.CD4);
+             if(labResults.isEmpty())
+            	 cd4Result = null;
+          } else {
+              cd4Result = null;
+          }
+          if(cd4Result==null)
+        	  return true;
+          else
+        	  return false;
+    }
 
     private void findRequiredTreatmentAdvice() {
         TreatmentAdvice treatmentAdvice = allTreatmentAdvices == null ? null : allTreatmentAdvices.currentTreatmentAdvice(patient.getId());
@@ -103,5 +120,15 @@ public class IncompletePatientDataWarning {
         vitalStats = (vitalStats != null && (vitalStats.getWeightInKg() != null && vitalStats.getHeightInCm() != null)) ? vitalStats : null;
         HashSet<String> requiredFor = new HashSet<String>(asList("Symptoms Reporting"));
         requiredPatientDetails.add(new RequiredPatientDetail(vitalStats, "Vital Statistics(Height, Weight)", requiredFor));
+    }
+    
+    public boolean vitalStatistics(){
+    	 VitalStatistics vitalStats = allVitalStatistics == null ? null : allVitalStatistics.findLatestVitalStatisticByPatientId(patient.getId());
+         vitalStats = (vitalStats != null && (vitalStats.getWeightInKg() != null && vitalStats.getHeightInCm() != null)) ? vitalStats : null;
+         if(vitalStats == null)
+        	 return true;
+         else 
+        	 return false;
+         
     }
 }

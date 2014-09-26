@@ -58,6 +58,7 @@ public class ClinicVisitsController extends BaseController {
     private PatientDetailsService patientDetailsService;
     private AllPatients allPatients;
     private AllRegimens allRegimens;
+    private boolean updateClinicVisits = true;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -106,13 +107,13 @@ public class ClinicVisitsController extends BaseController {
         ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
         final String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
         if (canAllowUpdateOfClinicVisits(clinicVisit, patientDocId)) {
-
+        	Patient patient = allPatients.get(patientDocId);
             TreatmentAdvice adviceForPatient = null;
             if (treatmentAdviceId != null)
                 adviceForPatient = allTreatmentAdvices.get(treatmentAdviceId);
             if (adviceForPatient == null)
                 adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
-            if (adviceForPatient != null) {
+            if (adviceForPatient != null ) {
                 treatmentAdviceController.show(adviceForPatient.getId(), uiModel);
                 final boolean wasVisitDetailsEdited = (clinicVisit.getVisitDate() != null);
                 if (wasVisitDetailsEdited)
@@ -207,7 +208,12 @@ public class ClinicVisitsController extends BaseController {
         UniqueMobileNumberWarningService uniqueMobileNumberWarningService = new UniqueMobileNumberWarningService(allPatients);
         uiModel = uniqueMobileNumberWarningService.checkUniquenessOfPatientMobileNumberAndRenderWarning(uiModel, patient);
         boolean checkIfBaseLineVisitHasTreatmentAdviceId = checkIfBaseLineVisitHasTreatmentAdviceId(allClinicVisits.clinicVisits(patientDocId));
-
+        if(checkIfBaseLineVisitHasTreatmentAdviceId)
+    	{
+        	if(new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).vitalStatistics() || 
+        			new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).baseLineLabResults())
+        			checkIfBaseLineVisitHasTreatmentAdviceId = false;
+    	}
         uiModel.addAttribute("clinicVisits", clinicVisitUIModels);
         uiModel.addAttribute("patient", new PatientViewModel(patient));
         uiModel.addAttribute(PatientController.WARNING, warning);
@@ -299,19 +305,28 @@ public class ClinicVisitsController extends BaseController {
     private boolean checkIfBaseLineVisitHasTreatmentAdviceId(List<ClinicVisit> clinicVisits) {
         boolean checkIfBaseLineVisitHasTreatmentAdviceId = true;
         for (ClinicVisit clinicVisit : clinicVisits) {
-            if (clinicVisit.isBaseline() && clinicVisit.getTreatmentAdviceId() == null) {
+            if (clinicVisit.isBaseline() && clinicVisit.getTreatmentAdviceId() == null ) {
                 checkIfBaseLineVisitHasTreatmentAdviceId = false;
             }
         }
         return checkIfBaseLineVisitHasTreatmentAdviceId;
 
     }
+    
 
     private boolean canAllowUpdateOfClinicVisits(ClinicVisit clinicVisit, String patientDocId) {
         boolean allowUpdate = false;
+        Patient patient = allPatients.get(patientDocId);
         if (clinicVisit.isBaseline() && clinicVisit.getTreatmentAdviceId() == null) {
             allowUpdate = true;
-        } else {
+        }else if(new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).baseLineLabResults() || 
+        		new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).vitalStatistics()) {
+        	updateClinicVisits=false;
+            allowUpdate = false;
+            if (clinicVisit.isBaseline()) {
+                allowUpdate = true;
+            }
+        }else {
             List<ClinicVisit> clinicVisits = allClinicVisits.clinicVisits(patientDocId);
             allowUpdate = checkIfBaseLineVisitHasTreatmentAdviceId(clinicVisits);
         }
