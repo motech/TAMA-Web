@@ -311,6 +311,11 @@ public class AnalysisDataController extends BaseController {
     public String downloadClinicReport(Model uiModel) {
         return "redirect:/tama-reports/clinic/report";
     }
+    
+    @RequestMapping(value = "/monitoringAgentReport.xls", method = RequestMethod.GET)
+    public String downloadMonitoringAgentReport(Model uiModel) {
+        return "redirect:/tama-reports/monitoringAgent/report";
+    }
 
     @RequestMapping(value = "/clinicVisitReport.xls", method = RequestMethod.GET)
     public void downloadClinicVisitReport(@RequestParam(value = "clinicVisitPatientId", required = true) String patientId, HttpServletResponse response) {
