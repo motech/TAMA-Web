@@ -89,6 +89,18 @@
                 </div>
             </div>
         </util:panel>
+         <script type="text/javascript">
+                                        dojo.addOnLoad(function() {
+                                                                              var startDateObj = dijit.byId("_treatmentAdvice.drugDosages[0].startDateAsDate_id");
+                                                                             var startDateObj1 = dijit.byId("_treatmentAdvice.drugDosages[1].startDateAsDate_id");
+                                                                              setConstraintOnEndDate(startDateObj1, startDateObj1);
+                                                                              setConstraintOnEndDate(startDateObj, startDateObj);
+                                                                              dojo.connect(startDateObj, "onChange", function() {
+                                                                              setConstraintOnEndDate(startDateObj , startDateObj);
+                                                                               setConstraintOnEndDate(startDateObj1, startDateObj1);
+                                                                                             });
+                                                                    });
+       </script>
         <form:dependency dependencies="${dependencies}" id="d_org_motechproject_tama_domain_TreatmentAdvice"
                          render="${not empty dependencies}" z="DHiEExKpRZOUyJzNVs9NEMdupyI="/>
 </div>

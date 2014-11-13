@@ -43,12 +43,12 @@ public class DailyPillReminderAdherenceService implements AdherenceServiceStrate
     }
 
     public double getAdherencePercentage(String patientId, DateTime asOfDate) throws NoAdherenceRecordedException {
-       // Patient patient = allPatients.get(patientId);
+        Patient patient = allPatients.get(patientId);
         DateTime fromDate = asOfDate.minusWeeks(4);
-       /* DateTime callPreferenceTransitionDate = patient.getPatientPreferences().getCallPreferenceTransitionDate();
+        DateTime callPreferenceTransitionDate = patient.getPatientPreferences().getCallPreferenceTransitionDate();
         if (callPreferenceTransitionDate != null) {
             fromDate = asOfDate.minusWeeks(4).isBefore(callPreferenceTransitionDate) ? callPreferenceTransitionDate : asOfDate.minusWeeks(4);
-        }*/
+        }
         return getAdherencePercentage(patientId, fromDate.toLocalDate(), asOfDate);
     }
 

@@ -35,9 +35,12 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -62,7 +65,7 @@ public class ClinicVisitsController extends BaseController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
+    
     @Autowired
     public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController,
                                   AllTreatmentAdvices allTreatmentAdvices,
@@ -93,9 +96,15 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/newVisit")
     public String newVisit(@RequestParam(value = "patientDocId") String patientDocId, Model uiModel, HttpServletRequest httpServletRequest) {
         List<ClinicVisit> clinicVisits = allClinicVisits.clinicVisits(patientDocId);
+        Patient patient = allPatients.get(patientDocId);
         for (ClinicVisit clinicVisit : clinicVisits) {
-            if (clinicVisit.isBaseline() && clinicVisit.getTreatmentAdviceId() == null) {
+            if(clinicVisit.isBaseline() && clinicVisit.getTreatmentAdviceId() == null) {
                 return list(patientDocId, uiModel);
+            }else if(new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).baseLineLabResults() || 
+            		new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).vitalStatistics()) {
+                if (clinicVisit.isBaseline()) {
+                	return list(patientDocId, uiModel);
+                }
             }
         }
         String clinicVisitId = allClinicVisits.createUnscheduledVisit(patientDocId, DateUtil.now(), TypeOfVisit.Unscheduled, loggedInUserId(httpServletRequest));

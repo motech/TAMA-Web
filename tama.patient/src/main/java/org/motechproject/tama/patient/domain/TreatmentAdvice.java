@@ -1,7 +1,6 @@
 package org.motechproject.tama.patient.domain;
 
 import ch.lambdaj.Lambda;
-
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.ektorp.support.TypeDiscriminator;
 import org.joda.time.LocalDate;
@@ -11,7 +10,6 @@ import org.motechproject.util.DateUtil;
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-
 import java.util.*;
 
 import static ch.lambdaj.Lambda.*;
@@ -161,21 +159,4 @@ public class TreatmentAdvice extends CouchEntity implements Comparable<Treatment
     public int compareTo(TreatmentAdvice treatmentAdvice) {
         return getStartDate().compareTo(treatmentAdvice.getStartDate());
     }
-    
-    public static void main(String[] args) {
-
-    	LocalDate date1 = new LocalDate(2013, 1, 1);
-    	LocalDate date2 = new LocalDate(2014, 1, 1);
-    	DrugDosage dosage1 = new DrugDosage();
-    	dosage1.setStartDate(date1);
-    	DrugDosage dosage2 = new DrugDosage();
-    	dosage2.setStartDate(date2);
-    	System.out.println(date1);
-    	System.out.println(date2);
-    	List<DrugDosage> list = new ArrayList<>();
-    	list.add(dosage1);
-    	list.add(dosage2);
-    	DrugDosage dosageWithMinStartDate = Collections.min(list, new DrugDosage.StartDateBasedComparator());
-    	System.out.println(dosageWithMinStartDate.getStartDate());
-	}
 }

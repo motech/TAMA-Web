@@ -1,4 +1,4 @@
-<div id="monitoringAgentReportDownload" class="reportsDownload" xmlns:spring="http://www.springframeClinicswork.org/tags"
+<div id="monitoringAgentReportDownload" class="reportsDownload" xmlns:spring="http://www.springframework.org/tags"
      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util">
     <spring:url value="/analysisData/monitoringAgentReport.xls" var="download_monitoring_agent_url"/>
     <util:panel id="monitoringAgentReportPane" title="MonitoringAgents Report" openPane="true">
