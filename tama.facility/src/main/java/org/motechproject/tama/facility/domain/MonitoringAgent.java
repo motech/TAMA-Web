@@ -70,7 +70,7 @@ public class MonitoringAgent extends CouchEntity {
 		if (this.clinics == null || this.clinics.isEmpty()) {
 			clinics = newClinic;
 		} else {
-			clinics = clinics + "," + newClinic;
+			clinics = clinics + ", " + newClinic;
 		}
 	}
 

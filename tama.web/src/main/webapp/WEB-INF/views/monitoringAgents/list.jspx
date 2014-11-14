@@ -6,7 +6,7 @@
         <table:table data="${monitoringAgents}" id="l_org_motechproject_tama_domain_MonitoringAgent" path="/monitoringAgents" z="" delete="false">
             <table:column id="c_org_motechproject_tama_domain_MonitoringAgent_name" property="name" z=""/>
             <table:column id="c_org_motechproject_tama_domain_MonitoringAgent_contactNumber" property="contactNumber" z=""/>
-            <table:column id="c_org_motechproject_tama_domain_MonitoringAgent_clinics" property="clinics" z=""/>
+            <table:column id="c_org_motechproject_tama_domain_MonitoringAgent_clinics" property="clinics" maxLength="-1" z=""/>
         </table:table>
     </page:list>
 </div>

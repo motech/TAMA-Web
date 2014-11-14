@@ -13,6 +13,7 @@
         <jsp:include page="/WEB-INF/views/analysisData/messagesReportDownloadSectionFilter.jspx"/>
         <jsp:include page="/WEB-INF/views/callsummary/analystDownload.jspx"/>
         <jsp:include page="/WEB-INF/views/analysisData/ClinicianReportDownload.jspx"/>
+        <jsp:include page="/WEB-INF/views/analysisData/MonitoringAgentReportDownload.jspx"/>
         <jsp:include page="/WEB-INF/views/analysisData/ClinicReportDownload.jspx"/>
         <jsp:include page="/WEB-INF/views/analysisData/clinicVisitReportDownloadSectionFilter.jspx"/>
         <jsp:include page="/WEB-INF/views/analysisData/patientAlertsReportDownloadFilter.jspx"/>

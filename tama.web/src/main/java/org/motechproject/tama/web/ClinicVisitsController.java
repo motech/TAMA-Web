@@ -35,9 +35,12 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -58,10 +61,11 @@ public class ClinicVisitsController extends BaseController {
     private PatientDetailsService patientDetailsService;
     private AllPatients allPatients;
     private AllRegimens allRegimens;
+    private boolean updateClinicVisits = true;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
+    
     @Autowired
     public ClinicVisitsController(TreatmentAdviceController treatmentAdviceController,
                                   AllTreatmentAdvices allTreatmentAdvices,
@@ -92,9 +96,15 @@ public class ClinicVisitsController extends BaseController {
     @RequestMapping(value = "/newVisit")
     public String newVisit(@RequestParam(value = "patientDocId") String patientDocId, Model uiModel, HttpServletRequest httpServletRequest) {
         List<ClinicVisit> clinicVisits = allClinicVisits.clinicVisits(patientDocId);
+        Patient patient = allPatients.get(patientDocId);
         for (ClinicVisit clinicVisit : clinicVisits) {
-            if (clinicVisit.isBaseline() && clinicVisit.getTreatmentAdviceId() == null) {
+            if(clinicVisit.isBaseline() && clinicVisit.getTreatmentAdviceId() == null) {
                 return list(patientDocId, uiModel);
+            }else if(new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).baseLineLabResults() || 
+            		new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).vitalStatistics()) {
+                if (clinicVisit.isBaseline()) {
+                	return list(patientDocId, uiModel);
+                }
             }
         }
         String clinicVisitId = allClinicVisits.createUnscheduledVisit(patientDocId, DateUtil.now(), TypeOfVisit.Unscheduled, loggedInUserId(httpServletRequest));
@@ -106,13 +116,13 @@ public class ClinicVisitsController extends BaseController {
         ClinicVisit clinicVisit = allClinicVisits.get(patientDocId, clinicVisitId);
         final String treatmentAdviceId = clinicVisit.getTreatmentAdviceId();
         if (canAllowUpdateOfClinicVisits(clinicVisit, patientDocId)) {
-
+        	Patient patient = allPatients.get(patientDocId);
             TreatmentAdvice adviceForPatient = null;
             if (treatmentAdviceId != null)
                 adviceForPatient = allTreatmentAdvices.get(treatmentAdviceId);
             if (adviceForPatient == null)
                 adviceForPatient = allTreatmentAdvices.currentTreatmentAdvice(patientDocId);
-            if (adviceForPatient != null) {
+            if (adviceForPatient != null ) {
                 treatmentAdviceController.show(adviceForPatient.getId(), uiModel);
                 final boolean wasVisitDetailsEdited = (clinicVisit.getVisitDate() != null);
                 if (wasVisitDetailsEdited)
@@ -207,7 +217,12 @@ public class ClinicVisitsController extends BaseController {
         UniqueMobileNumberWarningService uniqueMobileNumberWarningService = new UniqueMobileNumberWarningService(allPatients);
         uiModel = uniqueMobileNumberWarningService.checkUniquenessOfPatientMobileNumberAndRenderWarning(uiModel, patient);
         boolean checkIfBaseLineVisitHasTreatmentAdviceId = checkIfBaseLineVisitHasTreatmentAdviceId(allClinicVisits.clinicVisits(patientDocId));
-
+        if(checkIfBaseLineVisitHasTreatmentAdviceId)
+    	{
+        	if(new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).vitalStatistics() || 
+        			new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).baseLineLabResults())
+        			checkIfBaseLineVisitHasTreatmentAdviceId = false;
+    	}
         uiModel.addAttribute("clinicVisits", clinicVisitUIModels);
         uiModel.addAttribute("patient", new PatientViewModel(patient));
         uiModel.addAttribute(PatientController.WARNING, warning);
@@ -299,19 +314,28 @@ public class ClinicVisitsController extends BaseController {
     private boolean checkIfBaseLineVisitHasTreatmentAdviceId(List<ClinicVisit> clinicVisits) {
         boolean checkIfBaseLineVisitHasTreatmentAdviceId = true;
         for (ClinicVisit clinicVisit : clinicVisits) {
-            if (clinicVisit.isBaseline() && clinicVisit.getTreatmentAdviceId() == null) {
+            if (clinicVisit.isBaseline() && clinicVisit.getTreatmentAdviceId() == null ) {
                 checkIfBaseLineVisitHasTreatmentAdviceId = false;
             }
         }
         return checkIfBaseLineVisitHasTreatmentAdviceId;
 
     }
+    
 
     private boolean canAllowUpdateOfClinicVisits(ClinicVisit clinicVisit, String patientDocId) {
         boolean allowUpdate = false;
+        Patient patient = allPatients.get(patientDocId);
         if (clinicVisit.isBaseline() && clinicVisit.getTreatmentAdviceId() == null) {
             allowUpdate = true;
-        } else {
+        }else if(new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).baseLineLabResults() || 
+        		new IncompletePatientDataWarning(patient, allVitalStatistics, allTreatmentAdvices, allLabResults, allClinicVisits).vitalStatistics()) {
+        	updateClinicVisits=false;
+            allowUpdate = false;
+            if (clinicVisit.isBaseline()) {
+                allowUpdate = true;
+            }
+        }else {
             List<ClinicVisit> clinicVisits = allClinicVisits.clinicVisits(patientDocId);
             allowUpdate = checkIfBaseLineVisitHasTreatmentAdviceId(clinicVisits);
         }
